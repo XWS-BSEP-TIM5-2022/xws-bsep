@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/persistence"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/startup/config"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/tree/feat/user-servicesep/microservices/user_service/infrastructure/persistence"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/tree/feat/user-servicesep/microservices/user_service/startup/config"
 
 	"gorm.io/gorm"
 )

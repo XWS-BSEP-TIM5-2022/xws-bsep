@@ -1,8 +1,8 @@
-module github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway
+module github.com/XWS-BSEP-TIM5-2022/xws-bsep/tree/feat/user-servicesep/microservices/api-gateway
 
 go 1.17
 
-replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices_demo/common => ../common 
+replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/tree/feat/user-servicesep/microservices_demo/common => ../common 
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
