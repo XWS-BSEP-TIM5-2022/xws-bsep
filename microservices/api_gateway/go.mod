@@ -1,12 +1,11 @@
-module api_gateway
+module github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway
 
 go 1.17
 
-replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices_demo/common => ../common  // Mozda nije dobro
+replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices_demo/common => ../common 
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
-	// github.com/tamararankovic/microservices_demo/common v1.0.0
 	google.golang.org/grpc v1.45.0
 )
 

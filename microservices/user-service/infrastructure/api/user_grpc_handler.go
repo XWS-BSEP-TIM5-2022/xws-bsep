@@ -2,12 +2,14 @@ package api
 
 import (
 	"context"
-	"user-service/application"
+
+	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
 )
 
 type UserHandler struct {
 	service *application.UserService
-	pb.UnimplementedInventoryServiceServer
+	pb.UnimplementedUserServiceServer
 }
 
 func NewProductHandler(service *application.UserService) *UserHandler {
@@ -22,7 +24,7 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 		return nil, err
 	}
 	response := &pb.GetAllResponse{
-		Users: []*pb.Users{},
+		Users: []*pb.User{},
 	}
 	for _, user := range *users {
 		current := mapUser(&user)

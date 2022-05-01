@@ -1,7 +1,7 @@
 package persistence
 
 import (
-	"user-service/domain"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 
 	"gorm.io/gorm"
 )

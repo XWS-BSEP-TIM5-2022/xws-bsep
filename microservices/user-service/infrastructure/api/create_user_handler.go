@@ -2,7 +2,8 @@ package api
 
 import (
 	"fmt"
-	"user-service/application"
+
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
 )
 
 type CreateUserCommandHandler struct {

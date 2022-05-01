@@ -1,13 +1,15 @@
 package startup
 
 import (
-	"api_gateway/infrastructure/api"
-	cfg "api_gateway/startup/config"
-	userGw "common/proto/user_service"
 	"context"
 	"fmt"
 	"log"
 	"net/http"
+
+	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/api"
+	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -31,7 +33,7 @@ func NewServer(config *cfg.Config) *Server {
 
 func (server *Server) initHandlers() {
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	userEmdpoint := fmt.Sprintf("%s:%s", server.config, server.config.UserPort)
+	userEmdpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	err := userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEmdpoint, opts)
 	if err != nil {
 		panic(err)

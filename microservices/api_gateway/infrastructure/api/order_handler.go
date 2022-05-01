@@ -1,15 +1,12 @@
 package api
 
 import (
-	"api_gateway/domain"
-	"api_gateway/infrastructure/services"
-	"context"
 	"encoding/json"
+
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/domain"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 
-	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices_demo/common/proto/user-service"
-	//user "common/proto/user_service"
 	"net/http"
 )
 
@@ -31,18 +28,21 @@ func (handler *UserHandler) Init(mux *runtime.ServeMux) {
 }
 
 func (handler *UserHandler) GetDetails(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-	id := pathParams["userId"]
-	if id == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	userDetails := &domain.User{Id: id}
-
-	err := handler.addOrderInfo(userDetails)
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
+	// id := pathParams["userId"]
+	// if id == "" {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	return
+	// }
+	id := "1"
+	name := "Pera"
+	userDetails := &domain.User{Id: id, Name: name}
+	// userClient := services.NewUserClient(handler.userClientAddress)
+	// users, err := userClient.Get(context.TODO(), &user.GetRequest{Id: userDetails.Id})
+	// err := handler.addOrderInfo(userDetails)
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusNotFound)
+	// 	return
+	// }
 
 	response, err := json.Marshal(userDetails)
 	if err != nil {
@@ -53,13 +53,13 @@ func (handler *UserHandler) GetDetails(w http.ResponseWriter, r *http.Request, p
 	w.Write(response)
 }
 
-func (handler *UserHandler) addOrderInfo(userDetails *domain.User) error {
-	orderingClient := services.NewUserClient(handler.userClientAddress)
-	userInfo, err := orderingClient.Get(context.TODO(), &user.GetRequest{Id: userDetails.Id})
-	if err != nil {
-		return err
-	}
-	userDetails.Id = userInfo.User.Id
-	userDetails.Name = userInfo.User.Name.String()
-	return nil
-}
+// func (handler *UserHandler) addOrderInfo(userDetails *domain.User) error {
+// 	orderingClient := services.NewUserClient(handler.userClientAddress)
+// 	userInfo, err := orderingClient.Get(context.TODO(), &user.GetRequest{Id: userDetails.Id})
+// 	if err != nil {
+// 		return err
+// 	}
+// 	userDetails.Id = userInfo.User.Id
+// 	userDetails.Name = userInfo.User.Name.String()
+// 	return nil
+// }

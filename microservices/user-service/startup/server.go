@@ -3,8 +3,9 @@ package startup
 import (
 	"fmt"
 	"log"
-	"user-service/infrastructure/persistence"
-	"user-service/startup/config"
+
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/persistence"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/startup/config"
 
 	"gorm.io/gorm"
 )

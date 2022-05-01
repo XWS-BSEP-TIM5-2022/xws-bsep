@@ -1,6 +1,6 @@
 package application
 
-import "user-service/domain"
+import "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 
 type UserService struct {
 	store domain.UserStore
