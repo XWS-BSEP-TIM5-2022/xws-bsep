@@ -46,11 +46,15 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertReques
 	return response, err
 }
 
-//func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-//	user := mapUser(request.User)
-//	success, err := handler.service.UpdateAllInfo(user)
-//	response := &pb.UpdateResponse{
-//		Success: success,
-//	}
-//	return response, err
-//}
+func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+	//user := mapUser(request.User)
+	emptUser := domain.User{}
+	emptUser.Id = request.User.Id
+	emptUser.Name = request.User.Name
+
+	success, err := handler.service.Update(&emptUser)
+	response := &pb.UpdateResponse{
+		Success: success,
+	}
+	return response, err
+}

@@ -20,8 +20,14 @@ func NewUserPostgresStore(db *gorm.DB) (domain.UserStore, error) {
 }
 
 func (store *UserPostgresStore) Get(id string) (*domain.User, error) {
-	//TODO implement me
-	panic("implement me")
+	user := domain.User{}
+
+	result, _ := store.db.Get(id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &user, nil
 }
 
 func (store *UserPostgresStore) Update(user *domain.User) (string, error) {
