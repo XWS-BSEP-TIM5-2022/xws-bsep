@@ -16,6 +16,7 @@ func (service *UserService) GetAll() (*[]domain.User, error) {
 	return service.store.GetAll()
 }
 
-func (service *UserService) Create(user *domain.User) error {
-	return service.store.Insert(user)
+func (service *UserService) Create(user *domain.User) (string, error) {
+	success, err := service.store.Insert(user)
+	return success, err
 }
