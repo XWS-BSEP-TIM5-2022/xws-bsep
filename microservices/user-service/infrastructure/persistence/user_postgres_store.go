@@ -30,9 +30,30 @@ func (store *UserPostgresStore) Get(id string) (*domain.User, error) {
 }
 
 func (store *UserPostgresStore) Update(user *domain.User) (string, error) {
-	//TODO implement me
-	panic("implement me")
+	result := store.db.Updates(&user)
+	if result.Error != nil {
+		return "error", result.Error
+	}
+	return "success", nil
 }
+
+//func (store *UserPostgresStore) Update(user *domain.User) (string, error) {
+//
+//	userForUpdate, err := store.Get(user.Id)
+//
+//	if err != nil {
+//		return "error", err
+//	}
+//
+//	userForUpdate.Name = user.Name
+//
+//	result := store.db.Updates(&userForUpdate)
+//	if result.Error != nil {
+//		return "error", result.Error
+//	}
+//
+//	return "success", nil
+//}
 
 func (store *UserPostgresStore) Insert(user *domain.User) (string, error) {
 	result := store.db.Create(user)
