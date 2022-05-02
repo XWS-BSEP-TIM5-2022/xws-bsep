@@ -9,8 +9,14 @@ import "google/api/annotations.proto";
 service UserService{
     rpc GetAll(GetAllRequest) returns(GetAllResponse) {
         option (google.api.http) = {
-        get: "/users"
+        get: "/user"
     };
+    }
+    rpc CreateUser(CreateUserRequest) returns(CreateUserResponse) {
+        option (google.api.http) = {
+                post: "/user"
+                body: "user"
+        };
     }
 }
 
@@ -25,3 +31,17 @@ message User {
     string id = 1;
     string name = 2;
 }
+
+message CreateUserRequest {
+    NewUser user = 1;
+}
+
+message NewUser {
+    string id = 1;
+    string name = 2;
+}
+
+message CreateUserResponse {
+    User user = 1;
+}
+

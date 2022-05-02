@@ -75,7 +75,8 @@ func (server *Server) initUserHandler(service *application.UserService) *api.Use
 }
 
 func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
+	// listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
+	listener, err := net.Listen("tcp", fmt.Sprintf(":8080"))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

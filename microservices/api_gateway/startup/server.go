@@ -8,7 +8,6 @@ import (
 
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/api"
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -56,11 +55,11 @@ func (server *Server) initHandlers() {
 }
 
 func (server *Server) initCustomHandlers() {
-	userEmdpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
-	// orderingEmdpoint := fmt.Sprintf("%s:%s", server.config.OrderingHost, server.config.OrderingPort)
-	// shippingEmdpoint := fmt.Sprintf("%s:%s", server.config.ShippingHost, server.config.ShippingPort)
-	orderingHandler := api.NewUserHandler(userEmdpoint)
-	orderingHandler.Init(server.mux)
+	// userEmdpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	// // orderingEmdpoint := fmt.Sprintf("%s:%s", server.config.OrderingHost, server.config.OrderingPort)
+	// // shippingEmdpoint := fmt.Sprintf("%s:%s", server.config.ShippingHost, server.config.ShippingPort)
+	// orderingHandler := api.NewUserHandler(userEmdpoint)
+	// orderingHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {

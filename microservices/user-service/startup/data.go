@@ -7,4 +7,8 @@ var users = []*domain.User{
 		Id:   "623b0cc3a34d25d8567f9f82",
 		Name: "Ranko",
 	},
+	{
+		Id:   "2",
+		Name: "Marko",
+	},
 }

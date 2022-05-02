@@ -5,10 +5,10 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 )
 
-func mapUser(order *domain.User) *pb.User {
+func mapUser(user *domain.User) *pb.User {
 	userPb := &pb.User{
-		Id:   order.Id,
-		Name: order.Name,
+		Id:   user.Id,
+		Name: user.Name,
 	}
 	return userPb
 }

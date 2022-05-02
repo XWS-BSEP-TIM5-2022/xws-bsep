@@ -15,3 +15,7 @@ func NewUserService(store domain.UserStore) *UserService {
 func (service *UserService) GetAll() (*[]domain.User, error) {
 	return service.store.GetAll()
 }
+
+func (service *UserService) Create(user *domain.User) error {
+	return service.store.Insert(user)
+}
