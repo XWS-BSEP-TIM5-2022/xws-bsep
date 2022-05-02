@@ -2,9 +2,11 @@ package api
 
 import (
 	"context"
+	"fmt"
 
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
+	domain "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 )
 
 type UserHandler struct {
@@ -33,18 +35,14 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 	return response, nil
 }
 
-// func (handler *UserHandler) Insert(ctx context.Context, request *pb.CreateUserRequest) *pb.CreateUserResponse {
-// 	// user := mapUser(&request.User)
-// 	// return handler.service.Create(&user)
-// 	response := &pb.CreateUserResponse{
-// 		User: *pb.User{},
-// 	}
-
-// }
-
 func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
-	user := mapUser(request.User)
-	success, err := handler.service.Insert(user)
+	lala := request.User
+	fmt.Println(lala)
+	emptUser := domain.User{}
+	emptUser.Id = request.User.Id
+	emptUser.Name = request.User.Name
+	// user := mapUser(request.User)
+	success, err := handler.service.Insert(&emptUser)
 	response := &pb.InsertResponse{
 		Success: success,
 	}

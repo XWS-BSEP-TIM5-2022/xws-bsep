@@ -12,7 +12,7 @@ service UserService{
         get: "/user"
     };
     }
-    rpc CreateUser(CreateUserRequest) returns(CreateUserResponse) {
+    rpc Insert(InsertRequest) returns(InsertResponse) {
         option (google.api.http) = {
                 post: "/user"
                 body: "user"
