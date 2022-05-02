@@ -19,12 +19,12 @@ func NewUserPostgresStore(db *gorm.DB) (domain.UserStore, error) {
 	}, nil
 }
 
-func (store *UserPostgresStore) Insert(user *domain.User) error {
+func (store *UserPostgresStore) Insert(user *domain.User) (string, error) {
 	result := store.db.Create(user)
 	if result.Error != nil {
-		return result.Error
+		return "error", result.Error
 	}
-	return nil
+	return "success", nil
 }
 
 func (store *UserPostgresStore) GetAll() (*[]domain.User, error) {
