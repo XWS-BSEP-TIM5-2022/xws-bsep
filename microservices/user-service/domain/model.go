@@ -27,10 +27,8 @@ const (
 )
 
 func (gender GenderEnum) String() string {
-
 	if gender == Female {
 		return "Female"
 	}
-
 	return "Male"
 }
