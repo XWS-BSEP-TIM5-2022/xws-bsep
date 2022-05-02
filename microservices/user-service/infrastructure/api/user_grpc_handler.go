@@ -58,3 +58,16 @@ func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateReques
 	}
 	return response, err
 }
+
+func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
+	id := request.Id
+	user, err := handler.service.Get(id)
+	if err != nil {
+		return nil, err
+	}
+	userPb := mapUser(user)
+	response := &pb.GetResponse{
+		User: userPb,
+	}
+	return response, nil
+}

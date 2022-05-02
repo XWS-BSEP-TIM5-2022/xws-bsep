@@ -26,6 +26,6 @@ func (service *UserService) Update(user *domain.User) (string, error) {
 	return success, err
 }
 
-//func (service *UserService) Get(id string) (*domain.User, error) {
-//	return service.store.Get(id)
-//}
+func (service *UserService) Get(id string) (*domain.User, error) {
+	return service.store.Get(id)
+}
