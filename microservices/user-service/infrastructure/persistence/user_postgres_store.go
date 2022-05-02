@@ -1,7 +1,7 @@
 package persistence
 
 import (
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/tree/feat/user-servicesep/microservices/user_service/domain"
+	"github.com/sanjadrinic/test_repo/microservices/user_service/domain"
 
 	"gorm.io/gorm"
 )
@@ -20,8 +20,8 @@ func NewUserPostgresStore(db *gorm.DB) (domain.UserStore, error) {
 	}, nil
 }
 
-func (store *UserPostgresStore) Insert(product *domain.User) error {
-	result := store.db.Create(product)
+func (store *UserPostgresStore) Insert(user *domain.User) error {
+	result := store.db.Create(user)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -35,4 +35,9 @@ func (store *UserPostgresStore) GetAll() (*[]domain.User, error) {
 		return nil, result.Error
 	}
 	return &users, nil
+}
+
+func (store *UserPostgresStore) DeleteAll() {
+	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
+		Delete(&domain.User{})
 }

@@ -2,7 +2,7 @@ syntax="proto3";
 
 package user_service;
 
-option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/tree/feat/user-servicesep/microservices/common/proto/user";
+option go_package = "github.com/sanjadrinic/test_repo/microservices/common/proto/user";
 
 import "google/api/annotations.proto"; 
 

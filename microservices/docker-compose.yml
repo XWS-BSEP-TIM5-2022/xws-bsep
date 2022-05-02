@@ -6,7 +6,7 @@ services:
     container_name: user_service
     build:
       context: .
-      dockerfile: ./user_service/Dockerfile
+      dockerfile: ./user-service/Dockerfile
     restart: on-failure
     environment:
       USER_DB_HOST: ${USER_DB_HOST}

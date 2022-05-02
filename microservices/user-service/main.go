@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	startup "github.com/XWS-BSEP-TIM5-2022/xws-bsep/tree/feat/user-servicesep/microservices/user_service/startup"
-	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/tree/feat/user-servicesep/microservices/user_service/startup/config"
+	startup "github.com/sanjadrinic/test_repo/microservices/user_service/startup"
+	cfg "github.com/sanjadrinic/test_repo/microservices/user_service/startup/config"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package services
 import (
 	"log"
 
-	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/tree/feat/user-servicesep/microservices/common/proto/user_service"
+	user "github.com/sanjadrinic/test_repo/microservices/common/proto/user_service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
