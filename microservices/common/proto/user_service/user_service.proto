@@ -12,6 +12,12 @@ service UserService{
         get: "/users"
     };
     }
+    rpc Insert(InsertRequest) returns(InsertResponse) {
+        option (google.api.http) = {
+            post: "/user"
+            body: "user"
+        };
+    }
 }
 
 message GetAllRequest {
@@ -19,6 +25,14 @@ message GetAllRequest {
 
 message GetAllResponse {
     repeated User users = 1;
+}
+
+message InsertRequest {
+    User user = 1;
+}
+
+message InsertResponse {
+    string success = 1;
 }
 
 message User {
