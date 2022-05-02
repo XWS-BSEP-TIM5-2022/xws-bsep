@@ -2,11 +2,8 @@ package api
 
 import (
 	"context"
-	"fmt"
-
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
-	domain "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 )
 
 type UserHandler struct {
@@ -36,15 +33,34 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 }
 
 func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
-	lala := request.User
-	fmt.Println(lala)
-	emptUser := domain.User{}
-	emptUser.Id = request.User.Id
-	emptUser.Name = request.User.Name
-	// user := mapUser(request.User)
-	success, err := handler.service.Insert(&emptUser)
+
+	user := mapInsertUser(request.User)
+	success, err := handler.service.Insert(user)
 	response := &pb.InsertResponse{
 		Success: success,
 	}
 	return response, err
+}
+
+func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+	user := mapInsertUser(request.User)
+
+	success, err := handler.service.Update(user)
+	response := &pb.UpdateResponse{
+		Success: success,
+	}
+	return response, err
+}
+
+func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
+	id := request.Id
+	user, err := handler.service.Get(id)
+	if err != nil {
+		return nil, err
+	}
+	userPb := mapUser(user)
+	response := &pb.GetResponse{
+		User: userPb,
+	}
+	return response, nil
 }

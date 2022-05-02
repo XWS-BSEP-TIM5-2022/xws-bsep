@@ -4,9 +4,15 @@ package user_service;
 
 option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user";
 
-import "google/api/annotations.proto"; 
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 
 service UserService{
+    rpc Get(GetRequest) returns(GetResponse) {
+    option (google.api.http) = {
+        get: "/user/{id}"
+    };
+    }
     rpc GetAll(GetAllRequest) returns(GetAllResponse) {
         option (google.api.http) = {
         get: "/user"
@@ -18,8 +24,21 @@ service UserService{
                 body: "user"
         };
     }
+    rpc Update(UpdateRequest) returns(UpdateResponse) {
+        option (google.api.http) = {
+            put: "/user/update"
+            body: "user"
+        };
+    }
 }
 
+message GetRequest {
+    string id = 1;
+}
+
+message GetResponse {
+    User user = 1;
+}
 
 message GetAllRequest {
 }
@@ -28,10 +47,6 @@ message GetAllResponse {
     repeated User users = 1;
 }
 
-message User {
-    string id = 1;
-    string name = 2;
-}
 
 message CreateUserRequest {
     User user = 1;
@@ -49,3 +64,27 @@ message InsertResponse {
     string success = 1;
 }
 
+message UpdateRequest {
+    User user = 1;
+}
+
+message UpdateResponse {
+    string success = 1;
+}
+
+message User {
+    string id = 1;
+    string name = 2;
+    string lastName = 3;
+    string email = 4;
+    string mobileNumber = 5;
+    enum GenderEnum {
+        Female = 0;
+        Male = 1;
+    }
+    GenderEnum gender = 6;
+    google.protobuf.Timestamp birthday = 7;
+    string username = 8;
+    string biography = 9;
+    string password = 10;
+}

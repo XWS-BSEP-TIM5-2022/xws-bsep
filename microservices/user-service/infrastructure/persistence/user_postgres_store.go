@@ -19,6 +19,44 @@ func NewUserPostgresStore(db *gorm.DB) (domain.UserStore, error) {
 	}, nil
 }
 
+func (store *UserPostgresStore) Get(id string) (*domain.User, error) {
+	user := domain.User{}
+
+	result := store.db.Find(&user, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
+}
+
+func (store *UserPostgresStore) Update(user *domain.User) (string, error) {
+
+	result := store.db.Updates(&user)
+	if result.Error != nil {
+		return "error", result.Error
+	}
+
+	return "success", nil
+}
+
+//func (store *UserPostgresStore) Update(user *domain.User) (string, error) {
+//
+//	userForUpdate, err := store.Get(user.Id)
+//
+//	if err != nil {
+//		return "error", err
+//	}
+//
+//	userForUpdate.Name = user.Name
+//
+//	result := store.db.Updates(&userForUpdate)
+//	if result.Error != nil {
+//		return "error", result.Error
+//	}
+//
+//	return "success", nil
+//}
+
 func (store *UserPostgresStore) Insert(user *domain.User) (string, error) {
 	result := store.db.Create(user)
 	if result.Error != nil {
