@@ -5,12 +5,12 @@ import (
 	"log"
 	"net"
 
-	inventory "github.com/sanjadrinic/test_repo/microservices/common/proto/user_service"
-	"github.com/sanjadrinic/test_repo/microservices/user_service/application"
-	"github.com/sanjadrinic/test_repo/microservices/user_service/domain"
-	"github.com/sanjadrinic/test_repo/microservices/user_service/infrastructure/api"
-	"github.com/sanjadrinic/test_repo/microservices/user_service/infrastructure/persistence"
-	"github.com/sanjadrinic/test_repo/microservices/user_service/startup/config"
+	inventory "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/api"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/persistence"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/startup/config"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
@@ -56,7 +56,7 @@ func (server *Server) initUserStore(client *gorm.DB) domain.UserStore {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// store.DeleteAll()
+	store.DeleteAll()
 	for _, User := range users {
 		err := store.Insert(User)
 		if err != nil {

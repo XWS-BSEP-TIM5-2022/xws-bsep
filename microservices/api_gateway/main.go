@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/sanjadrinic/test_repo/microservices/api-gateway/startup"
-	"github.com/sanjadrinic/test_repo/microservices/api-gateway/startup/config"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 )
 
 func main() {

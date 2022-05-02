@@ -1,11 +1,11 @@
-module github.com/sanjadrinic/test_repo/microservices/user_service
+module github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service
 
 go 1.18
 
-replace github.com/sanjadrinic/test_repo/microservices/common => ../common
+replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
 
 require (
-	github.com/sanjadrinic/test_repo/microservices/common v0.0.0-20220502092105-6f0aa3f2b76e
+	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-20220502092105-6f0aa3f2b76e
 	google.golang.org/grpc v1.46.0
 	gorm.io/gorm v1.23.5
 )

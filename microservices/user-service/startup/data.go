@@ -1,6 +1,6 @@
 package startup
 
-import "github.com/sanjadrinic/test_repo/microservices/user_service/domain"
+import "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 
 var users = []*domain.User{
 	{

@@ -1,8 +1,8 @@
 package api
 
 import (
-	pb "github.com/sanjadrinic/test_repo/microservices/common/proto/user_service"
-	"github.com/sanjadrinic/test_repo/microservices/user_service/domain"
+	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 )
 
 func mapUser(order *domain.User) *pb.User {

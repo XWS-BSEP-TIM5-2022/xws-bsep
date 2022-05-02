@@ -3,7 +3,7 @@ package api
 import (
 	"encoding/json"
 
-	"github.com/sanjadrinic/test_repo/microservices/api-gateway/domain"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/domain"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 

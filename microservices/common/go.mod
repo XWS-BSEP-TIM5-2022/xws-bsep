@@ -1,4 +1,4 @@
-module github.com/sanjadrinic/test_repo/microservices/common
+module github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common
 
 go 1.17
 
