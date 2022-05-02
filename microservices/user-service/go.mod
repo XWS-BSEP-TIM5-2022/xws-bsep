@@ -5,8 +5,7 @@ go 1.18
 replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
 
 require (
-	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-20220502092105-6f0aa3f2b76e
-	go.mongodb.org/mongo-driver v1.9.0
+	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-20220502143128-55ecbe21e4a7
 	google.golang.org/grpc v1.46.0
 	gorm.io/gorm v1.23.5
 )
@@ -22,6 +21,7 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 	github.com/jackc/pgtype v1.11.0 // indirect
 	github.com/jackc/pgx/v4 v4.16.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect

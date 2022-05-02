@@ -28,29 +28,24 @@ message GetAllResponse {
     repeated User users = 1;
 }
 
-message InsertRequest {
-    User user = 1;
-}
-
-message InsertResponse {
-    string success = 1;
-}
-
 message User {
     string id = 1;
     string name = 2;
 }
 
 message CreateUserRequest {
-    NewUser user = 1;
-}
-
-message NewUser {
-    string id = 1;
-    string name = 2;
+    User user = 1;
 }
 
 message CreateUserResponse {
     User user = 1;
+}
+
+message InsertRequest {
+    User user = 1;
+}
+
+message InsertResponse {
+    string success = 1;
 }
 
