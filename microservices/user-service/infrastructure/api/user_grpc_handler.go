@@ -2,8 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
-
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
 	domain "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
@@ -36,8 +34,7 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 }
 
 func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
-	lala := request.User
-	fmt.Println(lala)
+
 	emptUser := domain.User{}
 	emptUser.Id = request.User.Id
 	emptUser.Name = request.User.Name
@@ -48,3 +45,12 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertReques
 	}
 	return response, err
 }
+
+//func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+//	user := mapUser(request.User)
+//	success, err := handler.service.UpdateAllInfo(user)
+//	response := &pb.UpdateResponse{
+//		Success: success,
+//	}
+//	return response, err
+//}

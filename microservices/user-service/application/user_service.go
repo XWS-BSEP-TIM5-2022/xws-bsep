@@ -20,3 +20,12 @@ func (service *UserService) Insert(user *domain.User) (string, error) {
 	success, err := service.store.Insert(user)
 	return success, err
 }
+
+func (service *UserService) Update(user *domain.User) (string, error) {
+	success, err := service.store.Update(user)
+	return success, err
+}
+
+//func (service *UserService) Get(id string) (*domain.User, error) {
+//	return service.store.Get(id)
+//}
