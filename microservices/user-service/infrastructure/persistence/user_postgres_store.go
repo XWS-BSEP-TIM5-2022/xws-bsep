@@ -30,10 +30,12 @@ func (store *UserPostgresStore) Get(id string) (*domain.User, error) {
 }
 
 func (store *UserPostgresStore) Update(user *domain.User) (string, error) {
+
 	result := store.db.Updates(&user)
 	if result.Error != nil {
 		return "error", result.Error
 	}
+
 	return "success", nil
 }
 
