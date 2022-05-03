@@ -1,4 +1,4 @@
-module auth-service
+module github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service
 
 go 1.18
 

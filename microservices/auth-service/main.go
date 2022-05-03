@@ -1,8 +1,9 @@
 package main
 
 import (
-	"auth-service/startup"
 	"fmt"
+
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup"
 
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth_service/startup/config"
 )

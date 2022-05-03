@@ -5,11 +5,11 @@ import (
 	"log"
 	"net"
 
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/api"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup/config"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth_service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth_service/domain"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth_service/infrastructure/api"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth_service/infrastructure/persistence"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth_service/startup/config"
 	auth_service_proto "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
