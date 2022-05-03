@@ -1,0 +1,45 @@
+syntax="proto3";
+
+package auth_service;
+
+option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth";
+
+import "google/api/annotations.proto"; 
+import "google/protobuf/timestamp.proto";
+
+service AuthhService{
+    rpc GetAll(GetRequest) returns(GetResponse) {
+        option (google.api.http) = {
+            get: "/auth/{id}"
+        };
+    }
+    rpc Add(AddRequest) returns(AddResponse) {
+        option (google.api.http) = {
+                post: "/auth"
+                body: "auth"
+        };
+    }
+}
+
+message GetRequest {
+    string id = 1;
+}
+
+message GetResponse {
+    Session session = 1;
+}
+
+message AddRequest {
+    Session auth = 1;
+}
+
+message AddResponse {
+    string success = 1;
+}
+
+message Session {
+    string id = 1;
+    string username = 2;
+    google.protobuf.Timestamp date = 3;
+    string role = 4;
+}
