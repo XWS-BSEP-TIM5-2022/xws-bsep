@@ -12,9 +12,9 @@ func NewAuthService(store domain.AuthStore) *AuthService {
 	}
 }
 
-// func (service *AuthService) GetAll() (*[]domain.Authentication, error) {
-// 	return service.store.GetAll()
-// }
+func (service *AuthService) GetAll() (*[]domain.Authentication, error) {
+	return service.store.GetAll()
+}
 
 func (service *AuthService) Create(auth *domain.Authentication) (string, error) {
 	success, err := service.store.Create(auth)

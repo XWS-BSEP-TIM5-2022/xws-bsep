@@ -14,20 +14,32 @@ service AuthService{
                 body: "auth"
         };
     }
+
+    rpc GetAll(GetAllRequest) returns(GetAllResponse) {
+        option (google.api.http) = {
+            get: "/auth"
+        };
+    }
 }
 
 message AddRequest {
-    Authentication auth = 1;
+    Auth auth = 1;
 }
 
 message AddResponse {
     string success = 1;
 }
 
-message Authentication {
+message Auth {
     string id = 1;
     string name = 2;
     string password = 3;
     // google.protobuf.Timestamp date = 4;
     // string role = 4;
+}
+
+message GetAllRequest {}
+
+message GetAllResponse {
+    repeated Auth authentications = 1;
 }
