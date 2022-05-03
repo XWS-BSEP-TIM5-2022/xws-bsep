@@ -79,6 +79,7 @@ func (server *Server) initAuthHandler(service *application.AuthService) *api.Aut
 
 func (server *Server) startGrpcServer(authHandler *api.AuthHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
+	// listener, err := net.Listen("tcp", fmt.Sprintf(":8000"))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

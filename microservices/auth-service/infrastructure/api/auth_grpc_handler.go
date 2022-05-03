@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/application"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
@@ -27,7 +26,6 @@ func (handler *AuthHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 	response := &pb.GetAllResponse{
 		Authentications: []*pb.Auth{},
 	}
-	// rucno uneti podaci iz baze
 	for _, auth := range *auths {
 		current := pb.Auth{
 			Id:       auth.Id,
@@ -39,23 +37,23 @@ func (handler *AuthHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 	return response, nil
 }
 
-func (handler *AuthHandler) Create(ctx context.Context, request *pb.AddRequest) (*pb.AddResponse, error) {
+// func (handler *AuthHandler) Create(ctx context.Context, request *pb.AddRequest) (*pb.AddResponse, error) {
 
-	success := "TODO: zavrsiti mapiranje"
-	auth := mapCreateAuth(request.Auth)
-	fmt.Println(auth)
-	// success, err := handler.service.Create(&current)
-	// if err != nil {
-	// 	success := "Greska prilikom upisa u bazu!"
-	// 	response := &pb.AddResponse{
-	// 		Success: success,
-	// 	}
-	// 	return response, err
-	// }
-	fmt.Println(success)
-	response := &pb.AddResponse{
-		Success: success,
-	}
-	// return response, err
-	return response, nil
-}
+// 	success := "TODO: zavrsiti mapiranje"
+// 	// auth := mapCreateAuth(request.Auth)
+// 	// fmt.Println(auth)
+// 	// success, err := handler.service.Create(&current)
+// 	// if err != nil {
+// 	// 	success := "Greska prilikom upisa u bazu!"
+// 	// 	response := &pb.AddResponse{
+// 	// 		Success: success,
+// 	// 	}
+// 	// 	return response, err
+// 	// }
+// 	fmt.Println(success)
+// 	response := &pb.AddResponse{
+// 		Success: success,
+// 	}
+// 	// return response, err
+// 	return response, nil
+// }

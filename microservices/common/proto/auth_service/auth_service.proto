@@ -8,7 +8,7 @@ import "google/api/annotations.proto";
 // import "google/protobuf/timestamp.proto";
 
 service AuthService{
-    rpc Add(AddRequest) returns(AddResponse) {
+    rpc Create(AddRequest) returns(AddResponse) {
         option (google.api.http) = {
                 post: "/auth"
                 body: "auth"
