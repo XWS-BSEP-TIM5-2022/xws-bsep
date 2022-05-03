@@ -1,0 +1,51 @@
+syntax="proto3";
+
+package connection_service;
+option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection";
+
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+
+service ConnectionService{
+  rpc GetFriends(GetRequest) returns(Users) {
+    option (google.api.http) = {
+      get: "/connection/user/{userID}/friends"
+    };
+  }
+
+  rpc AddFriend(AddFriendRequest) returns (ActionResult) {
+    option (google.api.http) = {
+      post: "/connection/friend"
+      body:"addFriendDTO"
+    };
+  }
+}
+
+message AddFriendRequest{
+  UserAction addFriendDTO = 1;
+}
+
+message GetRequest {
+  string userID = 1;
+}
+
+message ActionResult{
+  int64 status = 1;
+  string msg = 2;
+}
+
+message UserAction{
+  string userIDa = 1;
+  string userIDb = 2;
+}
+
+message User {
+  string userID = 1;
+  bool isPublic = 2;
+}
+
+message Users{
+  repeated User users = 1;
+}
