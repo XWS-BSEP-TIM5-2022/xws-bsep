@@ -1,14 +1,38 @@
 package persistence
 
-import "auth-service/application"
+import (
+	"auth-service/domain"
 
-type AuthHandler struct {
-	service *application.AuthService
-	pb.UnimplementedAuthServiceServer
+	"gorm.io/gorm"
+)
+
+type AuthPostgresStore struct {
+	db *gorm.DB
 }
 
-func NewAuthHandler(service *application.AuthService) *AuthHandler {
-	return &AuthHandler{
-		service: service,
+func NewAuthPostgresStore(db *gorm.DB) (domain.AuthStore, error) {
+	err := db.AutoMigrate(&domain.Authentication{})
+	if err != nil {
+		return nil, err
 	}
+	return &AuthPostgresStore{
+		db: db,
+	}, nil
+}
+
+func (store *AuthPostgresStore) Create(authentication *domain.Authentication) (string, error) {
+	result := store.db.Create(authentication)
+	if result.Error != nil {
+		return "error", result.Error
+	}
+	return "success", nil
+}
+
+func (store *AuthPostgresStore) GetAll() (*[]domain.Authentication, error) {
+	var auths []domain.Authentication
+	result := store.db.Find(&auths)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &auths, nil
 }
