@@ -5,11 +5,12 @@ import (
 	"log"
 	"net"
 
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth_service/application"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth_service/domain"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth_service/infrastructure/api"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth_service/infrastructure/persistence"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth_service/startup/config"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/application"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/api"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup/config"
+
 	auth_service_proto "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
@@ -43,7 +44,7 @@ func (server *Server) Start() {
 
 func (server *Server) initPostgresClient() *gorm.DB {
 	client, err := persistence.GetClient(
-		server.config.AuthDBHost, server.config.AuthDBAuth,
+		server.config.AuthDBHost, server.config.AuthDBUser,
 		server.config.AuthDBPass, server.config.AuthDBName,
 		server.config.AuthDBPort)
 	if err != nil {
@@ -57,7 +58,7 @@ func (server *Server) initAuthStore(client *gorm.DB) domain.AuthStore {
 	if err != nil {
 		log.Fatal(err)
 	}
-	store.DeleteAll()
+	// store.DeleteAll()
 	// for _, Auth := range auths {
 	// 	res, err := store.Insert(Auth)
 	// 	fmt.Println(res)

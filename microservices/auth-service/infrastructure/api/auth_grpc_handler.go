@@ -1,10 +1,10 @@
 package api
 
 import (
-	"auth-service/application"
 	"context"
 	"fmt"
 
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 )
@@ -36,23 +36,23 @@ func NewAuthHandler(service *application.AuthService) *AuthHandler {
 // }
 
 func (handler *AuthHandler) Insert(ctx context.Context, request *pb.AddRequest) (*pb.AddResponse, error) {
-	authentication := domain.Authentication{}
-	authentication.Id = request.Auth.Id
-	authentication.Name = request.Auth.Username
-	authentication.Password = request.Auth.Password
-	authentication.Role = request.Auth.Role
-
-	success, err := handler.service.Create(&authentication)
-	if err != nil {
-		success := "Greska prilikom upisa u bazu!"
-		response := &pb.AddResponse{
-			Success: success,
-		}
-		return response, err
+	newAuth := domain.Authentication{
+		Id:       request.Auth.Id,
+		Name:     request.Auth.Name,
+		Password: request.Auth.Password,
+		// Role:     request.Auth.Role,
 	}
+	success, err := handler.service.Create(&newAuth)
+	// if err != nil {
+	// 	success := "Greska prilikom upisa u bazu!"
+	// 	response := &pb.AddResponse{
+	// 		Success: success,
+	// 	}
+	// 	return response, err
+	// }
 	fmt.Println(success)
 	response := &pb.AddResponse{
 		Success: success,
 	}
-	return response, nil
+	return response, err
 }
