@@ -8,7 +8,7 @@ import (
 func mapPost(post *domain.Post) *pb.Post {
 	postPb := &pb.Post{
 		Id:          post.Id.Hex(),
-		Ttile:       post.Title,
+		Title:       post.Title,
 		DateCreated: post.DateCreated,
 	}
 	return postPb

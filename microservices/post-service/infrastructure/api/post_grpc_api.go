@@ -42,7 +42,7 @@ func (handler *PostHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 		return nil, err
 	}
 	response := &pb.GetAllResponse{
-		Posts: []*pb.Product{},
+		Posts: []*pb.Post{},
 	}
 	for _, post := range posts {
 		current := mapPost(post)
