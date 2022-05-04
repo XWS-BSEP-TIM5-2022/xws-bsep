@@ -87,4 +87,46 @@ message User {
     string username = 8;
     string biography = 9;
     string password = 10;
+    bool isPublic = 11;
+    repeated Education education = 12;
+    repeated Experience experience = 13;
+    repeated Skill skills = 14;
+    repeated Interest interests = 15;
+}
+
+message Education{
+    string id=1;
+    string name=2;
+    enum EducationEnum {
+        Primary = 0;
+        Secondary = 1;
+        Bachelor = 2;
+        Master = 3;
+        Doctorate = 4;
+    }
+    EducationEnum level=3;
+    string place=4;
+    google.protobuf.Timestamp startDate =5;
+    google.protobuf.Timestamp endDate=6;
+}
+
+message Experience{
+    string id=1;
+    string name=2;
+    string headline=3;
+    string place=4;
+    google.protobuf.Timestamp startDate =5;
+    google.protobuf.Timestamp endDate=6;
+
+}
+
+message Skill{
+    string id=1;
+    string name=2;
+}
+
+message Interest{
+    string id=1;
+    string name=2;
+    string description=3;
 }
