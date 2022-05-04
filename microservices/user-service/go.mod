@@ -6,7 +6,6 @@ replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
 
 require (
 	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-20220502143128-55ecbe21e4a7
-	github.com/neo4j/neo4j-go-driver/v4 v4.4.2
 	google.golang.org/grpc v1.46.0
 	google.golang.org/protobuf v1.28.0
 	gorm.io/gorm v1.23.5
