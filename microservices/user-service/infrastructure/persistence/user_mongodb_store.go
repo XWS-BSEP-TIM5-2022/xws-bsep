@@ -3,6 +3,7 @@ package persistence
 import (
 	"context"
 	_ "context"
+	"errors"
 	_ "errors"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"go.mongodb.org/mongo-driver/bson"
@@ -10,6 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	_ "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
@@ -53,8 +55,31 @@ func (store *UserMongoDBStore) DeleteAll() {
 }
 
 func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
-	//TODO implement me
-	panic("implement me")
+
+	newData := bson.M{"$set": bson.M{
+		"name":          user.Name,
+		"last_name":     user.LastName,
+		"mobile_number": user.MobileNumber,
+		"gender":        user.Gender,
+		"birthday":      user.Birthday,
+		"email":         user.Email,
+		"biography":     user.Biography,
+		"username":      user.Username,
+		"password":      user.Password,
+	}}
+
+	opts := options.Update().SetUpsert(true)
+
+	result, err := store.users.UpdateOne(context.TODO(), bson.M{"_id": user.Id}, newData, opts)
+
+	if err != nil {
+		return "error", err
+	}
+	if result.MatchedCount != 1 {
+		return "one document should've been updated", errors.New("one document should've been updated")
+	}
+	return "success", nil
+
 }
 
 func (store *UserMongoDBStore) filterOne(filter interface{}) (user *domain.User, err error) {
