@@ -56,6 +56,8 @@ services:
     image: mongo
     container_name: user_db
     restart: on-failure
+    ports:
+      - 27018:27017
     networks:
       - network
 
