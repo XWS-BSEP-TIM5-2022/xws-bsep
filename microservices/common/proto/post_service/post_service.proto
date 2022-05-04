@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post"; // ???
+
+package post_service;
+
+import "google/api/annotations.proto";
+
+// gRPC gateway radi translaciju JSON u protobuf i obratno
+
+service PostService{
+  rpc Get(GetRequest) returns(GetResponse) {
+    option (google.api.http) = {  //za HTTP GET zahtev se koristi /catalogue/product/{id} putanja
+      get: "/post/{id}"
+    };
+  }
+  rpc GetAll(GetAllRequest) returns(GetAllResponse) {
+    option (google.api.http) = {
+      get: "/post"
+    };
+  }
+}
+
+message GetRequest {
+  string id = 1;
+}
+
+message GetResponse {
+  Post post = 1;
+}
+
+message GetAllRequest {
+}
+
+message GetAllResponse {
+  repeated Post posts = 1;
+}
+
+message Post {
+  string id = 1;
+  string title = 2;
+  string dateCreated = 3;
+}
