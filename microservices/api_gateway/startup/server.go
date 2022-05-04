@@ -10,6 +10,8 @@ import (
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 
+	// "golang.org/x/oauth2/jwt"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -55,13 +57,40 @@ func (server *Server) initHandlers() {
 }
 
 func (server *Server) initCustomHandlers() {
-	// userEmdpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
-	// // orderingEmdpoint := fmt.Sprintf("%s:%s", server.config.OrderingHost, server.config.OrderingPort)
-	// // shippingEmdpoint := fmt.Sprintf("%s:%s", server.config.ShippingHost, server.config.ShippingPort)
-	// orderingHandler := api.NewUserHandler(userEmdpoint)
-	// orderingHandler.Init(server.mux)
+
 }
 
+// ************** AUTHENTICATION - middleware ******************
+type MuxWithMiddleware struct {
+	mux *runtime.ServeMux
+}
+
+func (muxWithMiddleware *MuxWithMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// TODO: odvojiti za koje metode i url-ove ne treba autentifikacija
+	fullPath := r.Method + " " + r.URL.Path
+	fmt.Println(fullPath)
+	if fullPath == "POST /user" || fullPath == "GET /user" {
+		//GenerateToken()
+		// fmt.Println("body")
+		// fmt.Println(r.Body)
+
+		fmt.Printf("---------------------")
+	} else {
+		if r.Header["Authorization"] == nil {
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+			return
+		}
+	}
+
+	muxWithMiddleware.mux.ServeHTTP(w, r)
+}
+
+func NewMuxWithMiddleware(handlerToWrap *runtime.ServeMux) *MuxWithMiddleware {
+	return &MuxWithMiddleware{handlerToWrap}
+}
+
+// *************************************************
+
 func (server *Server) Start() {
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), server.mux))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), NewMuxWithMiddleware(server.mux)))
 }

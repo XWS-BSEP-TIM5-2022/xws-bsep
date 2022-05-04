@@ -58,14 +58,14 @@ func (server *Server) initAuthStore(client *gorm.DB) domain.AuthStore {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// store.DeleteAll()
-	// for _, Auth := range auths {
-	// 	res, err := store.Insert(Auth)
-	// 	fmt.Println(res)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// }
+	store.DeleteAll()
+	for _, Auth := range auths {
+		res, err := store.Insert(Auth)
+		fmt.Println(res)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 	return store
 }
 
