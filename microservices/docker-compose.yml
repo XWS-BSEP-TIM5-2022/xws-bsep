@@ -11,9 +11,6 @@ services:
     environment:
       USER_DB_HOST: ${USER_DB_HOST}
       USER_DB_PORT: ${USER_DB_PORT}
-      USER_DB_USER: ${USER_DB_USER}
-      USER_DB_PASS: ${USER_DB_PASS}
-      USER_DB_NAME: ${USER_DB_NAME}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
     depends_on:
       - user_db
@@ -56,13 +53,9 @@ services:
       - network
 
   user_db:
-    image: postgres
+    image: mongo
     container_name: user_db
     restart: on-failure
-    environment:
-      POSTGRES_USER: ${USER_DB_USER}
-      POSTGRES_PASSWORD: ${USER_DB_PASS}
-      POSTGRES_DB: ${USER_DB_NAME}
     networks:
       - network
 

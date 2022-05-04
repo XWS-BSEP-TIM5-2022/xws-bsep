@@ -1,6 +1,7 @@
 package api
 
 import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -9,7 +10,7 @@ import (
 
 func mapUser(user *domain.User) *pb.User {
 	userPb := &pb.User{
-		Id:           user.Id,
+		Id:           user.Id.Hex(),
 		Username:     user.Username,
 		Name:         user.Name,
 		LastName:     user.LastName,
@@ -25,8 +26,10 @@ func mapUser(user *domain.User) *pb.User {
 }
 
 func mapInsertUser(user *pb.User) *domain.User {
+	id, _ := primitive.ObjectIDFromHex(user.Id)
+
 	userPb := &domain.User{
-		Id:           user.Id,
+		Id:           id,
 		Username:     user.Username,
 		Name:         user.Name,
 		LastName:     user.LastName,
