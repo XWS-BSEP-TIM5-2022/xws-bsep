@@ -66,6 +66,11 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 		"biography":     user.Biography,
 		"username":      user.Username,
 		"password":      user.Password,
+		"is_public":     user.IsPublic,
+		"education":     user.Education,
+		"experience":    user.Experience,
+		"skills":        user.Skills,
+		"interests":     user.Interests,
 	}}
 
 	opts := options.Update().SetUpsert(true)
