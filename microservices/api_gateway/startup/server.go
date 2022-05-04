@@ -8,6 +8,7 @@ import (
 
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	postGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -42,6 +43,12 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
+	postEmdpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEmdpoint, opts)
+	if err != nil {
+		panic(err)
+	}
+
 	// shippingEmdpoint := fmt.Sprintf("%s:%s", server.config.ShippingHost, server.config.ShippingPort)
 	// err = shippingGw.RegisterShippingServiceHandlerFromEndpoint(context.TODO(), server.mux, shippingEmdpoint, opts)
 	// if err != nil {

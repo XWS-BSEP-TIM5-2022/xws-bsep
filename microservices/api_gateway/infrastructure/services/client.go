@@ -1,6 +1,7 @@
 package services
 
 import (
+	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"log"
 
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -14,6 +15,14 @@ func NewUserClient(address string) user.UserServiceClient {
 		log.Fatalf("Failed to start gRPC connection to Catalogue service: %v", err)
 	}
 	return user.NewUserServiceClient(conn)
+}
+
+func NewPostClient(address string) post.PostServiceClient {
+	conn, err := getConnection(address) // dobavljanje konekcije
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Catalogue service: %v", err)
+	}
+	return post.NewPostServiceClient(conn) // kreiran novi gRPC klijent (u odnosu na dobavljenu konekciju)
 }
 
 func getConnection(address string) (*grpc.ClientConn, error) {
