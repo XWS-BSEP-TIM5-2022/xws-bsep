@@ -2,12 +2,17 @@ package startup
 
 import (
 	"fmt"
+	inventory "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/infrastructure/api"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/startup/config"
 	"go.mongodb.org/mongo-driver/mongo"
+	"google.golang.org/grpc"
+
 	"log"
+	"net"
 )
 
 type Server struct {
@@ -27,11 +32,11 @@ func (server *Server) Start() {
 
 	postService := server.initPostService(postStore)
 
+	postHandler := server.initPostHandler(postService)
+
 	fmt.Println(postService.GetAll())
 
-	//postHandler := server.initProductHandler(postService)
-	//
-	//server.startGrpcServer(postHandler)
+	server.startGrpcServer(postHandler)
 }
 
 func (server *Server) initMongoClient() *mongo.Client {
@@ -58,18 +63,18 @@ func (server *Server) initPostService(store domain.PostStore) *application.PostS
 	return application.NewPostService(store)
 }
 
-//func (server *Server) initPostHandler(service *application.PostService) *api.PostHandler {
-//	return api.NewPostHandler(service)
-//}
-//
-//func (server *Server) startGrpcServer(productHandler *api.ProductHandler) {
-//	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
-//	if err != nil {
-//		log.Fatalf("failed to listen: %v", err)
-//	}
-//	grpcServer := grpc.NewServer()
-//	catalogue.RegisterCatalogueServiceServer(grpcServer, productHandler)
-//	if err := grpcServer.Serve(listener); err != nil {
-//		log.Fatalf("failed to serve: %s", err)
-//	}
-//}
+func (server *Server) initPostHandler(service *application.PostService) *api.PostHandler {
+	return api.NewPostHandler(service)
+}
+
+func (server *Server) startGrpcServer(postHandler *api.PostHandler) {
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	inventory.RegisterPostServiceServer(grpcServer, postHandler)
+	if err := grpcServer.Serve(listener); err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
+}

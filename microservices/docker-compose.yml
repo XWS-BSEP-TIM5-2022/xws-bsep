@@ -57,6 +57,8 @@ services:
       POSTGRES_USER: ${AUTH_DB_USER}
       POSTGRES_PASSWORD: ${AUTH_DB_PASS}
       POSTGRES_DB: ${AUTH_DB_NAME}
+      POST_SERVICE_HOST: ${POST_SERVICE_HOST}
+      POST_SERVICE_PORT: ${POST_SERVICE_PORT}
     networks:
       - network
 
@@ -102,6 +104,8 @@ services:
     image: mongo
     container_name: post_db
     restart: on-failure
+    ports:
+      - 27018:27017
     networks:
       - network
 

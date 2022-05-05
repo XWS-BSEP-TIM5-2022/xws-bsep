@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	DATABASE   = "post"
+	DATABASE   = "post_db"
 	COLLECTION = "post"
 )
 
