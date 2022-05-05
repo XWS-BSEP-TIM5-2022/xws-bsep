@@ -7,7 +7,6 @@ package post_service;
 import "google/api/annotations.proto";
 
 // gRPC gateway radi translaciju JSON u protobuf i obratno
-
 service PostService{
   rpc Get(GetRequest) returns(GetResponse) {
     option (google.api.http) = {  //za HTTP GET zahtev se koristi /catalogue/product/{id} putanja
@@ -17,6 +16,18 @@ service PostService{
   rpc GetAll(GetAllRequest) returns(GetAllResponse) {
     option (google.api.http) = {
       get: "/post"
+    };
+  }
+  rpc Insert(InsertRequest) returns(InsertResponse) {
+    option (google.api.http) = {
+      post: "/post"
+      body: "post"
+    };
+  }
+  rpc Update(UpdateRequest) returns(UpdateResponse) {
+    option (google.api.http) = {
+      put: "/post/update"
+      body: "post"
     };
   }
 }
@@ -40,4 +51,20 @@ message Post {
   string id = 1;
   string title = 2;
   string dateCreated = 3;
+}
+
+message InsertRequest {
+  Post post = 1;
+}
+
+message InsertResponse {
+  string success = 1;
+}
+
+message UpdateRequest {
+  Post post = 1;
+}
+
+message UpdateResponse {
+  string success = 1;
 }

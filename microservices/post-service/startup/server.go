@@ -2,7 +2,7 @@ package startup
 
 import (
 	"fmt"
-	inventory "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
+	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/infrastructure/api"
@@ -10,7 +10,6 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/startup/config"
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
-
 	"log"
 	"net"
 )
@@ -34,7 +33,7 @@ func (server *Server) Start() {
 
 	postHandler := server.initPostHandler(postService)
 
-	fmt.Println(postService.GetAll())
+	//fmt.Println(postService.GetAll())
 
 	server.startGrpcServer(postHandler)
 }
@@ -73,7 +72,7 @@ func (server *Server) startGrpcServer(postHandler *api.PostHandler) {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	inventory.RegisterPostServiceServer(grpcServer, postHandler)
+	post.RegisterPostServiceServer(grpcServer, postHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}

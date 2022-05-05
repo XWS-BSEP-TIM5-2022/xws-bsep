@@ -8,13 +8,13 @@ import (
 var posts = []*domain.Post{
 	{
 		Id:          getObjectId("623b0cc3a34d25d8567f9f82"),
-		Title:       "name",
-		DateCreated: "brand",
+		Title:       "post 1",
+		DateCreated: "22.02.2022.",
 	},
 	{
 		Id:          getObjectId("623b0cc3a34d25d8567f9f83"),
-		Title:       "name2",
-		DateCreated: "brand2",
+		Title:       "post 2",
+		DateCreated: "06.60.2021.",
 	},
 }
 
