@@ -19,6 +19,8 @@ const (
 	COLLECTION = "post"
 )
 
+// ovde su implementirane sve metode iz post_store interfejsa
+
 type PostMongoDBStore struct {
 	posts *mongo.Collection
 }
@@ -41,7 +43,7 @@ func (store *PostMongoDBStore) GetAll() ([]*domain.Post, error) {
 }
 
 func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
-	post.Id = primitive.NewObjectID()
+	post.Id = primitive.NewObjectID() // TODO ?
 	result, err := store.posts.InsertOne(context.TODO(), post)
 	if err != nil {
 		return "error", err
@@ -57,13 +59,11 @@ func (store *PostMongoDBStore) Update(post *domain.Post) (string, error) {
 	}}
 
 	opts := options.Update().SetUpsert(true)
-
 	result, err := store.posts.UpdateOne(context.TODO(), bson.M{"_id": post.Id}, newData, opts)
 
 	if err != nil {
 		return "error", err
 	}
-
 	if result.MatchedCount != 1 {
 		return "one document should've been updated", errors.New("one document should've been updated")
 	}

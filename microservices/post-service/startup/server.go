@@ -26,19 +26,14 @@ func NewServer(config *config.Config) *Server {
 
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
-
 	postStore := server.initPostStore(mongoClient)
-
 	postService := server.initPostService(postStore)
-
 	postHandler := server.initPostHandler(postService)
-
-	//fmt.Println(postService.GetAll())
 
 	server.startGrpcServer(postHandler)
 }
 
-func (server *Server) initMongoClient() *mongo.Client {
+func (server *Server) initMongoClient() *mongo.Client { // inicijalizacija mongo klijenta
 	client, err := persistence.GetClient(server.config.PostDBHost, server.config.PostDBPort)
 	if err != nil {
 		log.Fatal(err)
@@ -46,11 +41,11 @@ func (server *Server) initMongoClient() *mongo.Client {
 	return client
 }
 
-func (server *Server) initPostStore(client *mongo.Client) domain.PostStore {
+func (server *Server) initPostStore(client *mongo.Client) domain.PostStore { // inicijalizacija mongo baze
 	store := persistence.NewPostMongoDBStore(client)
 	store.DeleteAll()
 	for _, post := range posts {
-		err := store.Insert(post)
+		_, err := store.Insert(post)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -62,7 +57,7 @@ func (server *Server) initPostService(store domain.PostStore) *application.PostS
 	return application.NewPostService(store)
 }
 
-func (server *Server) initPostHandler(service *application.PostService) *api.PostHandler {
+func (server *Server) initPostHandler(service *application.PostService) *api.PostHandler { // inicjializacija post handler-a, odnosno post servisa
 	return api.NewPostHandler(service)
 }
 
