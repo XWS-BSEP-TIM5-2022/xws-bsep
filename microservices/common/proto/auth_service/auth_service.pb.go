@@ -10,6 +10,7 @@ import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 )
@@ -21,16 +22,126 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type RegisterRequest_GenderEnum int32
+
+const (
+	RegisterRequest_Female RegisterRequest_GenderEnum = 0
+	RegisterRequest_Male   RegisterRequest_GenderEnum = 1
+)
+
+// Enum value maps for RegisterRequest_GenderEnum.
+var (
+	RegisterRequest_GenderEnum_name = map[int32]string{
+		0: "Female",
+		1: "Male",
+	}
+	RegisterRequest_GenderEnum_value = map[string]int32{
+		"Female": 0,
+		"Male":   1,
+	}
+)
+
+func (x RegisterRequest_GenderEnum) Enum() *RegisterRequest_GenderEnum {
+	p := new(RegisterRequest_GenderEnum)
+	*p = x
+	return p
+}
+
+func (x RegisterRequest_GenderEnum) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (RegisterRequest_GenderEnum) Descriptor() protoreflect.EnumDescriptor {
+	return file_auth_service_proto_enumTypes[0].Descriptor()
+}
+
+func (RegisterRequest_GenderEnum) Type() protoreflect.EnumType {
+	return &file_auth_service_proto_enumTypes[0]
+}
+
+func (x RegisterRequest_GenderEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use RegisterRequest_GenderEnum.Descriptor instead.
+func (RegisterRequest_GenderEnum) EnumDescriptor() ([]byte, []int) {
+	return file_auth_service_proto_rawDescGZIP(), []int{0, 0}
+}
+
+type Education_EducationEnum int32
+
+const (
+	Education_Primary   Education_EducationEnum = 0
+	Education_Secondary Education_EducationEnum = 1
+	Education_Bachelor  Education_EducationEnum = 2
+	Education_Master    Education_EducationEnum = 3
+	Education_Doctorate Education_EducationEnum = 4
+)
+
+// Enum value maps for Education_EducationEnum.
+var (
+	Education_EducationEnum_name = map[int32]string{
+		0: "Primary",
+		1: "Secondary",
+		2: "Bachelor",
+		3: "Master",
+		4: "Doctorate",
+	}
+	Education_EducationEnum_value = map[string]int32{
+		"Primary":   0,
+		"Secondary": 1,
+		"Bachelor":  2,
+		"Master":    3,
+		"Doctorate": 4,
+	}
+)
+
+func (x Education_EducationEnum) Enum() *Education_EducationEnum {
+	p := new(Education_EducationEnum)
+	*p = x
+	return p
+}
+
+func (x Education_EducationEnum) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Education_EducationEnum) Descriptor() protoreflect.EnumDescriptor {
+	return file_auth_service_proto_enumTypes[1].Descriptor()
+}
+
+func (Education_EducationEnum) Type() protoreflect.EnumType {
+	return &file_auth_service_proto_enumTypes[1]
+}
+
+func (x Education_EducationEnum) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Education_EducationEnum.Descriptor instead.
+func (Education_EducationEnum) EnumDescriptor() ([]byte, []int) {
+	return file_auth_service_proto_rawDescGZIP(), []int{1, 0}
+}
+
 type RegisterRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
-	Email    string `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
-	Password string `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
-	Name     string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
-	LastName string `protobuf:"bytes,5,opt,name=lastName,proto3" json:"lastName,omitempty"`
+	Name         string                     `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	LastName     string                     `protobuf:"bytes,2,opt,name=lastName,proto3" json:"lastName,omitempty"`
+	Email        string                     `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
+	MobileNumber string                     `protobuf:"bytes,4,opt,name=mobileNumber,proto3" json:"mobileNumber,omitempty"`
+	Gender       RegisterRequest_GenderEnum `protobuf:"varint,5,opt,name=gender,proto3,enum=auth_service.RegisterRequest_GenderEnum" json:"gender,omitempty"`
+	Birthday     *timestamppb.Timestamp     `protobuf:"bytes,6,opt,name=birthday,proto3" json:"birthday,omitempty"`
+	Username     string                     `protobuf:"bytes,7,opt,name=username,proto3" json:"username,omitempty"`
+	Biography    string                     `protobuf:"bytes,8,opt,name=biography,proto3" json:"biography,omitempty"`
+	Password     string                     `protobuf:"bytes,9,opt,name=password,proto3" json:"password,omitempty"`
+	IsPublic     bool                       `protobuf:"varint,10,opt,name=isPublic,proto3" json:"isPublic,omitempty"`
+	Education    []*Education               `protobuf:"bytes,11,rep,name=education,proto3" json:"education,omitempty"`
+	Experience   []*Experience              `protobuf:"bytes,12,rep,name=experience,proto3" json:"experience,omitempty"`
+	Skills       []*Skill                   `protobuf:"bytes,13,rep,name=skills,proto3" json:"skills,omitempty"`
+	Interests    []*Interest                `protobuf:"bytes,14,rep,name=interests,proto3" json:"interests,omitempty"`
 }
 
 func (x *RegisterRequest) Reset() {
@@ -65,9 +176,16 @@ func (*RegisterRequest) Descriptor() ([]byte, []int) {
 	return file_auth_service_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *RegisterRequest) GetUsername() string {
+func (x *RegisterRequest) GetName() string {
 	if x != nil {
-		return x.Username
+		return x.Name
+	}
+	return ""
+}
+
+func (x *RegisterRequest) GetLastName() string {
+	if x != nil {
+		return x.LastName
 	}
 	return ""
 }
@@ -79,6 +197,41 @@ func (x *RegisterRequest) GetEmail() string {
 	return ""
 }
 
+func (x *RegisterRequest) GetMobileNumber() string {
+	if x != nil {
+		return x.MobileNumber
+	}
+	return ""
+}
+
+func (x *RegisterRequest) GetGender() RegisterRequest_GenderEnum {
+	if x != nil {
+		return x.Gender
+	}
+	return RegisterRequest_Female
+}
+
+func (x *RegisterRequest) GetBirthday() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Birthday
+	}
+	return nil
+}
+
+func (x *RegisterRequest) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *RegisterRequest) GetBiography() string {
+	if x != nil {
+		return x.Biography
+	}
+	return ""
+}
+
 func (x *RegisterRequest) GetPassword() string {
 	if x != nil {
 		return x.Password
@@ -86,16 +239,329 @@ func (x *RegisterRequest) GetPassword() string {
 	return ""
 }
 
-func (x *RegisterRequest) GetName() string {
+func (x *RegisterRequest) GetIsPublic() bool {
+	if x != nil {
+		return x.IsPublic
+	}
+	return false
+}
+
+func (x *RegisterRequest) GetEducation() []*Education {
+	if x != nil {
+		return x.Education
+	}
+	return nil
+}
+
+func (x *RegisterRequest) GetExperience() []*Experience {
+	if x != nil {
+		return x.Experience
+	}
+	return nil
+}
+
+func (x *RegisterRequest) GetSkills() []*Skill {
+	if x != nil {
+		return x.Skills
+	}
+	return nil
+}
+
+func (x *RegisterRequest) GetInterests() []*Interest {
+	if x != nil {
+		return x.Interests
+	}
+	return nil
+}
+
+type Education struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id        string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name      string                  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Level     Education_EducationEnum `protobuf:"varint,3,opt,name=level,proto3,enum=auth_service.Education_EducationEnum" json:"level,omitempty"`
+	Place     string                  `protobuf:"bytes,4,opt,name=place,proto3" json:"place,omitempty"`
+	StartDate *timestamppb.Timestamp  `protobuf:"bytes,5,opt,name=startDate,proto3" json:"startDate,omitempty"`
+	EndDate   *timestamppb.Timestamp  `protobuf:"bytes,6,opt,name=endDate,proto3" json:"endDate,omitempty"`
+}
+
+func (x *Education) Reset() {
+	*x = Education{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_auth_service_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Education) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Education) ProtoMessage() {}
+
+func (x *Education) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_service_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Education.ProtoReflect.Descriptor instead.
+func (*Education) Descriptor() ([]byte, []int) {
+	return file_auth_service_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Education) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Education) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *RegisterRequest) GetLastName() string {
+func (x *Education) GetLevel() Education_EducationEnum {
 	if x != nil {
-		return x.LastName
+		return x.Level
+	}
+	return Education_Primary
+}
+
+func (x *Education) GetPlace() string {
+	if x != nil {
+		return x.Place
+	}
+	return ""
+}
+
+func (x *Education) GetStartDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.StartDate
+	}
+	return nil
+}
+
+func (x *Education) GetEndDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.EndDate
+	}
+	return nil
+}
+
+type Experience struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id        string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name      string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Headline  string                 `protobuf:"bytes,3,opt,name=headline,proto3" json:"headline,omitempty"`
+	Place     string                 `protobuf:"bytes,4,opt,name=place,proto3" json:"place,omitempty"`
+	StartDate *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=startDate,proto3" json:"startDate,omitempty"`
+	EndDate   *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=endDate,proto3" json:"endDate,omitempty"`
+}
+
+func (x *Experience) Reset() {
+	*x = Experience{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_auth_service_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Experience) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Experience) ProtoMessage() {}
+
+func (x *Experience) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_service_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Experience.ProtoReflect.Descriptor instead.
+func (*Experience) Descriptor() ([]byte, []int) {
+	return file_auth_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Experience) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Experience) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Experience) GetHeadline() string {
+	if x != nil {
+		return x.Headline
+	}
+	return ""
+}
+
+func (x *Experience) GetPlace() string {
+	if x != nil {
+		return x.Place
+	}
+	return ""
+}
+
+func (x *Experience) GetStartDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.StartDate
+	}
+	return nil
+}
+
+func (x *Experience) GetEndDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.EndDate
+	}
+	return nil
+}
+
+type Skill struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id   string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (x *Skill) Reset() {
+	*x = Skill{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_auth_service_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Skill) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Skill) ProtoMessage() {}
+
+func (x *Skill) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_service_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Skill.ProtoReflect.Descriptor instead.
+func (*Skill) Descriptor() ([]byte, []int) {
+	return file_auth_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Skill) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Skill) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type Interest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id          string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name        string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+}
+
+func (x *Interest) Reset() {
+	*x = Interest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_auth_service_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Interest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Interest) ProtoMessage() {}
+
+func (x *Interest) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_service_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Interest.ProtoReflect.Descriptor instead.
+func (*Interest) Descriptor() ([]byte, []int) {
+	return file_auth_service_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Interest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Interest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Interest) GetDescription() string {
+	if x != nil {
+		return x.Description
 	}
 	return ""
 }
@@ -111,7 +577,7 @@ type RegisterResponse struct {
 func (x *RegisterResponse) Reset() {
 	*x = RegisterResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_auth_service_proto_msgTypes[1]
+		mi := &file_auth_service_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -124,7 +590,7 @@ func (x *RegisterResponse) String() string {
 func (*RegisterResponse) ProtoMessage() {}
 
 func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_service_proto_msgTypes[1]
+	mi := &file_auth_service_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -137,7 +603,7 @@ func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RegisterResponse.ProtoReflect.Descriptor instead.
 func (*RegisterResponse) Descriptor() ([]byte, []int) {
-	return file_auth_service_proto_rawDescGZIP(), []int{1}
+	return file_auth_service_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *RegisterResponse) GetToken() string {
@@ -159,7 +625,7 @@ type LoginRequest struct {
 func (x *LoginRequest) Reset() {
 	*x = LoginRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_auth_service_proto_msgTypes[2]
+		mi := &file_auth_service_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -172,7 +638,7 @@ func (x *LoginRequest) String() string {
 func (*LoginRequest) ProtoMessage() {}
 
 func (x *LoginRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_service_proto_msgTypes[2]
+	mi := &file_auth_service_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -185,7 +651,7 @@ func (x *LoginRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LoginRequest.ProtoReflect.Descriptor instead.
 func (*LoginRequest) Descriptor() ([]byte, []int) {
-	return file_auth_service_proto_rawDescGZIP(), []int{2}
+	return file_auth_service_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *LoginRequest) GetUsername() string {
@@ -213,7 +679,7 @@ type LoginResponse struct {
 func (x *LoginResponse) Reset() {
 	*x = LoginResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_auth_service_proto_msgTypes[3]
+		mi := &file_auth_service_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -226,7 +692,7 @@ func (x *LoginResponse) String() string {
 func (*LoginResponse) ProtoMessage() {}
 
 func (x *LoginResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_service_proto_msgTypes[3]
+	mi := &file_auth_service_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -239,7 +705,7 @@ func (x *LoginResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LoginResponse.ProtoReflect.Descriptor instead.
 func (*LoginResponse) Descriptor() ([]byte, []int) {
-	return file_auth_service_proto_rawDescGZIP(), []int{3}
+	return file_auth_service_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *LoginResponse) GetToken() string {
@@ -256,16 +722,89 @@ var file_auth_service_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0c, 0x61, 0x75, 0x74, 0x68, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69,
 	0x63, 0x65, 0x1a, 0x1c, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61,
 	0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x22, 0x8f, 0x01, 0x0a, 0x0f, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
-	0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f,
-	0x72, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f,
-	0x72, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6c, 0x61, 0x73, 0x74, 0x4e, 0x61,
-	0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6c, 0x61, 0x73, 0x74, 0x4e, 0x61,
-	0x6d, 0x65, 0x22, 0x28, 0x0a, 0x10, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65,
+	0x1a, 0x1f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2f, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x22, 0xdf, 0x04, 0x0a, 0x0f, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x6c, 0x61, 0x73,
+	0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6c, 0x61, 0x73,
+	0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x22, 0x0a, 0x0c, 0x6d,
+	0x6f, 0x62, 0x69, 0x6c, 0x65, 0x4e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0c, 0x6d, 0x6f, 0x62, 0x69, 0x6c, 0x65, 0x4e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x12,
+	0x40, 0x0a, 0x06, 0x67, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x28, 0x2e, 0x61, 0x75, 0x74, 0x68, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x52,
+	0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x47,
+	0x65, 0x6e, 0x64, 0x65, 0x72, 0x45, 0x6e, 0x75, 0x6d, 0x52, 0x06, 0x67, 0x65, 0x6e, 0x64, 0x65,
+	0x72, 0x12, 0x36, 0x0a, 0x08, 0x62, 0x69, 0x72, 0x74, 0x68, 0x64, 0x61, 0x79, 0x18, 0x06, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52,
+	0x08, 0x62, 0x69, 0x72, 0x74, 0x68, 0x64, 0x61, 0x79, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65,
+	0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65,
+	0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x62, 0x69, 0x6f, 0x67, 0x72, 0x61, 0x70,
+	0x68, 0x79, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x62, 0x69, 0x6f, 0x67, 0x72, 0x61,
+	0x70, 0x68, 0x79, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18,
+	0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x12,
+	0x1a, 0x0a, 0x08, 0x69, 0x73, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x18, 0x0a, 0x20, 0x01, 0x28,
+	0x08, 0x52, 0x08, 0x69, 0x73, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x12, 0x35, 0x0a, 0x09, 0x65,
+	0x64, 0x75, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17,
+	0x2e, 0x61, 0x75, 0x74, 0x68, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x45, 0x64,
+	0x75, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x09, 0x65, 0x64, 0x75, 0x63, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x12, 0x38, 0x0a, 0x0a, 0x65, 0x78, 0x70, 0x65, 0x72, 0x69, 0x65, 0x6e, 0x63, 0x65,
+	0x18, 0x0c, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x61, 0x75, 0x74, 0x68, 0x5f, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x45, 0x78, 0x70, 0x65, 0x72, 0x69, 0x65, 0x6e, 0x63, 0x65,
+	0x52, 0x0a, 0x65, 0x78, 0x70, 0x65, 0x72, 0x69, 0x65, 0x6e, 0x63, 0x65, 0x12, 0x2b, 0x0a, 0x06,
+	0x73, 0x6b, 0x69, 0x6c, 0x6c, 0x73, 0x18, 0x0d, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x61,
+	0x75, 0x74, 0x68, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x53, 0x6b, 0x69, 0x6c,
+	0x6c, 0x52, 0x06, 0x73, 0x6b, 0x69, 0x6c, 0x6c, 0x73, 0x12, 0x34, 0x0a, 0x09, 0x69, 0x6e, 0x74,
+	0x65, 0x72, 0x65, 0x73, 0x74, 0x73, 0x18, 0x0e, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x61,
+	0x75, 0x74, 0x68, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x49, 0x6e, 0x74, 0x65,
+	0x72, 0x65, 0x73, 0x74, 0x52, 0x09, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x73, 0x22,
+	0x22, 0x0a, 0x0a, 0x47, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x45, 0x6e, 0x75, 0x6d, 0x12, 0x0a, 0x0a,
+	0x06, 0x46, 0x65, 0x6d, 0x61, 0x6c, 0x65, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x4d, 0x61, 0x6c,
+	0x65, 0x10, 0x01, 0x22, 0xc8, 0x02, 0x0a, 0x09, 0x45, 0x64, 0x75, 0x63, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
+	0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x3b, 0x0a, 0x05, 0x6c, 0x65, 0x76, 0x65, 0x6c, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x0e, 0x32, 0x25, 0x2e, 0x61, 0x75, 0x74, 0x68, 0x5f, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x2e, 0x45, 0x64, 0x75, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x45, 0x64,
+	0x75, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x6e, 0x75, 0x6d, 0x52, 0x05, 0x6c, 0x65, 0x76,
+	0x65, 0x6c, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x12, 0x38, 0x0a, 0x09, 0x73, 0x74, 0x61, 0x72,
+	0x74, 0x44, 0x61, 0x74, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69,
+	0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x09, 0x73, 0x74, 0x61, 0x72, 0x74, 0x44, 0x61,
+	0x74, 0x65, 0x12, 0x34, 0x0a, 0x07, 0x65, 0x6e, 0x64, 0x44, 0x61, 0x74, 0x65, 0x18, 0x06, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52,
+	0x07, 0x65, 0x6e, 0x64, 0x44, 0x61, 0x74, 0x65, 0x22, 0x54, 0x0a, 0x0d, 0x45, 0x64, 0x75, 0x63,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x6e, 0x75, 0x6d, 0x12, 0x0b, 0x0a, 0x07, 0x50, 0x72, 0x69,
+	0x6d, 0x61, 0x72, 0x79, 0x10, 0x00, 0x12, 0x0d, 0x0a, 0x09, 0x53, 0x65, 0x63, 0x6f, 0x6e, 0x64,
+	0x61, 0x72, 0x79, 0x10, 0x01, 0x12, 0x0c, 0x0a, 0x08, 0x42, 0x61, 0x63, 0x68, 0x65, 0x6c, 0x6f,
+	0x72, 0x10, 0x02, 0x12, 0x0a, 0x0a, 0x06, 0x4d, 0x61, 0x73, 0x74, 0x65, 0x72, 0x10, 0x03, 0x12,
+	0x0d, 0x0a, 0x09, 0x44, 0x6f, 0x63, 0x74, 0x6f, 0x72, 0x61, 0x74, 0x65, 0x10, 0x04, 0x22, 0xd2,
+	0x01, 0x0a, 0x0a, 0x45, 0x78, 0x70, 0x65, 0x72, 0x69, 0x65, 0x6e, 0x63, 0x65, 0x12, 0x0e, 0x0a,
+	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a,
+	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d,
+	0x65, 0x12, 0x1a, 0x0a, 0x08, 0x68, 0x65, 0x61, 0x64, 0x6c, 0x69, 0x6e, 0x65, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x08, 0x68, 0x65, 0x61, 0x64, 0x6c, 0x69, 0x6e, 0x65, 0x12, 0x14, 0x0a,
+	0x05, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x70, 0x6c,
+	0x61, 0x63, 0x65, 0x12, 0x38, 0x0a, 0x09, 0x73, 0x74, 0x61, 0x72, 0x74, 0x44, 0x61, 0x74, 0x65,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61,
+	0x6d, 0x70, 0x52, 0x09, 0x73, 0x74, 0x61, 0x72, 0x74, 0x44, 0x61, 0x74, 0x65, 0x12, 0x34, 0x0a,
+	0x07, 0x65, 0x6e, 0x64, 0x44, 0x61, 0x74, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a,
+	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x07, 0x65, 0x6e, 0x64, 0x44,
+	0x61, 0x74, 0x65, 0x22, 0x2b, 0x0a, 0x05, 0x53, 0x6b, 0x69, 0x6c, 0x6c, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04,
+	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x22, 0x50, 0x0a, 0x08, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04,
+	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x22, 0x28, 0x0a, 0x10, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65,
 	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x46, 0x0a, 0x0c,
 	0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08,
@@ -308,23 +847,42 @@ func file_auth_service_proto_rawDescGZIP() []byte {
 	return file_auth_service_proto_rawDescData
 }
 
-var file_auth_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_auth_service_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_auth_service_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_auth_service_proto_goTypes = []interface{}{
-	(*RegisterRequest)(nil),  // 0: auth_service.RegisterRequest
-	(*RegisterResponse)(nil), // 1: auth_service.RegisterResponse
-	(*LoginRequest)(nil),     // 2: auth_service.LoginRequest
-	(*LoginResponse)(nil),    // 3: auth_service.LoginResponse
+	(RegisterRequest_GenderEnum)(0), // 0: auth_service.RegisterRequest.GenderEnum
+	(Education_EducationEnum)(0),    // 1: auth_service.Education.EducationEnum
+	(*RegisterRequest)(nil),         // 2: auth_service.RegisterRequest
+	(*Education)(nil),               // 3: auth_service.Education
+	(*Experience)(nil),              // 4: auth_service.Experience
+	(*Skill)(nil),                   // 5: auth_service.Skill
+	(*Interest)(nil),                // 6: auth_service.Interest
+	(*RegisterResponse)(nil),        // 7: auth_service.RegisterResponse
+	(*LoginRequest)(nil),            // 8: auth_service.LoginRequest
+	(*LoginResponse)(nil),           // 9: auth_service.LoginResponse
+	(*timestamppb.Timestamp)(nil),   // 10: google.protobuf.Timestamp
 }
 var file_auth_service_proto_depIdxs = []int32{
-	0, // 0: auth_service.AuthService.Register:input_type -> auth_service.RegisterRequest
-	2, // 1: auth_service.AuthService.Login:input_type -> auth_service.LoginRequest
-	1, // 2: auth_service.AuthService.Register:output_type -> auth_service.RegisterResponse
-	3, // 3: auth_service.AuthService.Login:output_type -> auth_service.LoginResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: auth_service.RegisterRequest.gender:type_name -> auth_service.RegisterRequest.GenderEnum
+	10, // 1: auth_service.RegisterRequest.birthday:type_name -> google.protobuf.Timestamp
+	3,  // 2: auth_service.RegisterRequest.education:type_name -> auth_service.Education
+	4,  // 3: auth_service.RegisterRequest.experience:type_name -> auth_service.Experience
+	5,  // 4: auth_service.RegisterRequest.skills:type_name -> auth_service.Skill
+	6,  // 5: auth_service.RegisterRequest.interests:type_name -> auth_service.Interest
+	1,  // 6: auth_service.Education.level:type_name -> auth_service.Education.EducationEnum
+	10, // 7: auth_service.Education.startDate:type_name -> google.protobuf.Timestamp
+	10, // 8: auth_service.Education.endDate:type_name -> google.protobuf.Timestamp
+	10, // 9: auth_service.Experience.startDate:type_name -> google.protobuf.Timestamp
+	10, // 10: auth_service.Experience.endDate:type_name -> google.protobuf.Timestamp
+	2,  // 11: auth_service.AuthService.Register:input_type -> auth_service.RegisterRequest
+	8,  // 12: auth_service.AuthService.Login:input_type -> auth_service.LoginRequest
+	7,  // 13: auth_service.AuthService.Register:output_type -> auth_service.RegisterResponse
+	9,  // 14: auth_service.AuthService.Login:output_type -> auth_service.LoginResponse
+	13, // [13:15] is the sub-list for method output_type
+	11, // [11:13] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_auth_service_proto_init() }
@@ -346,7 +904,7 @@ func file_auth_service_proto_init() {
 			}
 		}
 		file_auth_service_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RegisterResponse); i {
+			switch v := v.(*Education); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -358,7 +916,7 @@ func file_auth_service_proto_init() {
 			}
 		}
 		file_auth_service_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LoginRequest); i {
+			switch v := v.(*Experience); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -370,6 +928,54 @@ func file_auth_service_proto_init() {
 			}
 		}
 		file_auth_service_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Skill); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_auth_service_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Interest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_auth_service_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RegisterResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_auth_service_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*LoginRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_auth_service_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*LoginResponse); i {
 			case 0:
 				return &v.state
@@ -387,13 +993,14 @@ func file_auth_service_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_auth_service_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   4,
+			NumEnums:      2,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_auth_service_proto_goTypes,
 		DependencyIndexes: file_auth_service_proto_depIdxs,
+		EnumInfos:         file_auth_service_proto_enumTypes,
 		MessageInfos:      file_auth_service_proto_msgTypes,
 	}.Build()
 	File_auth_service_proto = out.File
