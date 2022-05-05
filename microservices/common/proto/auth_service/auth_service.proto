@@ -5,41 +5,39 @@ package auth_service;
 option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth";
 
 import "google/api/annotations.proto"; 
-import "google/protobuf/timestamp.proto";
 
 service AuthService{
-    rpc Create(AddRequest) returns(AddResponse) {
+    rpc Register(RegisterRequest) returns (RegisterResponse) {
         option (google.api.http) = {
-                post: "/auth"
-                body: "auth"
+          post: "/api/auth/register"
+          body: "*"
         };
-    }
-
-    rpc GetAll(GetAllRequest) returns(GetAllResponse) {
+      }
+    
+      rpc Login(LoginRequest) returns (LoginResponse) {
         option (google.api.http) = {
-            get: "/auth"
+          post: "/api/auth/login"
+          body: "*"
         };
-    }
+      }
 }
 
-message AddRequest {
-    Auth auth = 1;
-}
-
-message AddResponse {
-    string success = 1;
-}
-
-message Auth {
-    string id = 1;
-    string name = 2;
+message RegisterRequest {
+    string username = 1;
+    string email = 2;
     string password = 3;
-    google.protobuf.Timestamp date = 4;
-    string role = 5;
+    string name = 4;
+    string lastName = 5;
 }
-
-message GetAllRequest {}
-
-message GetAllResponse {
-    repeated Auth authentications = 1;
+message RegisterResponse {
+    string token = 1;
+}
+  
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+  
+message LoginResponse {
+    string token = 1;
 }
