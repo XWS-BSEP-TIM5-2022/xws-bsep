@@ -54,8 +54,14 @@ func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 
 func (store *PostMongoDBStore) Update(post *domain.Post) (string, error) {
 	newData := bson.M{"$set": bson.M{
-		"title":        post.Title,
+		"text":         post.Text,
 		"date_created": post.DateCreated,
+		"images":       post.Images,
+		"links":        post.Links,
+		"likes":        post.Likes,
+		"dislikes":     post.Dislikes,
+		"comments":     post.Comments,
+		"user_id":      post.UserId,
 	}}
 
 	opts := options.Update().SetUpsert(true)
