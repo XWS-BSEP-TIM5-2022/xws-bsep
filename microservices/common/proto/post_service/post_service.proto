@@ -91,3 +91,11 @@ message Dislike {
   string id = 1;
   string user_id = 2;
 }
+
+//message CreatePostRequest {
+//  Post post = 1;
+//}
+//
+//message CreatePostResponse {
+//  Post post = 1;
+//}
