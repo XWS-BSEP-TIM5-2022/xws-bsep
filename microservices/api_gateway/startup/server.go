@@ -107,7 +107,7 @@ func NewMuxWithMiddleware(handlerToWrap *runtime.ServeMux) *MuxWithMiddleware {
 // *************************************************
 
 func (server *Server) Start() {
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), muxMiddleware(server)))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), server.mux))
 }
 
 func muxMiddleware(server *Server) http.Handler {

@@ -5,6 +5,7 @@ package auth_service;
 option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth";
 
 import "google/api/annotations.proto"; 
+import "google/protobuf/timestamp.proto";
 
 service AuthService{
     rpc Register(RegisterRequest) returns (RegisterResponse) {
@@ -23,12 +24,63 @@ service AuthService{
 }
 
 message RegisterRequest {
-    string username = 1;
-    string email = 2;
-    string password = 3;
-    string name = 4;
-    string lastName = 5;
+    string name = 1;
+    string lastName = 2;
+    string email = 3;
+    string mobileNumber = 4;
+    enum GenderEnum {
+        Female = 0;
+        Male = 1;
+    }
+    GenderEnum gender = 5;
+    google.protobuf.Timestamp birthday = 6;
+    string username = 7;
+    string biography = 8;
+    string password = 9;
+    bool isPublic = 10;
+    repeated Education education = 11;
+    repeated Experience experience = 12;
+    repeated Skill skills = 13;
+    repeated Interest interests = 14;
 }
+
+message Education{
+    string id=1;
+    string name=2;
+    enum EducationEnum {
+        Primary = 0;
+        Secondary = 1;
+        Bachelor = 2;
+        Master = 3;
+        Doctorate = 4;
+    }
+    EducationEnum level=3;
+    string place=4;
+    google.protobuf.Timestamp startDate =5;
+    google.protobuf.Timestamp endDate=6;
+}
+
+message Experience{
+    string id=1;
+    string name=2;
+    string headline=3;
+    string place=4;
+    google.protobuf.Timestamp startDate =5;
+    google.protobuf.Timestamp endDate=6;
+
+}
+
+message Skill{
+    string id=1;
+    string name=2;
+}
+
+message Interest{
+    string id=1;
+    string name=2;
+    string description=3;
+}
+
 message RegisterResponse {
     string token = 1;
 }
