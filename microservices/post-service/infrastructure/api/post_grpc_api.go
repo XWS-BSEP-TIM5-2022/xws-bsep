@@ -50,3 +50,27 @@ func (handler *PostHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 	}
 	return response, nil
 }
+
+func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
+	post := mapInsertPost(request.Post)
+	success, err := handler.service.Insert(post)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.InsertResponse{
+		Success: success,
+	}
+	return response, err
+}
+
+func (handler *PostHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+	post := mapInsertPost(request.Post)
+
+	success, err := handler.service.Update(post)
+	response := &pb.UpdateResponse{
+		Success: success,
+	}
+	return response, err
+}

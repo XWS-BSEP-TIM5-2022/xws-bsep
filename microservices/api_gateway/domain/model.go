@@ -25,3 +25,9 @@ type User struct {
 	Biography    string
 	Password     string
 }
+
+type Post struct {
+	Id          string
+	Title       string
+	DateCreated string
+}

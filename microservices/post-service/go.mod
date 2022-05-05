@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-20220504213042-384b5d75e80c
 	go.mongodb.org/mongo-driver v1.9.1
+	google.golang.org/grpc v1.46.0
 )
 
 require (
@@ -24,6 +25,5 @@ require (
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20220429170224-98d788798c3e // indirect
-	google.golang.org/grpc v1.46.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 )

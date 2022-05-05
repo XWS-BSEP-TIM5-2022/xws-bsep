@@ -2,14 +2,20 @@ package persistence
 
 import (
 	"context"
+	_ "context"
+	"errors"
+	_ "errors"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
 	"go.mongodb.org/mongo-driver/bson"
+	_ "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	_ "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
-	DATABASE   = "post"
+	DATABASE   = "post_db"
 	COLLECTION = "post"
 )
 
@@ -34,13 +40,34 @@ func (store *PostMongoDBStore) GetAll() ([]*domain.Post, error) {
 	return store.filter(filter)
 }
 
-func (store *PostMongoDBStore) Insert(post *domain.Post) error {
+func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
+	post.Id = primitive.NewObjectID()
 	result, err := store.posts.InsertOne(context.TODO(), post)
 	if err != nil {
-		return err
+		return "error", nil
 	}
 	post.Id = result.InsertedID.(primitive.ObjectID)
-	return nil
+	return "success", nil
+}
+
+func (store *PostMongoDBStore) Update(post *domain.Post) (string, error) {
+	newData := bson.M{"$set": bson.M{
+		"title":        post.Title,
+		"date_created": post.DateCreated,
+	}}
+
+	opts := options.Update().SetUpsert(true)
+
+	result, err := store.posts.UpdateOne(context.TODO(), bson.M{"_id": post.Id}, newData, opts)
+
+	if err != nil {
+		return "error", err
+	}
+
+	if result.MatchedCount != 1 {
+		return "one document should've been updated", errors.New("one document should've been updated")
+	}
+	return "success", nil
 }
 
 func (store *PostMongoDBStore) DeleteAll() {

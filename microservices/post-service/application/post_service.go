@@ -22,3 +22,13 @@ func (service *PostService) Get(id primitive.ObjectID) (*domain.Post, error) {
 func (service *PostService) GetAll() ([]*domain.Post, error) {
 	return service.store.GetAll()
 }
+
+func (service *PostService) Insert(post *domain.Post) (string, error) {
+	success, err := service.store.Insert(post)
+	return success, err
+}
+
+func (service *PostService) Update(post *domain.Post) (string, error) {
+	success, err := service.store.Update(post)
+	return success, err
+}
