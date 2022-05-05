@@ -46,11 +46,7 @@ func (handler *AuthHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 
 func (handler *AuthHandler) Create(ctx context.Context, request *pb.AddRequest) (*pb.AddResponse, error) {
 	auth := mapCreateAuth(request.Auth)
-	fmt.Println("********----------------******************")
-	fmt.Println(auth.Name + " " + auth.Role)
-	fmt.Println("********----------------******************")
-
-	tokenString := GenerateToken(&ctx, request.Auth.Name, request.Auth.Role)
+	tokenString := GenerateToken(&ctx, request.Auth.Id, request.Auth.Name, request.Auth.Role)
 	if tokenString == "" {
 		success := "Greska prilikom generisanja tokena!"
 		response := &pb.AddResponse{
@@ -58,10 +54,9 @@ func (handler *AuthHandler) Create(ctx context.Context, request *pb.AddRequest) 
 		}
 		return response, nil
 	}
-
 	success, err := handler.service.Create(auth)
 	if err != nil {
-		mess := "Greska prilikom upisa u bazu!"
+		mess := "Greska prilikom upisa auth kredencijala u bazu!"
 		response := &pb.AddResponse{
 			Success: mess,
 		}
@@ -69,7 +64,25 @@ func (handler *AuthHandler) Create(ctx context.Context, request *pb.AddRequest) 
 	}
 	fmt.Println(success)
 	response := &pb.AddResponse{
-		Success: success + " token: " + tokenString,
+		Success: tokenString,
+	}
+	return response, nil
+}
+
+func (handler *AuthHandler) ValidateToken(ctx context.Context, request *pb.ValidateRequest) (*pb.ValidateResponse, error) {
+	err := ValidateToken(request.Token)
+	if err != nil {
+		response := &pb.ValidateResponse{
+			Id:       "",
+			Username: "",
+			Role:     "",
+		}
+		return response, err
+	}
+	response := &pb.ValidateResponse{
+		Id:       "neko",
+		Username: "neko",
+		Role:     "neko",
 	}
 	return response, nil
 }
@@ -78,14 +91,16 @@ func (handler *AuthHandler) Create(ctx context.Context, request *pb.AddRequest) 
 var jwtKey = []byte("supersecretkey")
 
 type JWTClaim struct {
+	Id       string `json:"id"`
 	Username string `json:"username"`
 	Role     string `json:"role"`
 	jwt.StandardClaims
 }
 
-func GenerateJWT(username string, role string) (tokenString string, err error) {
-	expirationTime := time.Now().Add(1 * time.Hour)
+func GenerateJWT(id string, username string, role string) (tokenString string, err error) {
+	expirationTime := time.Now().Add(1 * time.Minute)
 	claims := &JWTClaim{
+		Id:       id,
 		Role:     role,
 		Username: username,
 		StandardClaims: jwt.StandardClaims{
@@ -94,9 +109,6 @@ func GenerateJWT(username string, role string) (tokenString string, err error) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err = token.SignedString(jwtKey)
-	fmt.Println("Token string generateJWT method")
-	fmt.Println(tokenString)
-	fmt.Println("*************")
 	return
 }
 
@@ -120,6 +132,15 @@ func ValidateToken(signedToken string) (err error) {
 		err = errors.New("token expired")
 		return
 	}
+	fmt.Println("----------------- CLAIMS -------------------")
+	fmt.Println(claims.Id)
+	fmt.Println(claims.Username)
+	fmt.Println(claims.Role)
+	fmt.Println(claims.ExpiresAt)
+	fmt.Println("----------------- ------ -------------------")
+	fmt.Println(" ******* validate token ******* ")
+	fmt.Println(err)
+	fmt.Println("************************* ")
 	return
 }
 
@@ -128,7 +149,7 @@ type TokenRequest struct {
 	Password string `json:"password"`
 }
 
-func GenerateToken(context *context.Context, username, role string) string {
+func GenerateToken(context *context.Context, id, username, role string) string {
 	// var request TokenRequest
 	// var user models.User
 	// if err := context.ShouldBindJSON(&request); err != nil {
@@ -150,7 +171,7 @@ func GenerateToken(context *context.Context, username, role string) string {
 	// 	return
 	// }
 
-	tokenString, err := GenerateJWT(username, role)
+	tokenString, err := GenerateJWT(id, username, role)
 	if err != nil {
 		// TODO: exception
 		fmt.Println("GRESKA PRI GENERISANJU TOKENA")
