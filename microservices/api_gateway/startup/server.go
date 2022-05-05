@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/api"
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -57,7 +58,10 @@ func (server *Server) initHandlers() {
 }
 
 func (server *Server) initCustomHandlers() {
+	userEmdpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 
+	userHandler := api.NewUserHandler(userEmdpoint)
+	userHandler.Init(server.mux)
 }
 
 // ************** AUTHENTICATION - middleware ******************

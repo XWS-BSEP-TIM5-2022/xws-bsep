@@ -152,6 +152,7 @@ func GenerateToken(context *context.Context, username, role string) string {
 
 	tokenString, err := GenerateJWT(username, role)
 	if err != nil {
+		// TODO: exception
 		fmt.Println("GRESKA PRI GENERISANJU TOKENA")
 		return ""
 	}
