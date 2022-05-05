@@ -7,10 +7,16 @@ type Users struct {
 }
 
 type GenderEnum int8
+type RoleEnum int8
 
 const (
 	Female GenderEnum = iota
 	Male
+)
+
+const (
+	Admin RoleEnum = iota
+	Registered_User
 )
 
 type User struct {
@@ -24,4 +30,12 @@ type User struct {
 	Username     string
 	Biography    string
 	Password     string
+}
+
+type Authentication struct {
+	Id       string
+	Name     string
+	Password string
+	Role     string
+	Date     time.Time
 }
