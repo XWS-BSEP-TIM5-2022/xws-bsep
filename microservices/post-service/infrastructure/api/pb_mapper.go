@@ -1,0 +1,27 @@
+package api
+
+import (
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+func mapPost(post *domain.Post) *pb.Post {
+	postPb := &pb.Post{
+		Id:   post.Id.Hex(),
+		Text: post.Text,
+		//DateCreated: post.DateCreated,
+	}
+	return postPb
+}
+
+func mapInsertPost(post *pb.Post) *domain.Post {
+	id, _ := primitive.ObjectIDFromHex(post.Id)
+
+	postPb := &domain.Post{
+		Id:          id,
+		Text:        post.Text,
+		DateCreated: post.DateCreated,
+	}
+
+	return postPb
+}

@@ -2,8 +2,10 @@ package api
 
 import (
 	"context"
+	"errors"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserHandler struct {
@@ -19,14 +21,29 @@ func NewUserHandler(service *application.UserService) *UserHandler {
 
 func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllRequest) (*pb.GetAllResponse, error) {
 	users, err := handler.service.GetAll()
-	if err != nil || *users == nil {
+	if err != nil {
 		return nil, err
 	}
 	response := &pb.GetAllResponse{
 		Users: []*pb.User{},
 	}
-	for _, user := range *users {
-		current := mapUser(&user)
+	for _, user := range users {
+		current := mapUser(user)
+		response.Users = append(response.Users, current)
+	}
+	return response, nil
+}
+
+func (handler *UserHandler) GetAllPublic(ctx context.Context, request *pb.GetAllPublicRequest) (*pb.GetAllPublicResponse, error) {
+	users, err := handler.service.GetAllPublic()
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetAllPublicResponse{
+		Users: []*pb.User{},
+	}
+	for _, user := range users {
+		current := mapUser(user)
 		response.Users = append(response.Users, current)
 	}
 	return response, nil
@@ -36,6 +53,11 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertReques
 
 	user := mapInsertUser(request.User)
 	success, err := handler.service.Insert(user)
+
+	if err != nil {
+		return nil, err
+	}
+
 	response := &pb.InsertResponse{
 		Success: success,
 	}
@@ -53,8 +75,13 @@ func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateReques
 }
 
 func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
+
 	id := request.Id
-	user, err := handler.service.Get(id)
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	user, err := handler.service.Get(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -63,4 +90,24 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 		User: userPb,
 	}
 	return response, nil
+}
+
+func (handler *UserHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
+
+	user, err := handler.service.GetByUsername(request.GetData().Username)
+	if err != nil {
+		return &pb.LoginResponse{
+			Success: "there is no user with that username",
+		}, errors.New("there is no user with that username")
+	}
+
+	if request.GetData().Password != user.Password {
+		return &pb.LoginResponse{
+			Success: "passwords do not match",
+		}, errors.New("passwords do not match")
+	}
+
+	return &pb.LoginResponse{
+		Success: "success",
+	}, nil
 }

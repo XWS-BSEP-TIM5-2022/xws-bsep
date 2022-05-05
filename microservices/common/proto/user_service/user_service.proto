@@ -18,6 +18,11 @@ service UserService{
         get: "/user"
     };
     }
+    rpc GetAllPublic(GetAllPublicRequest) returns(GetAllPublicResponse) {
+        option (google.api.http) = {
+            get: "/user/public"
+        };
+    }
     rpc Insert(InsertRequest) returns(InsertResponse) {
         option (google.api.http) = {
                 post: "/user"
@@ -28,6 +33,12 @@ service UserService{
         option (google.api.http) = {
             put: "/user/update"
             body: "user"
+        };
+    }
+    rpc Login(LoginRequest) returns (LoginResponse) {
+        option (google.api.http) = {
+            post: "/user/login"
+            body: "data"
         };
     }
 }
@@ -47,6 +58,12 @@ message GetAllResponse {
     repeated User users = 1;
 }
 
+message GetAllPublicRequest {
+}
+
+message GetAllPublicResponse {
+    repeated User users = 1;
+}
 
 message CreateUserRequest {
     User user = 1;
@@ -72,6 +89,20 @@ message UpdateResponse {
     string success = 1;
 }
 
+message LoginRequest {
+    AuthUser data = 1;
+}
+
+message LoginResponse {
+    string success = 1; 
+}
+
+message AuthUser{
+    string username = 1;
+    string password = 2;
+}
+
+
 message User {
     string id = 1;
     string name = 2;
@@ -87,4 +118,46 @@ message User {
     string username = 8;
     string biography = 9;
     string password = 10;
+    bool isPublic = 11;
+    repeated Education education = 12;
+    repeated Experience experience = 13;
+    repeated Skill skills = 14;
+    repeated Interest interests = 15;
+}
+
+message Education{
+    string id=1;
+    string name=2;
+    enum EducationEnum {
+        Primary = 0;
+        Secondary = 1;
+        Bachelor = 2;
+        Master = 3;
+        Doctorate = 4;
+    }
+    EducationEnum level=3;
+    string place=4;
+    google.protobuf.Timestamp startDate =5;
+    google.protobuf.Timestamp endDate=6;
+}
+
+message Experience{
+    string id=1;
+    string name=2;
+    string headline=3;
+    string place=4;
+    google.protobuf.Timestamp startDate =5;
+    google.protobuf.Timestamp endDate=6;
+
+}
+
+message Skill{
+    string id=1;
+    string name=2;
+}
+
+message Interest{
+    string id=1;
+    string name=2;
+    string description=3;
 }

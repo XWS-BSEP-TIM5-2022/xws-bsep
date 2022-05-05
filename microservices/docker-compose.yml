@@ -11,9 +11,6 @@ services:
     environment:
       USER_DB_HOST: ${USER_DB_HOST}
       USER_DB_PORT: ${USER_DB_PORT}
-      USER_DB_USER: ${USER_DB_USER}
-      USER_DB_PASS: ${USER_DB_PASS}
-      USER_DB_NAME: ${USER_DB_NAME}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
     depends_on:
       - user_db
@@ -54,17 +51,20 @@ services:
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
       AUTH_SERVICE_HOST: ${AUTH_SERVICE_HOST}
       AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASS}
+      POSTGRES_DB: ${AUTH_DB_NAME}
+      POST_SERVICE_HOST: ${POST_SERVICE_HOST}
+      POST_SERVICE_PORT: ${POST_SERVICE_PORT}
     networks:
       - network
 
   user_db:
-    image: postgres
+    image: mongo
     container_name: user_db
     restart: on-failure
-    environment:
-      POSTGRES_USER: ${USER_DB_USER}
-      POSTGRES_PASSWORD: ${USER_DB_PASS}
-      POSTGRES_DB: ${USER_DB_NAME}
+    ports:
+      - 27018:27017
     networks:
       - network
 
@@ -78,7 +78,32 @@ services:
       POSTGRES_DB: ${AUTH_DB_NAME}
     networks:
       - network
-      
+
+  post_service:
+    image: post_service
+    container_name: post_service
+    build:
+      context: .
+      dockerfile: ./post-service/Dockerfile
+    restart: on-failure
+    environment:
+      POST_DB_HOST: ${POST_DB_HOST}
+      POST_DB_PORT: ${POST_DB_PORT}
+      POST_SERVICE_PORT: ${POST_SERVICE_PORT}
+    depends_on:
+      - post_db
+    networks:
+      - network
+
+  post_db:
+    image: mongo
+    container_name: post_db
+    restart: on-failure
+#    ports:
+#      - 27018:27017
+    networks:
+      - network
+
   # nats:
   #   image: nats
   #   container_name: nats

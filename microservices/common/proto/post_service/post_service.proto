@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package post_service;
+
+option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post"; // ???
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+// gRPC gateway radi translaciju JSON u protobuf i obratno
+service PostService{
+  rpc Get(GetRequest) returns(GetResponse) { // definicja rpc metode
+    option (google.api.http) = {
+      get: "/post/{id}"
+    };
+  }
+  rpc GetAll(GetAllRequest) returns(GetAllResponse) {
+    option (google.api.http) = {
+      get: "/post"
+    };
+  }
+  rpc Insert(InsertRequest) returns(InsertResponse) {
+    option (google.api.http) = {
+      post: "/post"
+      body: "post"
+    };
+  }
+  rpc Update(UpdateRequest) returns(UpdateResponse) {
+    option (google.api.http) = {
+      put: "/post/update"
+      body: "post"
+    };
+  }
+}
+
+message GetRequest {
+  string id = 1;
+}
+
+message GetResponse {
+  Post post = 1;
+}
+
+message GetAllRequest {
+}
+
+message GetAllResponse {
+  repeated Post posts = 1;
+}
+
+message InsertRequest {
+  Post post = 1;
+}
+
+message InsertResponse {
+  string success = 1;
+}
+
+message UpdateRequest {
+  Post post = 1;
+}
+
+message UpdateResponse {
+  string success = 1;
+}
+
+message Post {
+  string id = 1;
+  string text = 2;
+  repeated string images = 3;
+  repeated string links = 4;
+  google.protobuf.Timestamp dateCreated = 5;
+  repeated Like likes = 6;
+  repeated Dislike dislikes = 7;
+  repeated Comment comments = 8;
+  string user_id = 9;
+}
+
+message Comment {
+  string id = 1;
+  string user_id = 2;
+  string text = 3;
+}
+
+message Like {
+  string id = 1;
+  string user_id = 2;
+}
+
+message Dislike {
+  string id = 1;
+  string user_id = 2;
+}
+
+//message CreatePostRequest {
+//  Post post = 1;
+//}
+//
+//message CreatePostResponse {
+//  Post post = 1;
+//}
