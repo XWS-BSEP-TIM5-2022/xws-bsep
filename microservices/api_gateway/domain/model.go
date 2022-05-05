@@ -25,3 +25,9 @@ type User struct {
 	Biography    string
 	Password     string
 }
+
+type Connection struct {
+	Id      string
+	UserAid string
+	UserBid string
+}
