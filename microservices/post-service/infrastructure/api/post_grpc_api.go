@@ -8,6 +8,7 @@ import (
 )
 
 // implementacije gRPC servera koji smo definisali u okviru common paketa
+
 type PostHandler struct {
 	pb.UnimplementedPostServiceServer
 	service *application.PostService
@@ -67,7 +68,6 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 
 func (handler *PostHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 	post := mapInsertPost(request.Post)
-
 	success, err := handler.service.Update(post)
 	response := &pb.UpdateResponse{
 		Success: success,

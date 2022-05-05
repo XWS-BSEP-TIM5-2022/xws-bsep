@@ -9,7 +9,7 @@ import (
 func mapPost(post *domain.Post) *pb.Post {
 	postPb := &pb.Post{
 		Id:          post.Id.Hex(),
-		Title:       post.Title,
+		Text:        post.Text,
 		DateCreated: post.DateCreated,
 	}
 	return postPb
@@ -20,7 +20,7 @@ func mapInsertPost(post *pb.Post) *domain.Post {
 
 	postPb := &domain.Post{
 		Id:          id,
-		Title:       post.Title,
+		Text:        post.Text,
 		DateCreated: post.DateCreated,
 	}
 
