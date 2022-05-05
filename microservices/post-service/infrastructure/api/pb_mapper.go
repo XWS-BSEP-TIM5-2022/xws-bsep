@@ -18,11 +18,11 @@ func mapPost(post *domain.Post) *pb.Post {
 func mapInsertPost(post *pb.Post) *domain.Post {
 	id, _ := primitive.ObjectIDFromHex(post.Id)
 
-	userPb := &domain.Post{
+	postPb := &domain.Post{
 		Id:          id,
 		Title:       post.Title,
 		DateCreated: post.DateCreated,
 	}
 
-	return userPb
+	return postPb
 }

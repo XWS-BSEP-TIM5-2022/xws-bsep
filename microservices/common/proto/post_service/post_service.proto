@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post"; // ???
-
 package post_service;
+
+option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post"; // ???
 
 import "google/api/annotations.proto";
 
@@ -47,12 +47,6 @@ message GetAllResponse {
   repeated Post posts = 1;
 }
 
-message Post {
-  string id = 1;
-  string title = 2;
-  string dateCreated = 3;
-}
-
 message InsertRequest {
   Post post = 1;
 }
@@ -67,4 +61,18 @@ message UpdateRequest {
 
 message UpdateResponse {
   string success = 1;
+}
+
+message CreatePostRequest {
+  Post post = 1;
+}
+
+message CreatePostResponse {
+  Post post = 1;
+}
+
+message Post {
+  string id = 1;
+  string title = 2;
+  string dateCreated = 3;
 }

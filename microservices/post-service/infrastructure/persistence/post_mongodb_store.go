@@ -44,7 +44,7 @@ func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 	post.Id = primitive.NewObjectID()
 	result, err := store.posts.InsertOne(context.TODO(), post)
 	if err != nil {
-		return "error", nil
+		return "error", err
 	}
 	post.Id = result.InsertedID.(primitive.ObjectID)
 	return "success", nil
