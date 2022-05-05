@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -74,4 +75,24 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 		User: userPb,
 	}
 	return response, nil
+}
+
+func (handler *UserHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
+
+	user, err := handler.service.GetByUsername(request.GetData().Username)
+	if err != nil {
+		return &pb.LoginResponse{
+			Success: "there is no user with that username",
+		}, errors.New("there is no user with that username")
+	}
+
+	if request.GetData().Password != user.Password {
+		return &pb.LoginResponse{
+			Success: "passwords do not match",
+		}, errors.New("passwords do not match")
+	}
+
+	return &pb.LoginResponse{
+		Success: "success",
+	}, nil
 }
