@@ -50,7 +50,7 @@ func (server *Server) initPostStore(client *mongo.Client) domain.PostStore {
 	store := persistence.NewPostMongoDBStore(client)
 	store.DeleteAll()
 	for _, post := range posts {
-		err := store.Insert(post)
+		_, err := store.Insert(post)
 		if err != nil {
 			log.Fatal(err)
 		}
