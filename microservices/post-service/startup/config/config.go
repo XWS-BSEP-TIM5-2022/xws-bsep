@@ -9,11 +9,6 @@ type Config struct {
 }
 
 func NewConfig() *Config {
-
-	//os.Setenv("POST_SERVICE_PORT", "post_service")
-	//os.Setenv("POST_DB_HOST", "post_db")
-	//os.Setenv("POST_DB_PORT", "27017")
-
 	return &Config{
 		Port:       os.Getenv("POST_SERVICE_PORT"),
 		PostDBHost: os.Getenv("POST_DB_HOST"),

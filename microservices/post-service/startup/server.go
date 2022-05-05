@@ -43,13 +43,13 @@ func (server *Server) initMongoClient() *mongo.Client { // inicijalizacija mongo
 
 func (server *Server) initPostStore(client *mongo.Client) domain.PostStore { // inicijalizacija mongo baze
 	store := persistence.NewPostMongoDBStore(client)
-	store.DeleteAll()
-	for _, post := range posts {
-		_, err := store.Insert(post)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
+	//store.DeleteAll()
+	//for _, post := range posts {
+	//	_, err := store.Insert(post)
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}
 	return store
 }
 

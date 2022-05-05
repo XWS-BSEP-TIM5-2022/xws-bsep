@@ -27,7 +27,7 @@ service PostService{
   }
   rpc Update(UpdateRequest) returns(UpdateResponse) {
     option (google.api.http) = {
-      put: "/post/update"
+      put: "/post"
       body: "post"
     };
   }
