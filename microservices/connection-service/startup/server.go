@@ -42,7 +42,10 @@ func (server *Server) Start() {
 }
 
 func (server *Server) initNeo4J() *neo4j.Driver {
-	client, err := persistence.GetClient(server.config.Neo4jUri, server.config.Neo4jUsername, server.config.Neo4jPassword)
+
+	uri := "bolt:\\" + server.config.ConnectionDBHost + ":" + server.config.ConnectionDBPort
+
+	client, err := persistence.GetClient(uri, server.config.ConnectionDBUser, server.config.ConnectionDBPass)
 	if err != nil {
 		log.Fatal(err)
 	}
