@@ -9,6 +9,7 @@ type UserStore interface {
 	GetByUsername(Username string) (*User, error)
 	Insert(user *User) (string, error)
 	GetAll() ([]*User, error)
+	GetAllPublic() ([]*User, error)
 	DeleteAll()
 	Update(user *User) (string, error)
 }

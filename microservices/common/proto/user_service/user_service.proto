@@ -18,6 +18,11 @@ service UserService{
         get: "/user"
     };
     }
+    rpc GetAllPublic(GetAllPublicRequest) returns(GetAllPublicResponse) {
+        option (google.api.http) = {
+            get: "/user/public"
+        };
+    }
     rpc Insert(InsertRequest) returns(InsertResponse) {
         option (google.api.http) = {
                 post: "/user"
@@ -53,6 +58,12 @@ message GetAllResponse {
     repeated User users = 1;
 }
 
+message GetAllPublicRequest {
+}
+
+message GetAllPublicResponse {
+    repeated User users = 1;
+}
 
 message CreateUserRequest {
     User user = 1;

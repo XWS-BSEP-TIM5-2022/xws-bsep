@@ -55,6 +55,11 @@ func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
 	return store.filter(filter)
 }
 
+func (store *UserMongoDBStore) GetAllPublic() ([]*domain.User, error) {
+	filter := bson.D{{"is_public", true}}
+	return store.filter(filter)
+}
+
 func (store *UserMongoDBStore) DeleteAll() {
 	store.users.DeleteMany(context.TODO(), bson.D{{}})
 }
