@@ -12,29 +12,35 @@ services:
       USER_DB_HOST: ${USER_DB_HOST}
       USER_DB_PORT: ${USER_DB_PORT}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      PUBLIC_KEY: ${PUBLIC_KEY}
     depends_on:
       - user_db
     networks:
       - network
 
-  # auth_service:
-  #   image: auth_service
-  #   container_name: auth_service
-  #   build:
-  #     context: .
-  #     dockerfile: ./auth-service/Dockerfile
-  #   restart: on-failure
-  #   environment:
-  #     AUTH_DB_HOST: ${AUTH_DB_HOST}
-  #     AUTH_DB_PORT: ${AUTH_DB_PORT}
-  #     AUTH_DB_USER: ${AUTH_DB_USER}
-  #     AUTH_DB_PASS: ${AUTH_DB_PASS}
-  #     AUTH_DB_NAME: ${AUTH_DB_NAME}
-  #     AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
-  #   depends_on:
-  #     - auth_db
-  #   networks:
-  #     - network
+  auth_service:
+    image: auth_service
+    container_name: auth_service
+    build:
+      context: .
+      dockerfile: ./auth-service/Dockerfile
+    restart: on-failure
+    environment:
+      AUTH_DB_HOST: ${AUTH_DB_HOST}
+      AUTH_DB_PORT: ${AUTH_DB_PORT}
+      AUTH_DB_USER: ${AUTH_DB_USER}
+      AUTH_DB_PASS: ${AUTH_DB_PASS}
+      AUTH_DB_NAME: ${AUTH_DB_NAME}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      AUTH_SERVICE_HOST: ${AUTH_SERVICE_HOST}
+      USER_SERVICE_HOST: ${USER_SERVICE_HOST}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      PUBLIC_KEY: ${PUBLIC_KEY}
+    depends_on:
+      - auth_db
+    networks:
+      - network
 
 #  connection_service:
 #    image: connection_service
@@ -70,11 +76,6 @@ services:
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
       AUTH_SERVICE_HOST: ${AUTH_SERVICE_HOST}
       AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
-      POSTGRES_USER: ${AUTH_DB_USER}
-      POSTGRES_PASSWORD: ${AUTH_DB_PASS}
-      POSTGRES_DB: ${AUTH_DB_NAME}
-      POST_SERVICE_HOST: ${POST_SERVICE_HOST}
-      POST_SERVICE_PORT: ${POST_SERVICE_PORT}
     networks:
       - network
 
@@ -87,16 +88,16 @@ services:
     networks:
       - network
 
-  # auth_db:
-  #   image: postgres
-  #   container_name: auth_db
-  #   restart: on-failure
-  #   environment:
-  #     POSTGRES_USER: ${AUTH_DB_USER}
-  #     POSTGRES_PASSWORD: ${AUTH_DB_PASS}
-  #     POSTGRES_DB: ${AUTH_DB_NAME}
-  #   networks:
-  #     - network
+  auth_db:
+    image: postgres
+    container_name: auth_db
+    restart: on-failure
+    environment:
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASS}
+      POSTGRES_DB: ${AUTH_DB_NAME}
+    networks:
+      - network
 
   post_service:
     image: post_service
@@ -111,6 +112,15 @@ services:
       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
     depends_on:
       - post_db
+    networks:
+      - network
+
+  post_db:
+    image: mongo
+    container_name: post_db
+    restart: on-failure
+#    ports:
+#      - 27018:27017
     networks:
       - network
 

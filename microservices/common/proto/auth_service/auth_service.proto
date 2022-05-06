@@ -13,14 +13,35 @@ service AuthService{
           post: "/api/auth/register"
           body: "*"
         };
-      }
+    }
     
-      rpc Login(LoginRequest) returns (LoginResponse) {
+    rpc Login(LoginRequest) returns (LoginResponse) {
         option (google.api.http) = {
           post: "/api/auth/login"
           body: "*"
         };
-      }
+    }
+
+    rpc GetAll(Empty) returns (GetAllResponse) {
+        option (google.api.http) = {
+          get: "/api/auth"
+        };
+    }
+}
+
+message Empty {
+
+}
+
+message GetAllResponse {
+    repeated Auth auth = 1;
+}
+
+message Auth {
+    string id = 1;
+    string username = 2;
+    string password = 3;
+    string role = 4;
 }
 
 message RegisterRequest {

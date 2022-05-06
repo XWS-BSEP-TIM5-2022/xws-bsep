@@ -5,6 +5,7 @@ import (
 	_ "context"
 	"errors"
 	_ "errors"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"go.mongodb.org/mongo-driver/bson"
 	_ "go.mongodb.org/mongo-driver/bson"
@@ -41,14 +42,14 @@ func (store *UserMongoDBStore) GetByUsername(username string) (*domain.User, err
 	return store.filterOne(filter)
 }
 
-func (store *UserMongoDBStore) Insert(user *domain.User) (string, error) {
+func (store *UserMongoDBStore) Insert(user *domain.User) (*domain.User, error) {
 	user.Id = primitive.NewObjectID()
 	result, err := store.users.InsertOne(context.TODO(), user)
 	if err != nil {
-		return "error", err
+		return nil, err
 	}
 	user.Id = result.InsertedID.(primitive.ObjectID)
-	return "success", nil
+	return user, nil
 }
 
 func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
@@ -76,12 +77,12 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 		"email":         user.Email,
 		"biography":     user.Biography,
 		"username":      user.Username,
-		"password":      user.Password,
-		"is_public":     user.IsPublic,
-		"education":     user.Education,
-		"experience":    user.Experience,
-		"skills":        user.Skills,
-		"interests":     user.Interests,
+		// "password":      user.Password,
+		"is_public":  user.IsPublic,
+		"education":  user.Education,
+		"experience": user.Experience,
+		"skills":     user.Skills,
+		"interests":  user.Interests,
 	}}
 
 	opts := options.Update().SetUpsert(true)
@@ -156,4 +157,18 @@ func decode(cursor *mongo.Cursor) (users []*domain.User, err error) {
 	}
 	err = cursor.Err()
 	return
+}
+
+func (store *UserMongoDBStore) GetById(hexId string) (*domain.User, error) {
+	id, err := hexIdToId(hexId)
+	if err != nil {
+		return nil, err
+	}
+
+	filter := bson.M{"_id": id}
+	return store.filterOne(filter)
+}
+
+func hexIdToId(hexId string) (primitive.ObjectID, error) {
+	return primitive.ObjectIDFromHex(hexId)
 }

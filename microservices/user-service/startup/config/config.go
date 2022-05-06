@@ -9,6 +9,7 @@ type Config struct {
 	UserDBName string
 	UserDBUser string
 	UserDBPass string
+	PublicKey  string
 }
 
 func NewConfig() *Config {
@@ -19,5 +20,6 @@ func NewConfig() *Config {
 		UserDBName: os.Getenv("USER_DB_NAME"),
 		UserDBUser: os.Getenv("USER_DB_USER"),
 		UserDBPass: os.Getenv("USER_DB_PASS"),
+		PublicKey:  os.Getenv("PUBLIC_KEY"),
 	}
 }

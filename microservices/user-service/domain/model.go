@@ -1,8 +1,9 @@
 package domain
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type User struct {
@@ -15,12 +16,12 @@ type User struct {
 	Email        string             `bson:"email"`
 	Biography    string             `bson:"biography"`
 	Username     string             `bson:"username"`
-	Password     string             `bson:"password"`
-	IsPublic     bool               `bson:"is_public"`
-	Education    []Education        `bson:"education"`
-	Experience   []Experience       `bson:"experience"`
-	Skills       []Skill            `bson:"skills"`
-	Interests    []Interest         `bson:"interests"`
+	// Password     string             `bson:"password"`
+	IsPublic   bool         `bson:"is_public"`
+	Education  []Education  `bson:"education"`
+	Experience []Experience `bson:"experience"`
+	Skills     []Skill      `bson:"skills"`
+	Interests  []Interest   `bson:"interests"`
 }
 
 type Education struct {

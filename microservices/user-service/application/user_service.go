@@ -23,9 +23,12 @@ func (service *UserService) GetAllPublic() ([]*domain.User, error) {
 	return service.store.GetAllPublic()
 }
 
-func (service *UserService) Insert(user *domain.User) (string, error) {
-	success, err := service.store.Insert(user)
-	return success, err
+func (service *UserService) Insert(user *domain.User) (*domain.User, error) {
+	_, err := service.store.Insert(user)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (service *UserService) Update(user *domain.User) (string, error) {
@@ -41,6 +44,9 @@ func (service *UserService) GetByUsername(username string) (*domain.User, error)
 	return service.store.GetByUsername(username)
 }
 
+func (service *UserService) GetById(userId string) (*domain.User, error) {
+	return service.store.GetById(userId)
+}
 func (service *UserService) Search(criteria string) ([]*domain.User, error) {
 	return service.store.Search(criteria)
 }

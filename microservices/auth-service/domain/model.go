@@ -1,25 +1,33 @@
 package domain
 
-import "time"
+import (
+	"fmt"
 
-type Authentication struct {
-	Id       string    `gorm:"index:idx_name,unique"` // id auth je id usera
-	Name     string    `gorm:"index:idx_name,unique"`
-	Password string    `gorm:"index:idx_name"`
-	Role     string    `gorm:"index:idx_name"`
-	Date     time.Time `gorm:"index:idx_name"`
-}
-
-type RoleEnum int8
-
-const (
-	User RoleEnum = iota
-	Registered_User
+	"golang.org/x/crypto/bcrypt"
 )
 
-func (role RoleEnum) String() string {
-	if role == User {
-		return "User"
+type Authentication struct {
+	Id       string `gorm:"index:idx_name,unique"` // id je id usera
+	Username string `gorm:"index:idx_name,unique"`
+	Password string `gorm:"index:idx_name"`
+	Role     string `gorm:"index:idx_name"`
+}
+
+func NewAuthCredentials(id, username, password string) (*Authentication, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, fmt.Errorf("cannot hash password: %w", err)
 	}
-	return "Registered_User"
+	credentials := &Authentication{
+		Id:       id,
+		Username: username,
+		Password: string(hashedPassword),
+		Role:     "User", // TODO: modifikovati kada dodamo role
+	}
+	return credentials, nil
+}
+
+func (credentials *Authentication) CheckPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(credentials.Password), []byte(password))
+	return err == nil
 }

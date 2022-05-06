@@ -6,12 +6,12 @@ import (
 	"net"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/application"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/api"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup/config"
 
 	auth_service_proto "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
@@ -32,11 +32,16 @@ const (
 
 func (server *Server) Start() {
 	postgresClient := server.initPostgresClient()
-	fmt.Println("Postgres cli")
-	fmt.Println(postgresClient)
 	authStore := server.initAuthStore(postgresClient)
-	authService := server.initAuthService(authStore)
+	// kreiranje jwt servisa
+	jwtServiceClient, err := server.initJWTManager(server.config.PrivateKey, server.config.PublicKey)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// kreiranje user servisa
+	userServiceClient := server.initUserServiceClient()
 
+	authService := server.initAuthService(authStore, userServiceClient, jwtServiceClient)
 	authHandler := server.initAuthHandler(authService)
 
 	server.startGrpcServer(authHandler)
@@ -53,33 +58,33 @@ func (server *Server) initPostgresClient() *gorm.DB {
 	return client
 }
 
-func (server *Server) initAuthStore(client *gorm.DB) domain.AuthStore {
+func (server *Server) initAuthStore(client *gorm.DB) *persistence.AuthPostgresStore {
 	store, err := persistence.NewAuthPostgresStore(client)
 	if err != nil {
 		log.Fatal(err)
 	}
-	store.DeleteAll()
-	for _, Auth := range auths {
-		res, err := store.Insert(Auth)
-		fmt.Println(res)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
 	return store
 }
 
-func (server *Server) initAuthService(store domain.AuthStore) *application.AuthService {
-	return application.NewAuthService(store)
+func (server *Server) initAuthService(store *persistence.AuthPostgresStore, userServiceClient user.UserServiceClient, jwtService *application.JWTService) *application.AuthService {
+	return application.NewAuthService(store, jwtService, userServiceClient)
 }
 
 func (server *Server) initAuthHandler(service *application.AuthService) *api.AuthHandler {
 	return api.NewAuthHandler(service)
 }
 
+func (server *Server) initJWTManager(privateKey, publicKey string) (*application.JWTService, error) {
+	return application.NewJWTManager(privateKey, publicKey)
+}
+
+func (server *Server) initUserServiceClient() user.UserServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.UserServiceHost, server.config.UserServicePort)
+	return persistence.NewUserServiceClient(address)
+}
+
 func (server *Server) startGrpcServer(authHandler *api.AuthHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
-	// listener, err := net.Listen("tcp", fmt.Sprintf(":8000"))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
