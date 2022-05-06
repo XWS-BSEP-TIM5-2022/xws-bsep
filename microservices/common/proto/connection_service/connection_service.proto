@@ -29,10 +29,10 @@ service ConnectionService{
     };
   }
 
-  rpc AddFriend(AddFriendRequest) returns (ActionResult) {
+  rpc AddConnection(AddConnectionRequest) returns (ActionResult) {
     option (google.api.http) = {
-      post: "/connection/friend"
-      body:"addFriendDTO"
+      post: "/connection"
+      body:"addConnectionDTO"
     };
   }
 
@@ -51,8 +51,8 @@ message RegisterRequest{
   User user = 1;
 }
 
-message AddFriendRequest{
-  UserAction addFriendDTO = 1;
+message AddConnectionRequest{
+  UserAction addConnectionDTO = 1;
 }
 
 message AddBlockUserRequest{

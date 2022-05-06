@@ -33,6 +33,6 @@ func (service *ConnectionService) Register(userID string, isPublic bool) (*pb.Ac
 	return service.store.Register(userID, isPublic)
 }
 
-func (service *ConnectionService) AddFriend(userIDa, userIDb string) (*pb.ActionResult, error) {
-	return service.store.AddFriend(userIDa, userIDb)
+func (service *ConnectionService) AddConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
+	return service.store.AddConnection(userIDa, userIDb)
 }

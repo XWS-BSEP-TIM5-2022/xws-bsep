@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type ConnectionServiceClient interface {
 	GetFriends(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*ActionResult, error)
-	AddFriend(ctx context.Context, in *AddFriendRequest, opts ...grpc.CallOption) (*ActionResult, error)
+	AddConnection(ctx context.Context, in *AddConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
 }
 
 type connectionServiceClient struct {
@@ -53,9 +53,9 @@ func (c *connectionServiceClient) Register(ctx context.Context, in *RegisterRequ
 	return out, nil
 }
 
-func (c *connectionServiceClient) AddFriend(ctx context.Context, in *AddFriendRequest, opts ...grpc.CallOption) (*ActionResult, error) {
+func (c *connectionServiceClient) AddConnection(ctx context.Context, in *AddConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error) {
 	out := new(ActionResult)
-	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/AddFriend", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/AddConnection", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (c *connectionServiceClient) AddFriend(ctx context.Context, in *AddFriendRe
 type ConnectionServiceServer interface {
 	GetFriends(context.Context, *GetRequest) (*Users, error)
 	Register(context.Context, *RegisterRequest) (*ActionResult, error)
-	AddFriend(context.Context, *AddFriendRequest) (*ActionResult, error)
+	AddConnection(context.Context, *AddConnectionRequest) (*ActionResult, error)
 	mustEmbedUnimplementedConnectionServiceServer()
 }
 
@@ -82,8 +82,8 @@ func (UnimplementedConnectionServiceServer) GetFriends(context.Context, *GetRequ
 func (UnimplementedConnectionServiceServer) Register(context.Context, *RegisterRequest) (*ActionResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedConnectionServiceServer) AddFriend(context.Context, *AddFriendRequest) (*ActionResult, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddFriend not implemented")
+func (UnimplementedConnectionServiceServer) AddConnection(context.Context, *AddConnectionRequest) (*ActionResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddConnection not implemented")
 }
 func (UnimplementedConnectionServiceServer) mustEmbedUnimplementedConnectionServiceServer() {}
 
@@ -134,20 +134,20 @@ func _ConnectionService_Register_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ConnectionService_AddFriend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddFriendRequest)
+func _ConnectionService_AddConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddConnectionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ConnectionServiceServer).AddFriend(ctx, in)
+		return srv.(ConnectionServiceServer).AddConnection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/connection_service.ConnectionService/AddFriend",
+		FullMethod: "/connection_service.ConnectionService/AddConnection",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConnectionServiceServer).AddFriend(ctx, req.(*AddFriendRequest))
+		return srv.(ConnectionServiceServer).AddConnection(ctx, req.(*AddConnectionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -168,8 +168,8 @@ var ConnectionService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ConnectionService_Register_Handler,
 		},
 		{
-			MethodName: "AddFriend",
-			Handler:    _ConnectionService_AddFriend_Handler,
+			MethodName: "AddConnection",
+			Handler:    _ConnectionService_AddConnection_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

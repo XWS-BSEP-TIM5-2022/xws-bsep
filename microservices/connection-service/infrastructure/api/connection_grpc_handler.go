@@ -42,9 +42,9 @@ func (handler *ConnectionHandler) Register(ctx context.Context, request *pb.Regi
 	return handler.service.Register(userID, isPublic)
 }
 
-func (handler *ConnectionHandler) AddFriend(ctx context.Context, request *pb.AddFriendRequest) (*pb.ActionResult, error) {
-	fmt.Println("[ConnectionHandler]:AddFriend")
-	userIDa := request.AddFriendDTO.UserIDa
-	userIDb := request.AddFriendDTO.UserIDb
-	return handler.service.AddFriend(userIDa, userIDb)
+func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb.AddConnectionRequest) (*pb.ActionResult, error) {
+	fmt.Println("[ConnectionHandler]:AddConnection")
+	userIDa := request.AddConnectionDTO.UserIDa
+	userIDb := request.AddConnectionDTO.UserIDb
+	return handler.service.AddConnection(userIDa, userIDb)
 }

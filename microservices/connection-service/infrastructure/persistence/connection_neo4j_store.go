@@ -1,16 +1,12 @@
 package persistence
 
 import (
+	"fmt"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/domain"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 	"time"
 )
-
-//const (
-//	DATABASE   = "post_db"
-//	COLLECTION = "post"
-//)
 
 type ConnectionDBStore struct {
 	connectionDB *neo4j.Driver
@@ -84,7 +80,7 @@ func (store *ConnectionDBStore) GetFriends(userID string) ([]domain.UserConn, er
 	return friends.([]domain.UserConn), nil
 }
 
-func (store *ConnectionDBStore) AddFriend(userIDa, userIDb string) (*pb.ActionResult, error) {
+func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
 	/*
 				Dodavanje novog prijatelja je moguce ako:
 		         - userA i userB postoji
@@ -104,36 +100,66 @@ func (store *ConnectionDBStore) AddFriend(userIDa, userIDb string) (*pb.ActionRe
 
 		actionResult := &pb.ActionResult{Msg: "msg", Status: 0}
 
+		//ako ne postoji userA, kreira ga
+		if !checkIfUserExist(userIDa, transaction) {
+			_, err := transaction.Run(
+				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
+				map[string]interface{}{"userID": userIDa, "isPublic": true})
+
+			if err != nil {
+				actionResult.Msg = "error while creating new node with ID:" + userIDa
+				actionResult.Status = 501
+				return actionResult, err
+			}
+		}
+		//ako ne postoji userB, kreira ga
+		if !checkIfUserExist(userIDb, transaction) {
+			_, err := transaction.Run(
+				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
+				map[string]interface{}{"userID": userIDb, "isPublic": false})
+
+			if err != nil {
+				actionResult.Msg = "error while creating new node with ID:" + userIDb
+				actionResult.Status = 501
+				return actionResult, err
+			}
+		}
+
 		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
 			if checkIfFriendExist(userIDa, userIDb, transaction) || checkIfFriendExist(userIDb, userIDa, transaction) {
 				actionResult.Msg = "users are already friends"
 				actionResult.Status = 400 //bad request
 				return actionResult, nil
 			} else {
-				if checkIfBlockExist(userIDa, userIDb, transaction) || checkIfBlockExist(userIDb, userIDa, transaction) {
-					actionResult.Msg = "block already exist"
-					actionResult.Status = 400 //bad request
-					return actionResult, nil
-				} else {
-					// TODO: dodati naknadno provu da li je profil privatan ili public
+				//if checkIfBlockExist(userIDa, userIDb, transaction) || checkIfBlockExist(userIDb, userIDa, transaction) {
+				//	actionResult.Msg = "block already exist"
+				//	actionResult.Status = 400 //bad request
+				//	return actionResult, nil
+				//} else {
 
+				//ako je userB public, odmah ce kreirati konekciju
+				if !checkIfPublicUser(userIDb, transaction) {
 					dateNow := time.Now().Local().Unix()
 					result, err := transaction.Run(
 						"MATCH (u1:USER) WHERE u1.userID=$uIDa "+
 							"MATCH (u2:USER) WHERE u2.userID=$uIDb "+
-							"CREATE (u1)-[r1:FRIEND {date: $dateNow, msgID: $msgID}]->(u2) "+
-							"CREATE (u2)-[r2:FRIEND {date: $dateNow, msgID: $msgID}]->(u1) "+
+							"CREATE (u1)-[r1:FRIEND {date: $dateNow}]->(u2) "+
+							"CREATE (u2)-[r2:FRIEND {date: $dateNow}]->(u1) "+
 							"RETURN r1.date, r2.date",
-						map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb, "dateNow": dateNow, "msgID": "newMsgID"})
+						map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb, "dateNow": dateNow})
 
 					if err != nil || result == nil {
 						actionResult.Msg = "error while creating new friends IDa:" + userIDa + " and IDb:" + userIDb
 						actionResult.Status = 501
 						return actionResult, err
 					}
-
+				} else {
+					fmt.Println("USER JE PRIVATE!")
+					actionResult.Msg = "user with id: " + userIDb + "is private!"
+					actionResult.Status = 501
 				}
 			}
+			//}
 		} else {
 			actionResult.Msg = "user does not exist"
 			actionResult.Status = 400 //bad request
