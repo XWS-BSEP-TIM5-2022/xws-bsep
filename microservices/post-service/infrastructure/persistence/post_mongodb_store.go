@@ -43,7 +43,7 @@ func (store *PostMongoDBStore) GetAll() ([]*domain.Post, error) {
 }
 
 func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
-	post.Id = primitive.NewObjectID() // TODO ?
+	post.Id = primitive.NewObjectID()
 	result, err := store.posts.InsertOne(context.TODO(), post)
 	if err != nil {
 		return "error", err
@@ -54,8 +54,14 @@ func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 
 func (store *PostMongoDBStore) Update(post *domain.Post) (string, error) {
 	newData := bson.M{"$set": bson.M{
-		"title":        post.Title,
+		"text":         post.Text,
 		"date_created": post.DateCreated,
+		"images":       post.Images,
+		"links":        post.Links,
+		"likes":        post.Likes,    // TODO
+		"dislikes":     post.Dislikes, // TODO
+		"comments":     post.Comments, // TODO
+		"user_id":      post.UserId,
 	}}
 
 	opts := options.Update().SetUpsert(true)

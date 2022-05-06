@@ -27,10 +27,15 @@ service PostService{
   }
   rpc Update(UpdateRequest) returns(UpdateResponse) {
     option (google.api.http) = {
-      put: "/post/update"
+      put: "/post"
       body: "post"
     };
   }
+//  rpc GetAllByUser(GetRequest) returns(GetAllResponse) {
+//    option (google.api.http) = {
+//      get: "/post/user/{id}"
+//    };
+//  }
 }
 
 message GetRequest {

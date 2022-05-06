@@ -2,8 +2,10 @@ module github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service
 
 go 1.18
 
+replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
+
 require (
-	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-20220505112847-e01084665bd8
+	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0
 	go.mongodb.org/mongo-driver v1.9.1
 	google.golang.org/grpc v1.46.0
 )
