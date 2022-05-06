@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8f3ec4b-cc79-44af-88ba-bcfd2d499761" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/post-service/startup/config/accessible_roles.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/infrastructure/api/post_grpc_api.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/infrastructure/api/post_grpc_api.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/startup/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/startup/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/startup/server.go" afterDir="false" />
-    </list>
+    <list default="true" id="a8f3ec4b-cc79-44af-88ba-bcfd2d499761" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
