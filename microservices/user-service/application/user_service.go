@@ -44,6 +44,10 @@ func (service *UserService) GetByUsername(username string) (*domain.User, error)
 	return service.store.GetByUsername(username)
 }
 
+func (service *UserService) GetByEmail(email string) (*domain.User, error) {
+	return service.store.GetByEmail(email)
+}
+
 func (service *UserService) GetById(userId string) (*domain.User, error) {
 	return service.store.GetById(userId)
 }

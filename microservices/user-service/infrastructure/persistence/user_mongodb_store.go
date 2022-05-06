@@ -42,8 +42,26 @@ func (store *UserMongoDBStore) GetByUsername(username string) (*domain.User, err
 	return store.filterOne(filter)
 }
 
+func (store *UserMongoDBStore) GetByEmail(email string) (*domain.User, error) {
+	filter := bson.M{"email": email}
+	return store.filterOne(filter)
+}
+
 func (store *UserMongoDBStore) Insert(user *domain.User) (*domain.User, error) {
 	user.Id = primitive.NewObjectID()
+
+	checkUsername, _ := store.GetByUsername(user.Username)
+
+	if checkUsername != nil {
+		return nil, errors.New("username already exists")
+	}
+
+	checkEmail, _ := store.GetByEmail(user.Email)
+
+	if checkEmail != nil {
+		return nil, errors.New("email already exists")
+	}
+
 	result, err := store.users.InsertOne(context.TODO(), user)
 	if err != nil {
 		return nil, err
@@ -68,6 +86,8 @@ func (store *UserMongoDBStore) DeleteAll() {
 
 func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 
+	oldData := bson.M{"_id": user.Id}
+
 	newData := bson.M{"$set": bson.M{
 		"name":          user.Name,
 		"last_name":     user.LastName,
@@ -85,9 +105,29 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 		"interests":  user.Interests,
 	}}
 
+	oldUser, _ := store.filterOne(oldData)
+
+	if oldUser != nil && user.Username != "" && user.Username != oldUser.Username {
+
+		checkUsername, _ := store.GetByUsername(user.Username)
+
+		if checkUsername != nil {
+			return "username already exists", errors.New("username already exists")
+		}
+	}
+
+	if oldUser != nil && user.Email != "" && user.Email != oldUser.Email {
+
+		checkEmail, _ := store.GetByEmail(user.Email)
+
+		if checkEmail != nil {
+			return "email already exists", errors.New("email already exists")
+		}
+	}
+
 	opts := options.Update().SetUpsert(true)
 
-	result, err := store.users.UpdateOne(context.TODO(), bson.M{"_id": user.Id}, newData, opts)
+	result, err := store.users.UpdateOne(context.TODO(), oldData, newData, opts)
 
 	if err != nil {
 		return "error", err
