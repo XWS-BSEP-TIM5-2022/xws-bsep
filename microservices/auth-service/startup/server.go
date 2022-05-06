@@ -48,12 +48,6 @@ func (server *Server) Start() {
 }
 
 func (server *Server) initPostgresClient() *gorm.DB {
-	fmt.Println("KREDENCIJALI ZA BAZUUUUUU")
-	p := fmt.Sprintf(("%s, %s, %s, %s, %s "),
-		server.config.AuthDBHost, server.config.AuthDBUser,
-		server.config.AuthDBPass, server.config.AuthDBName,
-		server.config.AuthDBPort)
-	fmt.Println(p)
 	client, err := persistence.GetClient(
 		server.config.AuthDBHost, server.config.AuthDBUser,
 		server.config.AuthDBPass, server.config.AuthDBName,

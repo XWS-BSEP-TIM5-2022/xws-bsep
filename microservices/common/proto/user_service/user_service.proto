@@ -35,10 +35,15 @@ service UserService{
             body: "user"
         };
     }
-    rpc Login(LoginRequest) returns (LoginResponse) {
+    // rpc Login(LoginRequest) returns (LoginResponse) {
+    //     option (google.api.http) = {
+    //         post: "/user/login"
+    //         body: "data"
+    //     };
+    // }
+    rpc GetLoggedInUserInfo(GetAllRequest) returns (User) {
         option (google.api.http) = {
-            post: "/user/login"
-            body: "data"
+          get: "/user/info"
         };
     }
 }
@@ -89,19 +94,18 @@ message UpdateResponse {
     string success = 1;
 }
 
-message LoginRequest {
-    AuthUser data = 1;
-}
+// message LoginRequest {
+//     AuthUser data = 1;
+// }
 
-message LoginResponse {
-    string success = 1; 
-}
+// message LoginResponse {
+//     string success = 1; 
+// }
 
-message AuthUser{
-    string username = 1;
-    string password = 2;
-}
-
+// message AuthUser{
+//     string username = 1;
+//     string password = 2;
+// }
 
 message User {
     string id = 1;

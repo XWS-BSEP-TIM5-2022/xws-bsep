@@ -32,24 +32,22 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		Name:         request.Name,
 		LastName:     request.LastName,
 		MobileNumber: request.MobileNumber,
-		// Gender:       request.Gender,
-		Birthday:  request.Birthday,
-		Email:     request.Email,
-		Biography: request.Biography,
-		Password:  request.Password,
-		IsPublic:  request.IsPublic,
+		Gender:       user.User_GenderEnum(request.Gender), // ?
+		Birthday:     request.Birthday,
+		Email:        request.Email,
+		Biography:    request.Biography,
+		Password:     request.Password,
+		IsPublic:     request.IsPublic,
 	}
 	createUserRequest := &user.InsertRequest{
 		User: userRequest,
 	}
-
 	fmt.Println(createUserRequest)
 
 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
 	if err != nil {
 		return nil, err
 	}
-
 	// kreiraju se auth kredencijali preko konstruktora da bi mogla odmah da hesiram pass
 	authCredentials, err := domain.NewAuthCredentials(
 		createUserResponse.Id,
@@ -59,7 +57,6 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	if err != nil {
 		return nil, err
 	}
-
 	authCredentials, err = service.store.Create(authCredentials)
 	if err != nil {
 		return nil, err
@@ -87,7 +84,6 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 		return nil, status.Errorf(codes.Unauthenticated, "Invalid username or password")
 	}
 	fmt.Println("No error validating password")
-
 	token, err := service.jwtService.GenerateToken(authCredentials)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Could not generate JWT token")

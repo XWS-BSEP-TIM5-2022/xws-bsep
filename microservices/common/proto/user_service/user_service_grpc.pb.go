@@ -27,7 +27,13 @@ type UserServiceClient interface {
 	GetAllPublic(ctx context.Context, in *GetAllPublicRequest, opts ...grpc.CallOption) (*GetAllPublicResponse, error)
 	Insert(ctx context.Context, in *InsertRequest, opts ...grpc.CallOption) (*InsertResponse, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
-	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	// rpc Login(LoginRequest) returns (LoginResponse) {
+	//     option (google.api.http) = {
+	//         post: "/user/login"
+	//         body: "data"
+	//     };
+	// }
+	GetLoggedInUserInfo(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*User, error)
 }
 
 type userServiceClient struct {
@@ -83,9 +89,9 @@ func (c *userServiceClient) Update(ctx context.Context, in *UpdateRequest, opts 
 	return out, nil
 }
 
-func (c *userServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
-	out := new(LoginResponse)
-	err := c.cc.Invoke(ctx, "/user_service.UserService/Login", in, out, opts...)
+func (c *userServiceClient) GetLoggedInUserInfo(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, "/user_service.UserService/GetLoggedInUserInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +107,13 @@ type UserServiceServer interface {
 	GetAllPublic(context.Context, *GetAllPublicRequest) (*GetAllPublicResponse, error)
 	Insert(context.Context, *InsertRequest) (*InsertResponse, error)
 	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
-	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	// rpc Login(LoginRequest) returns (LoginResponse) {
+	//     option (google.api.http) = {
+	//         post: "/user/login"
+	//         body: "data"
+	//     };
+	// }
+	GetLoggedInUserInfo(context.Context, *GetAllRequest) (*User, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -124,8 +136,8 @@ func (UnimplementedUserServiceServer) Insert(context.Context, *InsertRequest) (*
 func (UnimplementedUserServiceServer) Update(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (UnimplementedUserServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+func (UnimplementedUserServiceServer) GetLoggedInUserInfo(context.Context, *GetAllRequest) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLoggedInUserInfo not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -230,20 +242,20 @@ func _UserService_Update_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginRequest)
+func _UserService_GetLoggedInUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).Login(ctx, in)
+		return srv.(UserServiceServer).GetLoggedInUserInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user_service.UserService/Login",
+		FullMethod: "/user_service.UserService/GetLoggedInUserInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).Login(ctx, req.(*LoginRequest))
+		return srv.(UserServiceServer).GetLoggedInUserInfo(ctx, req.(*GetAllRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -276,8 +288,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_Update_Handler,
 		},
 		{
-			MethodName: "Login",
-			Handler:    _UserService_Login_Handler,
+			MethodName: "GetLoggedInUserInfo",
+			Handler:    _UserService_GetLoggedInUserInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

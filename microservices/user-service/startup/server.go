@@ -106,7 +106,6 @@ func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	// grpcServer := grpc.NewServer()
 	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(server.config.PublicKey))
 	if err != nil {
 		log.Fatalf("failed to parse public key: %v", err)

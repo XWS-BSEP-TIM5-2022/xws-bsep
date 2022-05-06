@@ -29,7 +29,6 @@ func NewJWTManager(privateKey, publicKey string) (*JWTService, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return &JWTService{
 		privateKey:          parsedPrivateKey,
 		publicKey:           parsedPublicKey,
@@ -46,11 +45,9 @@ func (manager *JWTService) GenerateToken(auth *domain.Authentication) (string, e
 		Username: auth.Username,
 		Role:     auth.Role,
 	}
-
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodRS256,
 		claims,
 	)
-
 	return token.SignedString(manager.privateKey)
 }

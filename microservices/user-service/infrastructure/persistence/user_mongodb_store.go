@@ -5,6 +5,7 @@ import (
 	_ "context"
 	"errors"
 	_ "errors"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"go.mongodb.org/mongo-driver/bson"
 	_ "go.mongodb.org/mongo-driver/bson"
@@ -41,7 +42,6 @@ func (store *UserMongoDBStore) GetByUsername(username string) (*domain.User, err
 }
 
 func (store *UserMongoDBStore) Insert(user *domain.User) (string, error) {
-	user.Id = primitive.NewObjectID()
 	result, err := store.users.InsertOne(context.TODO(), user)
 	if err != nil {
 		return "error", err
@@ -124,4 +124,18 @@ func decode(cursor *mongo.Cursor) (users []*domain.User, err error) {
 	}
 	err = cursor.Err()
 	return
+}
+
+func (store *UserMongoDBStore) GetById(hexId string) (*domain.User, error) {
+	id, err := hexIdToId(hexId)
+	if err != nil {
+		return nil, err
+	}
+
+	filter := bson.M{"_id": id}
+	return store.filterOne(filter)
+}
+
+func hexIdToId(hexId string) (primitive.ObjectID, error) {
+	return primitive.ObjectIDFromHex(hexId)
 }
