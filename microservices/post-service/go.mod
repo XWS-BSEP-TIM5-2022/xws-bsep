@@ -2,10 +2,13 @@ module github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service
 
 go 1.18
 
+replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
+
 require (
-	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-20220505112847-e01084665bd8
+	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0
 	go.mongodb.org/mongo-driver v1.9.1
 	google.golang.org/grpc v1.46.0
+	google.golang.org/protobuf v1.28.0
 )
 
 require (
@@ -24,6 +27,5 @@ require (
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/genproto v0.0.0-20220429170224-98d788798c3e // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/genproto v0.0.0-20220505152158-f39f71e6c8f3 // indirect
 )

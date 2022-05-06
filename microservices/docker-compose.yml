@@ -42,6 +42,25 @@ services:
     networks:
       - network
 
+#  connection_service:
+#    image: connection_service
+#    container_name: connection_service
+#    build:
+#      context: .
+#      dockerfile: ./connection-service/Dockerfile
+#    restart: on-failure
+#    environment:
+#      CONNECTION_DB_HOST: ${CONNECTION_DB_HOST}
+#      CONNECTION_DB_PORT: ${CONNECTION_DB_PORT}
+#      CONNECTION_DB_USER: ${CONNECTION_DB_USER}
+#      CONNECTION_DB_PASS: ${CONNECTION_DB_PASS}
+#      CONNECTION_DB_NAME: ${CONNECTION_DB_NAME}
+#      CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
+#    depends_on:
+#      - connection_db
+#    networks:
+#      - network
+
   api_gateway:
     image: api_gateway
     container_name: api_gateway
@@ -80,30 +99,48 @@ services:
     networks:
       - network
 
-#   post_service:
-#     image: post_service
-#     container_name: post_service
-#     build:
-#       context: .
-#       dockerfile: ./post-service/Dockerfile
-#     restart: on-failure
-#     environment:
-#       POST_DB_HOST: ${POST_DB_HOST}
-#       POST_DB_PORT: ${POST_DB_PORT}
-#       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
-#     depends_on:
-#       - post_db
-#     networks:
-#       - network
+  post_service:
+    image: post_service
+    container_name: post_service
+    build:
+      context: .
+      dockerfile: ./post-service/Dockerfile
+    restart: on-failure
+    environment:
+      POST_DB_HOST: ${POST_DB_HOST}
+      POST_DB_PORT: ${POST_DB_PORT}
+      POST_SERVICE_PORT: ${POST_SERVICE_PORT}
+    depends_on:
+      - post_db
+    networks:
+      - network
 
-#   post_db:
-#     image: mongo
-#     container_name: post_db
-#     restart: on-failure
-# #    ports:
-# #      - 27018:27017
-#     networks:
-#       - network
+  post_db:
+    image: mongo
+    container_name: post_db
+    restart: on-failure
+#    ports:
+#      - 27018:27017
+    networks:
+      - network
+
+  post_db:
+    image: mongo
+    container_name: post_db
+    restart: on-failure
+    ports:
+      - 27019:27017
+    networks:
+      - network
+
+#  connection_db:
+#    image: neo4j
+#    container_name: connection_db
+#    restart: on-failure
+#    ports:
+#      - 7688:7687
+#    networks:
+#      - network
 
   # nats:
   #   image: nats

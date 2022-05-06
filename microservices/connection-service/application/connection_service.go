@@ -29,6 +29,10 @@ func (service *ConnectionService) GetFriends(id string) ([]*domain.UserConn, err
 	return friendsRetVal, nil
 }
 
+func (service *ConnectionService) Register(userID string, isPublic bool) (*pb.ActionResult, error) {
+	return service.store.Register(userID, isPublic)
+}
+
 func (service *ConnectionService) AddFriend(userIDa, userIDb string) (*pb.ActionResult, error) {
-	return service.store.AddFriend(userIDa, userIDb), nil
+	return service.store.AddFriend(userIDa, userIDb)
 }

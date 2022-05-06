@@ -11,6 +11,7 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/infrastructure/api"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/startup/config"
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 	"google.golang.org/grpc"
 )
 
@@ -33,15 +34,19 @@ func (server *Server) Start() {
 
 	connectionStore := server.initConnectionStore(neo4jClient)
 
-	productService := server.initConnectionService(connectionStore)
+	connectionService := server.initConnectionService(connectionStore)
 
-	productHandler := server.initConnectionHandler(productService)
+	connectionHandler := server.initConnectionHandler(connectionService)
 
-	server.startGrpcServer(productHandler)
+	server.startGrpcServer(connectionHandler)
 }
 
 func (server *Server) initNeo4J() *neo4j.Driver {
-	client, err := persistence.GetClient(server.config.Neo4jUri, server.config.Neo4jUsername, server.config.Neo4jPassword)
+
+	//uri := "bolt:\\" + server.config.ConnectionDBHost + ":" + server.config.ConnectionDBPort
+	dbUri := "bolt://localhost:7687"
+
+	client, err := persistence.GetClient(dbUri, server.config.Neo4jUsername, server.config.Neo4jPassword)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -70,13 +75,13 @@ func (server *Server) initConnectionHandler(service *application.ConnectionServi
 	return api.NewConnectionHandler(service)
 }
 
-func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
+func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	inventory.RegisterUserServiceServer(grpcServer, userHandler)
+	inventory.RegisterConnectionServiceServer(grpcServer, connectionHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}

@@ -13,4 +13,5 @@ type UserStore interface {
 	DeleteAll()
 	Update(user *User) (string, error)
 	GetById(userId string) (*User, error)
+	Search(criteria string) ([]*User, error)
 }

@@ -47,3 +47,6 @@ func (service *UserService) GetByUsername(username string) (*domain.User, error)
 func (service *UserService) GetById(userId string) (*domain.User, error) {
 	return service.store.GetById(userId)
 }
+func (service *UserService) Search(criteria string) ([]*domain.User, error) {
+	return service.store.Search(criteria)
+}
