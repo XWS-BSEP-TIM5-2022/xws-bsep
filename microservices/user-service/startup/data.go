@@ -1,9 +1,10 @@
 package startup
 
 import (
+	"time"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"time"
 )
 
 var users = []*domain.User{
@@ -17,10 +18,10 @@ var users = []*domain.User{
 		Email:        "ranko@gmail.com",
 		Biography:    "Vredan od malih nogu",
 		Username:     "rankoRankovic",
-		Password:     "ranko",
-		IsPublic:     true,
-		Education:    []domain.Education{},
-		Experience:   []domain.Experience{},
+		// Password:     "ranko",
+		IsPublic:   true,
+		Education:  []domain.Education{},
+		Experience: []domain.Experience{},
 		Skills: []domain.Skill{
 			{Id: getObjectId("623b0cc336a1d6fd8c4cf0f6"), Name: "Java"},
 		},
@@ -36,8 +37,8 @@ var users = []*domain.User{
 		Email:        "markic@gmail.com",
 		Biography:    "Rodjen u Novom Sadu",
 		Username:     "markooom",
-		Password:     "marko",
-		IsPublic:     true,
+		// Password:     "marko",
+		IsPublic: true,
 		Education: []domain.Education{
 			{
 				Id:        getObjectId("643b0cc136a1d6fd8c1cf0f6"),
@@ -70,9 +71,9 @@ var users = []*domain.User{
 		Email:        "markovic@gmail.com",
 		Biography:    "Brat Marko",
 		Username:     "janamarkovic",
-		Password:     "jana",
-		IsPublic:     false,
-		Education:    []domain.Education{},
+		// Password:     "jana",
+		IsPublic:  false,
+		Education: []domain.Education{},
 		Experience: []domain.Experience{
 			{
 				Id:        getObjectId("623b4ab326a1d6fd8c3cf0f5"),

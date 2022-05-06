@@ -148,8 +148,8 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 		Gender:       mapInsertGender(newData.Gender),
 		Email:        newData.Email,
 		Biography:    newData.Biography,
-		Password:     newData.Password,
-		IsPublic:     oldData.IsPublic,
+		// Password:     newData.Password,
+		IsPublic: oldData.IsPublic,
 	}
 
 	if mapInsertGender(newData.Gender) == -1 {
@@ -186,9 +186,9 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 		userPb.Biography = oldData.Biography
 	}
 
-	if newData.Password == "" {
-		userPb.Password = oldData.Password
-	}
+	// if newData.Password == "" {
+	// 	userPb.Password = oldData.Password
+	// }
 
 	educations := oldData.Education
 
