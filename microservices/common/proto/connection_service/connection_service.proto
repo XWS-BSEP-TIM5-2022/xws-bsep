@@ -10,17 +10,17 @@ import "google/protobuf/timestamp.proto";
 
 service ConnectionService{
 
-  rpc GetFriends(GetRequest) returns(Users) {
-    option (google.api.http) = {
-      get: "/connection/user/{userID}/friends"
-    };
-  }
-
-  rpc GetBlockeds(GetRequest) returns(Users) {
-    option (google.api.http) = {
-      get: "/connection/user/{userID}/blockeds"
-    };
-  }
+//  rpc GetFriends(GetRequest) returns(Users) {
+//    option (google.api.http) = {
+//      get: "/connection/user/{userID}/friends"
+//    };
+//  }
+//
+//  rpc GetBlockeds(GetRequest) returns(Users) {
+//    option (google.api.http) = {
+//      get: "/connection/user/{userID}/blockeds"
+//    };
+//  }
 
   rpc Register(RegisterRequest) returns (ActionResult) {
     option (google.api.http) = {
@@ -29,19 +29,19 @@ service ConnectionService{
     };
   }
 
-  rpc AddFriend(AddFriendRequest) returns (ActionResult) {
-    option (google.api.http) = {
-      post: "/connection/friend"
-      body:"addFriendDTO"
-    };
-  }
-
-  rpc AddBlockUser(AddBlockUserRequest) returns (ActionResult) {
-    option (google.api.http) = {
-      post: "/connection/block"
-      body:"addBlockUserDTO"
-    };
-  }
+//  rpc AddFriend(AddFriendRequest) returns (ActionResult) {
+//    option (google.api.http) = {
+//      post: "/connection/friend"
+//      body:"addFriendDTO"
+//    };
+//  }
+//
+//  rpc AddBlockUser(AddBlockUserRequest) returns (ActionResult) {
+//    option (google.api.http) = {
+//      post: "/connection/block"
+//      body:"addBlockUserDTO"
+//    };
+//  }
 
 
 }

@@ -34,18 +34,19 @@ func (server *Server) Start() {
 
 	connectionStore := server.initConnectionStore(neo4jClient)
 
-	productService := server.initConnectionService(connectionStore)
+	connectionService := server.initConnectionService(connectionStore)
 
-	productHandler := server.initConnectionHandler(productService)
+	connectionHandler := server.initConnectionHandler(connectionService)
 
-	server.startGrpcServer(productHandler)
+	server.startGrpcServer(connectionHandler)
 }
 
 func (server *Server) initNeo4J() *neo4j.Driver {
 
-	uri := "bolt:\\" + server.config.ConnectionDBHost + ":" + server.config.ConnectionDBPort
+	//uri := "bolt:\\" + server.config.ConnectionDBHost + ":" + server.config.ConnectionDBPort
+	dbUri := "bolt://localhost:7687"
 
-	client, err := persistence.GetClient(uri, server.config.ConnectionDBUser, server.config.ConnectionDBPass)
+	client, err := persistence.GetClient(dbUri, server.config.Neo4jUsername, server.config.Neo4jPassword)
 	if err != nil {
 		log.Fatal(err)
 	}
