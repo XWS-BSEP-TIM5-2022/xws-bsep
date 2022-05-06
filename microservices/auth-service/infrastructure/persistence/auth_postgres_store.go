@@ -29,3 +29,13 @@ func (store *AuthPostgresStore) FindByUsername(username string) (*domain.Authent
 	err := store.db.First(&auths, "username = ?", username)
 	return &auths, err.Error
 }
+
+func (store *AuthPostgresStore) FindAll() ([]domain.Authentication, error) {
+	var auths []domain.Authentication
+	result := store.db.Find(&auths)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return auths, nil
+
+}

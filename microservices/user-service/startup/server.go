@@ -33,9 +33,6 @@ const (
 )
 
 func (server *Server) Start() {
-	//postgresClient := server.initPostgresClient()
-	//userStore := server.initUserStore(postgresClient)
-
 	mongoClient := server.initMongoClient()
 	userStore := server.initUserStore(mongoClient)
 
@@ -66,33 +63,6 @@ func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
 	return store
 }
 
-//func (server *Server) initPostgresClient() *gorm.DB {
-//	client, err := persistence.GetClient(
-//		server.config.UserDBHost, server.config.UserDBUser,
-//		server.config.UserDBPass, server.config.UserDBName,
-//		server.config.UserDBPort)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	return client
-//}
-//
-//func (server *Server) initUserStore(client *gorm.DB) domain.UserStore {
-//	store, err := persistence.NewUserPostgresStore(client)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//	store.DeleteAll()
-//	for _, User := range users {
-//		res, err := store.Insert(User)
-//		fmt.Println(res)
-//		if err != nil {
-//			log.Fatal(err)
-//		}
-//	}
-//	return store
-//}
-
 func (server *Server) initUserService(store domain.UserStore) *application.UserService {
 	return application.NewUserService(store)
 }
@@ -111,6 +81,7 @@ func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
 		log.Fatalf("failed to parse public key: %v", err)
 	}
 
+	fmt.Println(config.AccessibleRoles())
 	interceptor := interceptor.NewAuthInterceptor(config.AccessibleRoles(), publicKey)
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(interceptor.Unary()))
 	inventory.RegisterUserServiceServer(grpcServer, userHandler)

@@ -26,3 +26,7 @@ func (handler *AuthHandler) Register(ctx context.Context, request *pb.RegisterRe
 func (handler *AuthHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
 	return handler.service.Login(ctx, request)
 }
+
+func (handler *AuthHandler) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
+	return handler.service.GetAll(ctx, request)
+}

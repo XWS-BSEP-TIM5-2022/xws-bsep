@@ -19,8 +19,8 @@ func mapUser(user *domain.User) *pb.User {
 		Birthday:     timestamppb.New(user.Birthday),
 		Email:        user.Email,
 		Biography:    user.Biography,
-		Password:     user.Password,
-		IsPublic:     user.IsPublic,
+		// Password:     user.Password,
+		IsPublic: user.IsPublic,
 	}
 
 	for _, education := range user.Education {
@@ -75,8 +75,8 @@ func mapInsertUser(user *pb.User) *domain.User {
 		Gender:       mapInsertGender(user.Gender),
 		Email:        user.Email,
 		Biography:    user.Biography,
-		Password:     user.Password,
-		IsPublic:     user.IsPublic,
+		// Password:     user.Password,
+		IsPublic: user.IsPublic,
 	}
 
 	if user.Birthday != nil {

@@ -8,12 +8,12 @@ import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
 service UserService{
-    rpc Get(GetRequest) returns(GetResponse) {
+    rpc Get(GetRequest) returns(GetResponse) {  // auth
     option (google.api.http) = {
         get: "/user/{id}"
     };
     }
-    rpc GetAll(GetAllRequest) returns(GetAllResponse) {
+    rpc GetAll(GetAllRequest) returns(GetAllResponse) { // auth
         option (google.api.http) = {
         get: "/user"
     };
@@ -23,13 +23,13 @@ service UserService{
             get: "/user/public"
         };
     }
-    rpc Insert(InsertRequest) returns(InsertResponse) {
+    rpc Insert(InsertRequest) returns(InsertResponse) {  // auth
         option (google.api.http) = {
                 post: "/user"
                 body: "user"
         };
     }
-    rpc Update(UpdateRequest) returns(UpdateResponse) {
+    rpc Update(UpdateRequest) returns(UpdateResponse) {  // auth
         option (google.api.http) = {
             put: "/user/update"
             body: "user"
@@ -41,7 +41,7 @@ service UserService{
     //         body: "data"
     //     };
     // }
-    rpc GetLoggedInUserInfo(GetAllRequest) returns (User) {
+    rpc GetLoggedInUserInfo(GetAllRequest) returns (User) { // auth
         option (google.api.http) = {
           get: "/user/info"
         };
@@ -121,7 +121,6 @@ message User {
     google.protobuf.Timestamp birthday = 7;
     string username = 8;
     string biography = 9;
-    string password = 10;
     bool isPublic = 11;
     repeated Education education = 12;
     repeated Experience experience = 13;

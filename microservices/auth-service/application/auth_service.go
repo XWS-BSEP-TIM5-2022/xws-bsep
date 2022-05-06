@@ -36,7 +36,6 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		Birthday:     request.Birthday,
 		Email:        request.Email,
 		Biography:    request.Biography,
-		Password:     request.Password,
 		IsPublic:     request.IsPublic,
 	}
 	createUserRequest := &user.InsertRequest{
@@ -94,4 +93,24 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	return &pb.LoginResponse{
 		Token: token,
 	}, nil
+}
+
+func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
+	auths, err := service.store.FindAll()
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.GetAllResponse{
+		Auth: []*pb.Auth{},
+	}
+	for _, auth := range auths {
+		current := &pb.Auth{
+			Id:       auth.Id,
+			Username: auth.Username,
+			Password: auth.Password,
+			Role:     auth.Role,
+		}
+		response.Auth = append(response.Auth, current)
+	}
+	return response, nil
 }
