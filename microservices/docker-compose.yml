@@ -76,6 +76,8 @@ services:
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
       AUTH_SERVICE_HOST: ${AUTH_SERVICE_HOST}
       AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      POST_SERVICE_HOST: ${POST_SERVICE_HOST}
+      POST_SERVICE_PORT: ${POST_SERVICE_PORT}
     networks:
       - network
 
@@ -110,17 +112,9 @@ services:
       POST_DB_HOST: ${POST_DB_HOST}
       POST_DB_PORT: ${POST_DB_PORT}
       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
+      PUBLIC_KEY: ${PUBLIC_KEY}
     depends_on:
       - post_db
-    networks:
-      - network
-
-  post_db:
-    image: mongo
-    container_name: post_db
-    restart: on-failure
-#    ports:
-#      - 27018:27017
     networks:
       - network
 

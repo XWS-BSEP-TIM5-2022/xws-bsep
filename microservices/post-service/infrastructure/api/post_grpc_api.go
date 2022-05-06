@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -84,6 +85,8 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 	}
 
 	post := mapInsertPost(request.Post)
+	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	post.UserId = userId
 	success, err := handler.service.Insert(post)
 	if err != nil {
 		return nil, err

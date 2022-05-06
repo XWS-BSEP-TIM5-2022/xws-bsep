@@ -6,6 +6,7 @@ type Config struct {
 	Port       string
 	PostDBHost string
 	PostDBPort string
+	PublicKey  string
 }
 
 func NewConfig() *Config {
@@ -13,5 +14,6 @@ func NewConfig() *Config {
 		Port:       os.Getenv("POST_SERVICE_PORT"),
 		PostDBHost: os.Getenv("POST_DB_HOST"),
 		PostDBPort: os.Getenv("POST_DB_PORT"),
+		PublicKey:  os.Getenv("PUBLIC_KEY"),
 	}
 }
