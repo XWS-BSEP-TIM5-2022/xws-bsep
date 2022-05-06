@@ -12,6 +12,7 @@ import (
 	_ "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"strings"
 )
 
 const (
@@ -94,6 +95,36 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 		return "one document should've been updated", errors.New("one document should've been updated")
 	}
 	return "success", nil
+
+}
+
+func (store *UserMongoDBStore) Search(criteria string) ([]*domain.User, error) {
+	criteria = strings.ToLower(criteria)
+	criteria = strings.TrimSpace(criteria)
+	words := strings.Split(criteria, " ")
+
+	var ret []*domain.User
+
+	users, err := store.GetAllPublic()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, word := range words {
+
+		for _, user := range users {
+
+			name := strings.ToLower(user.Name)
+			lastName := strings.ToLower(user.LastName)
+
+			if strings.Contains(name, word) || strings.Contains(lastName, word) {
+				ret = append(ret, user)
+			}
+		}
+	}
+
+	return ret, nil
 
 }
 
