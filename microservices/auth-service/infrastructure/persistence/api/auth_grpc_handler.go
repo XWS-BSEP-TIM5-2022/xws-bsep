@@ -19,10 +19,10 @@ func NewAuthHandler(service *application.AuthService) *AuthHandler {
 }
 
 func (handler *AuthHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+	return handler.service.Register(ctx, request)
 
-	return nil, nil
 }
 
 func (handler *AuthHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
-	return handler.service.Login(request)
+	return handler.service.Login(ctx, request)
 }

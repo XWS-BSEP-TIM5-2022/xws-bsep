@@ -41,13 +41,6 @@ service UserService{
             body: "data"
         };
     }
-
-    // rpc Register(RegisterRequest) returns (RegisterReponse) {
-    //     option (google.api.http) = {
-    //         post: "/user/register"
-    //         body: "user"
-    //     };
-    // }
 }
 
 message GetRequest {
@@ -169,10 +162,3 @@ message Interest{
     string description=3;
 }
 
-message RegisterRequest {
-    User user = 1;
-}
-
-message RegisterReponse {
-    string id = 1;
-}
