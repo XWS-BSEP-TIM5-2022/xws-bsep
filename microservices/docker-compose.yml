@@ -11,52 +11,49 @@ services:
     environment:
       USER_DB_HOST: ${USER_DB_HOST}
       USER_DB_PORT: ${USER_DB_PORT}
-      USER_DB_USER: ${USER_DB_USER}
-      USER_DB_PASS: ${USER_DB_PASS}
-      USER_DB_NAME: ${USER_DB_NAME}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
     depends_on:
       - user_db
     networks:
       - network
 
-  auth_service:
-    image: auth_service
-    container_name: auth_service
-    build:
-      context: .
-      dockerfile: ./auth-service/Dockerfile
-    restart: on-failure
-    environment:
-      AUTH_DB_HOST: ${AUTH_DB_HOST}
-      AUTH_DB_PORT: ${AUTH_DB_PORT}
-      AUTH_DB_USER: ${AUTH_DB_USER}
-      AUTH_DB_PASS: ${AUTH_DB_PASS}
-      AUTH_DB_NAME: ${AUTH_DB_NAME}
-      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
-    depends_on:
-      - auth_db
-    networks:
-      - network
+  # auth_service:
+  #   image: auth_service
+  #   container_name: auth_service
+  #   build:
+  #     context: .
+  #     dockerfile: ./auth-service/Dockerfile
+  #   restart: on-failure
+  #   environment:
+  #     AUTH_DB_HOST: ${AUTH_DB_HOST}
+  #     AUTH_DB_PORT: ${AUTH_DB_PORT}
+  #     AUTH_DB_USER: ${AUTH_DB_USER}
+  #     AUTH_DB_PASS: ${AUTH_DB_PASS}
+  #     AUTH_DB_NAME: ${AUTH_DB_NAME}
+  #     AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+  #   depends_on:
+  #     - auth_db
+  #   networks:
+  #     - network
 
-  connection_service:
-    image: connection_service
-    container_name: connection_service
-    build:
-      context: .
-      dockerfile: ./connection-service/Dockerfile
-    restart: on-failure
-    environment:
-      CONNECTION_DB_HOST: ${CONNECTION_DB_HOST}
-      CONNECTION_DB_PORT: ${CONNECTION_DB_PORT}
-      CONNECTION_DB_USER: ${CONNECTION_DB_USER}
-      CONNECTION_DB_PASS: ${CONNECTION_DB_PASS}
-      CONNECTION_DB_NAME: ${CONNECTION_DB_NAME}
-      CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
-    depends_on:
-      - connection_db
-    networks:
-      - network
+#  connection_service:
+#    image: connection_service
+#    container_name: connection_service
+#    build:
+#      context: .
+#      dockerfile: ./connection-service/Dockerfile
+#    restart: on-failure
+#    environment:
+#      CONNECTION_DB_HOST: ${CONNECTION_DB_HOST}
+#      CONNECTION_DB_PORT: ${CONNECTION_DB_PORT}
+#      CONNECTION_DB_USER: ${CONNECTION_DB_USER}
+#      CONNECTION_DB_PASS: ${CONNECTION_DB_PASS}
+#      CONNECTION_DB_NAME: ${CONNECTION_DB_NAME}
+#      CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
+#    depends_on:
+#      - connection_db
+#    networks:
+#      - network
 
   api_gateway:
     image: api_gateway
@@ -71,39 +68,69 @@ services:
       GATEWAY_PORT: ${GATEWAY_PORT}
       USER_SERVICE_HOST: ${USER_SERVICE_HOST}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      AUTH_SERVICE_HOST: ${AUTH_SERVICE_HOST}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASS}
+      POSTGRES_DB: ${AUTH_DB_NAME}
+      POST_SERVICE_HOST: ${POST_SERVICE_HOST}
+      POST_SERVICE_PORT: ${POST_SERVICE_PORT}
     networks:
       - network
 
   user_db:
-    image: postgres
+    image: mongo
     container_name: user_db
     restart: on-failure
-    environment:
-      POSTGRES_USER: ${USER_DB_USER}
-      POSTGRES_PASSWORD: ${USER_DB_PASS}
-      POSTGRES_DB: ${USER_DB_NAME}
+    ports:
+      - 27018:27017
     networks:
       - network
 
-  auth_db:
-    image: postgres
-    container_name: auth_db
+  # auth_db:
+  #   image: postgres
+  #   container_name: auth_db
+  #   restart: on-failure
+  #   environment:
+  #     POSTGRES_USER: ${AUTH_DB_USER}
+  #     POSTGRES_PASSWORD: ${AUTH_DB_PASS}
+  #     POSTGRES_DB: ${AUTH_DB_NAME}
+  #   networks:
+  #     - network
+
+  post_service:
+    image: post_service
+    container_name: post_service
+    build:
+      context: .
+      dockerfile: ./post-service/Dockerfile
     restart: on-failure
     environment:
-      POSTGRES_USER: ${AUTH_DB_USER}
-      POSTGRES_PASSWORD: ${AUTH_DB_PASS}
-      POSTGRES_DB: ${AUTH_DB_NAME}
+      POST_DB_HOST: ${POST_DB_HOST}
+      POST_DB_PORT: ${POST_DB_PORT}
+      POST_SERVICE_PORT: ${POST_SERVICE_PORT}
+    depends_on:
+      - post_db
     networks:
       - network
 
-  connection_db:
-    image: neo4j
-    container_name: connection_db
+  post_db:
+    image: mongo
+    container_name: post_db
     restart: on-failure
     ports:
-      - 7688:7687
+      - 27019:27017
     networks:
       - network
+
+#  connection_db:
+#    image: neo4j
+#    container_name: connection_db
+#    restart: on-failure
+#    ports:
+#      - 7688:7687
+#    networks:
+#      - network
 
   # nats:
   #   image: nats

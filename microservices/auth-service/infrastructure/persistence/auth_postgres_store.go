@@ -1,8 +1,6 @@
 package persistence
 
 import (
-	"fmt"
-
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 
 	"gorm.io/gorm"
@@ -33,9 +31,31 @@ func (store *AuthPostgresStore) Create(authentication *domain.Authentication) (s
 func (store *AuthPostgresStore) GetAll() (*[]domain.Authentication, error) {
 	var auths []domain.Authentication
 	result := store.db.Find(&auths)
-	fmt.Println(result)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return &auths, nil
+}
+
+func (store *AuthPostgresStore) Get(id string) (*domain.Authentication, error) {
+	authentication := domain.Authentication{}
+
+	result := store.db.Find(&authentication, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &authentication, nil
+}
+
+func (store *AuthPostgresStore) DeleteAll() {
+	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
+		Delete(&domain.Authentication{})
+}
+
+func (store *AuthPostgresStore) Insert(auth *domain.Authentication) (string, error) {
+	result := store.db.Create(auth)
+	if result.Error != nil {
+		return "error", result.Error
+	}
+	return "success", nil
 }

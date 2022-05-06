@@ -53,14 +53,3 @@ func (handler *UserHandler) GetDetails(w http.ResponseWriter, r *http.Request, p
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
-
-// func (handler *UserHandler) addOrderInfo(userDetails *domain.User) error {
-// 	orderingClient := services.NewUserClient(handler.userClientAddress)
-// 	userInfo, err := orderingClient.Get(context.TODO(), &user.GetRequest{Id: userDetails.Id})
-// 	if err != nil {
-// 		return err
-// 	}
-// 	userDetails.Id = userInfo.User.Id
-// 	userDetails.Name = userInfo.User.Name.String()
-// 	return nil
-// }

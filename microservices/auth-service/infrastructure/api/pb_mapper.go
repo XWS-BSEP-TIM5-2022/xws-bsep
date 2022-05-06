@@ -10,6 +10,8 @@ func mapCreateAuth(authPb *pb.Auth) *domain.Authentication {
 		Id:       authPb.Id,
 		Name:     authPb.Name,
 		Password: authPb.Password,
+		Role:     authPb.Role,
+		Date:     authPb.Date.AsTime().UTC(),
 	}
 
 	return auth

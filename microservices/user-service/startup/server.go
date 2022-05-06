@@ -2,6 +2,8 @@ package startup
 
 import (
 	"fmt"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/persistence"
+	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net"
 
@@ -9,10 +11,8 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/api"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/startup/config"
 	"google.golang.org/grpc"
-	"gorm.io/gorm"
 )
 
 type Server struct {
@@ -30,9 +30,12 @@ const (
 )
 
 func (server *Server) Start() {
-	postgresClient := server.initPostgresClient()
-	fmt.Println(postgresClient)
-	userStore := server.initUserStore(postgresClient)
+	//postgresClient := server.initPostgresClient()
+	//userStore := server.initUserStore(postgresClient)
+
+	mongoClient := server.initMongoClient()
+	userStore := server.initUserStore(mongoClient)
+
 	userService := server.initUserService(userStore)
 
 	userHandler := server.initUserHandler(userService)
@@ -40,32 +43,52 @@ func (server *Server) Start() {
 	server.startGrpcServer(userHandler)
 }
 
-func (server *Server) initPostgresClient() *gorm.DB {
-	client, err := persistence.GetClient(
-		server.config.UserDBHost, server.config.UserDBUser,
-		server.config.UserDBPass, server.config.UserDBName,
-		server.config.UserDBPort)
+func (server *Server) initMongoClient() *mongo.Client {
+	client, err := persistence.GetClient(server.config.UserDBHost, server.config.UserDBPort)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return client
 }
 
-func (server *Server) initUserStore(client *gorm.DB) domain.UserStore {
-	store, err := persistence.NewUserPostgresStore(client)
-	if err != nil {
-		log.Fatal(err)
-	}
+func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
+	store := persistence.NewUserMongoDBStore(client)
 	store.DeleteAll()
-	for _, User := range users {
-		res, err := store.Insert(User)
-		fmt.Println(res)
+	for _, user := range users {
+		_, err := store.Insert(user)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 	return store
 }
+
+//func (server *Server) initPostgresClient() *gorm.DB {
+//	client, err := persistence.GetClient(
+//		server.config.UserDBHost, server.config.UserDBUser,
+//		server.config.UserDBPass, server.config.UserDBName,
+//		server.config.UserDBPort)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	return client
+//}
+//
+//func (server *Server) initUserStore(client *gorm.DB) domain.UserStore {
+//	store, err := persistence.NewUserPostgresStore(client)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	store.DeleteAll()
+//	for _, User := range users {
+//		res, err := store.Insert(User)
+//		fmt.Println(res)
+//		if err != nil {
+//			log.Fatal(err)
+//		}
+//	}
+//	return store
+//}
 
 func (server *Server) initUserService(store domain.UserStore) *application.UserService {
 	return application.NewUserService(store)
