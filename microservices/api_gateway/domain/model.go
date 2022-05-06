@@ -32,6 +32,12 @@ type User struct {
 	Password     string
 }
 
+type Connection struct {
+	Id      string
+	UserAid string
+	UserBid string
+}
+
 type Authentication struct {
 	Id       string
 	Name     string

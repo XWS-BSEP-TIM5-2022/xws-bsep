@@ -28,3 +28,17 @@ func checkIfFriendExist(userIDa, userIDb string, transaction neo4j.Transaction) 
 	}
 	return false
 }
+
+func checkIfBlockExist(userIDa, userIDb string, transaction neo4j.Transaction) bool {
+	result, _ := transaction.Run(
+		"MATCH (u1:USER) WHERE u1.userID=$uIDa "+
+			"MATCH (u2:USER) WHERE u2.userID=$uIDb "+
+			"MATCH (u1)-[r:BLOCK]->(u2) "+
+			"RETURN r.date ",
+		map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb})
+
+	if result != nil && result.Next() {
+		return true
+	}
+	return false
+}

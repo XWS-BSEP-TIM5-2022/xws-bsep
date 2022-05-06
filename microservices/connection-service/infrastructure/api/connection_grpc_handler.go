@@ -34,3 +34,17 @@ func (handler *ConnectionHandler) GetFriends(ctx context.Context, request *pb.Ge
 	}
 	return response, nil
 }
+
+func (handler *ConnectionHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.ActionResult, error) {
+	fmt.Println("[ConnectionHandler]:Register")
+	userID := request.User.UserID
+	isPublic := request.User.IsPublic
+	return handler.service.Register(userID, isPublic)
+}
+
+func (handler *ConnectionHandler) AddFriend(ctx context.Context, request *pb.AddFriendRequest) (*pb.ActionResult, error) {
+	fmt.Println("[ConnectionHandler]:AddFriend")
+	userIDa := request.AddFriendDTO.UserIDa
+	userIDb := request.AddFriendDTO.UserIDb
+	return handler.service.AddFriend(userIDa, userIDb)
+}

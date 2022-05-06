@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ConnectionServiceClient interface {
 	GetFriends(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error)
+	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	AddFriend(ctx context.Context, in *AddFriendRequest, opts ...grpc.CallOption) (*ActionResult, error)
 }
 
@@ -43,6 +44,15 @@ func (c *connectionServiceClient) GetFriends(ctx context.Context, in *GetRequest
 	return out, nil
 }
 
+func (c *connectionServiceClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*ActionResult, error) {
+	out := new(ActionResult)
+	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/Register", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *connectionServiceClient) AddFriend(ctx context.Context, in *AddFriendRequest, opts ...grpc.CallOption) (*ActionResult, error) {
 	out := new(ActionResult)
 	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/AddFriend", in, out, opts...)
@@ -57,6 +67,7 @@ func (c *connectionServiceClient) AddFriend(ctx context.Context, in *AddFriendRe
 // for forward compatibility
 type ConnectionServiceServer interface {
 	GetFriends(context.Context, *GetRequest) (*Users, error)
+	Register(context.Context, *RegisterRequest) (*ActionResult, error)
 	AddFriend(context.Context, *AddFriendRequest) (*ActionResult, error)
 	mustEmbedUnimplementedConnectionServiceServer()
 }
@@ -67,6 +78,9 @@ type UnimplementedConnectionServiceServer struct {
 
 func (UnimplementedConnectionServiceServer) GetFriends(context.Context, *GetRequest) (*Users, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFriends not implemented")
+}
+func (UnimplementedConnectionServiceServer) Register(context.Context, *RegisterRequest) (*ActionResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedConnectionServiceServer) AddFriend(context.Context, *AddFriendRequest) (*ActionResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddFriend not implemented")
@@ -102,6 +116,24 @@ func _ConnectionService_GetFriends_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConnectionService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionServiceServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connection_service.ConnectionService/Register",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionServiceServer).Register(ctx, req.(*RegisterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConnectionService_AddFriend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddFriendRequest)
 	if err := dec(in); err != nil {
@@ -130,6 +162,10 @@ var ConnectionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFriends",
 			Handler:    _ConnectionService_GetFriends_Handler,
+		},
+		{
+			MethodName: "Register",
+			Handler:    _ConnectionService_Register_Handler,
 		},
 		{
 			MethodName: "AddFriend",
