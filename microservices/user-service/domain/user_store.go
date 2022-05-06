@@ -7,6 +7,7 @@ import (
 type UserStore interface {
 	Get(id primitive.ObjectID) (*User, error)
 	GetByUsername(Username string) (*User, error)
+	GetByEmail(Email string) (*User, error)
 	Insert(user *User) (*User, error)
 	GetAll() ([]*User, error)
 	GetAllPublic() ([]*User, error)
