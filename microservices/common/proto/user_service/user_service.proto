@@ -41,6 +41,11 @@ service UserService{
             body: "data"
         };
     }
+    rpc Search(SearchRequest) returns(SearchResponse) {
+        option (google.api.http) = {
+            get: "/user/search/{criteria}"
+        };
+    }
 }
 
 message GetRequest {
@@ -96,6 +101,15 @@ message LoginRequest {
 message LoginResponse {
     string success = 1; 
 }
+
+message SearchRequest {
+    string criteria = 1;
+}
+
+message SearchResponse {
+    repeated User users = 1;
+}
+
 
 message AuthUser{
     string username = 1;
