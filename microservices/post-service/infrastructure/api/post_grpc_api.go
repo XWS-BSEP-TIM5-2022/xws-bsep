@@ -73,12 +73,21 @@ func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetReq
 }
 
 func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
+	//if request.Post.UserId == "" { // mora postojati user koji je kreirao post
+	//	return &pb.InsertResponse{
+	//		Success: "error",
+	//	}, error(nil)
+	//}		// vrati status 200 ok, ali success: error
+
+	if request.Post.UserId == "" { // mora postojati user koji je kreirao post
+		return nil, error(nil) // vrati status 500
+	}
+
 	post := mapInsertPost(request.Post)
 	success, err := handler.service.Insert(post)
 	if err != nil {
 		return nil, err
 	}
-
 	response := &pb.InsertResponse{
 		Success: success,
 	}
@@ -88,7 +97,6 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 func (handler *PostHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 	id, _ := primitive.ObjectIDFromHex(request.Post.Id)
 	oldPost, err := handler.service.Get(id)
-
 	if err != nil {
 		return &pb.UpdateResponse{
 			Success: "error",
@@ -96,18 +104,9 @@ func (handler *PostHandler) Update(ctx context.Context, request *pb.UpdateReques
 	}
 
 	post := mapUpdatePost(mapPost(oldPost), request.Post)
-
 	success, err := handler.service.Update(post)
 	response := &pb.UpdateResponse{
 		Success: success,
 	}
 	return response, err
-
-	///
-	//post := mapUpdatePost(request.Post)
-	//success, err := handler.service.Update(post)
-	//response := &pb.UpdateResponse{
-	//	Success: success,
-	//}
-	//return response, err
 }

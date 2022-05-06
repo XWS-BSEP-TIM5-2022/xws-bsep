@@ -65,7 +65,7 @@ func mapUpdatePost(oldData *pb.Post, newData *pb.Post) *domain.Post {
 	postPb := &domain.Post{
 		Id:          id,
 		Text:        newData.Text,
-		UserId:      newData.UserId,
+		UserId:      oldData.UserId, // ne moze se kreator post-a
 		Images:      newData.Images,
 		Links:       newData.Links,
 		DateCreated: oldData.DateCreated.AsTime(),
