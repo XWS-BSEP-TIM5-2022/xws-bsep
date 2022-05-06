@@ -20,14 +20,12 @@ func NewAuthPostgresStore(db *gorm.DB) (domain.AuthStore, error) {
 }
 
 func (store *AuthPostgresStore) Create(auth *domain.Authentication) (*domain.Authentication, error) {
-	result := store.db.Create(auth)
-
-	return auth, result.Error
+	err := store.db.Create(auth)
+	return auth, err.Error
 }
 
 func (store *AuthPostgresStore) FindByUsername(username string) (*domain.Authentication, error) {
-	var authCredentials domain.Authentication
-	result := store.db.First(&authCredentials, "username = ?", username)
-
-	return &authCredentials, result.Error
+	var auths domain.Authentication
+	err := store.db.First(&auths, "username = ?", username)
+	return &auths, err.Error
 }

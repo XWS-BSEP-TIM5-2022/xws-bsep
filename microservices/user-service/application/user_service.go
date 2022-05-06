@@ -1,6 +1,8 @@
 package application
 
 import (
+	"fmt"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -23,9 +25,16 @@ func (service *UserService) GetAllPublic() ([]*domain.User, error) {
 	return service.store.GetAllPublic()
 }
 
-func (service *UserService) Insert(user *domain.User) (string, error) {
-	success, err := service.store.Insert(user)
-	return success, err
+func (service *UserService) Insert(user *domain.User) (*domain.User, error) {
+	user.Id = primitive.NewObjectID()
+	fmt.Println("generisan id usera: ")
+	fmt.Println(user.Id)
+	_, err := service.store.Insert(user)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
 
 func (service *UserService) Update(user *domain.User) (string, error) {

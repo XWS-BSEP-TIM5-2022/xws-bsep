@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"errors"
+
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -50,18 +51,16 @@ func (handler *UserHandler) GetAllPublic(ctx context.Context, request *pb.GetAll
 }
 
 func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
-
 	user := mapInsertUser(request.User)
-	success, err := handler.service.Insert(user)
+	user, err := handler.service.Insert(user)
 
 	if err != nil {
 		return nil, err
+	} else {
+		return &pb.InsertResponse{
+			Id: user.Id.Hex(),
+		}, nil
 	}
-
-	response := &pb.InsertResponse{
-		Success: success,
-	}
-	return response, err
 }
 
 func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
@@ -75,7 +74,6 @@ func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateReques
 }
 
 func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
-
 	id := request.Id
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -93,7 +91,6 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 }
 
 func (handler *UserHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
-
 	user, err := handler.service.GetByUsername(request.GetData().Username)
 	if err != nil {
 		return &pb.LoginResponse{

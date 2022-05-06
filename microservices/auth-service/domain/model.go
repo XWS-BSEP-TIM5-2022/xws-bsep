@@ -13,7 +13,7 @@ type Authentication struct {
 	Role     string `gorm:"index:idx_name"`
 }
 
-func NewCredentials(id, username, password string) (*Authentication, error) {
+func NewAuthCredentials(id, username, password string) (*Authentication, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, fmt.Errorf("cannot hash password: %w", err)
@@ -22,7 +22,7 @@ func NewCredentials(id, username, password string) (*Authentication, error) {
 		Id:       id,
 		Username: username,
 		Password: string(hashedPassword),
-		Role:     "User",
+		Role:     "User", // TODO: modifikovati kada dodamo role
 	}
 	return credentials, nil
 }
