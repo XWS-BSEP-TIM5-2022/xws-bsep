@@ -23,7 +23,7 @@ func NewConfig() *Config {
 		AuthDBName:      os.Getenv("AUTH_DB_NAME"),
 		AuthDBUser:      os.Getenv("AUTH_DB_USER"),
 		AuthDBPass:      os.Getenv("AUTH_DB_PASS"),
-		UserServicePort: os.Getenv("USER_SEVICE_PORT"),
+		UserServicePort: os.Getenv("USER_SERVICE_PORT"),
 		UserServiceHost: os.Getenv("USER_SERVICE_HOST"),
 		PrivateKey:      os.Getenv("PRIVATE_KEY"),
 		PublicKey:       os.Getenv("PUBLIC_KEY"),
