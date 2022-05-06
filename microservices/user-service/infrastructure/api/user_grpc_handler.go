@@ -91,25 +91,7 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	return response, nil
 }
 
-// func (handler *UserHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
-// 	user, err := handler.service.GetByUsername(request.GetData().Username)
-// 	if err != nil {
-// 		return &pb.LoginResponse{
-// 			Success: "there is no user with that username",
-// 		}, errors.New("there is no user with that username")
-// 	}
-
-// 	if request.GetData().Password != user.Password {
-// 		return &pb.LoginResponse{
-// 			Success: "passwords do not match",
-// 		}, errors.New("passwords do not match")
-// 	}
-
-// 	return &pb.LoginResponse{
-// 		Success: "success",
-// 	}, nil
-// }
-
+// user/info
 func (handler *UserHandler) GetLoggedInUserInfo(ctx context.Context, request *pb.GetAllRequest) (*pb.User, error) {
 	log.Println(" ------------------- CONTEXT VALUE - USER ID: %w ------------------- ", ctx.Value(interceptor.LoggedInUserKey{}))
 	// izvlacenje id usera iz context-a

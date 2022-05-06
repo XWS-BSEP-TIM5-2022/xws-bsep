@@ -89,7 +89,6 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	}
 	// u reponsu se vraca token -> koji se postavlja u localstorage na frontu
 	// i salje se uz svaki zahtev u header-u (Authorization "Bearer jwtToken")
-	fmt.Println("RADIIIIIII")
 	return &pb.LoginResponse{
 		Token: token,
 	}, nil
