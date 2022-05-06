@@ -85,7 +85,17 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertReques
 }
 
 func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-	user := mapInsertUser(request.User)
+
+	id, _ := primitive.ObjectIDFromHex(request.User.Id)
+	oldUser, err := handler.service.Get(id)
+
+	if err != nil {
+		return &pb.UpdateResponse{
+			Success: "error",
+		}, err
+	}
+
+	user := mapUpdateUser(mapUser(oldUser), request.User)
 
 	success, err := handler.service.Update(user)
 	response := &pb.UpdateResponse{
