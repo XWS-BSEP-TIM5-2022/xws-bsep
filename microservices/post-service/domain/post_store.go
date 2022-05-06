@@ -8,4 +8,5 @@ type PostStore interface { // nacin za dobavljanje podataka iz skladista
 	DeleteAll()
 	Insert(post *Post) (string, error)
 	Update(post *Post) (string, error)
+	GetAllByUser(string) ([]*Post, error)
 }

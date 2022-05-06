@@ -42,6 +42,11 @@ func (store *PostMongoDBStore) GetAll() ([]*domain.Post, error) {
 	return store.filter(filter)
 }
 
+func (store *PostMongoDBStore) GetAllByUser(id string) ([]*domain.Post, error) {
+	filter := bson.M{"user_id": id}
+	return store.filter(filter)
+}
+
 func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 	post.Id = primitive.NewObjectID()
 	result, err := store.posts.InsertOne(context.TODO(), post)
@@ -58,9 +63,9 @@ func (store *PostMongoDBStore) Update(post *domain.Post) (string, error) {
 		"date_created": post.DateCreated,
 		"images":       post.Images,
 		"links":        post.Links,
-		"likes":        post.Likes,    // TODO
-		"dislikes":     post.Dislikes, // TODO
-		"comments":     post.Comments, // TODO
+		"likes":        post.Likes,
+		"dislikes":     post.Dislikes,
+		"comments":     post.Comments,
 		"user_id":      post.UserId,
 	}}
 
