@@ -32,3 +32,7 @@ func (service *PostService) Update(post *domain.Post) (string, error) {
 	success, err := service.store.Update(post)
 	return success, err
 }
+
+func (service *PostService) GetAllByUser(id string) ([]*domain.Post, error) {
+	return service.store.GetAllByUser(id)
+}
