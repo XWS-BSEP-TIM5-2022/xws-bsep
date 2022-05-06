@@ -12,11 +12,12 @@ func NewAuthService(store domain.AuthStore) *AuthService {
 	}
 }
 
-func (service *AuthService) GetAll() (*[]domain.Authentication, error) {
-	return service.store.GetAll()
+func (service *AuthService) FindByUsername(username string) (*domain.Authentication, error) {
+	success, err := service.store.FindByUsername(username)
+	return success, err
 }
 
-func (service *AuthService) Create(auth *domain.Authentication) (string, error) {
+func (service *AuthService) Create(auth *domain.Authentication) (*domain.Authentication, error) {
 	success, err := service.store.Create(auth)
 	return success, err
 }

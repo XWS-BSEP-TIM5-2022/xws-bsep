@@ -12,6 +12,7 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup/config"
 
 	auth_service_proto "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
@@ -32,8 +33,6 @@ const (
 
 func (server *Server) Start() {
 	postgresClient := server.initPostgresClient()
-	fmt.Println("Postgres cli")
-	fmt.Println(postgresClient)
 	authStore := server.initAuthStore(postgresClient)
 	authService := server.initAuthService(authStore)
 
@@ -58,9 +57,9 @@ func (server *Server) initAuthStore(client *gorm.DB) domain.AuthStore {
 	if err != nil {
 		log.Fatal(err)
 	}
-	store.DeleteAll()
+	//store.DeleteAll()
 	for _, Auth := range auths {
-		res, err := store.Insert(Auth)
+		//res, err := store.Insert(Auth)
 		fmt.Println(res)
 		if err != nil {
 			log.Fatal(err)
@@ -75,6 +74,12 @@ func (server *Server) initAuthService(store domain.AuthStore) *application.AuthS
 
 func (server *Server) initAuthHandler(service *application.AuthService) *api.AuthHandler {
 	return api.NewAuthHandler(service)
+}
+
+func (server *Server) initUserServiceClient() user.UserServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.UserServiceHost, server.config.UserServicePort)
+
+	return client.NewUserServiceClient(address)
 }
 
 func (server *Server) startGrpcServer(authHandler *api.AuthHandler) {

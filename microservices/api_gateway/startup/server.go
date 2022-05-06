@@ -24,11 +24,23 @@ type Server struct {
 func NewServer(config *cfg.Config) *Server {
 	server := &Server{
 		config: config,
-		mux:    runtime.NewServeMux(),
+		mux: runtime.NewServeMux(
+			runtime.WithIncomingHeaderMatcher(customMatcher),
+		),
 	}
 	server.initHandlers()
-	server.initCustomHandlers()
+	//server.initCustomHandlers()
 	return server
+}
+
+// Metoda da bi se header sacuvao u servisima
+func customMatcher(key string) (string, bool) {
+	switch key {
+	case "Authorization":
+		return key, true
+	default:
+		return key, false
+	}
 }
 
 func (server *Server) initHandlers() {
@@ -48,66 +60,14 @@ func (server *Server) initHandlers() {
 	if err != nil {
 		panic(err)
 	}
-
-	// shippingEmdpoint := fmt.Sprintf("%s:%s", server.config.ShippingHost, server.config.ShippingPort)
-	// err = shippingGw.RegisterShippingServiceHandlerFromEndpoint(context.TODO(), server.mux, shippingEmdpoint, opts)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// inventoryEmdpoint := fmt.Sprintf("%s:%s", server.config.InventoryHost, server.config.InventoryPort)
-	// err = inventoryGw.RegisterInventoryServiceHandlerFromEndpoint(context.TODO(), server.mux, inventoryEmdpoint, opts)
-	// if err != nil {
-	// 	panic(err)
-	// }
 }
 
 func (server *Server) initCustomHandlers() {
 
 }
 
-// ************** AUTHENTICATION - middleware ******************
-type MuxWithMiddleware struct {
-	mux *runtime.ServeMux
-}
-
-func (muxWithMiddleware *MuxWithMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fullPath := r.Method + " " + r.URL.Path
-	if fullPath == "GET /users/getAllPublic" {
-		// endpoints za neregistrovane korisnike
-		fmt.Println("Ovaj zahtev nije potrebno validirati ni generisati token")
-	} else if fullPath == "POST /user" || fullPath == "GET /login" {
-		// sign in i login -> generisati token
-
-	} else {
-		// ostali endpoint-i -> potrebno validirati token
-		if r.Header["Authorization"] == nil {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return
-		}
-		authorizationHeader := r.Header.Get("Authorization")
-		fmt.Println("Auth header " + authorizationHeader)
-
-		tokenString := strings.Split(authorizationHeader, " ")[1]
-		fmt.Println("Token string " + tokenString)
-
-		// authEmdpoint := fmt.Sprintf("auth_service:8000")
-		// userEmdpoint := fmt.Sprintf("user_service:8000")
-
-		// authHandler := api.NewAuthHandler(authEmdpoint, userEmdpoint)
-		// authHandler.Init(muxWithMiddleware.mux)
-	}
-
-	muxWithMiddleware.mux.ServeHTTP(w, r)
-}
-
-func NewMuxWithMiddleware(handlerToWrap *runtime.ServeMux) *MuxWithMiddleware {
-	return &MuxWithMiddleware{handlerToWrap}
-}
-
-// *************************************************
-
 func (server *Server) Start() {
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), server.mux))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), muxMiddleware(server)))
 }
 
 func muxMiddleware(server *Server) http.Handler {
