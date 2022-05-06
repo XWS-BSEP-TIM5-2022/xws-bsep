@@ -63,9 +63,9 @@ func (store *PostMongoDBStore) Update(post *domain.Post) (string, error) {
 		"date_created": post.DateCreated,
 		"images":       post.Images,
 		"links":        post.Links,
-		"likes":        post.Likes,    // TODO
-		"dislikes":     post.Dislikes, // TODO
-		"comments":     post.Comments, // TODO
+		"likes":        post.Likes,
+		"dislikes":     post.Dislikes,
+		"comments":     post.Comments,
 		"user_id":      post.UserId,
 	}}
 

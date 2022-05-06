@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -12,7 +13,7 @@ func mapPost(post *domain.Post) *pb.Post {
 	postPb := &pb.Post{
 		Id:          post.Id.Hex(),
 		Text:        post.Text,
-		DateCreated: timestamppb.New(post.DateCreated),
+		DateCreated: timestamppb.New(post.DateCreated), // TODO
 		UserId:      post.UserId,
 		Images:      post.Images,
 		Links:       post.Links,
@@ -52,73 +53,33 @@ func mapInsertPost(post *pb.Post) *domain.Post {
 		UserId:      post.UserId,
 		Images:      post.Images,
 		Links:       post.Links,
-		DateCreated: time.Now(), // TODO: date - now
+		DateCreated: time.Now(),
 	}
-
-	//if post.DateCreated != nil {
-	//	postPb.DateCreated = post.DateCreated.AsTime()
-	//}
-
-	//for _, like := range post.Likes {
-	//	if like.Id == "" {
-	//		userId := like.UserId
-	//		like_id := primitive.NewObjectID()
-	//		postPb.Likes = append(postPb.Likes, domain.Like{
-	//			Id:     like_id,
-	//			UserId: userId,
-	//		})
-	//	} else {
-	//		like_id, _ := primitive.ObjectIDFromHex(like.Id)
-	//		userId := like.UserId
-	//		postPb.Likes = append(postPb.Likes, domain.Like{
-	//			Id:     like_id,
-	//			UserId: userId,
-	//		})
-	//	}
-	//}
-	//
-	//for _, dislike := range post.Dislikes {
-	//	dislike_id := primitive.NewObjectID()
-	//	postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
-	//		Id:     dislike_id,
-	//		UserId: dislike.UserId,
-	//	})
-	//}
-	//
-	//for _, comment := range post.Comments {
-	//	comment_id := primitive.NewObjectID()
-	//	postPb.Comments = append(postPb.Comments, domain.Comment{
-	//		Id:     comment_id,
-	//		UserId: comment.UserId,
-	//		Text:   comment.Text,
-	//	})
-	//}
 
 	return postPb
 }
 
-func mapUpdatePost(post *pb.Post) *domain.Post {
-	id, _ := primitive.ObjectIDFromHex(post.Id)
+func mapUpdatePost(oldData *pb.Post, newData *pb.Post) *domain.Post {
+	id, _ := primitive.ObjectIDFromHex(oldData.Id)
 
 	postPb := &domain.Post{
-		Id:     id,
-		Text:   post.Text,
-		UserId: post.UserId,
-		Images: post.Images,
-		Links:  post.Links,
+		Id:          id,
+		Text:        newData.Text,
+		UserId:      newData.UserId,
+		Images:      newData.Images,
+		Links:       newData.Links,
+		DateCreated: oldData.DateCreated.AsTime(),
 	}
 
-	if post.DateCreated != nil { // TODO: izbrisati ovaj deo (date created se ne menja)
-		postPb.DateCreated = post.DateCreated.AsTime()
-	}
-
-	for _, like := range post.Likes {
+	for _, like := range newData.Likes {
 		if like.Id == "" {
-			like_id := primitive.NewObjectID()
-			postPb.Likes = append(postPb.Likes, domain.Like{
-				Id:     like_id,
-				UserId: like.UserId,
-			})
+			if likedPostByUser(oldData, like.UserId) == false {
+				like_id := primitive.NewObjectID()
+				postPb.Likes = append(postPb.Likes, domain.Like{
+					Id:     like_id,
+					UserId: like.UserId,
+				})
+			}
 		} else {
 			like_id, _ := primitive.ObjectIDFromHex(like.Id)
 			postPb.Likes = append(postPb.Likes, domain.Like{
@@ -128,13 +89,15 @@ func mapUpdatePost(post *pb.Post) *domain.Post {
 		}
 	}
 
-	for _, dislike := range post.Dislikes {
+	for _, dislike := range newData.Dislikes {
 		if dislike.Id == "" {
-			dislike_id := primitive.NewObjectID()
-			postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
-				Id:     dislike_id,
-				UserId: dislike.UserId,
-			})
+			if dislikedPostByUser(oldData, dislike.UserId) == false {
+				dislike_id := primitive.NewObjectID()
+				postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
+					Id:     dislike_id,
+					UserId: dislike.UserId,
+				})
+			}
 		} else {
 			dislike_id, _ := primitive.ObjectIDFromHex(dislike.Id)
 			postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
@@ -144,21 +107,45 @@ func mapUpdatePost(post *pb.Post) *domain.Post {
 		}
 	}
 
-	for _, comment := range post.Comments {
+	for _, comment := range newData.Comments {
 		if comment.Id == "" {
 			comment_id := primitive.NewObjectID()
 			postPb.Comments = append(postPb.Comments, domain.Comment{
 				Id:     comment_id,
 				UserId: comment.UserId,
+				Text:   comment.Text,
 			})
 		} else {
 			comment_id, _ := primitive.ObjectIDFromHex(comment.Id)
 			postPb.Comments = append(postPb.Comments, domain.Comment{
 				Id:     comment_id,
 				UserId: comment.UserId,
+				Text:   comment.Text,
 			})
 		}
 	}
 
 	return postPb
+}
+
+func likedPostByUser(post *pb.Post, userId string) bool {
+	for _, like := range post.Likes {
+		if like.UserId == userId {
+			fmt.Println("Postoji duplikat - like")
+			fmt.Println("ISPIS:", like.UserId, userId)
+			return true
+		}
+	}
+	return false
+}
+
+func dislikedPostByUser(post *pb.Post, userId string) bool {
+	for _, dislike := range post.Dislikes {
+		if dislike.UserId == userId {
+			fmt.Println("Postoji duplikat - dislike")
+			fmt.Println("ISPIS:", dislike.UserId, userId)
+			return true
+		}
+	}
+	return false
 }

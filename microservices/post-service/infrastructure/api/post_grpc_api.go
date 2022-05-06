@@ -86,10 +86,28 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 }
 
 func (handler *PostHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-	post := mapUpdatePost(request.Post)
+	id, _ := primitive.ObjectIDFromHex(request.Post.Id)
+	oldPost, err := handler.service.Get(id)
+
+	if err != nil {
+		return &pb.UpdateResponse{
+			Success: "error",
+		}, err
+	}
+
+	post := mapUpdatePost(mapPost(oldPost), request.Post)
+
 	success, err := handler.service.Update(post)
 	response := &pb.UpdateResponse{
 		Success: success,
 	}
 	return response, err
+
+	///
+	//post := mapUpdatePost(request.Post)
+	//success, err := handler.service.Update(post)
+	//response := &pb.UpdateResponse{
+	//	Success: success,
+	//}
+	//return response, err
 }
