@@ -113,48 +113,51 @@ func mapUpdatePost(post *pb.Post) *domain.Post {
 	}
 
 	for _, like := range post.Likes {
-		//if like.Id == "" {
-		//	userId := like.UserId
-		//	like_id := primitive.NewObjectID()
-		//	postPb.Likes = append(postPb.Likes, domain.Like{
-		//		Id:     like_id,
-		//		UserId: userId,
-		//	})
-		//} else {
-		//	like_id, _ := primitive.ObjectIDFromHex(like.Id)
-		//	userId := like.UserId
-		//	postPb.Likes = append(postPb.Likes, domain.Like{
-		//		Id:     like_id,
-		//		UserId: userId,
-		//	})
-		//}
-
-		like_id, _ := primitive.ObjectIDFromHex(post.Id) // TODO: izmeniti, kreirati novi id
-		postPb.Likes = append(postPb.Likes, domain.Like{
-			Id:     like_id,
-			UserId: like.UserId,
-		})
+		if like.Id == "" {
+			like_id := primitive.NewObjectID()
+			postPb.Likes = append(postPb.Likes, domain.Like{
+				Id:     like_id,
+				UserId: like.UserId,
+			})
+		} else {
+			like_id, _ := primitive.ObjectIDFromHex(like.Id)
+			postPb.Likes = append(postPb.Likes, domain.Like{
+				Id:     like_id,
+				UserId: like.UserId,
+			})
+		}
 	}
 
 	for _, dislike := range post.Dislikes {
-		//dislike_id := primitive.NewObjectID()
-		dislike_id, _ := primitive.ObjectIDFromHex(post.Id)
-
-		postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
-			Id:     dislike_id,
-			UserId: dislike.UserId,
-		})
+		if dislike.Id == "" {
+			dislike_id := primitive.NewObjectID()
+			postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
+				Id:     dislike_id,
+				UserId: dislike.UserId,
+			})
+		} else {
+			dislike_id, _ := primitive.ObjectIDFromHex(dislike.Id)
+			postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
+				Id:     dislike_id,
+				UserId: dislike.UserId,
+			})
+		}
 	}
 
 	for _, comment := range post.Comments {
-		//comment_id := primitive.NewObjectID()
-		comment_id, _ := primitive.ObjectIDFromHex(post.Id)
-
-		postPb.Comments = append(postPb.Comments, domain.Comment{
-			Id:     comment_id,
-			UserId: comment.UserId,
-			Text:   comment.Text,
-		})
+		if comment.Id == "" {
+			comment_id := primitive.NewObjectID()
+			postPb.Comments = append(postPb.Comments, domain.Comment{
+				Id:     comment_id,
+				UserId: comment.UserId,
+			})
+		} else {
+			comment_id, _ := primitive.ObjectIDFromHex(comment.Id)
+			postPb.Comments = append(postPb.Comments, domain.Comment{
+				Id:     comment_id,
+				UserId: comment.UserId,
+			})
+		}
 	}
 
 	return postPb

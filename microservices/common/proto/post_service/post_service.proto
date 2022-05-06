@@ -31,6 +31,11 @@ service PostService{
       body: "post"
     };
   }
+//  rpc GetAllByUser(GetRequest) returns(GetAllResponse) {
+//    option (google.api.http) = {
+//      get: "/post/user/{id}"
+//    };
+//  }
 }
 
 message GetRequest {
