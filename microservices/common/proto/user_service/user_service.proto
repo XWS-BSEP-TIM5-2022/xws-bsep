@@ -10,39 +10,39 @@ import "google/protobuf/timestamp.proto";
 service UserService{
     rpc Get(GetRequest) returns(GetResponse) {  // auth
     option (google.api.http) = {
-        get: "/user/{id}"
+        get: "/api/user/{id}"
     };
     }
     rpc GetAll(GetAllRequest) returns(GetAllResponse) { // auth
         option (google.api.http) = {
-        get: "/user"
+        get: "/api/user"
     };
     }
     rpc GetAllPublic(GetAllPublicRequest) returns(GetAllPublicResponse) {
         option (google.api.http) = {
-            get: "/user/public"
+            get: "/api/user/public"
         };
     }
     rpc Insert(InsertRequest) returns(InsertResponse) {  // auth
         option (google.api.http) = {
-                post: "/user"
+                post: "/api/user"
                 body: "user"
         };
     }
     rpc Update(UpdateRequest) returns(UpdateResponse) {  // auth
         option (google.api.http) = {
-            put: "/user/update"
+            put: "/api/user/update"
             body: "user"
         };
     }
     rpc GetLoggedInUserInfo(GetAllRequest) returns (User) { // auth
         option (google.api.http) = {
-          get: "/user/info"
+          get: "/api/user/info"
         };
     }
     rpc Search(SearchRequest) returns(SearchResponse) {
         option (google.api.http) = {
-            get: "/user/search/{criteria}"
+            get: "/api/user/search/{criteria}"
         };
     }
 }
