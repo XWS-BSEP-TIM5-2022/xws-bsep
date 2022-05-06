@@ -136,7 +136,6 @@ func mapInsertUser(user *pb.User) *domain.User {
 }
 
 func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
-	//TODO: obrisati polja koja nisu obavezna
 	id, _ := primitive.ObjectIDFromHex(oldData.Id)
 
 	userPb := &domain.User{
@@ -156,9 +155,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 		userPb.Gender = mapInsertGender(oldData.Gender)
 	}
 
-	if newData.Birthday == nil {
-		userPb.Birthday = oldData.Birthday.AsTime()
-	} else {
+	if newData.Birthday != nil {
 		userPb.Birthday = newData.Birthday.AsTime()
 	}
 
@@ -174,27 +171,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 		userPb.LastName = oldData.LastName
 	}
 
-	if newData.MobileNumber == "" {
-		userPb.MobileNumber = oldData.MobileNumber
-	}
-
-	if newData.Email == "" {
-		userPb.Email = oldData.Email
-	}
-
-	if newData.Biography == "" {
-		userPb.Biography = oldData.Biography
-	}
-
-	// if newData.Password == "" {
-	// 	userPb.Password = oldData.Password
-	// }
-
-	educations := oldData.Education
-
-	if newData.Education == nil {
-		educations = newData.Education
-	}
+	educations := newData.Education
 
 	for _, education := range educations {
 
@@ -210,11 +187,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 		})
 	}
 
-	experiences := oldData.Experience
-
-	if newData.Experience == nil {
-		experiences = newData.Experience
-	}
+	experiences := newData.Experience
 
 	for _, experience := range experiences {
 
@@ -230,11 +203,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 		})
 	}
 
-	skills := oldData.Skills
-
-	if newData.Skills == nil {
-		skills = newData.Skills
-	}
+	skills := newData.Skills
 
 	for _, skill := range skills {
 
@@ -246,11 +215,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 		})
 	}
 
-	interests := oldData.Interests
-
-	if newData.Interests == nil {
-		interests = newData.Interests
-	}
+	interests := newData.Interests
 
 	for _, interest := range interests {
 
