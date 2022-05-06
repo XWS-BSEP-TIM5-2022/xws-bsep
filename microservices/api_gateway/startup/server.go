@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
@@ -72,34 +71,41 @@ func (server *Server) Start() {
 
 func muxMiddleware(server *Server) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(server.config.AuthHost + " -> " + server.config.AuthPort)
-
-		fullPath := r.Method + " " + r.URL.Path
-		if fullPath == "GET /users/getAllPublic" {
-			// endpoints za neregistrovane korisnike
-			fmt.Println("Ovaj zahtev nije potrebno validirati ni generisati token")
-		} else if fullPath == "POST /user" || fullPath == "GET /login" {
-			// sign in i login -> generisati token
-
-		} else {
-			// ostali endpoint-i -> potrebno validirati token
-			if r.Header["Authorization"] == nil {
-				http.Error(w, "unauthorized", http.StatusUnauthorized)
-				return
-			}
-			authorizationHeader := r.Header.Get("Authorization")
-			fmt.Println("Auth header " + authorizationHeader)
-
-			tokenString := strings.Split(authorizationHeader, " ")[1]
-			fmt.Println("Token string " + tokenString)
-
-			// authEmdpoint := fmt.Sprintf("auth_service:8000")
-			// userEmdpoint := fmt.Sprintf("user_service:8000")
-
-			// authHandler := api.NewAuthHandler(authEmdpoint, userEmdpoint)
-			// authHandler.Init(muxWithMiddleware.mux)
-		}
-
+		log.Println(server.config.AuthHost + ":" + server.config.AuthPort)
 		server.mux.ServeHTTP(w, r)
 	})
 }
+
+// func muxMiddleware(server *Server) http.Handler {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		fmt.Println(server.config.AuthHost + " -> " + server.config.AuthPort)
+
+// 		fullPath := r.Method + " " + r.URL.Path
+// 		if fullPath == "GET /users/getAllPublic" {
+// 			// endpoints za neregistrovane korisnike
+// 			fmt.Println("Ovaj zahtev nije potrebno validirati ni generisati token")
+// 		} else if fullPath == "POST /user" || fullPath == "GET /login" {
+// 			// sign in i login -> generisati token
+
+// 		} else {
+// 			// ostali endpoint-i -> potrebno validirati token
+// 			if r.Header["Authorization"] == nil {
+// 				http.Error(w, "unauthorized", http.StatusUnauthorized)
+// 				return
+// 			}
+// 			authorizationHeader := r.Header.Get("Authorization")
+// 			fmt.Println("Auth header " + authorizationHeader)
+
+// 			tokenString := strings.Split(authorizationHeader, " ")[1]
+// 			fmt.Println("Token string " + tokenString)
+
+// 			// authEmdpoint := fmt.Sprintf("auth_service:8000")
+// 			// userEmdpoint := fmt.Sprintf("user_service:8000")
+
+// 			// authHandler := api.NewAuthHandler(authEmdpoint, userEmdpoint)
+// 			// authHandler.Init(muxWithMiddleware.mux)
+// 		}
+
+// 		server.mux.ServeHTTP(w, r)
+// 	})
+// }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence/persistence"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"google.golang.org/grpc/codes"
@@ -14,11 +14,11 @@ import (
 
 type AuthService struct {
 	store             *persistence.AuthPostgresStore // ne radi kada prosledim interfejs
-	jwtService        *JWTManager
+	jwtService        *JWTService
 	userServiceClient user.UserServiceClient
 }
 
-func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTManager, userServiceClient user.UserServiceClient) *AuthService {
+func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService, userServiceClient user.UserServiceClient) *AuthService {
 	return &AuthService{
 		store:             store,
 		jwtService:        jwtService,

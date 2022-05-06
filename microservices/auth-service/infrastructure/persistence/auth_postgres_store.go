@@ -9,7 +9,7 @@ type AuthPostgresStore struct {
 	db *gorm.DB
 }
 
-func NewAuthPostgresStore(db *gorm.DB) (domain.AuthStore, error) {
+func NewAuthPostgresStore(db *gorm.DB) (*AuthPostgresStore, error) {
 	err := db.AutoMigrate(&domain.Authentication{})
 	if err != nil {
 		return nil, err

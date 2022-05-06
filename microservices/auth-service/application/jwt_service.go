@@ -8,7 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-type JWTManager struct {
+type JWTService struct {
 	privateKey          *rsa.PrivateKey
 	publicKey           *rsa.PublicKey
 	accessTokenDuration time.Duration
@@ -20,7 +20,24 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func (manager *JWTManager) GenerateToken(auth *domain.Authentication) (string, error) {
+func NewJWTManager(privateKey, publicKey string) (*JWTService, error) {
+	parsedPrivateKey, err := jwt.ParseRSAPrivateKeyFromPEM([]byte(privateKey))
+	if err != nil {
+		return nil, err
+	}
+	parsedPublicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(publicKey))
+	if err != nil {
+		return nil, err
+	}
+
+	return &JWTService{
+		privateKey:          parsedPrivateKey,
+		publicKey:           parsedPublicKey,
+		accessTokenDuration: 10 * time.Minute,
+	}, nil
+}
+
+func (manager *JWTService) GenerateToken(auth *domain.Authentication) (string, error) {
 	claims := Claims{
 		StandardClaims: jwt.StandardClaims{
 			Subject:   auth.Id,
