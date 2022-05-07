@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ConnectionServiceClient interface {
-	GetFriends(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error)
+	GetConnections(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	AddConnection(ctx context.Context, in *AddConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	ApproveConnection(ctx context.Context, in *ApproveConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
@@ -36,9 +36,9 @@ func NewConnectionServiceClient(cc grpc.ClientConnInterface) ConnectionServiceCl
 	return &connectionServiceClient{cc}
 }
 
-func (c *connectionServiceClient) GetFriends(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error) {
+func (c *connectionServiceClient) GetConnections(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error) {
 	out := new(Users)
-	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/GetFriends", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/GetConnections", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (c *connectionServiceClient) ApproveConnection(ctx context.Context, in *App
 // All implementations must embed UnimplementedConnectionServiceServer
 // for forward compatibility
 type ConnectionServiceServer interface {
-	GetFriends(context.Context, *GetRequest) (*Users, error)
+	GetConnections(context.Context, *GetRequest) (*Users, error)
 	Register(context.Context, *RegisterRequest) (*ActionResult, error)
 	AddConnection(context.Context, *AddConnectionRequest) (*ActionResult, error)
 	ApproveConnection(context.Context, *ApproveConnectionRequest) (*ActionResult, error)
@@ -87,8 +87,8 @@ type ConnectionServiceServer interface {
 type UnimplementedConnectionServiceServer struct {
 }
 
-func (UnimplementedConnectionServiceServer) GetFriends(context.Context, *GetRequest) (*Users, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFriends not implemented")
+func (UnimplementedConnectionServiceServer) GetConnections(context.Context, *GetRequest) (*Users, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetConnections not implemented")
 }
 func (UnimplementedConnectionServiceServer) Register(context.Context, *RegisterRequest) (*ActionResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
@@ -112,20 +112,20 @@ func RegisterConnectionServiceServer(s grpc.ServiceRegistrar, srv ConnectionServ
 	s.RegisterService(&ConnectionService_ServiceDesc, srv)
 }
 
-func _ConnectionService_GetFriends_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ConnectionService_GetConnections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ConnectionServiceServer).GetFriends(ctx, in)
+		return srv.(ConnectionServiceServer).GetConnections(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/connection_service.ConnectionService/GetFriends",
+		FullMethod: "/connection_service.ConnectionService/GetConnections",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConnectionServiceServer).GetFriends(ctx, req.(*GetRequest))
+		return srv.(ConnectionServiceServer).GetConnections(ctx, req.(*GetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -192,8 +192,8 @@ var ConnectionService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ConnectionServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetFriends",
-			Handler:    _ConnectionService_GetFriends_Handler,
+			MethodName: "GetConnections",
+			Handler:    _ConnectionService_GetConnections_Handler,
 		},
 		{
 			MethodName: "Register",

@@ -15,11 +15,11 @@ func NewConnectionService(store domain.ConnectionStore) *ConnectionService {
 	}
 }
 
-func (service *ConnectionService) GetFriends(id string) ([]*domain.UserConn, error) {
+func (service *ConnectionService) GetConnections(id string) ([]*domain.UserConn, error) {
 
 	var friendsRetVal []*domain.UserConn
 
-	friends, err := service.store.GetFriends(id)
+	friends, err := service.store.GetConnections(id)
 	if err != nil {
 		return nil, nil
 	}

@@ -18,12 +18,12 @@ func NewConnectionHandler(service *application.ConnectionService) *ConnectionHan
 	}
 }
 
-func (handler *ConnectionHandler) GetFriends(ctx context.Context, request *pb.GetRequest) (*pb.Users, error) {
+func (handler *ConnectionHandler) GetConnections(ctx context.Context, request *pb.GetRequest) (*pb.Users, error) {
 
-	fmt.Println("[ConnectionHandler]:GetFriends")
+	fmt.Println("[ConnectionHandler]:GetConnections")
 
 	id := request.UserID
-	friends, err := handler.service.GetFriends(id)
+	friends, err := handler.service.GetConnections(id)
 	if err != nil {
 		return nil, err
 	}

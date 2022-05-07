@@ -51,7 +51,7 @@ func (store *ConnectionDBStore) Register(userID string, isPublic bool) (*pb.Acti
 	return result.(*pb.ActionResult), err
 }
 
-func (store *ConnectionDBStore) GetFriends(userID string) ([]domain.UserConn, error) {
+func (store *ConnectionDBStore) GetConnections(userID string) ([]domain.UserConn, error) {
 
 	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close()
