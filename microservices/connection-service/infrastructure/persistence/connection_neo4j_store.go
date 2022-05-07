@@ -274,7 +274,7 @@ func (store *ConnectionDBStore) RejectConnection(userIDa, userIDb string) (*pb.A
 
 			//brise vezu/zahjev
 			_, err := transaction.Run(
-				"MATCH (u1:USER{userID:$u1ID})-[rel:FRIEND]->(u2:USER{userID:$u2ID}) DELETE rel",
+				"MATCH (u1:USER{userID:$u1ID})<-[rel:FRIEND]-(u2:USER{userID:$u2ID}) DELETE rel",
 				map[string]interface{}{"u1ID": userIDa, "u2ID": userIDb})
 
 			if err != nil {
