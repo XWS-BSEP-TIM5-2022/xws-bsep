@@ -1,6 +1,8 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type Users struct {
 	UsersDetails []User
@@ -44,4 +46,36 @@ type Authentication struct {
 	Password string
 	Role     string
 	Date     time.Time
+}
+
+type Like struct {
+	Id     string
+	UserId string
+}
+
+type Dislike struct {
+	Id     string
+	UserId string
+}
+
+type Comment struct {
+	Id     string
+	UserId string
+	Text   string
+}
+
+type Post struct {
+	Id          string
+	Text        string
+	Images      []string
+	Links       []string
+	DateCreated time.Time
+	Likes       []Like
+	Dislikes    []Dislike
+	Comments    []Comment
+	UserId      string
+}
+
+type Posts struct {
+	AllPosts []Post
 }

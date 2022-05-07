@@ -8,7 +8,6 @@ import (
 type Like struct {
 	Id     primitive.ObjectID `bson:"_id"`
 	UserId string             `bson:"user_id"`
-	// datum i vreme ?
 }
 
 type Dislike struct {
