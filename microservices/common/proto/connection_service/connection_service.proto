@@ -36,6 +36,13 @@ service ConnectionService{
     };
   }
 
+  rpc RejectConnection(RejectConnectionRequest) returns (ActionResult) {
+    option (google.api.http) = {
+      put: "/connection/reject"
+      body:"rejectConnectionDTO"
+    };
+  }
+
   rpc ApproveConnection(ApproveConnectionRequest) returns (ActionResult) {
     option (google.api.http) = {
       put: "/connection/approve"
@@ -64,6 +71,10 @@ message AddConnectionRequest{
 
 message ApproveConnectionRequest{
   UserAction approveConnectionDTO = 1;
+}
+
+message RejectConnectionRequest{
+  UserAction rejectConnectionDTO = 1;
 }
 
 message AddBlockUserRequest{

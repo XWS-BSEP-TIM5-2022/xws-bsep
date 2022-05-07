@@ -252,3 +252,11 @@ func (store *ConnectionDBStore) ApproveConnection(userIDa, userIDb string) (*pb.
 		return result.(*pb.ActionResult), err
 	}
 }
+
+func (store *ConnectionDBStore) RejectConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
+	actionResult := &pb.ActionResult{Msg: "msg", Status: 0}
+	actionResult.Msg = "Odbijanje konekcije"
+	actionResult.Status = 200
+
+	return actionResult, nil
+}

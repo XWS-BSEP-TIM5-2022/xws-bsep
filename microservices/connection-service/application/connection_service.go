@@ -40,3 +40,7 @@ func (service *ConnectionService) AddConnection(userIDa, userIDb string) (*pb.Ac
 func (service *ConnectionService) ApproveConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
 	return service.store.ApproveConnection(userIDa, userIDb)
 }
+
+func (service *ConnectionService) RejectConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
+	return service.store.RejectConnection(userIDa, userIDb)
+}

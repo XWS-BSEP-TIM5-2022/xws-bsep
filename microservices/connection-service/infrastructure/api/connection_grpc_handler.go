@@ -55,3 +55,10 @@ func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request
 	userIDb := request.ApproveConnectionDTO.UserIDb
 	return handler.service.ApproveConnection(userIDa, userIDb)
 }
+
+func (handler *ConnectionHandler) RejectConnection(ctx context.Context, request *pb.RejectConnectionRequest) (*pb.ActionResult, error) {
+	fmt.Println("[ConnectionHandler]:RejectConnection")
+	userIDa := request.RejectConnectionDTO.UserIDa
+	userIDb := request.RejectConnectionDTO.UserIDb
+	return handler.service.RejectConnection(userIDa, userIDb)
+}
