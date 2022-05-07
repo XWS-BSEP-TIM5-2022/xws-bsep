@@ -6,4 +6,5 @@ type ConnectionStore interface {
 	GetFriends(id string) ([]UserConn, error)
 	AddConnection(userIDa, userIDb string) (*pb.ActionResult, error)
 	Register(userID string, isPublic bool) (*pb.ActionResult, error)
+	ApproveConnection(userIDa, userIDb string) (*pb.ActionResult, error)
 }

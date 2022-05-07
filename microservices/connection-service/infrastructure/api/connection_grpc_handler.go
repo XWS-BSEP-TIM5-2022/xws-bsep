@@ -48,3 +48,10 @@ func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb
 	userIDb := request.AddConnectionDTO.UserIDb
 	return handler.service.AddConnection(userIDa, userIDb)
 }
+
+func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request *pb.ApproveConnectionRequest) (*pb.ActionResult, error) {
+	fmt.Println("[ConnectionHandler]:ApproveConnection")
+	userIDa := request.ApproveConnectionDTO.UserIDa
+	userIDb := request.ApproveConnectionDTO.UserIDb
+	return handler.service.ApproveConnection(userIDa, userIDb)
+}

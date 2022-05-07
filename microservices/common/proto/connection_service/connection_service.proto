@@ -36,6 +36,13 @@ service ConnectionService{
     };
   }
 
+  rpc ApproveConnection(ApproveConnectionRequest) returns (ActionResult) {
+    option (google.api.http) = {
+      put: "/connection/approve"
+      body:"approveConnectionDTO"
+    };
+  }
+
 //
 //  rpc AddBlockUser(AddBlockUserRequest) returns (ActionResult) {
 //    option (google.api.http) = {
@@ -53,6 +60,10 @@ message RegisterRequest{
 
 message AddConnectionRequest{
   UserAction addConnectionDTO = 1;
+}
+
+message ApproveConnectionRequest{
+  UserAction approveConnectionDTO = 1;
 }
 
 message AddBlockUserRequest{

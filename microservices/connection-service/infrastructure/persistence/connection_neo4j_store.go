@@ -188,3 +188,10 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 		return result.(*pb.ActionResult), err
 	}
 }
+
+func (store *ConnectionDBStore) ApproveConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
+	actionResult := &pb.ActionResult{Msg: "msg", Status: 0}
+	actionResult.Msg = "Odobravanje konekcije"
+	actionResult.Status = 200
+	return actionResult, nil
+}
