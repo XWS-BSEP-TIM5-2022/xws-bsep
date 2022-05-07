@@ -1,7 +1,6 @@
 package persistence
 
 import (
-	"fmt"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/domain"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
@@ -138,15 +137,15 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 				//} else {
 
 				//ako je userB public, odmah ce kreirati konekciju
-				if !checkIfPublicUser(userIDb, transaction) {
+				if checkIfPublicUser(userIDb, transaction) {
 					dateNow := time.Now().Local().Unix()
 					result, err := transaction.Run(
 						"MATCH (u1:USER) WHERE u1.userID=$uIDa "+
 							"MATCH (u2:USER) WHERE u2.userID=$uIDb "+
-							"CREATE (u1)-[r1:FRIEND {date: $dateNow}]->(u2) "+
-							"CREATE (u2)-[r2:FRIEND {date: $dateNow}]->(u1) "+
+							"CREATE (u1)-[r1:FRIEND {date: $dateNow, isApproved: $isApproved}]->(u2) "+
+							"CREATE (u2)-[r2:FRIEND {date: $dateNow, isApproved: $isApproved}]->(u1) "+
 							"RETURN r1.date, r2.date",
-						map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb, "dateNow": dateNow})
+						map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb, "dateNow": dateNow, "isApproved": true})
 
 					if err != nil || result == nil {
 						actionResult.Msg = "error while creating new friends IDa:" + userIDa + " and IDb:" + userIDb
@@ -154,9 +153,20 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 						return actionResult, err
 					}
 				} else {
-					fmt.Println("USER JE PRIVATE!")
-					actionResult.Msg = "user with id: " + userIDb + "is private!"
-					actionResult.Status = 501
+					//ako je user private kreirace konekciju koja nije odobrena
+					dateNow := time.Now().Local().Unix()
+					result, err := transaction.Run(
+						"MATCH (u1:USER) WHERE u1.userID=$uIDa "+
+							"MATCH (u2:USER) WHERE u2.userID=$uIDb "+
+							"CREATE (u1)-[r1:FRIEND {date: $dateNow, isApproved: $isApproved}]->(u2) "+
+							"RETURN r1.date",
+						map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb, "dateNow": dateNow, "isApproved": false})
+
+					if err != nil || result == nil {
+						actionResult.Msg = "error while creating new friends IDa:" + userIDa + " and IDb:" + userIDb
+						actionResult.Status = 501
+						return actionResult, err
+					}
 				}
 			}
 			//}
