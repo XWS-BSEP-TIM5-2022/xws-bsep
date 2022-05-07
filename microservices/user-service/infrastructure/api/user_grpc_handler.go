@@ -86,8 +86,12 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertReques
 
 func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 
-	id, _ := primitive.ObjectIDFromHex(request.User.Id)
-	oldUser, err := handler.service.Get(id)
+	id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	oldUser, err := handler.service.Get(objectId)
 
 	if err != nil {
 		return &pb.UpdateResponse{
