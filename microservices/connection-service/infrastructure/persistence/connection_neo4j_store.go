@@ -139,6 +139,7 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 				//ako je userB public, odmah ce kreirati konekciju
 				if checkIfPublicUser(userIDb, transaction) {
 					dateNow := time.Now().Local().Unix()
+
 					result, err := transaction.Run(
 						"MATCH (u1:USER) WHERE u1.userID=$uIDa "+
 							"MATCH (u2:USER) WHERE u2.userID=$uIDb "+
@@ -193,5 +194,61 @@ func (store *ConnectionDBStore) ApproveConnection(userIDa, userIDb string) (*pb.
 	actionResult := &pb.ActionResult{Msg: "msg", Status: 0}
 	actionResult.Msg = "Odobravanje konekcije"
 	actionResult.Status = 200
-	return actionResult, nil
+
+	if userIDa == userIDb {
+		return &pb.ActionResult{Msg: "userIDa is same as userIDb", Status: 400}, nil
+	}
+
+	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+
+		actionResult := &pb.ActionResult{Msg: "msg", Status: 0}
+
+		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
+			//provjeri da li su vec prijatelji
+			//provjeri da li postoji uopste zahtjev/konekcija
+
+			//prebacuje status zahtjeva na true -> approved
+			_, err := transaction.Run(
+				"MATCH (n1{userID:$u1ID})-[r:FRIEND]->(n2{userID:$u2ID}) set r.isApproved = $isApproved RETURN r",
+				map[string]interface{}{"u1ID": userIDa, "u2ID": userIDb, "isApproved": true})
+
+			if err != nil {
+				actionResult.Msg = "error while approving new node with ID:" + userIDb
+				actionResult.Status = 501
+				return actionResult, err
+			}
+
+			//kreira konekciju od user2 do user1
+			//TODO:azurirati vrijeme konekcije u1->u2 kad se odobri
+			dateNow := time.Now().Local().Unix()
+			_, err2 := transaction.Run(
+				"MATCH (u1:USER) WHERE u1.userID=$u1ID MATCH (u2:USER) WHERE u2.userID=$u2ID CREATE (u2)-[f:FRIEND{date: $dateNow, isApproved:$isApproved}]->(u1) RETURN u1, u2",
+				map[string]interface{}{"u1ID": userIDa, "u2ID": userIDb, "isApproved": true, "dateNow": dateNow})
+
+			if err2 != nil {
+				actionResult.Msg = "error while approving new node with ID:" + userIDb
+				actionResult.Status = 501
+				return actionResult, err2
+			}
+
+		} else {
+			actionResult.Msg = "user does not exist"
+			actionResult.Status = 400 //bad request
+			return actionResult, nil
+		}
+
+		actionResult.Msg = "successfully approved connection request IDa:" + userIDa + " and IDb:" + userIDb
+		actionResult.Status = 201
+
+		return actionResult, nil
+	})
+
+	if result == nil {
+		return &pb.ActionResult{Msg: "error", Status: 500}, err
+	} else {
+		return result.(*pb.ActionResult), err
+	}
 }
