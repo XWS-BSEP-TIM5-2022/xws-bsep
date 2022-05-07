@@ -257,6 +257,47 @@ func (store *ConnectionDBStore) RejectConnection(userIDa, userIDb string) (*pb.A
 	actionResult := &pb.ActionResult{Msg: "msg", Status: 0}
 	actionResult.Msg = "Odbijanje konekcije"
 	actionResult.Status = 200
+	if userIDa == userIDb {
+		return &pb.ActionResult{Msg: "userIDa is same as userIDb", Status: 400}, nil
+	}
 
-	return actionResult, nil
+	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+
+		actionResult := &pb.ActionResult{Msg: "msg", Status: 0}
+
+		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
+			//provjeri da li postoji uopste zahtjev/konekcija
+
+			//brise vezu/zahjev
+			_, err := transaction.Run(
+				"MATCH (u1:USER{userID:$u1ID})-[rel:FRIEND]->(u2:USER{userID:$u2ID}) DELETE rel",
+				map[string]interface{}{"u1ID": userIDa, "u2ID": userIDb})
+
+			if err != nil {
+				actionResult.Msg = "error while rejeting new node with ID:" + userIDb
+				actionResult.Status = 501
+				return actionResult, err
+			}
+
+		} else {
+			actionResult.Msg = "user does not exist"
+			actionResult.Status = 400 //bad request
+			return actionResult, nil
+		}
+
+		actionResult.Msg = "successfully rejected connection request IDa:" + userIDa + " to IDb:" + userIDb
+		actionResult.Status = 201
+
+		return actionResult, nil
+	})
+
+	if result == nil {
+		return &pb.ActionResult{Msg: "error", Status: 500}, err
+	} else {
+		return result.(*pb.ActionResult), err
+	}
+
 }
