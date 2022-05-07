@@ -1,6 +1,7 @@
 package persistence
 
 import (
+	"fmt"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/domain"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
@@ -269,7 +270,7 @@ func (store *ConnectionDBStore) RejectConnection(userIDa, userIDb string) (*pb.A
 		actionResult := &pb.ActionResult{Msg: "msg", Status: 0}
 
 		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
-			//provjeri da li postoji uopste zahtjev/konekcija
+			//TODO:provjeri da li postoji uopste zahtjev/konekcija
 
 			//brise vezu/zahjev
 			_, err := transaction.Run(
@@ -280,6 +281,52 @@ func (store *ConnectionDBStore) RejectConnection(userIDa, userIDb string) (*pb.A
 				actionResult.Msg = "error while rejeting new node with ID:" + userIDb
 				actionResult.Status = 501
 				return actionResult, err
+			}
+
+			//prebrojava broj preostalih veza kod cvorova, ako je 0, obrisacemo cvorove
+			result, _ := transaction.Run(
+				"MATCH (n:USER{userID:$u1ID})-[rel:FRIEND]-() RETURN COUNT (rel) as broj",
+				map[string]interface{}{"u1ID": userIDa})
+
+			//broj veza za userA
+			for result.Next() {
+				record := result.Record()
+				numRelA, _ := record.Get("broj")
+				fmt.Println(numRelA)
+
+				if numRelA.(int64) == 0 {
+					_, error := transaction.Run(
+						"MATCH (u1:USER{userID:$u1ID}) DELETE u1",
+						map[string]interface{}{"u1ID": userIDa})
+
+					if error != nil {
+						actionResult.Msg = "error while deleting node with ID:" + userIDa
+						actionResult.Status = 501
+						return actionResult, err
+					}
+				}
+			}
+			resultB, _ := transaction.Run(
+				"MATCH (n:USER{userID:$u1ID})-[rel:FRIEND]-() RETURN COUNT (rel) as numRel",
+				map[string]interface{}{"u1ID": userIDb})
+
+			//broj veza za userB
+			for resultB.Next() {
+				record := resultB.Record()
+				numRelB, _ := record.Get("numRel")
+				fmt.Println(numRelB.(int64))
+
+				if numRelB.(int64) == 0 {
+					_, err := transaction.Run(
+						"MATCH (u:USER{userID:$u1ID}) DELETE u",
+						map[string]interface{}{"u1ID": userIDb})
+
+					if err != nil {
+						actionResult.Msg = "error while deleting node with ID:" + userIDb
+						actionResult.Status = 501
+						return actionResult, err
+					}
+				}
 			}
 
 		} else {
