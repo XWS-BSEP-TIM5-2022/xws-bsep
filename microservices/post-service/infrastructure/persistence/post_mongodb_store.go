@@ -85,10 +85,6 @@ func (store *PostMongoDBStore) LikePost(post *domain.Post, user_id string) (stri
 	like := domain.Like{}
 	like.Id = primitive.NewObjectID()
 	like.UserId = user_id
-
-	// da li je ista osoba vec lajkovala
-	// da li je ista osoba vec dislajkovala
-
 	post.Likes = append(post.Likes, like)
 
 	newData := bson.M{"$set": bson.M{
@@ -172,6 +168,30 @@ func (store *PostMongoDBStore) CommentPost(post *domain.Post, user_id string, te
 	}
 	return "success", nil
 }
+
+//func (store *PostMongoDBStore) NeutralPost(post *domain.Post, user_id string) (string, error) {
+//	newData := bson.M{"$set": bson.M{
+//		"text":         post.Text,
+//		"date_created": post.DateCreated,
+//		"images":       post.Images,
+//		"links":        post.Links,
+//		"likes":        post.Likes,
+//		"dislikes":     post.Dislikes,
+//		"comments":     post.Comments,
+//		"user_id":      post.UserId,
+//	}}
+//
+//	opts := options.Update().SetUpsert(true)
+//	result, err := store.posts.UpdateOne(context.TODO(), bson.M{"_id": post.Id}, newData, opts)
+//
+//	if err != nil {
+//		return "error", err
+//	}
+//	if result.MatchedCount != 1 {
+//		return "one document should've been updated", errors.New("one document should've been updated")
+//	}
+//	return "success", nil
+//}
 
 func (store *PostMongoDBStore) DeleteAll() {
 	store.posts.DeleteMany(context.TODO(), bson.D{{}})

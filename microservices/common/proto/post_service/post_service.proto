@@ -26,6 +26,12 @@ service PostService{
       body: "*"
     };
   }
+  rpc NeutralPost(InsertNeutralReaction) returns(InsertResponse) {
+    option (google.api.http) = {
+      post: "/post/neutral"
+      body: "*"
+    };
+  }
   rpc CommentPost(InsertComment) returns(InsertResponse) {
     option (google.api.http) = {
       post: "/post/comment"
@@ -121,6 +127,11 @@ message InsertLike{
 }
 
 message InsertDislike{
+  string post_id = 1;
+  string user_id = 2;
+}
+
+message InsertNeutralReaction{
   string post_id = 1;
   string user_id = 2;
 }

@@ -48,3 +48,7 @@ func (service *PostService) DislikePost(post *domain.Post, id string) (string, e
 func (service *PostService) CommentPost(post *domain.Post, id string, text string) (string, error) {
 	return service.store.CommentPost(post, id, text)
 }
+
+//func (service *PostService) NeutralPost(post *domain.Post, id string) (string, error) {
+//	return service.store.NeutralPost(post, id)
+//}

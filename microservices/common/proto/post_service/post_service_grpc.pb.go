@@ -25,6 +25,7 @@ type PostServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	LikePost(ctx context.Context, in *InsertLike, opts ...grpc.CallOption) (*InsertResponse, error)
 	DislikePost(ctx context.Context, in *InsertDislike, opts ...grpc.CallOption) (*InsertResponse, error)
+	NeutralPost(ctx context.Context, in *InsertNeutralReaction, opts ...grpc.CallOption) (*InsertResponse, error)
 	CommentPost(ctx context.Context, in *InsertComment, opts ...grpc.CallOption) (*InsertResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	Insert(ctx context.Context, in *InsertRequest, opts ...grpc.CallOption) (*InsertResponse, error)
@@ -61,6 +62,15 @@ func (c *postServiceClient) LikePost(ctx context.Context, in *InsertLike, opts .
 func (c *postServiceClient) DislikePost(ctx context.Context, in *InsertDislike, opts ...grpc.CallOption) (*InsertResponse, error) {
 	out := new(InsertResponse)
 	err := c.cc.Invoke(ctx, "/post_service.PostService/DislikePost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) NeutralPost(ctx context.Context, in *InsertNeutralReaction, opts ...grpc.CallOption) (*InsertResponse, error) {
+	out := new(InsertResponse)
+	err := c.cc.Invoke(ctx, "/post_service.PostService/NeutralPost", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -119,6 +129,7 @@ type PostServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	LikePost(context.Context, *InsertLike) (*InsertResponse, error)
 	DislikePost(context.Context, *InsertDislike) (*InsertResponse, error)
+	NeutralPost(context.Context, *InsertNeutralReaction) (*InsertResponse, error)
 	CommentPost(context.Context, *InsertComment) (*InsertResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	Insert(context.Context, *InsertRequest) (*InsertResponse, error)
@@ -139,6 +150,9 @@ func (UnimplementedPostServiceServer) LikePost(context.Context, *InsertLike) (*I
 }
 func (UnimplementedPostServiceServer) DislikePost(context.Context, *InsertDislike) (*InsertResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DislikePost not implemented")
+}
+func (UnimplementedPostServiceServer) NeutralPost(context.Context, *InsertNeutralReaction) (*InsertResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NeutralPost not implemented")
 }
 func (UnimplementedPostServiceServer) CommentPost(context.Context, *InsertComment) (*InsertResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommentPost not implemented")
@@ -218,6 +232,24 @@ func _PostService_DislikePost_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PostServiceServer).DislikePost(ctx, req.(*InsertDislike))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_NeutralPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertNeutralReaction)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).NeutralPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/post_service.PostService/NeutralPost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).NeutralPost(ctx, req.(*InsertNeutralReaction))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -330,6 +362,10 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DislikePost",
 			Handler:    _PostService_DislikePost_Handler,
+		},
+		{
+			MethodName: "NeutralPost",
+			Handler:    _PostService_NeutralPost_Handler,
 		},
 		{
 			MethodName: "CommentPost",

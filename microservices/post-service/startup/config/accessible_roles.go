@@ -13,6 +13,7 @@ func AccessibleRoles() map[string][]string {
 		postService + "LikePost":    {"User"},
 		postService + "DislikePost": {"User"},
 		postService + "CommentPost": {"User"},
+		postService + "NeutralPost": {"User"},
 		//postService + "GetAllByUser": {"User"},
 	}
 }
