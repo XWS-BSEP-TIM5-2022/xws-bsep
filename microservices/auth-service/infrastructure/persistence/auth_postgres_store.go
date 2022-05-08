@@ -1,6 +1,8 @@
 package persistence
 
 import (
+	"errors"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"gorm.io/gorm"
 )
@@ -48,6 +50,30 @@ func (store *AuthPostgresStore) Insert(auth *domain.Authentication) error {
 	result := store.db.Create(auth)
 	if result.Error != nil {
 		return result.Error
+	}
+	return nil
+}
+
+func (store *AuthPostgresStore) UpdateUsername(id string) (*domain.Authentication, error) {
+	var auth domain.Authentication
+	err := store.db.First(&auth, "id = ?", id)
+	if err != nil {
+		return nil, err.Error
+	}
+	err2 := updateUsernameById(store.db, &auth, id)
+
+	return &auth, err2
+}
+
+func updateUsernameById(tx *gorm.DB, auth *domain.Authentication, username string) error {
+	tx = tx.Model(&domain.Authentication{}).
+		Where("product_id = ?", auth.Id).
+		Update("username", gorm.Expr("username + ?", username))
+	if tx.Error != nil {
+		return tx.Error
+	}
+	if tx.RowsAffected != 1 {
+		return errors.New("update error")
 	}
 	return nil
 }

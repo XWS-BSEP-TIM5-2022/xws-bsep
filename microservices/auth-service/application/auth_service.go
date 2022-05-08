@@ -3,8 +3,10 @@ package application
 import (
 	"context"
 	"fmt"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -158,4 +160,30 @@ func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 		response.Auth = append(response.Auth, current)
 	}
 	return response, nil
+}
+
+func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.UpdateUsernameRequest) (*pb.UpdateUsernameResponse, error) {
+	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	if userId == "" {
+		return &pb.UpdateUsernameResponse{
+			StatusCode: "500",
+			Message:    "User id not found",
+		}, nil
+	} else {
+		auth, err := service.store.UpdateUsername(userId)
+		if err != nil {
+			return &pb.UpdateUsernameResponse{
+				StatusCode: "500",
+				Message:    "Auth service credentials not found from JWT token",
+			}, err
+		}
+		fmt.Print("*********")
+		fmt.Print(auth)
+		fmt.Print("*********")
+		return &pb.UpdateUsernameResponse{
+			StatusCode: "200",
+			Message:    "Username updated",
+		}, nil
+	}
+
 }
