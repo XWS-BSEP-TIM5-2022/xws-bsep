@@ -33,8 +33,8 @@ func (service *ConnectionService) Register(userID string, isPublic bool) (*pb.Ac
 	return service.store.Register(userID, isPublic)
 }
 
-func (service *ConnectionService) AddConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
-	return service.store.AddConnection(userIDa, userIDb)
+func (service *ConnectionService) AddConnection(userIDa string, userIDb string, isPublic bool) (*pb.ActionResult, error) {
+	return service.store.AddConnection(userIDa, userIDb, isPublic)
 }
 
 func (service *ConnectionService) ApproveConnection(userIDa, userIDb string) (*pb.ActionResult, error) {

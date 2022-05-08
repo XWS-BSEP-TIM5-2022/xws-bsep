@@ -21,7 +21,7 @@ func NewConnectionHandler(service *application.ConnectionService) *ConnectionHan
 
 func (handler *ConnectionHandler) GetConnections(ctx context.Context, request *pb.GetRequest) (*pb.Users, error) {
 
-	fmt.Println("[ConnectionHandler]:GetConnections")
+	fmt.Println("GetConnections")
 
 	id := request.UserID
 	//prosledili smo registrovanog korisnika
@@ -39,33 +39,34 @@ func (handler *ConnectionHandler) GetConnections(ctx context.Context, request *p
 }
 
 func (handler *ConnectionHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.ActionResult, error) {
-	fmt.Println("[ConnectionHandler]:Register")
+	fmt.Println("Register")
 	userID := request.User.UserID
 	isPublic := request.User.IsPublic
 	return handler.service.Register(userID, isPublic)
 }
 
 func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb.AddConnectionRequest) (*pb.ActionResult, error) {
-	fmt.Println("[ConnectionHandler]:AddConnection")
+	fmt.Println("AddConnection")
 
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	userIDb := request.AddConnectionDTO.UserIDb
-	return handler.service.AddConnection(userIDa, userIDb)
+	userIDb := request.AddConnectionDTO.UserID
+	isPublic := request.AddConnectionDTO.IsPublic
+	return handler.service.AddConnection(userIDa, userIDb, isPublic)
 }
 
 func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request *pb.ApproveConnectionRequest) (*pb.ActionResult, error) {
-	fmt.Println("[ConnectionHandler]:ApproveConnection")
+	fmt.Println("ApproveConnection")
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	userIDb := request.ApproveConnectionDTO.UserIDb
+	userIDb := request.ApproveConnectionDTO.UserID
 	return handler.service.ApproveConnection(userIDa, userIDb)
 }
 
 func (handler *ConnectionHandler) RejectConnection(ctx context.Context, request *pb.RejectConnectionRequest) (*pb.ActionResult, error) {
-	fmt.Println("[ConnectionHandler]:RejectConnection")
+	fmt.Println("RejectConnection")
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	userIDb := request.RejectConnectionDTO.UserIDb
+	userIDb := request.RejectConnectionDTO.UserID
 	return handler.service.RejectConnection(userIDa, userIDb)
 }

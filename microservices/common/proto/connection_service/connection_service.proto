@@ -50,14 +50,6 @@ service ConnectionService{
     };
   }
 
-//
-//  rpc AddBlockUser(AddBlockUserRequest) returns (ActionResult) {
-//    option (google.api.http) = {
-//      post: "/connection/block"
-//      body:"addBlockUserDTO"
-//    };
-//  }
-
 
 }
 
@@ -66,7 +58,7 @@ message RegisterRequest{
 }
 
 message AddConnectionRequest{
-  UserAction addConnectionDTO = 1;
+  AddConnectionAction addConnectionDTO = 1;
 }
 
 message ApproveConnectionRequest{
@@ -85,7 +77,6 @@ message AddBlockUserRequest{
 
 
 message ActionResult{
-  int64 status = 1;
   string msg = 2;
 }
 
@@ -94,8 +85,13 @@ message GetRequest {
 }
 
 message UserAction{
-  string userIDa = 1;
-  string userIDb = 2;
+  string userID = 1;
+}
+
+
+message AddConnectionAction{
+  string userID = 1;
+  bool isPublic = 2;
 }
 
 message User {
