@@ -6,10 +6,14 @@ func AccessibleRoles() map[string][]string {
 	const postService = "/post_service.PostService/"
 
 	return map[string][]string{
-		postService + "Get":          {"User"},
-		postService + "GetAll":       {"User"},
-		postService + "Update":       {"User"},
-		postService + "Insert":       {"User"},
-		postService + "GetAllByUser": {"User"},
+		postService + "Get":         {"User"},
+		postService + "GetAll":      {"User"},
+		postService + "Update":      {"User"},
+		postService + "Insert":      {"User"},
+		postService + "LikePost":    {"User"},
+		postService + "DislikePost": {"User"},
+		postService + "CommentPost": {"User"},
+		postService + "NeutralPost": {"User"},
+		//postService + "GetAllByUser": {"User"},
 	}
 }

@@ -36,3 +36,19 @@ func (service *PostService) Update(post *domain.Post) (string, error) {
 func (service *PostService) GetAllByUser(id string) ([]*domain.Post, error) {
 	return service.store.GetAllByUser(id)
 }
+
+func (service *PostService) LikePost(post *domain.Post, id string) (string, error) {
+	return service.store.LikePost(post, id)
+}
+
+func (service *PostService) DislikePost(post *domain.Post, id string) (string, error) {
+	return service.store.DislikePost(post, id)
+}
+
+func (service *PostService) CommentPost(post *domain.Post, id string, text string) (string, error) {
+	return service.store.CommentPost(post, id, text)
+}
+
+//func (service *PostService) NeutralPost(post *domain.Post, id string) (string, error) {
+//	return service.store.NeutralPost(post, id)
+//}

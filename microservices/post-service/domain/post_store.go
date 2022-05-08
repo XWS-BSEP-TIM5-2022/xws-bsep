@@ -9,4 +9,8 @@ type PostStore interface { // nacin za dobavljanje podataka iz skladista
 	Insert(post *Post) (string, error)
 	Update(post *Post) (string, error)
 	GetAllByUser(string) ([]*Post, error)
+	LikePost(post *Post, id string) (string, error)
+	DislikePost(post *Post, id string) (string, error)
+	CommentPost(post *Post, id string, text string) (string, error)
+	//NeutralPost(post *Post, id string) (string, error)
 }

@@ -90,3 +90,35 @@ type Authentication struct {
 	Role     string
 	Date     time.Time
 }
+
+type Like struct {
+	Id     string
+	UserId string
+}
+
+type Dislike struct {
+	Id     string
+	UserId string
+}
+
+type Comment struct {
+	Id     string
+	UserId string
+	Text   string
+}
+
+type Post struct {
+	Id          string
+	Text        string
+	Images      []string
+	Links       []string
+	DateCreated time.Time
+	Likes       []Like
+	Dislikes    []Dislike
+	Comments    []Comment
+	UserId      string
+}
+
+type Posts struct {
+	AllPosts []Post
+}

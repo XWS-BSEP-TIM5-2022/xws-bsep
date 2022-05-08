@@ -81,14 +81,7 @@ func (store *ConnectionDBStore) GetConnections(userID string) ([]domain.UserConn
 }
 
 func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
-	/*
-				Dodavanje novog prijatelja je moguce ako:
-		         - userA i userB postoji
-				 - userA nije prijatelj sa userB
-				 - userA nije blokirao userB
-			   	 - userA nije blokiran od strane userB
-	*/
-
+	
 	if userIDa == userIDb {
 		return &pb.ActionResult{Msg: "userIDa is same as userIDb", Status: 400}, nil
 	}
@@ -116,7 +109,7 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 		if !checkIfUserExist(userIDb, transaction) {
 			_, err := transaction.Run(
 				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
-				map[string]interface{}{"userID": userIDb, "isPublic": false})
+				map[string]interface{}{"userID": userIDb, "isPublic": true})
 
 			if err != nil {
 				actionResult.Msg = "error while creating new node with ID:" + userIDb
