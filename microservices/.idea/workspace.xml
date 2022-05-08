@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8f3ec4b-cc79-44af-88ba-bcfd2d499761" name="Changes" comment="" />
+    <list default="true" id="a8f3ec4b-cc79-44af-88ba-bcfd2d499761" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/api_gateway/infrastructure/api/post_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/infrastructure/api/post_handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_gateway/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_gateway/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/startup/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_gateway/startup/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/startup/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/startup/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/connection-service/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/connection-service/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/startup/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post-service/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/startup/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/startup/config/config.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,7 +66,7 @@
     "WebServerToolWindowFactoryState": "false",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "C:/Users/Teodora/Vežbe/xws-bsep/xws-bsep/microservices/post-service/startup/config"
+    "last_opened_file_path": "C:/Users/Teodora/Vežbe/xws-bsep/xws-bsep/microservices"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -65,6 +75,57 @@
       <recent name="C:\Users\Teodora\Vežbe\xws-bsep\xws-bsep\microservices\post-service" />
       <recent name="C:\Users\Teodora\Vežbe\xws-bsep\xws-bsep\microservices\common\proto\post_service" />
     </key>
+  </component>
+  <component name="RunManager" selected="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway">
+    <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="microservices" />
+      <working_directory value="$PROJECT_DIR$/api_gateway" />
+      <kind value="PACKAGE" />
+      <package value="github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="microservices" />
+      <working_directory value="$PROJECT_DIR$/auth-service" />
+      <kind value="PACKAGE" />
+      <package value="github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="microservices" />
+      <working_directory value="$PROJECT_DIR$/connection-service" />
+      <kind value="PACKAGE" />
+      <package value="github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="microservices" />
+      <working_directory value="$PROJECT_DIR$/post-service" />
+      <kind value="PACKAGE" />
+      <package value="github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="microservices" />
+      <working_directory value="$PROJECT_DIR$/user-service" />
+      <kind value="PACKAGE" />
+      <package value="github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" />
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service" />
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service" />
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service" />
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">

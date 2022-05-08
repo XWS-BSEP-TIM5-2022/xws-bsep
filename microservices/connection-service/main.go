@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello world")
+	fmt.Println("Hello world from connection")
 
 	config := cfg.NewConfig()
 	server := startup.NewServer(config)

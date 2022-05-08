@@ -3,6 +3,7 @@ package startup
 import (
 	"context"
 	"fmt"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/api"
 	"log"
 	"net/http"
 
@@ -29,7 +30,7 @@ func NewServer(config *cfg.Config) *Server {
 		),
 	}
 	server.initHandlers()
-	//server.initCustomHandlers()
+	server.initCustomHandlers()
 	return server
 }
 
@@ -72,7 +73,10 @@ func (server *Server) initHandlers() {
 }
 
 func (server *Server) initCustomHandlers() {
-
+	postEmdpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	connectionEmdpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
+	postsHandler := api.NewPostHandler(postEmdpoint, connectionEmdpoint)
+	postsHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {
