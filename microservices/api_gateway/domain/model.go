@@ -1,6 +1,8 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type Users struct {
 	UsersDetails []User
@@ -8,10 +10,19 @@ type Users struct {
 
 type GenderEnum int8
 type RoleEnum int8
+type EducationEnum int8
 
 const (
 	Female GenderEnum = iota
 	Male
+)
+
+const (
+	Primary EducationEnum = iota
+	Secondary
+	Bachelor
+	Master
+	Doctorate
 )
 
 const (
@@ -23,13 +34,47 @@ type User struct {
 	Id           string
 	Name         string
 	LastName     string
-	Email        string
 	MobileNumber string
 	Gender       GenderEnum
 	Birthday     time.Time
-	Username     string
+	Email        string
 	Biography    string
+	Username     string
 	Password     string
+	IsPublic     bool
+	Education    []Education
+	Experience   []Experience
+	Skills       []Skill
+	Interests    []Interest
+}
+
+type Education struct {
+	Id        string
+	Name      string
+	Level     EducationEnum
+	Place     string
+	StartDate time.Time
+	EndDate   time.Time
+}
+
+type Experience struct {
+	Id        string
+	Name      string
+	Headline  string
+	Place     string
+	StartDate time.Time
+	EndDate   time.Time
+}
+
+type Skill struct {
+	Id   string
+	Name string
+}
+
+type Interest struct {
+	Id          string
+	Name        string
+	Description string
 }
 
 type Connection struct {

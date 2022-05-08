@@ -3,11 +3,11 @@ package application
 import (
 	"context"
 	"fmt"
-
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -38,6 +38,56 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		Biography:    request.Biography,
 		IsPublic:     request.IsPublic,
 	}
+
+	for _, education := range request.Education {
+
+		ed_id := primitive.NewObjectID().Hex()
+
+		userRequest.Education = append(userRequest.Education, &user.Education{
+			Id:        ed_id,
+			Name:      education.Name,
+			Level:     user.Education_EducationEnum(education.Level),
+			Place:     education.Place,
+			StartDate: education.StartDate,
+			EndDate:   education.EndDate,
+		})
+	}
+
+	for _, experience := range request.Experience {
+
+		ex_id := primitive.NewObjectID().Hex()
+
+		userRequest.Experience = append(userRequest.Experience, &user.Experience{
+			Id:        ex_id,
+			Name:      experience.Name,
+			Headline:  experience.Headline,
+			Place:     experience.Place,
+			StartDate: experience.StartDate,
+			EndDate:   experience.EndDate,
+		})
+	}
+
+	for _, skill := range request.Skills {
+
+		s_id := primitive.NewObjectID().Hex()
+
+		userRequest.Skills = append(userRequest.Skills, &user.Skill{
+			Id:   s_id,
+			Name: skill.Name,
+		})
+	}
+
+	for _, interest := range request.Interests {
+
+		in_id := primitive.NewObjectID().Hex()
+
+		userRequest.Interests = append(userRequest.Interests, &user.Interest{
+			Id:          in_id,
+			Name:        interest.Name,
+			Description: interest.Description,
+		})
+	}
+
 	createUserRequest := &user.InsertRequest{
 		User: userRequest,
 	}
