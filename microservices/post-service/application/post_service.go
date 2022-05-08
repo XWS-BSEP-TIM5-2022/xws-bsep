@@ -44,3 +44,7 @@ func (service *PostService) LikePost(post *domain.Post, id string) (string, erro
 func (service *PostService) DislikePost(post *domain.Post, id string) (string, error) {
 	return service.store.DislikePost(post, id)
 }
+
+func (service *PostService) CommentPost(post *domain.Post, id string, text string) (string, error) {
+	return service.store.CommentPost(post, id, text)
+}

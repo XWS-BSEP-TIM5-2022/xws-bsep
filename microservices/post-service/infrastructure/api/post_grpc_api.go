@@ -128,8 +128,8 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 
 	postHelper, err := handler.service.Get(objectId)
 
-	userId := request.UserId
-	//userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	//userId := request.UserId
+	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
 	// provera - da li je korisnik vec lajkovao post
 	for _, p := range post.Likes {
@@ -160,7 +160,7 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 		post.Dislikes = postHelper.Dislikes
 	}
 
-	success, err := handler.service.LikePost(post, request.UserId)
+	success, err := handler.service.LikePost(post, userId)
 
 	if err != nil {
 		return nil, err
@@ -183,8 +183,8 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 
 	postHelper, err := handler.service.Get(objectId)
 
-	userId := request.UserId
-	//userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)	// TODO !!
+	//userId := request.UserId
+	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
 	// provera - da li je korisnik vec dislajkovao post
 	for _, p := range post.Dislikes {
@@ -215,7 +215,31 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 		post.Likes = postHelper.Likes
 	}
 
-	success, err := handler.service.DislikePost(post, request.UserId)
+	success, err := handler.service.DislikePost(post, userId)
+
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.InsertResponse{
+		Success: success,
+	}
+	return response, err
+}
+
+func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertComment) (*pb.InsertResponse, error) {
+	id := request.PostId
+	objectId, err := primitive.ObjectIDFromHex(id)
+	post, err := handler.service.Get(objectId)
+	if err != nil {
+		return &pb.InsertResponse{
+			Success: "error",
+		}, err
+	}
+
+	//userId := request.UserId
+	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+
+	success, err := handler.service.CommentPost(post, userId, request.Text)
 
 	if err != nil {
 		return nil, err

@@ -26,12 +26,12 @@ service PostService{
       body: "*"
     };
   }
-//  rpc CommentPost(Comment) returns(InsertResponse) {
-//    option (google.api.http) = {
-//      post: "/post/{id}/comment"
-//      body: ""
-//    };
-//  }
+  rpc CommentPost(InsertComment) returns(InsertResponse) {
+    option (google.api.http) = {
+      post: "/post/comment"
+      body: "*"
+    };
+  }
   rpc GetAll(GetAllRequest) returns(GetAllResponse) {
     option (google.api.http) = {
       get: "/post"
@@ -125,12 +125,10 @@ message InsertDislike{
   string user_id = 2;
 }
 
-message Empty {}
+message InsertComment{
+  string post_id = 1;
+  string user_id = 2;
+  string text = 3;
+}
 
-//message CreatePostRequest {
-//  Post post = 1;
-//}
-//
-//message CreatePostResponse {
-//  Post post = 1;
-//}
+message Empty {}
