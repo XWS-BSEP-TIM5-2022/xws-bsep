@@ -25,17 +25,29 @@ func (store *AuthPostgresStore) Create(auth *domain.Authentication) (*domain.Aut
 }
 
 func (store *AuthPostgresStore) FindByUsername(username string) (*domain.Authentication, error) {
-	var auths domain.Authentication
-	err := store.db.First(&auths, "username = ?", username)
-	return &auths, err.Error
+	var auth domain.Authentication
+	err := store.db.First(&auth, "username = ?", username)
+	return &auth, err.Error
 }
 
-func (store *AuthPostgresStore) FindAll() ([]domain.Authentication, error) {
+func (store *AuthPostgresStore) FindAll() (*[]domain.Authentication, error) {
 	var auths []domain.Authentication
 	result := store.db.Find(&auths)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return auths, nil
+	return &auths, nil
+}
 
+func (store *AuthPostgresStore) DeleteAll() {
+	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
+		Delete(&domain.Authentication{})
+}
+
+func (store *AuthPostgresStore) Insert(auth *domain.Authentication) error {
+	result := store.db.Create(auth)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
