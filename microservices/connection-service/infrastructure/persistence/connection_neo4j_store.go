@@ -81,15 +81,7 @@ func (store *ConnectionDBStore) GetConnections(userID string) ([]domain.UserConn
 }
 
 func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
-	/*
-				Dodavanje novog prijatelja je moguce ako:
-		         - userA i userB postoji
-				 - userA nije prijatelj sa userB
-				 - userA nije blokirao userB
-			   	 - userA nije blokiran od strane userB
-	*/
-	//userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-
+	
 	if userIDa == userIDb {
 		return &pb.ActionResult{Msg: "userIDa is same as userIDb", Status: 400}, nil
 	}
