@@ -19,6 +19,7 @@ func NewConfig() *Config {
 		//UserDBUser: os.Getenv("USER_DB_USER"),
 		//UserDBPass: os.Getenv("USER_DB_PASS"),
 		//PublicKey:  os.Getenv("PUBLIC_KEY"),
+
 		Port:       "8081",
 		UserDBHost: "localhost",
 		UserDBPort: "27017",

@@ -25,6 +25,7 @@ func NewConfig() *Config {
 		//UserServiceHost: os.Getenv("USER_SERVICE_HOST"),
 		//PrivateKey:      os.Getenv("PRIVATE_KEY"),
 		//PublicKey:       os.Getenv("PUBLIC_KEY"),
+
 		Port:            "8082",
 		AuthDBHost:      "localhost", // ?
 		AuthDBPort:      "5432",
