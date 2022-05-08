@@ -116,40 +116,6 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 		return
 	}
 
-	// TODO: ***
-	//var listOfUsers = []*domain.User{
-	//	{
-	//		Id:           "623b0cc336a1d6fd8c1cf0f6",
-	//		Name:         "Ranko",
-	//		LastName:     "Rankovic",
-	//		MobileNumber: "0653829384",
-	//		Gender:       domain.Male,
-	//		Birthday:     time.Date(1997, time.Month(2), 21, 1, 10, 30, 0, time.UTC),
-	//		Email:        "ranko@gmail.com",
-	//		Biography:    "Vredan od malih nogu",
-	//		Username:     "rankoRankovic",
-	//	},
-	//	{
-	//		Id:           "623b4ac336a1d6fd8c1cf0f6",
-	//		Name:         "Marko",
-	//		LastName:     "Markovic",
-	//		MobileNumber: "06538293354",
-	//		Gender:       domain.Male,
-	//		Birthday:     time.Date(1967, time.Month(8), 21, 1, 10, 30, 0, time.UTC),
-	//		Email:        "markic@gmail.com",
-	//		Biography:    "Rodjen u Novom Sadu",
-	//		Username:     "markooom",
-	//	},
-	//}
-
-	//for _, u := range listOfUsers {
-	//	newUser := domain.User{
-	//		Id: u.Id,
-	//	}
-	//	users.UsersDetails = append(users.UsersDetails, newUser)
-	//}
-	// TODO: ***
-
 	err = handler.addPosts(posts, users)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
