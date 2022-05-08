@@ -137,3 +137,75 @@ func (handler *UserHandler) GetLoggedInUserInfo(ctx context.Context, request *pb
 	pbUser := mapUser(user)
 	return pbUser, nil
 }
+
+func (handler *UserHandler) UpdateBasicInfo(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+
+	id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	oldUser, err := handler.service.Get(objectId)
+
+	if err != nil {
+		return &pb.UpdateResponse{
+			Success: "error",
+		}, err
+	}
+
+	user := mapBasicInfo(mapUser(oldUser), request.User)
+
+	success, err := handler.service.Update(user)
+	response := &pb.UpdateResponse{
+		Success: success,
+	}
+	return response, err
+}
+
+func (handler *UserHandler) UpdateExperienceAndEducation(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+
+	id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	oldUser, err := handler.service.Get(objectId)
+
+	if err != nil {
+		return &pb.UpdateResponse{
+			Success: "error",
+		}, err
+	}
+
+	user := mapExperienceAndEducation(mapUser(oldUser), request.User)
+
+	success, err := handler.service.Update(user)
+	response := &pb.UpdateResponse{
+		Success: success,
+	}
+	return response, err
+}
+
+func (handler *UserHandler) UpdateSkillsAndInterests(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+
+	id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	oldUser, err := handler.service.Get(objectId)
+
+	if err != nil {
+		return &pb.UpdateResponse{
+			Success: "error",
+		}, err
+	}
+
+	user := mapSkillsAndInterests(mapUser(oldUser), request.User)
+
+	success, err := handler.service.Update(user)
+	response := &pb.UpdateResponse{
+		Success: success,
+	}
+	return response, err
+}

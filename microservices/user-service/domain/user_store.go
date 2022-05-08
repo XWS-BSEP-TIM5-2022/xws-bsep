@@ -13,6 +13,9 @@ type UserStore interface {
 	GetAllPublic() ([]*User, error)
 	DeleteAll()
 	Update(user *User) (string, error)
+	UpdateBasicInfo(user *User) (string, error)
+	UpdateExperienceAndEducation(user *User) (string, error)
+	UpdateSkillsAndInterests(user *User) (string, error)
 	GetById(userId string) (*User, error)
 	Search(criteria string) ([]*User, error)
 }

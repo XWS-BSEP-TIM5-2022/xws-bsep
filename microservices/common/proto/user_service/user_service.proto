@@ -35,6 +35,24 @@ service UserService{
             body: "user"
         };
     }
+    rpc UpdateBasicInfo(UpdateRequest) returns(UpdateResponse) {  // auth
+        option (google.api.http) = {
+            put: "/api/user/updateBasicInfo"
+            body: "user"
+        };
+    }
+    rpc UpdateExperienceAndEducation(UpdateRequest) returns(UpdateResponse) {  // auth
+        option (google.api.http) = {
+            put: "/api/user/updateExperienceAndEducation"
+            body: "user"
+        };
+    }
+    rpc UpdateSkillsAndInterests(UpdateRequest) returns(UpdateResponse) {  // auth
+        option (google.api.http) = {
+            put: "/api/user/updateSkillsAndInterests"
+            body: "user"
+        };
+    }
     rpc GetLoggedInUserInfo(GetAllRequest) returns (User) { // auth
         option (google.api.http) = {
           get: "/api/user/info"
