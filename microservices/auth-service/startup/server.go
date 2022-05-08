@@ -63,6 +63,13 @@ func (server *Server) initAuthStore(client *gorm.DB) *persistence.AuthPostgresSt
 	if err != nil {
 		log.Fatal(err)
 	}
+	store.DeleteAll()
+	for _, Auth := range auths {
+		err := store.Insert(Auth)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 	return store
 }
 

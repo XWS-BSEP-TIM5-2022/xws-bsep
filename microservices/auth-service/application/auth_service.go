@@ -13,7 +13,7 @@ import (
 )
 
 type AuthService struct {
-	store             *persistence.AuthPostgresStore // ne radi kada prosledim interfejs
+	store             *persistence.AuthPostgresStore
 	jwtService        *JWTService
 	userServiceClient user.UserServiceClient
 }
@@ -47,7 +47,6 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	if err != nil {
 		return nil, err
 	}
-	// kreiraju se auth kredencijali preko konstruktora da bi mogla odmah da hesiram pass
 	authCredentials, err := domain.NewAuthCredentials(
 		createUserResponse.Id,
 		request.Username,
@@ -79,7 +78,6 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 
 	ok := authCredentials.CheckPassword(request.Password)
 	if !ok {
-		// hendlanje izuzetaka
 		return nil, status.Errorf(codes.Unauthenticated, "Invalid username or password")
 	}
 	fmt.Println("No error validating password")
@@ -87,8 +85,6 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Could not generate JWT token")
 	}
-	// u reponsu se vraca token -> koji se postavlja u localstorage na frontu
-	// i salje se uz svaki zahtev u header-u (Authorization "Bearer jwtToken")
 	return &pb.LoginResponse{
 		Token: token,
 	}, nil
@@ -96,13 +92,13 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 
 func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
 	auths, err := service.store.FindAll()
-	if err != nil {
+	if err != nil || *auths == nil {
 		return nil, err
 	}
 	response := &pb.GetAllResponse{
 		Auth: []*pb.Auth{},
 	}
-	for _, auth := range auths {
+	for _, auth := range *auths {
 		current := &pb.Auth{
 			Id:       auth.Id,
 			Username: auth.Username,
