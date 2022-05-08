@@ -20,11 +20,12 @@ service PostService{
       body: "*"
     };
   }
-//  rpc DislikePost(Dislike) returns(InsertResponse) {
-//    option (google.api.http) = {
-//      post: "/post/{id}/dislike"
-//    };
-//  }
+  rpc DislikePost(InsertDislike) returns(InsertResponse) {
+    option (google.api.http) = {
+      post: "/post/dislike"
+      body: "*"
+    };
+  }
 //  rpc CommentPost(Comment) returns(InsertResponse) {
 //    option (google.api.http) = {
 //      post: "/post/{id}/comment"
@@ -119,9 +120,10 @@ message InsertLike{
   string user_id = 2;
 }
 
-//message InsertLike {
-//  LikeDTO likeDTO = 1;
-//}
+message InsertDislike{
+  string post_id = 1;
+  string user_id = 2;
+}
 
 message Empty {}
 

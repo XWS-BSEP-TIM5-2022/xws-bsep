@@ -40,3 +40,7 @@ func (service *PostService) GetAllByUser(id string) ([]*domain.Post, error) {
 func (service *PostService) LikePost(post *domain.Post, id string) (string, error) {
 	return service.store.LikePost(post, id)
 }
+
+func (service *PostService) DislikePost(post *domain.Post, id string) (string, error) {
+	return service.store.DislikePost(post, id)
+}

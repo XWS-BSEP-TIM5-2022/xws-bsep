@@ -24,11 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type PostServiceClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	LikePost(ctx context.Context, in *InsertLike, opts ...grpc.CallOption) (*InsertResponse, error)
-	//  rpc DislikePost(Dislike) returns(InsertResponse) {
-	//    option (google.api.http) = {
-	//      post: "/post/{id}/dislike"
-	//    };
-	//  }
+	DislikePost(ctx context.Context, in *InsertDislike, opts ...grpc.CallOption) (*InsertResponse, error)
 	//  rpc CommentPost(Comment) returns(InsertResponse) {
 	//    option (google.api.http) = {
 	//      post: "/post/{id}/comment"
@@ -61,6 +57,15 @@ func (c *postServiceClient) Get(ctx context.Context, in *GetRequest, opts ...grp
 func (c *postServiceClient) LikePost(ctx context.Context, in *InsertLike, opts ...grpc.CallOption) (*InsertResponse, error) {
 	out := new(InsertResponse)
 	err := c.cc.Invoke(ctx, "/post_service.PostService/LikePost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) DislikePost(ctx context.Context, in *InsertDislike, opts ...grpc.CallOption) (*InsertResponse, error) {
+	out := new(InsertResponse)
+	err := c.cc.Invoke(ctx, "/post_service.PostService/DislikePost", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -109,11 +114,7 @@ func (c *postServiceClient) GetAllByUser(ctx context.Context, in *GetRequest, op
 type PostServiceServer interface {
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	LikePost(context.Context, *InsertLike) (*InsertResponse, error)
-	//  rpc DislikePost(Dislike) returns(InsertResponse) {
-	//    option (google.api.http) = {
-	//      post: "/post/{id}/dislike"
-	//    };
-	//  }
+	DislikePost(context.Context, *InsertDislike) (*InsertResponse, error)
 	//  rpc CommentPost(Comment) returns(InsertResponse) {
 	//    option (google.api.http) = {
 	//      post: "/post/{id}/comment"
@@ -136,6 +137,9 @@ func (UnimplementedPostServiceServer) Get(context.Context, *GetRequest) (*GetRes
 }
 func (UnimplementedPostServiceServer) LikePost(context.Context, *InsertLike) (*InsertResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LikePost not implemented")
+}
+func (UnimplementedPostServiceServer) DislikePost(context.Context, *InsertDislike) (*InsertResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DislikePost not implemented")
 }
 func (UnimplementedPostServiceServer) GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
@@ -194,6 +198,24 @@ func _PostService_LikePost_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PostServiceServer).LikePost(ctx, req.(*InsertLike))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_DislikePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertDislike)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).DislikePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/post_service.PostService/DislikePost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).DislikePost(ctx, req.(*InsertDislike))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -284,6 +306,10 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LikePost",
 			Handler:    _PostService_LikePost_Handler,
+		},
+		{
+			MethodName: "DislikePost",
+			Handler:    _PostService_DislikePost_Handler,
 		},
 		{
 			MethodName: "GetAll",

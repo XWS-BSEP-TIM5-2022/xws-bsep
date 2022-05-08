@@ -128,14 +128,8 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 
 	postHelper, err := handler.service.Get(objectId)
 
-	fmt.Println("--------------------------------------------------------------------")
-	fmt.Println("POST", post.Id)
-
 	userId := request.UserId
 	//userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-
-	//fmt.Println("USER_ID", userId)
-	fmt.Println("--------------------------------------------------------------------")
 
 	// provera - da li je korisnik vec lajkovao post
 	for _, p := range post.Likes {
@@ -163,10 +157,65 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 				postHelper.Dislikes = append(postHelper.Dislikes, p)
 			}
 		}
+		post.Dislikes = postHelper.Dislikes
 	}
-	post.Dislikes = postHelper.Dislikes
 
 	success, err := handler.service.LikePost(post, request.UserId)
+
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.InsertResponse{
+		Success: success,
+	}
+	return response, err
+}
+
+func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertDislike) (*pb.InsertResponse, error) {
+	id := request.PostId
+	objectId, err := primitive.ObjectIDFromHex(id)
+	post, err := handler.service.Get(objectId)
+	if err != nil {
+		return &pb.InsertResponse{
+			Success: "error",
+		}, err
+	}
+
+	postHelper, err := handler.service.Get(objectId)
+
+	userId := request.UserId
+	//userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)	// TODO !!
+
+	// provera - da li je korisnik vec dislajkovao post
+	for _, p := range post.Dislikes {
+		if p.UserId == userId {
+			fmt.Println("user already dislikes selected post")
+			return &pb.InsertResponse{
+				Success: "error",
+			}, err
+		}
+	}
+
+	flag := false
+	// provera - da li je korisnik vec lajkovao post
+	for _, p := range post.Likes {
+		if p.UserId == userId {
+			fmt.Println("user liked selected post, deleting like")
+			flag = true
+		}
+	}
+
+	postHelper.Likes = nil // prazan niz lajkova
+	if flag == true {
+		for _, p := range post.Likes {
+			if p.UserId != userId { // ubacujemo sve lajkove osim onog koji je dislajkovao
+				postHelper.Likes = append(postHelper.Likes, p)
+			}
+		}
+		post.Likes = postHelper.Likes
+	}
+
+	success, err := handler.service.DislikePost(post, request.UserId)
 
 	if err != nil {
 		return nil, err
