@@ -236,7 +236,7 @@ func RegisterAuthServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/auth_service.AuthService/UpdateUsername", runtime.WithHTTPPathPattern("/api/auth"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/auth_service.AuthService/UpdateUsername", runtime.WithHTTPPathPattern("/api/auth/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -362,7 +362,7 @@ func RegisterAuthServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/auth_service.AuthService/UpdateUsername", runtime.WithHTTPPathPattern("/api/auth"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/auth_service.AuthService/UpdateUsername", runtime.WithHTTPPathPattern("/api/auth/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -388,7 +388,7 @@ var (
 
 	pattern_AuthService_GetAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "auth"}, ""))
 
-	pattern_AuthService_UpdateUsername_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "auth"}, ""))
+	pattern_AuthService_UpdateUsername_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "auth", "update"}, ""))
 )
 
 var (

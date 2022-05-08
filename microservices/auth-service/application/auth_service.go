@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
@@ -170,16 +171,16 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 			Message:    "User id not found",
 		}, nil
 	} else {
-		auth, err := service.store.UpdateUsername(userId)
+		response, err := service.store.UpdateUsername(userId, request.Username)
 		if err != nil {
 			return &pb.UpdateUsernameResponse{
 				StatusCode: "500",
 				Message:    "Auth service credentials not found from JWT token",
 			}, err
 		}
-		fmt.Print("*********")
-		fmt.Print(auth)
-		fmt.Print("*********")
+		log.Println("*********")
+		log.Print(response)
+		log.Print("********************************")
 		return &pb.UpdateUsernameResponse{
 			StatusCode: "200",
 			Message:    "Username updated",

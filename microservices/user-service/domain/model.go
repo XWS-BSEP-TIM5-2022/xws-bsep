@@ -15,7 +15,7 @@ type User struct {
 	Birthday     time.Time          `bson:"birthday"`
 	Email        string             `bson:"email"`
 	Biography    string             `bson:"biography"`
-	Username     string             `bson:"username"`
+	// Username     string             `bson:"username"`
 	// Password     string             `bson:"password"`
 	IsPublic   bool         `bson:"is_public"`
 	Education  []Education  `bson:"education"`

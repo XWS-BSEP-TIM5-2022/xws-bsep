@@ -30,7 +30,7 @@ service AuthService{
 
     rpc UpdateUsername(UpdateUsernameRequest) returns (UpdateUsernameResponse) {
         option (google.api.http) = {
-            put: "/api/auth"
+            put: "/api/auth/update"
             body: "*"
         };
     }

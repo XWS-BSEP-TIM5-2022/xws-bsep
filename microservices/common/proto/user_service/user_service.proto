@@ -105,17 +105,6 @@ message SearchResponse {
     repeated User users = 1;
 }
 
-
-message AuthUser{
-    string username = 1;
-    string password = 2;
-}
-
-// message AuthUser{
-//     string username = 1;
-//     string password = 2;
-// }
-
 message User {
     string id = 1;
     string name = 2;
@@ -128,7 +117,7 @@ message User {
     }
     GenderEnum gender = 6;
     google.protobuf.Timestamp birthday = 7;
-    string username = 8;
+    // string username = 8;
     string biography = 9;
     bool isPublic = 11;
     repeated Education education = 12;
