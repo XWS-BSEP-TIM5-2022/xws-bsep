@@ -88,6 +88,7 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 				 - userA nije blokirao userB
 			   	 - userA nije blokiran od strane userB
 	*/
+	//userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
 	if userIDa == userIDb {
 		return &pb.ActionResult{Msg: "userIDa is same as userIDb", Status: 400}, nil
