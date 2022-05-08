@@ -5,15 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8f3ec4b-cc79-44af-88ba-bcfd2d499761" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api_gateway/infrastructure/api/post_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/infrastructure/api/post_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/startup/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/startup/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/startup/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/startup/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connection-service/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connection-service/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/startup/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/startup/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/startup/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/connection-service/infrastructure/api/connection_grpc_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/infrastructure/api/connection_grpc_handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post-service/infrastructure/api/pb_mapper.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/infrastructure/api/pb_mapper.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post-service/infrastructure/api/post_grpc_api.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/infrastructure/api/post_grpc_api.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,23 +48,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "DefaultGoTemplateProperty": "Go File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.format.on.save.advertiser.fired": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "go.import.settings.migrated": "true",
-    "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "C:/Users/Teodora/Vežbe/xws-bsep/xws-bsep/microservices"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.format.on.save.advertiser.fired&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Teodora/Vežbe/xws-bsep/xws-bsep/microservices&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Teodora\Vežbe\xws-bsep\xws-bsep\microservices\post-service\startup\config" />
@@ -76,7 +72,7 @@
       <recent name="C:\Users\Teodora\Vežbe\xws-bsep\xws-bsep\microservices\common\proto\post_service" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway">
+  <component name="RunManager" selected="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service">
     <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="microservices" />
       <working_directory value="$PROJECT_DIR$/api_gateway" />
@@ -119,11 +115,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service" />
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" />
       </list>
     </recent_temporary>
   </component>

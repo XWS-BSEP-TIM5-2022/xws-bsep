@@ -133,7 +133,7 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 
 func (handler *PostHandler) getAllConnections(users *domain.Users, userId string) error {
 	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
-	conections, err := connectionClient.GetFriends(context.TODO(), &connection.GetRequest{UserID: userId})
+	conections, err := connectionClient.GetConnections(context.TODO(), &connection.GetRequest{UserID: userId})
 	if err != nil {
 		return err
 	}

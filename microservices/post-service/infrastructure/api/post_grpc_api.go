@@ -99,6 +99,7 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 
 func (handler *PostHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 	id, _ := primitive.ObjectIDFromHex(request.Post.Id)
+
 	oldPost, err := handler.service.Get(id)
 	if err != nil {
 		return &pb.UpdateResponse{

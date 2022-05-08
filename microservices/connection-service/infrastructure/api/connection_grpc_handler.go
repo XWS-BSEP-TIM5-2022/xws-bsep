@@ -23,9 +23,9 @@ func (handler *ConnectionHandler) GetConnections(ctx context.Context, request *p
 
 	fmt.Println("[ConnectionHandler]:GetConnections")
 
-	//id := request.UserID
+	id := request.UserID
 	//prosledili smo registrovanog korisnika
-	id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	//id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	friends, err := handler.service.GetConnections(id)
 	if err != nil {
 		return nil, err
