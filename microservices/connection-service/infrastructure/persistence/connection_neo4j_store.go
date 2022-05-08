@@ -117,7 +117,7 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 		if !checkIfUserExist(userIDb, transaction) {
 			_, err := transaction.Run(
 				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
-				map[string]interface{}{"userID": userIDb, "isPublic": false})
+				map[string]interface{}{"userID": userIDb, "isPublic": true})
 
 			if err != nil {
 				actionResult.Msg = "error while creating new node with ID:" + userIDb
