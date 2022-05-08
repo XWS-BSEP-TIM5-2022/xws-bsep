@@ -48,6 +48,7 @@ func (store *UserMongoDBStore) GetByEmail(email string) (*domain.User, error) {
 }
 
 func (store *UserMongoDBStore) Insert(user *domain.User) (*domain.User, error) {
+
 	user.Id = primitive.NewObjectID()
 
 	checkUsername, _ := store.GetByUsername(user.Username)
@@ -96,7 +97,7 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 		"birthday":      user.Birthday,
 		"email":         user.Email,
 		"biography":     user.Biography,
-		"username":      user.Username,
+		//"username":      user.Username,
 		// "password":      user.Password,
 		"is_public":  user.IsPublic,
 		"education":  user.Education,
@@ -107,14 +108,14 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 
 	oldUser, _ := store.filterOne(oldData)
 
-	if oldUser != nil && user.Username != "" && user.Username != oldUser.Username {
-
-		checkUsername, _ := store.GetByUsername(user.Username)
-
-		if checkUsername != nil {
-			return "username already exists", errors.New("username already exists")
-		}
-	}
+	//if oldUser != nil && user.Username != "" && user.Username != oldUser.Username {
+	//
+	//	checkUsername, _ := store.GetByUsername(user.Username)
+	//
+	//	if checkUsername != nil {
+	//		return "username already exists", errors.New("username already exists")
+	//	}
+	//}
 
 	if oldUser != nil && user.Email != "" && user.Email != oldUser.Email {
 
@@ -211,4 +212,89 @@ func (store *UserMongoDBStore) GetById(hexId string) (*domain.User, error) {
 
 func hexIdToId(hexId string) (primitive.ObjectID, error) {
 	return primitive.ObjectIDFromHex(hexId)
+}
+
+func (store *UserMongoDBStore) UpdateBasicInfo(user *domain.User) (string, error) {
+
+	oldData := bson.M{"_id": user.Id}
+
+	newData := bson.M{"$set": bson.M{
+		"name":          user.Name,
+		"last_name":     user.LastName,
+		"mobile_number": user.MobileNumber,
+		"gender":        user.Gender,
+		"birthday":      user.Birthday,
+		"email":         user.Email,
+		"biography":     user.Biography,
+		// "password":      user.Password,
+		"is_public": user.IsPublic,
+	}}
+
+	oldUser, _ := store.filterOne(oldData)
+
+	if oldUser != nil && user.Email != "" && user.Email != oldUser.Email {
+
+		checkEmail, _ := store.GetByEmail(user.Email)
+
+		if checkEmail != nil {
+			return "email already exists", errors.New("email already exists")
+		}
+	}
+
+	opts := options.Update().SetUpsert(true)
+
+	result, err := store.users.UpdateOne(context.TODO(), oldData, newData, opts)
+
+	if err != nil {
+		return "error", err
+	}
+	if result.MatchedCount != 1 {
+		return "one document should've been updated", errors.New("one document should've been updated")
+	}
+	return "success", nil
+
+}
+
+func (store *UserMongoDBStore) UpdateExperienceAndEducation(user *domain.User) (string, error) {
+
+	oldData := bson.M{"_id": user.Id}
+
+	newData := bson.M{"$set": bson.M{
+
+		"education":  user.Education,
+		"experience": user.Experience,
+	}}
+
+	result, err := store.users.UpdateOne(context.TODO(), oldData, newData)
+
+	if err != nil {
+		return "error", err
+	}
+	if result.MatchedCount != 1 {
+		return "one document should've been updated", errors.New("one document should've been updated")
+	}
+	return "success", nil
+
+}
+
+func (store *UserMongoDBStore) UpdateSkillsAndInterests(user *domain.User) (string, error) {
+
+	oldData := bson.M{"_id": user.Id}
+
+	newData := bson.M{"$set": bson.M{
+
+		"skills":    user.Skills,
+		"interests": user.Interests,
+	}}
+
+	result, err := store.users.UpdateOne(context.TODO(), oldData, newData)
+
+	if err != nil {
+		return "error", err
+	}
+	if result.MatchedCount != 1 {
+		return "one document should've been updated", errors.New("one document should've been updated")
+	}
+	return "success", nil
+
 }

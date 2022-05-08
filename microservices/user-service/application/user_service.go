@@ -36,6 +36,21 @@ func (service *UserService) Update(user *domain.User) (string, error) {
 	return success, err
 }
 
+func (service *UserService) UpdateBasicInfo(user *domain.User) (string, error) {
+	success, err := service.store.UpdateBasicInfo(user)
+	return success, err
+}
+
+func (service *UserService) UpdateExperienceAndEducation(user *domain.User) (string, error) {
+	success, err := service.store.UpdateExperienceAndEducation(user)
+	return success, err
+}
+
+func (service *UserService) UpdateSkillsAndInterests(user *domain.User) (string, error) {
+	success, err := service.store.UpdateSkillsAndInterests(user)
+	return success, err
+}
+
 func (service *UserService) Get(id primitive.ObjectID) (*domain.User, error) {
 	return service.store.Get(id)
 }
