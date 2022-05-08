@@ -10,8 +10,8 @@ import (
 
 func mapUser(user *domain.User) *pb.User {
 	userPb := &pb.User{
-		Id:           user.Id.Hex(),
-		Username:     user.Username,
+		Id: user.Id.Hex(),
+		// Username:     user.Username,
 		Name:         user.Name,
 		LastName:     user.LastName,
 		MobileNumber: user.MobileNumber,
@@ -67,8 +67,8 @@ func mapInsertUser(user *pb.User) *domain.User {
 	id, _ := primitive.ObjectIDFromHex(user.Id)
 
 	userPb := &domain.User{
-		Id:           id,
-		Username:     user.Username,
+		Id: id,
+		// Username:     user.Username,
 		Name:         user.Name,
 		LastName:     user.LastName,
 		MobileNumber: user.MobileNumber,
@@ -139,8 +139,8 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 	id, _ := primitive.ObjectIDFromHex(oldData.Id)
 
 	userPb := &domain.User{
-		Id:           id,
-		Username:     newData.Username,
+		Id: id,
+		// Username:     newData.Username,
 		Name:         newData.Name,
 		LastName:     newData.LastName,
 		MobileNumber: newData.MobileNumber,
@@ -159,9 +159,9 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 		userPb.Birthday = newData.Birthday.AsTime()
 	}
 
-	if newData.Username == "" {
-		userPb.Username = oldData.Username
-	}
+	// if newData.Username == "" {
+	// 	userPb.Username = oldData.Username
+	// }
 
 	if newData.Name == "" {
 		userPb.Name = oldData.Name

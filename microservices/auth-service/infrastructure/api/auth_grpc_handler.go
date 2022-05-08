@@ -30,3 +30,7 @@ func (handler *AuthHandler) Login(ctx context.Context, request *pb.LoginRequest)
 func (handler *AuthHandler) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
 	return handler.service.GetAll(ctx, request)
 }
+
+func (handler *AuthHandler) UpdateUsername(ctx context.Context, request *pb.UpdateUsernameRequest) (*pb.UpdateUsernameResponse, error) {
+	return handler.service.UpdateUsername(ctx, request)
+}

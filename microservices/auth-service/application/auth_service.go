@@ -3,8 +3,11 @@ package application
 import (
 	"context"
 	"fmt"
+	"log"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -28,7 +31,7 @@ func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService
 
 func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	userRequest := &user.User{
-		Username:     request.Username,
+		// Username:     request.Username,
 		Name:         request.Name,
 		LastName:     request.LastName,
 		MobileNumber: request.MobileNumber,
@@ -158,4 +161,30 @@ func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 		response.Auth = append(response.Auth, current)
 	}
 	return response, nil
+}
+
+func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.UpdateUsernameRequest) (*pb.UpdateUsernameResponse, error) {
+	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	if userId == "" {
+		return &pb.UpdateUsernameResponse{
+			StatusCode: "500",
+			Message:    "User id not found",
+		}, nil
+	} else {
+		response, err := service.store.UpdateUsername(userId, request.Username)
+		if err != nil {
+			return &pb.UpdateUsernameResponse{
+				StatusCode: "500",
+				Message:    "Auth service credentials not found from JWT token",
+			}, err
+		}
+		log.Println("*********")
+		log.Print(response)
+		log.Print("********************************")
+		return &pb.UpdateUsernameResponse{
+			StatusCode: "200",
+			Message:    "Username updated",
+		}, nil
+	}
+
 }

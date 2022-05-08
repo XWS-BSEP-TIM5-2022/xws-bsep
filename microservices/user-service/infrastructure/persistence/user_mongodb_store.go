@@ -6,6 +6,8 @@ import (
 	"errors"
 	_ "errors"
 
+	"strings"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"go.mongodb.org/mongo-driver/bson"
 	_ "go.mongodb.org/mongo-driver/bson"
@@ -13,7 +15,6 @@ import (
 	_ "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"strings"
 )
 
 const (
@@ -51,11 +52,11 @@ func (store *UserMongoDBStore) Insert(user *domain.User) (*domain.User, error) {
 
 	user.Id = primitive.NewObjectID()
 
-	checkUsername, _ := store.GetByUsername(user.Username)
+	// checkUsername, _ := store.GetByUsername(user.Username)
 
-	if checkUsername != nil {
-		return nil, errors.New("username already exists")
-	}
+	// if checkUsername != nil {
+	// 	return nil, errors.New("username already exists")
+	// }
 
 	checkEmail, _ := store.GetByEmail(user.Email)
 
@@ -96,8 +97,8 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 		"gender":        user.Gender,
 		"birthday":      user.Birthday,
 		"email":         user.Email,
-		"biography":     user.Biography,
-		//"username":      user.Username,
+		"biography":     user.Biography, 
+		// "username":      user.Username, 
 		// "password":      user.Password,
 		"is_public":  user.IsPublic,
 		"education":  user.Education,
@@ -106,16 +107,16 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 		"interests":  user.Interests,
 	}}
 
-	oldUser, _ := store.filterOne(oldData)
+	oldUser, _ := store.filterOne(oldData) 
+  
+	// if oldUser != nil && user.Username != "" && user.Username != oldUser.Username {
 
-	//if oldUser != nil && user.Username != "" && user.Username != oldUser.Username {
-	//
-	//	checkUsername, _ := store.GetByUsername(user.Username)
-	//
-	//	if checkUsername != nil {
-	//		return "username already exists", errors.New("username already exists")
-	//	}
-	//}
+	// 	checkUsername, _ := store.GetByUsername(user.Username)
+
+	// 	if checkUsername != nil {
+	// 		return "username already exists", errors.New("username already exists")
+	// 	}
+	// } 
 
 	if oldUser != nil && user.Email != "" && user.Email != oldUser.Email {
 
@@ -159,9 +160,9 @@ func (store *UserMongoDBStore) Search(criteria string) ([]*domain.User, error) {
 
 			name := strings.ToLower(user.Name)
 			lastName := strings.ToLower(user.LastName)
-			username := strings.ToLower(user.Username)
+			// username := strings.ToLower(user.Username)
 
-			if strings.Contains(name, word) || strings.Contains(lastName, word) || strings.Contains(username, word) {
+			if strings.Contains(name, word) || strings.Contains(lastName, word) /*|| strings.Contains(username, word)*/ {
 				ret = append(ret, user)
 			}
 		}

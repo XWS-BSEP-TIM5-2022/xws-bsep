@@ -27,6 +27,23 @@ service AuthService{
           get: "/api/auth"
         };
     }
+
+    rpc UpdateUsername(UpdateUsernameRequest) returns (UpdateUsernameResponse) {
+        option (google.api.http) = {
+            put: "/api/auth/update"
+            body: "*"
+        };
+    }
+}
+
+message UpdateUsernameRequest {
+    string username = 1;
+}
+
+
+message UpdateUsernameResponse {
+    string statusCode = 1;
+    string message = 2;
 }
 
 message Empty {

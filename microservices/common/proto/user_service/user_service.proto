@@ -146,13 +146,13 @@ message User {
     }
     GenderEnum gender = 6;
     google.protobuf.Timestamp birthday = 7;
-    string username = 8;
-    string biography = 9;
-    bool isPublic = 11;
-    repeated Education education = 12;
-    repeated Experience experience = 13;
-    repeated Skill skills = 14;
-    repeated Interest interests = 15;
+    // string username = 8;
+    string biography = 8;
+    bool isPublic = 9;
+    repeated Education education = 10;
+    repeated Experience experience = 11;
+    repeated Skill skills = 12;
+    repeated Interest interests = 13;
 }
 
 message Education{
