@@ -59,7 +59,7 @@ func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request
 	fmt.Println("ApproveConnection")
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	userIDb := request.ApproveConnectionDTO.UserIDb
+	userIDb := request.ApproveConnectionDTO.UserID
 	return handler.service.ApproveConnection(userIDa, userIDb)
 }
 
@@ -67,6 +67,6 @@ func (handler *ConnectionHandler) RejectConnection(ctx context.Context, request 
 	fmt.Println("RejectConnection")
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	userIDb := request.RejectConnectionDTO.UserIDb
+	userIDb := request.RejectConnectionDTO.UserID
 	return handler.service.RejectConnection(userIDa, userIDb)
 }
