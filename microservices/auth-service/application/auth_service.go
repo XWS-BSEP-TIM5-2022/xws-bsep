@@ -31,7 +31,7 @@ func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService
 
 func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	userRequest := &user.User{
-		Username:     request.Username,
+		// Username:     request.Username,
 		Name:         request.Name,
 		LastName:     request.LastName,
 		MobileNumber: request.MobileNumber,
