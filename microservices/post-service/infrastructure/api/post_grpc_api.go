@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
@@ -110,6 +111,67 @@ func (handler *PostHandler) Update(ctx context.Context, request *pb.UpdateReques
 	post := mapUpdatePost(mapPost(oldPost), request.Post)
 	success, err := handler.service.Update(post)
 	response := &pb.UpdateResponse{
+		Success: success,
+	}
+	return response, err
+}
+
+func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike) (*pb.InsertResponse, error) {
+	id := request.PostId
+	objectId, err := primitive.ObjectIDFromHex(id)
+	post, err := handler.service.Get(objectId)
+	if err != nil {
+		return &pb.InsertResponse{
+			Success: "error",
+		}, err
+	}
+
+	postHelper, err := handler.service.Get(objectId)
+
+	fmt.Println("--------------------------------------------------------------------")
+	fmt.Println("POST", post.Id)
+
+	userId := request.UserId
+	//userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+
+	//fmt.Println("USER_ID", userId)
+	fmt.Println("--------------------------------------------------------------------")
+
+	// provera - da li je korisnik vec lajkovao post
+	for _, p := range post.Likes {
+		if p.UserId == userId {
+			fmt.Println("user already likes selected post")
+			return &pb.InsertResponse{
+				Success: "error",
+			}, err
+		}
+	}
+
+	flag := false
+	// provera - da li je korisnik vec dislajkovao post
+	for _, p := range post.Dislikes {
+		if p.UserId == userId {
+			fmt.Println("user disliked selected post, deleting dislike")
+			flag = true
+		}
+	}
+
+	postHelper.Dislikes = nil // prazan niz dislajkova
+	if flag == true {
+		for _, p := range post.Dislikes {
+			if p.UserId != userId { // ubacujemo sve dislajkove osim onog koji je lajkovao
+				postHelper.Dislikes = append(postHelper.Dislikes, p)
+			}
+		}
+	}
+	post.Dislikes = postHelper.Dislikes
+
+	success, err := handler.service.LikePost(post, request.UserId)
+
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.InsertResponse{
 		Success: success,
 	}
 	return response, err

@@ -59,6 +59,17 @@ func mapInsertPost(post *pb.Post) *domain.Post {
 	return postPb
 }
 
+func mapLike(like *pb.Like) *domain.Like { // TODO : InsertLike ???
+	id := primitive.NewObjectID()
+
+	likePb := &domain.Like{
+		Id:     id,
+		UserId: like.UserId,
+	}
+
+	return likePb
+}
+
 func mapUpdatePost(oldData *pb.Post, newData *pb.Post) *domain.Post {
 	id, _ := primitive.ObjectIDFromHex(oldData.Id)
 

@@ -6,10 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="a8f3ec4b-cc79-44af-88ba-bcfd2d499761" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/infrastructure/api/post_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/infrastructure/api/post_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connection-service/infrastructure/api/connection_grpc_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/infrastructure/api/connection_grpc_handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/application/jwt_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/application/jwt_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/proto/post_service/post_service.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/post_service/post_service.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/proto/post_service/post_service.pb.gw.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/post_service/post_service.pb.gw.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/proto/post_service/post_service.proto" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/post_service/post_service.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/proto/post_service/post_service_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/post_service/post_service_grpc.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post-service/application/post_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/application/post_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post-service/domain/post_store.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/domain/post_store.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post-service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post-service/infrastructure/api/create_post_handler.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/post-service/infrastructure/api/pb_mapper.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/infrastructure/api/pb_mapper.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/post-service/infrastructure/api/post_grpc_api.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/infrastructure/api/post_grpc_api.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post-service/infrastructure/persistence/post_mongodb_store.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/infrastructure/persistence/post_mongodb_store.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +80,7 @@
       <recent name="C:\Users\Teodora\Vežbe\xws-bsep\xws-bsep\microservices\common\proto\post_service" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service">
+  <component name="RunManager" selected="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service">
     <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="microservices" />
       <working_directory value="$PROJECT_DIR$/api_gateway" />
@@ -115,11 +123,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" />
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service" />
       </list>
     </recent_temporary>
   </component>
