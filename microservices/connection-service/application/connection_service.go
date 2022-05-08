@@ -15,11 +15,11 @@ func NewConnectionService(store domain.ConnectionStore) *ConnectionService {
 	}
 }
 
-func (service *ConnectionService) GetFriends(id string) ([]*domain.UserConn, error) {
+func (service *ConnectionService) GetConnections(id string) ([]*domain.UserConn, error) {
 
 	var friendsRetVal []*domain.UserConn
 
-	friends, err := service.store.GetFriends(id)
+	friends, err := service.store.GetConnections(id)
 	if err != nil {
 		return nil, nil
 	}
@@ -33,6 +33,14 @@ func (service *ConnectionService) Register(userID string, isPublic bool) (*pb.Ac
 	return service.store.Register(userID, isPublic)
 }
 
-func (service *ConnectionService) AddFriend(userIDa, userIDb string) (*pb.ActionResult, error) {
-	return service.store.AddFriend(userIDa, userIDb)
+func (service *ConnectionService) AddConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
+	return service.store.AddConnection(userIDa, userIDb)
+}
+
+func (service *ConnectionService) ApproveConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
+	return service.store.ApproveConnection(userIDa, userIDb)
+}
+
+func (service *ConnectionService) RejectConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
+	return service.store.RejectConnection(userIDa, userIDb)
 }
