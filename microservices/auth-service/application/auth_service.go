@@ -2,6 +2,7 @@ package application
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
@@ -94,7 +95,14 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	createUserRequest := &user.InsertRequest{
 		User: userRequest,
 	}
-	fmt.Println(createUserRequest)
+
+	auths, err := service.store.FindAll()
+	for _, auth := range *auths {
+		if auth.Username == request.Username {
+			log.Println("Username is not unique")
+			return nil, errors.New("Username is not unique")
+		}
+	}
 
 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
 	if err != nil {
@@ -171,6 +179,16 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 			Message:    "User id not found",
 		}, nil
 	} else {
+		auths, err := service.store.FindAll()
+		for _, auth := range *auths {
+			if auth.Username == request.Username {
+				log.Println("Username is not unique")
+				return &pb.UpdateUsernameResponse{
+					StatusCode: "500",
+					Message:    "Username is not unique",
+				}, errors.New("Username is not unique")
+			}
+		}
 		response, err := service.store.UpdateUsername(userId, request.Username)
 		if err != nil {
 			return &pb.UpdateUsernameResponse{
@@ -178,9 +196,7 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 				Message:    "Auth service credentials not found from JWT token",
 			}, err
 		}
-		log.Println("*********")
 		log.Print(response)
-		log.Print("********************************")
 		return &pb.UpdateUsernameResponse{
 			StatusCode: "200",
 			Message:    "Username updated",
