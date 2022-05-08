@@ -80,8 +80,8 @@ func (store *ConnectionDBStore) GetConnections(userID string) ([]domain.UserConn
 	return friends.([]domain.UserConn), nil
 }
 
-func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
-	
+func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, isPublic bool) (*pb.ActionResult, error) {
+
 	if userIDa == userIDb {
 		return &pb.ActionResult{Msg: "userIDa is same as userIDb", Status: 400}, nil
 	}
@@ -97,10 +97,10 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 		if !checkIfUserExist(userIDa, transaction) {
 			_, err := transaction.Run(
 				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
-				map[string]interface{}{"userID": userIDa, "isPublic": true})
+				map[string]interface{}{"userID": userIDa, "isPublic": true}) //ispraviti na isPublic od ulogovanog
 
 			if err != nil {
-				actionResult.Msg = "error while creating new node with ID:" + userIDa
+				actionResult.Msg = "error while creating new user node with ID:" + userIDa
 				actionResult.Status = 501
 				return actionResult, err
 			}
@@ -109,10 +109,10 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 		if !checkIfUserExist(userIDb, transaction) {
 			_, err := transaction.Run(
 				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
-				map[string]interface{}{"userID": userIDb, "isPublic": true})
+				map[string]interface{}{"userID": userIDb, "isPublic": isPublic})
 
 			if err != nil {
-				actionResult.Msg = "error while creating new node with ID:" + userIDb
+				actionResult.Msg = "error while creating new user node with ID:" + userIDb
 				actionResult.Status = 501
 				return actionResult, err
 			}
@@ -124,11 +124,6 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 				actionResult.Status = 400 //bad request
 				return actionResult, nil
 			} else {
-				//if checkIfBlockExist(userIDa, userIDb, transaction) || checkIfBlockExist(userIDb, userIDa, transaction) {
-				//	actionResult.Msg = "block already exist"
-				//	actionResult.Status = 400 //bad request
-				//	return actionResult, nil
-				//} else {
 
 				//ako je userB public, odmah ce kreirati konekciju
 				if checkIfPublicUser(userIDb, transaction) {
@@ -143,7 +138,7 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 						map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb, "dateNow": dateNow, "isApproved": true})
 
 					if err != nil || result == nil {
-						actionResult.Msg = "error while creating new friends IDa:" + userIDa + " and IDb:" + userIDb
+						actionResult.Msg = "error while creating new connection IDa:" + userIDa + " and IDb:" + userIDb
 						actionResult.Status = 501
 						return actionResult, err
 					}
@@ -158,20 +153,20 @@ func (store *ConnectionDBStore) AddConnection(userIDa, userIDb string) (*pb.Acti
 						map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb, "dateNow": dateNow, "isApproved": false})
 
 					if err != nil || result == nil {
-						actionResult.Msg = "error while creating new friends IDa:" + userIDa + " and IDb:" + userIDb
+						actionResult.Msg = "error while creating new connection IDa:" + userIDa + " and IDb:" + userIDb
 						actionResult.Status = 501
 						return actionResult, err
 					}
 				}
 			}
-			//}
+
 		} else {
 			actionResult.Msg = "user does not exist"
-			actionResult.Status = 400 //bad request
+			actionResult.Status = 400
 			return actionResult, nil
 		}
 
-		actionResult.Msg = "successfully created new friends IDa:" + userIDa + " and IDb:" + userIDb
+		actionResult.Msg = "successfully created new connection IDa:" + userIDa + " and IDb:" + userIDb
 		actionResult.Status = 201
 
 		return actionResult, nil
@@ -201,8 +196,6 @@ func (store *ConnectionDBStore) ApproveConnection(userIDa, userIDb string) (*pb.
 		actionResult := &pb.ActionResult{Msg: "msg", Status: 0}
 
 		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
-			//provjeri da li su vec prijatelji
-			//provjeri da li postoji uopste zahtjev/konekcija
 
 			//prebacuje status zahtjeva na true -> approved
 			_, err := transaction.Run(
@@ -220,7 +213,7 @@ func (store *ConnectionDBStore) ApproveConnection(userIDa, userIDb string) (*pb.
 			dateNow := time.Now().Local().Unix()
 			_, err2 := transaction.Run(
 				"MATCH (u1:USER) WHERE u1.userID=$u1ID MATCH (u2:USER) WHERE u2.userID=$u2ID CREATE (u2)-[f:FRIEND{date: $dateNow, isApproved:$isApproved}]->(u1) RETURN u1, u2",
-				map[string]interface{}{"u1ID": userIDa, "u2ID": userIDb, "isApproved": true, "dateNow": dateNow})
+				map[string]interface{}{"u1ID": userIDb, "u2ID": userIDa, "isApproved": true, "dateNow": dateNow})
 
 			if err2 != nil {
 				actionResult.Msg = "error while approving new node with ID:" + userIDb
