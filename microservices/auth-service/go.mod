@@ -7,6 +7,7 @@ replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
 require (
 	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-00010101000000-000000000000
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	go.mongodb.org/mongo-driver v1.9.1
 	google.golang.org/grpc v1.46.0
 	gorm.io/driver/postgres v1.3.5
 	gorm.io/gorm v1.23.5

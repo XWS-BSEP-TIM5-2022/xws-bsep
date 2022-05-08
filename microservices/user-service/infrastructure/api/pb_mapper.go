@@ -85,7 +85,7 @@ func mapInsertUser(user *pb.User) *domain.User {
 
 	for _, education := range user.Education {
 
-		ed_id, _ := primitive.ObjectIDFromHex(education.Id)
+		ed_id := primitive.NewObjectID()
 
 		userPb.Education = append(userPb.Education, domain.Education{
 			Id:        ed_id,
@@ -99,7 +99,7 @@ func mapInsertUser(user *pb.User) *domain.User {
 
 	for _, experience := range user.Experience {
 
-		ex_id, _ := primitive.ObjectIDFromHex(experience.Id)
+		ex_id := primitive.NewObjectID()
 
 		userPb.Experience = append(userPb.Experience, domain.Experience{
 			Id:        ex_id,
@@ -113,7 +113,7 @@ func mapInsertUser(user *pb.User) *domain.User {
 
 	for _, skill := range user.Skills {
 
-		s_id, _ := primitive.ObjectIDFromHex(skill.Id)
+		s_id := primitive.NewObjectID()
 
 		userPb.Skills = append(userPb.Skills, domain.Skill{
 			Id:   s_id,
@@ -123,7 +123,7 @@ func mapInsertUser(user *pb.User) *domain.User {
 
 	for _, interest := range user.Interests {
 
-		in_id, _ := primitive.ObjectIDFromHex(interest.Id)
+		in_id := primitive.NewObjectID()
 
 		userPb.Interests = append(userPb.Interests, domain.Interest{
 			Id:          in_id,
@@ -175,7 +175,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 
 	for _, education := range educations {
 
-		ed_id, _ := primitive.ObjectIDFromHex(education.Id)
+		ed_id := primitive.NewObjectID()
 
 		userPb.Education = append(userPb.Education, domain.Education{
 			Id:        ed_id,
@@ -191,7 +191,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 
 	for _, experience := range experiences {
 
-		ex_id, _ := primitive.ObjectIDFromHex(experience.Id)
+		ex_id := primitive.NewObjectID()
 
 		userPb.Experience = append(userPb.Experience, domain.Experience{
 			Id:        ex_id,
@@ -207,7 +207,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 
 	for _, skill := range skills {
 
-		s_id, _ := primitive.ObjectIDFromHex(skill.Id)
+		s_id := primitive.NewObjectID()
 
 		userPb.Skills = append(userPb.Skills, domain.Skill{
 			Id:   s_id,
@@ -219,7 +219,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 
 	for _, interest := range interests {
 
-		in_id, _ := primitive.ObjectIDFromHex(interest.Id)
+		in_id := primitive.NewObjectID()
 
 		userPb.Interests = append(userPb.Interests, domain.Interest{
 			Id:          in_id,
