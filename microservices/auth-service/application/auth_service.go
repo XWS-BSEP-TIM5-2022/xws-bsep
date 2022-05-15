@@ -104,6 +104,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		createUserResponse.Id,
 		request.Username,
 		request.Password,
+		request.Role,
 	)
 	if err != nil {
 		return nil, err
