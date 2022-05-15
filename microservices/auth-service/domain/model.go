@@ -22,7 +22,7 @@ func NewAuthCredentials(id, username, password, role string) (*Authentication, e
 		Id:       id,
 		Username: username,
 		Password: string(hashedPassword),
-		Role:     role, // TODO: modifikovati kada dodamo role
+		Role:     role,
 	}
 	return credentials, nil
 }
