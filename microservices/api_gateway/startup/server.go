@@ -6,6 +6,7 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/api"
 	"log"
 	"net/http"
+	"path/filepath"
 
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
@@ -80,7 +81,9 @@ func (server *Server) initCustomHandlers() {
 }
 
 func (server *Server) Start() {
-	log.Fatal(http.ListenAndServeTLS(fmt.Sprintf(":%s", server.config.Port), "C:\\xws-bsep\\microservices\\localhost.crt", "C:\\xws-bsep\\microservices\\localhost.key", muxMiddleware(server)))
+	crtPath, _ := filepath.Abs("../localhost.crt")
+	keyPath, _ := filepath.Abs("../localhost.key")
+	log.Fatal(http.ListenAndServeTLS(fmt.Sprintf(":%s", server.config.Port), crtPath, keyPath, muxMiddleware(server)))
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), muxMiddleware(server)))
 
 }
