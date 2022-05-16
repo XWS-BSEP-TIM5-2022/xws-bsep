@@ -78,3 +78,20 @@ func updateUsernameById(tx *gorm.DB, auth *domain.Authentication, username strin
 	}
 	return nil
 }
+
+func (store *AuthPostgresStore) FindById(id string) (*domain.Authentication, error) {
+	var auth domain.Authentication
+	err := store.db.First(&auth, "id = ?", id)
+	return &auth, err.Error
+}
+
+func (store *AuthPostgresStore) UpdatePassword(id, password string) error {
+	var auth domain.Authentication
+	err := store.db.First(&auth, "id = ?", id)
+	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("Password", password)
+	// log.Println(auth)
+	if err != nil {
+		return err.Error
+	}
+	return nil
+}

@@ -5,5 +5,6 @@ func AccessibleRoles() map[string][]string {
 
 	return map[string][]string{
 		authService + "UpdateUsername": {"User"},
+		authService + "ChangePassword": {"User"},
 	}
 }

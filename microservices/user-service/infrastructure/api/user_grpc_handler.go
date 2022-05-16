@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"log"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -125,10 +124,7 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	return response, nil
 }
 
-// user/info
 func (handler *UserHandler) GetLoggedInUserInfo(ctx context.Context, request *pb.GetAllRequest) (*pb.User, error) {
-	log.Println(" ------------------- CONTEXT VALUE - USER ID: %w ------------------- ", ctx.Value(interceptor.LoggedInUserKey{}))
-	// izvlacenje id usera iz context-a
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	user, err := handler.service.GetById(userId)
 	if err != nil {

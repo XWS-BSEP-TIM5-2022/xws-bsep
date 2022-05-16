@@ -151,7 +151,6 @@ func checkPasswordCriteria(password string) error {
 			passNoSpaces = false
 		}
 	}
-
 	if !passLowercase || !passUppercase || !passNumber || !passSpecial || !passLength || !passNoSpaces {
 		switch false {
 		case passLowercase:
@@ -228,13 +227,64 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 				Message:    "Auth service credentials not found from JWT token",
 			}, err
 		}
-		log.Println("*********")
 		log.Print(response)
-		log.Print("********************************")
 		return &pb.UpdateUsernameResponse{
 			StatusCode: "200",
 			Message:    "Username updated",
 		}, nil
 	}
+}
 
+func (service *AuthService) ChangePassword(ctx context.Context, request *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
+	authId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	auth, err := service.store.FindById(authId)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    "Auth credentials not found",
+		}, errors.New("Auth credentials not found")
+	}
+
+	if request.NewPassword != request.NewReenteredPassword {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    "New passwords do not match",
+		}, errors.New("New passwords do not match")
+	}
+
+	oldMatched := auth.CheckPassword(request.OldPassword)
+	if !oldMatched {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    "Old password does not match",
+		}, errors.New("Old password does not match")
+	}
+
+	err = checkPasswordCriteria(request.NewPassword)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+
+	hashedPassword, err := auth.HashPassword(request.NewPassword)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+
+	err = service.store.UpdatePassword(authId, hashedPassword)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+	return &pb.ChangePasswordResponse{
+		StatusCode: "200",
+		Message:    "New password updated",
+	}, nil
 }
