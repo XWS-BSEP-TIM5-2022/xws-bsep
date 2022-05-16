@@ -80,7 +80,9 @@ func (server *Server) initCustomHandlers() {
 }
 
 func (server *Server) Start() {
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), muxMiddleware(server)))
+	log.Fatal(http.ListenAndServeTLS(fmt.Sprintf(":%s", server.config.Port), "C:\\xws-bsep\\microservices\\localhost.crt", "C:\\xws-bsep\\microservices\\localhost.key", muxMiddleware(server)))
+	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), muxMiddleware(server)))
+
 }
 
 func muxMiddleware(server *Server) http.Handler {
