@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"unicode"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
@@ -32,11 +33,10 @@ func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService
 
 func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	userRequest := &user.User{
-		// Username:     request.Username,
 		Name:         request.Name,
 		LastName:     request.LastName,
 		MobileNumber: request.MobileNumber,
-		Gender:       user.User_GenderEnum(request.Gender), // ?
+		Gender:       user.User_GenderEnum(request.Gender),
 		Birthday:     request.Birthday,
 		Email:        request.Email,
 		Biography:    request.Biography,
@@ -96,22 +96,22 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		User: userRequest,
 	}
 
-	auths, err := service.store.FindAll()
-	for _, auth := range *auths {
-		if auth.Username == request.Username {
-			log.Println("Username is not unique")
-			return nil, errors.New("Username is not unique")
-		}
+	err := checkPasswordCriteria(request.Password)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
 	}
 
 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
 	if err != nil {
 		return nil, err
 	}
+
 	authCredentials, err := domain.NewAuthCredentials(
 		createUserResponse.Id,
 		request.Username,
 		request.Password,
+		request.Role,
 	)
 	if err != nil {
 		return nil, err
@@ -128,6 +128,47 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 			Token: token,
 		}, nil
 	}
+}
+
+func checkPasswordCriteria(password string) error {
+	var err error
+	var passLowercase, passUppercase, passNumber, passSpecial, passLength, passNoSpaces bool
+	passNoSpaces = true
+	if len(password) >= 8 {
+		passLength = true
+	}
+	for _, char := range password {
+		switch {
+		case unicode.IsLower(char):
+			passLowercase = true
+		case unicode.IsUpper(char):
+			passUppercase = true
+		case unicode.IsNumber(char):
+			passNumber = true
+		case unicode.IsPunct(char) || unicode.IsSymbol(char):
+			passSpecial = true
+		case unicode.IsSpace(int32(char)):
+			passNoSpaces = false
+		}
+	}
+	if !passLowercase || !passUppercase || !passNumber || !passSpecial || !passLength || !passNoSpaces {
+		switch false {
+		case passLowercase:
+			err = errors.New("Password must contain at least one lowercase letter")
+		case passUppercase:
+			err = errors.New("Password must contain at least one uppercase letter")
+		case passNumber:
+			err = errors.New("Password must contain at least one number")
+		case passSpecial:
+			err = errors.New("Password must contain at least one special character")
+		case passLength:
+			err = errors.New("Password must be longer than 8 characters")
+		case passNoSpaces:
+			err = errors.New("Password should not contain any spaces")
+		}
+		return err
+	}
+	return nil
 }
 
 func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
@@ -202,5 +243,58 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 			Message:    "Username updated",
 		}, nil
 	}
+}
 
+func (service *AuthService) ChangePassword(ctx context.Context, request *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
+	authId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	auth, err := service.store.FindById(authId)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    "Auth credentials not found",
+		}, errors.New("Auth credentials not found")
+	}
+
+	if request.NewPassword != request.NewReenteredPassword {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    "New passwords do not match",
+		}, errors.New("New passwords do not match")
+	}
+
+	oldMatched := auth.CheckPassword(request.OldPassword)
+	if !oldMatched {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    "Old password does not match",
+		}, errors.New("Old password does not match")
+	}
+
+	err = checkPasswordCriteria(request.NewPassword)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+
+	hashedPassword, err := auth.HashPassword(request.NewPassword)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+
+	err = service.store.UpdatePassword(authId, hashedPassword)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+	return &pb.ChangePasswordResponse{
+		StatusCode: "200",
+		Message:    "New password updated",
+	}, nil
 }

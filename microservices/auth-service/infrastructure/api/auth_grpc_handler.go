@@ -20,7 +20,6 @@ func NewAuthHandler(service *application.AuthService) *AuthHandler {
 
 func (handler *AuthHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	return handler.service.Register(ctx, request)
-
 }
 
 func (handler *AuthHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
@@ -33,4 +32,8 @@ func (handler *AuthHandler) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 
 func (handler *AuthHandler) UpdateUsername(ctx context.Context, request *pb.UpdateUsernameRequest) (*pb.UpdateUsernameResponse, error) {
 	return handler.service.UpdateUsername(ctx, request)
+}
+
+func (handler *AuthHandler) ChangePassword(ctx context.Context, request *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
+	return handler.service.ChangePassword(ctx, request)
 }
