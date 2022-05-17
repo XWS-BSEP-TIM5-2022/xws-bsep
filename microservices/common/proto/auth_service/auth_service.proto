@@ -145,7 +145,8 @@ message Interest{
 }
 
 message RegisterResponse {
-    string token = 1;
+    string statusCode = 1;
+    string message = 2;
 }
   
 message LoginRequest {
@@ -162,6 +163,5 @@ message ActivationRequest {
 }
 
 message ActivationResponse {
-    string statusCode = 1;
-    string message = 2;
+    string token = 1;
 }

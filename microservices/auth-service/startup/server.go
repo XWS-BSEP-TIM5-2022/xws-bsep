@@ -35,12 +35,11 @@ const (
 func (server *Server) Start() {
 	postgresClient := server.initPostgresClient()
 	authStore := server.initAuthStore(postgresClient)
-	// kreiranje jwt servisa
+
 	jwtServiceClient, err := server.initJWTManager(server.config.PrivateKey, server.config.PublicKey)
 	if err != nil {
 		log.Fatal(err)
 	}
-	// kreiranje user servisa
 	userServiceClient := server.initUserServiceClient()
 
 	authService := server.initAuthService(authStore, userServiceClient, jwtServiceClient)

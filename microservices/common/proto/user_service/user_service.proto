@@ -63,6 +63,16 @@ service UserService{
             get: "/api/user/search/{criteria}"
         };
     }
+    rpc UpdateIsActiveById(ActivateAccountRequest) returns (ActivateAccountResponse) {
+        option (google.api.http) = {
+            put: "/api/user/updateIsActive"
+        };
+    }
+    rpc GetIsActive(GetRequest) returns (IsActiveResponse) {
+        option (google.api.http) = {
+            get: "/api/user/isActive"
+        };
+    }
 }
 
 message GetRequest {
@@ -123,16 +133,10 @@ message SearchResponse {
     repeated User users = 1;
 }
 
-
 message AuthUser{
     string username = 1;
     string password = 2;
 }
-
-// message AuthUser{
-//     string username = 1;
-//     string password = 2;
-// }
 
 message User {
     string id = 1;
@@ -146,13 +150,13 @@ message User {
     }
     GenderEnum gender = 6;
     google.protobuf.Timestamp birthday = 7;
-    // string username = 8;
     string biography = 8;
     bool isPublic = 9;
     repeated Education education = 10;
     repeated Experience experience = 11;
     repeated Skill skills = 12;
     repeated Interest interests = 13;
+    bool isActive  = 14;
 }
 
 message Education{
@@ -192,3 +196,14 @@ message Interest{
     string description=3;
 }
 
+message ActivateAccountRequest {
+    string id = 1;
+}
+
+message ActivateAccountResponse {
+    string success = 1;
+}
+
+message IsActiveResponse {
+    bool isActive = 1;
+}

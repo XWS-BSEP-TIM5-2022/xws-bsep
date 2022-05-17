@@ -97,8 +97,8 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 		"gender":        user.Gender,
 		"birthday":      user.Birthday,
 		"email":         user.Email,
-		"biography":     user.Biography, 
-		// "username":      user.Username, 
+		"biography":     user.Biography,
+		// "username":      user.Username,
 		// "password":      user.Password,
 		"is_public":  user.IsPublic,
 		"education":  user.Education,
@@ -107,8 +107,8 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 		"interests":  user.Interests,
 	}}
 
-	oldUser, _ := store.filterOne(oldData) 
-  
+	oldUser, _ := store.filterOne(oldData)
+
 	// if oldUser != nil && user.Username != "" && user.Username != oldUser.Username {
 
 	// 	checkUsername, _ := store.GetByUsername(user.Username)
@@ -116,7 +116,7 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 	// 	if checkUsername != nil {
 	// 		return "username already exists", errors.New("username already exists")
 	// 	}
-	// } 
+	// }
 
 	if oldUser != nil && user.Email != "" && user.Email != oldUser.Email {
 
@@ -298,4 +298,21 @@ func (store *UserMongoDBStore) UpdateSkillsAndInterests(user *domain.User) (stri
 	}
 	return "success", nil
 
+}
+
+func (store *UserMongoDBStore) UpdateIsActiveById(userId string) error {
+	objID, err := primitive.ObjectIDFromHex(userId)
+	if err != nil {
+		panic(err)
+	}
+	oldData := bson.M{"_id": objID}
+	newData := bson.M{"$set": bson.M{
+		"is_active": true,
+	}}
+	opts := options.Update().SetUpsert(true)
+	result, err := store.users.UpdateOne(context.TODO(), oldData, newData, opts)
+	if err != nil || result.ModifiedCount == 0 {
+		return err
+	}
+	return nil
 }

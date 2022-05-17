@@ -205,3 +205,25 @@ func (handler *UserHandler) UpdateSkillsAndInterests(ctx context.Context, reques
 	}
 	return response, err
 }
+
+func (handler *UserHandler) UpdateIsActiveById(ctx context.Context, request *pb.ActivateAccountRequest) (*pb.ActivateAccountResponse, error) {
+	err := handler.service.UpdateIsActiveById(request.Id)
+	if err != nil {
+		return &pb.ActivateAccountResponse{
+			Success: err.Error(),
+		}, err
+	}
+	return &pb.ActivateAccountResponse{
+		Success: "Success",
+	}, nil
+}
+
+func (handler *UserHandler) GetIsActive(ctx context.Context, request *pb.GetRequest) (*pb.IsActiveResponse, error) {
+	user, err := handler.service.GetById(request.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.IsActiveResponse{
+		IsActive: user.IsActive,
+	}, nil
+}

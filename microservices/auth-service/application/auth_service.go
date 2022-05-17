@@ -14,6 +14,7 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -136,9 +137,9 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	}
 
 	return &pb.RegisterResponse{
-		Token: token,
+		StatusCode: "200",
+		Message:    "Success! Check your email to activate your account",
 	}, nil
-
 }
 
 func checkPasswordCriteria(password string) error {
@@ -187,7 +188,19 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("No error finding user")
+	fmt.Println("No error finding auth credentials")
+
+	userReq := &user.GetRequest{
+		Id: authCredentials.Id,
+	}
+	user, err := service.userServiceClient.GetIsActive(ctx, userReq)
+	if err != nil {
+		fmt.Println("Error finging user data")
+		return nil, err
+	}
+	if !user.IsActive {
+		return nil, errors.New("Account is not activated")
+	}
 
 	ok := authCredentials.CheckPassword(request.Password)
 	if !ok {
@@ -395,10 +408,35 @@ func verificationMailMessage(token string) []byte {
 }
 
 func (service *AuthService) ActivateAccount(ctx context.Context, request *pb.ActivationRequest) (*pb.ActivationResponse, error) {
+	token, err := jwt.ParseWithClaims(
+		request.Jwt,
+		&interceptor.UserClaims{},
+		func(token *jwt.Token) (interface{}, error) {
+			_, ok := token.Method.(*jwt.SigningMethodRSA)
+			if !ok {
+				return nil, fmt.Errorf("Unexpected token signing method")
+			}
+			return service.jwtService.publicKey, nil
+		},
+	)
+	if err != nil {
+		return nil, fmt.Errorf("Invalid token: %w", err)
+	}
+	claims, ok := token.Claims.(*interceptor.UserClaims)
+	if !ok {
+		return nil, fmt.Errorf("Invalid token claims")
+	}
 
-	fmt.Println(request.Jwt)
+	id := claims.Subject
+	req := &user.ActivateAccountRequest{
+		Id: id,
+	}
+	_, err = service.userServiceClient.UpdateIsActiveById(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
 	return &pb.ActivationResponse{
-		StatusCode: "200",
-		Message:    "OK",
+		Token: request.Jwt,
 	}, nil
 }

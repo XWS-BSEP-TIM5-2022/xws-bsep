@@ -10,8 +10,7 @@ import (
 
 func mapUser(user *domain.User) *pb.User {
 	userPb := &pb.User{
-		Id: user.Id.Hex(),
-		// Username:     user.Username,
+		Id:           user.Id.Hex(),
 		Name:         user.Name,
 		LastName:     user.LastName,
 		MobileNumber: user.MobileNumber,
@@ -19,8 +18,8 @@ func mapUser(user *domain.User) *pb.User {
 		Birthday:     timestamppb.New(user.Birthday),
 		Email:        user.Email,
 		Biography:    user.Biography,
-		// Password:     user.Password,
-		IsPublic: user.IsPublic,
+		IsPublic:     user.IsPublic,
+		IsActive:     user.IsActive,
 	}
 
 	for _, education := range user.Education {
@@ -139,16 +138,15 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 	id, _ := primitive.ObjectIDFromHex(oldData.Id)
 
 	userPb := &domain.User{
-		Id: id,
-		// Username:     newData.Username,
+		Id:           id,
 		Name:         newData.Name,
 		LastName:     newData.LastName,
 		MobileNumber: newData.MobileNumber,
 		Gender:       mapInsertGender(newData.Gender),
 		Email:        newData.Email,
 		Biography:    newData.Biography,
-		// Password:     newData.Password,
-		IsPublic: oldData.IsPublic,
+		IsPublic:     oldData.IsPublic,
+		IsActive:     oldData.IsActive,
 	}
 
 	if mapInsertGender(newData.Gender) == -1 {
@@ -300,6 +298,7 @@ func mapBasicInfo(oldData *pb.User, newData *pb.User) *domain.User {
 		Email:        newData.Email,
 		Biography:    newData.Biography,
 		IsPublic:     oldData.IsPublic,
+		IsActive:     oldData.IsActive,
 	}
 
 	if mapInsertGender(newData.Gender) == -1 {
@@ -391,6 +390,7 @@ func mapExperienceAndEducation(oldData *pb.User, newData *pb.User) *domain.User 
 		Email:        oldData.Email,
 		Biography:    oldData.Biography,
 		IsPublic:     oldData.IsPublic,
+		IsActive:     oldData.IsActive,
 	}
 
 	educations := newData.Education
@@ -466,6 +466,7 @@ func mapSkillsAndInterests(oldData *pb.User, newData *pb.User) *domain.User {
 		Email:        oldData.Email,
 		Biography:    oldData.Biography,
 		IsPublic:     oldData.IsPublic,
+		IsActive:     oldData.IsActive,
 	}
 
 	educations := oldData.Education
