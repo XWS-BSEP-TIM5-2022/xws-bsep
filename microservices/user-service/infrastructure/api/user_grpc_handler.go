@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -219,8 +220,10 @@ func (handler *UserHandler) UpdateIsActiveById(ctx context.Context, request *pb.
 }
 
 func (handler *UserHandler) GetIsActive(ctx context.Context, request *pb.GetRequest) (*pb.IsActiveResponse, error) {
+	fmt.Println(request.Id)
 	user, err := handler.service.GetById(request.Id)
 	if err != nil {
+		fmt.Println("* error :", err)
 		return nil, err
 	}
 	return &pb.IsActiveResponse{

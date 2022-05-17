@@ -44,6 +44,8 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		Email:        request.Email,
 		Biography:    request.Biography,
 		IsPublic:     request.IsPublic,
+		IsActive:     false,
+		Role:         request.Role,
 	}
 
 	for _, education := range request.Education {

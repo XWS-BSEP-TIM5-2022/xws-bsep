@@ -20,6 +20,7 @@ func mapUser(user *domain.User) *pb.User {
 		Biography:    user.Biography,
 		IsPublic:     user.IsPublic,
 		IsActive:     user.IsActive,
+		Role:         user.Role,
 	}
 
 	for _, education := range user.Education {
@@ -66,16 +67,16 @@ func mapInsertUser(user *pb.User) *domain.User {
 	id, _ := primitive.ObjectIDFromHex(user.Id)
 
 	userPb := &domain.User{
-		Id: id,
-		// Username:     user.Username,
+		Id:           id,
 		Name:         user.Name,
 		LastName:     user.LastName,
 		MobileNumber: user.MobileNumber,
 		Gender:       mapInsertGender(user.Gender),
 		Email:        user.Email,
 		Biography:    user.Biography,
-		// Password:     user.Password,
-		IsPublic: user.IsPublic,
+		IsPublic:     user.IsPublic,
+		IsActive:     user.IsActive,
+		Role:         user.Role,
 	}
 
 	if user.Birthday != nil {
@@ -147,6 +148,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 		Biography:    newData.Biography,
 		IsPublic:     oldData.IsPublic,
 		IsActive:     oldData.IsActive,
+		Role:         oldData.Role,
 	}
 
 	if mapInsertGender(newData.Gender) == -1 {
@@ -299,6 +301,7 @@ func mapBasicInfo(oldData *pb.User, newData *pb.User) *domain.User {
 		Biography:    newData.Biography,
 		IsPublic:     oldData.IsPublic,
 		IsActive:     oldData.IsActive,
+		Role:         oldData.Role,
 	}
 
 	if mapInsertGender(newData.Gender) == -1 {
@@ -391,6 +394,7 @@ func mapExperienceAndEducation(oldData *pb.User, newData *pb.User) *domain.User 
 		Biography:    oldData.Biography,
 		IsPublic:     oldData.IsPublic,
 		IsActive:     oldData.IsActive,
+		Role:         oldData.Role,
 	}
 
 	educations := newData.Education
@@ -467,6 +471,7 @@ func mapSkillsAndInterests(oldData *pb.User, newData *pb.User) *domain.User {
 		Biography:    oldData.Biography,
 		IsPublic:     oldData.IsPublic,
 		IsActive:     oldData.IsActive,
+		Role:         oldData.Role,
 	}
 
 	educations := oldData.Education

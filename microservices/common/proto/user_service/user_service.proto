@@ -157,6 +157,7 @@ message User {
     repeated Skill skills = 12;
     repeated Interest interests = 13;
     bool isActive  = 14;
+    string role = 15;
 }
 
 message Education{

@@ -21,6 +21,7 @@ type User struct {
 	Skills       []Skill            `bson:"skills"`
 	Interests    []Interest         `bson:"interests"`
 	IsActive     bool               `bson:"is_active"`
+	Role         string             `bson:"role"`
 }
 
 type Education struct {
