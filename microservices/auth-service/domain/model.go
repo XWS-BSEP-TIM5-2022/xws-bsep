@@ -7,16 +7,17 @@ import (
 )
 
 type Authentication struct {
-	Id       string `gorm:"index:idx_name,unique"` // id je id usera
-	Username string `gorm:"index:idx_name,unique"`
-	Password string `gorm:"index:idx_name"`
-	Role     string `gorm:"index:idx_name"`
+	Id               string `gorm:"index:idx_name,unique"` // id je id usera
+	Username         string `gorm:"index:idx_name,unique"`
+	Password         string `gorm:"index:idx_name"`
+	Role             string `gorm:"index:idx_name"`
+	VerificationCode string `gorm:"index:idx_name"` // za oporavak lozinke
 }
 
 func NewAuthCredentials(id, username, password, role string) (*Authentication, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, fmt.Errorf("cannot hash password: %w", err)
+		return nil, fmt.Errorf("Can not hash password: %w", err)
 	}
 	credentials := &Authentication{
 		Id:       id,
@@ -35,7 +36,7 @@ func (credentials *Authentication) CheckPassword(password string) bool {
 func (credentials *Authentication) HashPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return "", fmt.Errorf("cannot hash password: %w", err)
+		return "", fmt.Errorf("Can not hash password: %w", err)
 	}
 	return string(hashedPassword), nil
 }
