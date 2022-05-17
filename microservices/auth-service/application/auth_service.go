@@ -332,7 +332,8 @@ func sendVerificationMail(emailTo, token string) error {
 }
 
 func verificationMailMessage(token string) []byte {
-	urlRedirection := "http://localhost:" + "8080" + "/api/user/public" // TODO: port se moze izvuci iz env var
+	// TODO SD: port se moze izvuci iz env var - 4200
+	urlRedirection := "http://localhost:" + "8080" + "/api/auth/activateAccount/" + token
 
 	subject := "Subject: Account activation\n"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
@@ -391,4 +392,13 @@ func verificationMailMessage(token string) []byte {
 		"</html>"
 	message := []byte(subject + mime + body)
 	return message
+}
+
+func (service *AuthService) ActivateAccount(ctx context.Context, request *pb.ActivationRequest) (*pb.ActivationResponse, error) {
+
+	fmt.Println(request.Jwt)
+	return &pb.ActivationResponse{
+		StatusCode: "200",
+		Message:    "OK",
+	}, nil
 }

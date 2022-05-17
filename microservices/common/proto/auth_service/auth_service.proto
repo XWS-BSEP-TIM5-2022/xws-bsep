@@ -41,6 +41,12 @@ service AuthService{
             body: "*"
         };
     }
+
+    rpc ActivateAccount(ActivationRequest) returns(ActivationResponse) {  // auth
+        option (google.api.http) = {
+            get: "/api/auth/activateAccount/{jwt}"
+        };
+    }
 }
 
 message ChangePasswordRequest {
@@ -76,6 +82,7 @@ message Auth {
     string username = 2;
     string password = 3;
     string role = 4;
+    string verificationCode = 5;
 }
 
 message RegisterRequest {
@@ -148,4 +155,13 @@ message LoginRequest {
   
 message LoginResponse {
     string token = 1;
+}
+
+message ActivationRequest {
+    string jwt = 1;
+}
+
+message ActivationResponse {
+    string statusCode = 1;
+    string message = 2;
 }

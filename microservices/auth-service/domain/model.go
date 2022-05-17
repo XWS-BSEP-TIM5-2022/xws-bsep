@@ -20,10 +20,11 @@ func NewAuthCredentials(id, username, password, role string) (*Authentication, e
 		return nil, fmt.Errorf("Can not hash password: %w", err)
 	}
 	credentials := &Authentication{
-		Id:       id,
-		Username: username,
-		Password: string(hashedPassword),
-		Role:     role,
+		Id:               id,
+		Username:         username,
+		Password:         string(hashedPassword),
+		Role:             role,
+		VerificationCode: "",
 	}
 	return credentials, nil
 }
