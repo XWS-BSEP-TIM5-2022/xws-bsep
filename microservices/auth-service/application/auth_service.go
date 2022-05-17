@@ -220,6 +220,16 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 			Message:    "User id not found",
 		}, nil
 	} else {
+		auths, err := service.store.FindAll()
+		for _, auth := range *auths {
+			if auth.Username == request.Username {
+				log.Println("Username is not unique")
+				return &pb.UpdateUsernameResponse{
+					StatusCode: "500",
+					Message:    "Username is not unique",
+				}, errors.New("Username is not unique")
+			}
+		}
 		response, err := service.store.UpdateUsername(userId, request.Username)
 		if err != nil {
 			return &pb.UpdateUsernameResponse{
