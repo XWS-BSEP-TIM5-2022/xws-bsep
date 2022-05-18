@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/api"
-	"github.com/rs/cors"
+	"github.com/gorilla/handlers"
 	"log"
 	"net/http"
 
@@ -81,15 +81,18 @@ func (server *Server) initCustomHandlers() {
 }
 
 func (server *Server) Start() {
-	handler := cors.Default().Handler(muxMiddleware(server))
-
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), muxMiddleware(server)), handler)
+	ch := handlers.CORS(
+		handlers.AllowedOrigins([]string{"https://localhost:4200", "https://localhost:4200/**", "http://localhost:4200", "http://localhost:4200/**", "http://localhost:8080"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"Accept", "Accept-Language", "Content-Type", "Content-Language", "Origin", "Authorization", "Access-Control-Allow-Origin", "*"}),
+	)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), muxMiddleware(server)), ch(server.mux))
 }
 
 func muxMiddleware(server *Server) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		//w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		//w.Header().Set("Access-Control-Allow-Origin", "*")
 		log.Println(server.config.AuthHost + ":" + server.config.AuthPort)
 		server.mux.ServeHTTP(w, r)
 	})
