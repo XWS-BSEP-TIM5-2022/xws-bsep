@@ -22,6 +22,13 @@ service AuthService{
         };
     }
 
+    rpc PasswordlessLogin(PasswordlessLoginRequest) returns (PasswordlessLoginResponse) {
+        option (google.api.http) = {
+            post: "/api/auth/passwordless-login"
+            body: "*"
+        };
+    }
+
     rpc GetAll(Empty) returns (GetAllResponse) {
         option (google.api.http) = {
           get: "/api/auth"
@@ -42,9 +49,14 @@ service AuthService{
         };
     }
 
+    rpc ConfirmEmailLogin(ConfirmEmailLoginRequest) returns(ConfirmEmailLoginResponse) {  // auth
+        option (google.api.http) = {
+            get: "/api/auth/confirm-email-login/{token}"
+        };
+    }
     rpc ActivateAccount(ActivationRequest) returns(ActivationResponse) {  // auth
         option (google.api.http) = {
-            get: "/api/auth/activateAccount/{jwt}"
+            get: "/api/auth/activateAccount/{jwt}" 
         };
     }
 }
@@ -148,6 +160,14 @@ message RegisterResponse {
     string statusCode = 1;
     string message = 2;
 }
+
+message PasswordlessLoginRequest{
+    string username = 1;
+}
+
+message PasswordlessLoginResponse{
+    string success = 1;
+}
   
 message LoginRequest {
     string username = 1;
@@ -158,10 +178,18 @@ message LoginResponse {
     string token = 1;
 }
 
+message ConfirmEmailLoginRequest{
+    string token = 1;
+}
+
+message ConfirmEmailLoginResponse{
+    string token = 1;
+}
+
 message ActivationRequest {
     string jwt = 1;
 }
 
-message ActivationResponse {
+message ActivationResponse { 
     string token = 1;
 }
