@@ -45,3 +45,7 @@ func (handler *AuthHandler) UpdateUsername(ctx context.Context, request *pb.Upda
 func (handler *AuthHandler) ChangePassword(ctx context.Context, request *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
 	return handler.service.ChangePassword(ctx, request)
 }
+
+func (handler *AuthHandler) ActivateAccount(ctx context.Context, request *pb.ActivationRequest) (*pb.ActivationResponse, error) {
+	return handler.service.ActivateAccount(ctx, request)
+}

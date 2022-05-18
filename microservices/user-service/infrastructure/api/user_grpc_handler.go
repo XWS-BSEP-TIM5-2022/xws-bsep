@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -205,7 +206,7 @@ func (handler *UserHandler) UpdateSkillsAndInterests(ctx context.Context, reques
 	}
 	return response, err
 }
-
+ 
 func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest) (*pb.GetEmailResponse, error) {
 	id := request.Id
 	objectId, err := primitive.ObjectIDFromHex(id)
@@ -221,4 +222,27 @@ func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest
 		Email: user.Email,
 	}
 	return response, nil
+}
+func (handler *UserHandler) UpdateIsActiveById(ctx context.Context, request *pb.ActivateAccountRequest) (*pb.ActivateAccountResponse, error) {
+	err := handler.service.UpdateIsActiveById(request.Id)
+	if err != nil {
+		return &pb.ActivateAccountResponse{
+			Success: err.Error(),
+		}, err
+	}
+	return &pb.ActivateAccountResponse{
+		Success: "Success",
+	}, nil
+}
+
+func (handler *UserHandler) GetIsActive(ctx context.Context, request *pb.GetRequest) (*pb.IsActiveResponse, error) {
+	fmt.Println(request.Id)
+	user, err := handler.service.GetById(request.Id)
+	if err != nil {
+		fmt.Println("* error :", err)
+		return nil, err
+	}
+	return &pb.IsActiveResponse{
+		IsActive: user.IsActive,
+	}, nil 
 }

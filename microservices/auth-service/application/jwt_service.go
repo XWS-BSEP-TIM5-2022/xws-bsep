@@ -32,7 +32,7 @@ func NewJWTManager(privateKey, publicKey string) (*JWTService, error) {
 	return &JWTService{
 		privateKey:          parsedPrivateKey,
 		publicKey:           parsedPublicKey,
-		accessTokenDuration: 30 * time.Minute, // TODO: bilo je 10
+		accessTokenDuration: 10 * time.Minute, // TODO: bilo je 10
 	}, nil
 }
 
