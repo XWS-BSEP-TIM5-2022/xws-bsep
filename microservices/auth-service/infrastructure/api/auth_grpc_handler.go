@@ -49,3 +49,7 @@ func (handler *AuthHandler) SendRecoveryCode(ctx context.Context, request *pb.Se
 func (handler *AuthHandler) VerifyRecoveryCode(ctx context.Context, request *pb.VerifyRecoveryCodeRequest) (*pb.Response, error) {
 	return handler.service.VerifyRecoveryCode(ctx, request)
 }
+
+func (handler *AuthHandler) ResetForgottenPassword(ctx context.Context, request *pb.ResetForgottenPasswordRequest) (*pb.Response, error) {
+	return handler.service.ResetForgottenPassword(ctx, request)
+}

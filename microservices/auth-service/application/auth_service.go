@@ -548,7 +548,7 @@ func codeVerificatioMailMessage(verificationCode string) []byte {
 		"    </table>\n" +
 		"    <br> <br>\n" +
 		"</body>\n" +
-		"</html"
+		"</html>"
 	message := []byte(subject + mime + body)
 	return message
 }

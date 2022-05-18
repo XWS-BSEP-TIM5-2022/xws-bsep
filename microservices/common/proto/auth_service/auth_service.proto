@@ -64,7 +64,7 @@ service AuthService{
 
     rpc ResetForgottenPassword(ResetForgottenPasswordRequest) returns (Response) { // forgotten password
         option (google.api.http) = {
-            post: "/api/auth/resetPassword"
+            put: "/api/auth/resetPassword"
             body: "*"
         };
     }
