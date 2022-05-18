@@ -15,13 +15,13 @@ type User struct {
 	Birthday     time.Time          `bson:"birthday"`
 	Email        string             `bson:"email"`
 	Biography    string             `bson:"biography"`
-	// Username     string             `bson:"username"`
-	// Password     string             `bson:"password"`
-	IsPublic   bool         `bson:"is_public"`
-	Education  []Education  `bson:"education"`
-	Experience []Experience `bson:"experience"`
-	Skills     []Skill      `bson:"skills"`
-	Interests  []Interest   `bson:"interests"`
+	IsPublic     bool               `bson:"is_public"`
+	Education    []Education        `bson:"education"`
+	Experience   []Experience       `bson:"experience"`
+	Skills       []Skill            `bson:"skills"`
+	Interests    []Interest         `bson:"interests"`
+	IsActive     bool               `bson:"is_active"`
+	Role         string             `bson:"role"`
 }
 
 type Education struct {

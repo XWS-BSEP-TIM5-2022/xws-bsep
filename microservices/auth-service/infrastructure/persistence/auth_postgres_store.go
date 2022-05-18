@@ -89,7 +89,6 @@ func (store *AuthPostgresStore) UpdatePassword(id, password string) error {
 	var auth domain.Authentication
 	err := store.db.First(&auth, "id = ?", id)
 	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("Password", password)
-	// log.Println(auth)
 	if err != nil {
 		return err.Error
 	}

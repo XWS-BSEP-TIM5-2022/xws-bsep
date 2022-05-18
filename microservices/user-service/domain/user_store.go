@@ -18,4 +18,5 @@ type UserStore interface {
 	UpdateSkillsAndInterests(user *User) (string, error)
 	GetById(userId string) (*User, error)
 	Search(criteria string) ([]*User, error)
+	UpdateIsActiveById(userId string) error
 }
