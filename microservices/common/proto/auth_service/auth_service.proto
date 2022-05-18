@@ -22,7 +22,7 @@ service AuthService{
         };
     }
 
-    rpc PasswordlessLogin(PasswordlessLoginRequest) returns (LoginResponse) {
+    rpc PasswordlessLogin(PasswordlessLoginRequest) returns (PasswordlessLoginResponse) {
         option (google.api.http) = {
             post: "/api/auth/passwordless-login"
             body: "*"
@@ -46,6 +46,12 @@ service AuthService{
         option (google.api.http) = {
             post: "/api/auth/changePassword"
             body: "*"
+        };
+    }
+
+    rpc ConfirmEmailLogin(ConfirmEmailLoginRequest) returns(ConfirmEmailLoginResponse) {  // auth
+        option (google.api.http) = {
+            get: "/api/auth/confirm-email-login/{token}"
         };
     }
 }
@@ -151,6 +157,10 @@ message RegisterResponse {
 message PasswordlessLoginRequest{
     string username = 1;
 }
+
+message PasswordlessLoginResponse{
+    string success = 1;
+}
   
 message LoginRequest {
     string username = 1;
@@ -158,5 +168,13 @@ message LoginRequest {
 }
   
 message LoginResponse {
+    string token = 1;
+}
+
+message ConfirmEmailLoginRequest{
+    string token = 1;
+}
+
+message ConfirmEmailLoginResponse{
     string token = 1;
 }
