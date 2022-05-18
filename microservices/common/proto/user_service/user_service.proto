@@ -13,6 +13,13 @@ service UserService{
         get: "/api/user/{id}"
     };
     }
+
+    rpc GetEmail(GetRequest) returns(GetEmailResponse) {  // auth
+        option (google.api.http) = {
+            get: "/api/user/email/{id}"
+        };
+    }
+
     rpc GetAll(GetAllRequest) returns(GetAllResponse) { // auth
         option (google.api.http) = {
         get: "/api/user"
@@ -63,6 +70,7 @@ service UserService{
             get: "/api/user/search/{criteria}"
         };
     }
+
 }
 
 message GetRequest {
@@ -72,6 +80,11 @@ message GetRequest {
 message GetResponse {
     User user = 1;
 }
+
+message GetEmailResponse {
+    string email = 1;
+}
+
 
 message GetAllRequest {
 }

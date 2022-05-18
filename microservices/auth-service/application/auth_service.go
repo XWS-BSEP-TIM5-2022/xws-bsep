@@ -192,6 +192,37 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	}, nil
 }
 
+func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.LoginResponse, error) {
+	authCredentials, err := service.store.FindByUsername(request.Username)
+	if err != nil {
+		return nil, errors.New("there is no user with that username")
+	}
+
+	getUserRequest := &user.GetRequest{
+		Id: authCredentials.Id,
+	}
+
+	//getUserResponse, err := service.userServiceClient.Get(context.TODO(), getUserRequest)
+	usr, err := service.userServiceClient.GetEmail(context.TODO(), getUserRequest)
+
+	if err != nil {
+		return nil, errors.New("no user found")
+	}
+ 
+	//ok := authCredentials.CheckPassword(request.Password)
+	//if !ok {
+	//	return nil, status.Errorf(codes.Unauthenticated, "Invalid username or password")
+	//}
+	fmt.Println("No error validating password")
+	token, err := service.jwtService.GenerateToken(authCredentials)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Could not generate JWT token")
+	}
+	return &pb.LoginResponse{
+		Token: token,
+	}, nil
+}
+
 func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
 	auths, err := service.store.FindAll()
 	if err != nil || *auths == nil {

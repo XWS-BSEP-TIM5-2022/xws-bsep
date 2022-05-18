@@ -205,3 +205,20 @@ func (handler *UserHandler) UpdateSkillsAndInterests(ctx context.Context, reques
 	}
 	return response, err
 }
+
+func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest) (*pb.GetEmailResponse, error) {
+	id := request.Id
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	user, err := handler.service.Get(objectId)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.GetEmailResponse{
+		Email: user.Email,
+	}
+	return response, nil
+}
