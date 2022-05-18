@@ -47,6 +47,13 @@ service AuthService{
             get: "/api/auth/activateAccount/{jwt}"
         };
     }
+
+    rpc SendRecoveryCode(SendRecoveryCodeRequest) returns (SendRecoveryCodeResponse) {
+        option (google.api.http) = {
+            post: "/api/auth/sendCode"
+            body: "*"
+        };
+    }
 }
 
 message ChangePasswordRequest {
@@ -83,6 +90,7 @@ message Auth {
     string password = 3;
     string role = 4;
     string verificationCode = 5;
+    int64 expirationTime = 6;
 }
 
 message RegisterRequest {
@@ -164,4 +172,12 @@ message ActivationRequest {
 
 message ActivationResponse {
     string token = 1;
+}
+
+message SendRecoveryCodeRequest {
+    string email = 1;
+}
+
+message SendRecoveryCodeResponse {
+    string idAuth = 1;
 }

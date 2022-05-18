@@ -5,7 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/smtp"
+	"strconv"
+	"time"
 	"unicode"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
@@ -228,10 +231,12 @@ func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 	}
 	for _, auth := range *auths {
 		current := &pb.Auth{
-			Id:       auth.Id,
-			Username: auth.Username,
-			Password: auth.Password,
-			Role:     auth.Role,
+			Id:               auth.Id,
+			Username:         auth.Username,
+			Password:         auth.Password,
+			Role:             auth.Role,
+			VerificationCode: auth.VerificationCode,
+			ExpirationTime:   auth.ExpirationTime,
 		}
 		response.Auth = append(response.Auth, current)
 	}
@@ -441,4 +446,49 @@ func (service *AuthService) ActivateAccount(ctx context.Context, request *pb.Act
 	return &pb.ActivationResponse{
 		Token: request.Jwt,
 	}, nil
+}
+
+func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.SendRecoveryCodeRequest) (*pb.SendRecoveryCodeResponse, error) {
+	userServiceRequest := &user.GetIdByEmailRequest{
+		Email: request.Email,
+	}
+	response, err := service.userServiceClient.GetIdByEmail(ctx, userServiceRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	randomCode := rangeIn(100000, 999999)
+	fmt.Println(randomCode)
+	code := strconv.Itoa(randomCode)
+
+	expDuration := 5 * time.Minute
+	expDate := time.Now().Add(expDuration).Unix()
+
+	// if expDate < time.Now().Unix() {
+	// 	fmt.Println("ISTEKLO VREME ZA KOD")
+	// } else {
+	// 	fmt.Println("nije isteklo")
+	// }
+
+	updateCodeErr := service.store.UpdateVerifactionCode(response.Id, code)
+	if updateCodeErr != nil {
+		fmt.Println("Updating verification code error")
+		return nil, updateCodeErr
+	}
+	updateErr := service.store.UpdateExpirationTime(response.Id, expDate)
+	if updateErr != nil {
+		fmt.Println("Updating expiration time error")
+		return nil, updateErr
+	}
+
+	// TODO SD: send mail
+
+	return &pb.SendRecoveryCodeResponse{
+		IdAuth: response.Id,
+	}, nil
+
+}
+
+func rangeIn(low, hi int) int {
+	return low + rand.Intn(hi-low)
 }

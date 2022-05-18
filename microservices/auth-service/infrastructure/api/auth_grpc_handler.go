@@ -41,3 +41,7 @@ func (handler *AuthHandler) ChangePassword(ctx context.Context, request *pb.Chan
 func (handler *AuthHandler) ActivateAccount(ctx context.Context, request *pb.ActivationRequest) (*pb.ActivationResponse, error) {
 	return handler.service.ActivateAccount(ctx, request)
 }
+
+func (handler *AuthHandler) SendRecoveryCode(ctx context.Context, request *pb.SendRecoveryCodeRequest) (*pb.SendRecoveryCodeResponse, error) {
+	return handler.service.SendRecoveryCode(ctx, request)
+}

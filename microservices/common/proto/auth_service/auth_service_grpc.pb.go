@@ -28,6 +28,7 @@ type AuthServiceClient interface {
 	UpdateUsername(ctx context.Context, in *UpdateUsernameRequest, opts ...grpc.CallOption) (*UpdateUsernameResponse, error)
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
 	ActivateAccount(ctx context.Context, in *ActivationRequest, opts ...grpc.CallOption) (*ActivationResponse, error)
+	SendRecoveryCode(ctx context.Context, in *SendRecoveryCodeRequest, opts ...grpc.CallOption) (*SendRecoveryCodeResponse, error)
 }
 
 type authServiceClient struct {
@@ -92,6 +93,15 @@ func (c *authServiceClient) ActivateAccount(ctx context.Context, in *ActivationR
 	return out, nil
 }
 
+func (c *authServiceClient) SendRecoveryCode(ctx context.Context, in *SendRecoveryCodeRequest, opts ...grpc.CallOption) (*SendRecoveryCodeResponse, error) {
+	out := new(SendRecoveryCodeResponse)
+	err := c.cc.Invoke(ctx, "/auth_service.AuthService/SendRecoveryCode", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -102,6 +112,7 @@ type AuthServiceServer interface {
 	UpdateUsername(context.Context, *UpdateUsernameRequest) (*UpdateUsernameResponse, error)
 	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
 	ActivateAccount(context.Context, *ActivationRequest) (*ActivationResponse, error)
+	SendRecoveryCode(context.Context, *SendRecoveryCodeRequest) (*SendRecoveryCodeResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -126,6 +137,9 @@ func (UnimplementedAuthServiceServer) ChangePassword(context.Context, *ChangePas
 }
 func (UnimplementedAuthServiceServer) ActivateAccount(context.Context, *ActivationRequest) (*ActivationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ActivateAccount not implemented")
+}
+func (UnimplementedAuthServiceServer) SendRecoveryCode(context.Context, *SendRecoveryCodeRequest) (*SendRecoveryCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendRecoveryCode not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -248,6 +262,24 @@ func _AuthService_ActivateAccount_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_SendRecoveryCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendRecoveryCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).SendRecoveryCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth_service.AuthService/SendRecoveryCode",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).SendRecoveryCode(ctx, req.(*SendRecoveryCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -278,6 +310,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ActivateAccount",
 			Handler:    _AuthService_ActivateAccount_Handler,
+		},
+		{
+			MethodName: "SendRecoveryCode",
+			Handler:    _AuthService_SendRecoveryCode_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -74,3 +74,7 @@ func (service *UserService) Search(criteria string) ([]*domain.User, error) {
 func (service *UserService) UpdateIsActiveById(userId string) error {
 	return service.store.UpdateIsActiveById(userId)
 }
+
+func (service *UserService) GetIdByEmail(email string) (string, error) {
+	return service.store.GetIdByEmail(email)
+}

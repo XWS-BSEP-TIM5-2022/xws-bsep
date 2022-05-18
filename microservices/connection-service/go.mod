@@ -6,12 +6,12 @@ replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
 
 require (
 	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-20220508095927-08ca68d7dc80
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/neo4j/neo4j-go-driver/v4 v4.4.2
 	google.golang.org/grpc v1.46.0
 )
 
 require (
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect

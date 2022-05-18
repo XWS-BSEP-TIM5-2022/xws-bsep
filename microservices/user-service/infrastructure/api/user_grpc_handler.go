@@ -230,3 +230,13 @@ func (handler *UserHandler) GetIsActive(ctx context.Context, request *pb.GetRequ
 		IsActive: user.IsActive,
 	}, nil
 }
+
+func (handler *UserHandler) GetIdByEmail(ctx context.Context, request *pb.GetIdByEmailRequest) (*pb.InsertResponse, error) {
+	userId, err := handler.service.GetIdByEmail(request.Email)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InsertResponse{
+		Id: userId,
+	}, nil
+}
