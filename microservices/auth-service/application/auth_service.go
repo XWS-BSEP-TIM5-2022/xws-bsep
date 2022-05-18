@@ -134,8 +134,8 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	if err != nil {
 		return nil, err
 	}
-
-	errSendingMail := sendVerificationMail(request.Email, token)
+	message := verificationMailMessage(token)
+	errSendingMail := sendMail(request.Email, message)
 	if errSendingMail != nil {
 		fmt.Println("err:  ", errSendingMail)
 		return nil, errSendingMail
@@ -330,7 +330,7 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 	}, nil
 }
 
-func sendVerificationMail(emailTo, token string) error {
+func sendMail(emailTo string, message []byte) error {
 	from := config.NewConfig().EmailFrom
 	emailPassword := config.NewConfig().EmailPassword
 	to := []string{emailTo}
@@ -338,8 +338,6 @@ func sendVerificationMail(emailTo, token string) error {
 	host := config.NewConfig().EmailHost
 	port := config.NewConfig().EmailPort
 	smtpAddress := host + ":" + port
-
-	message := verificationMailMessage(token)
 
 	authMail := smtp.PlainAuth("", from, emailPassword, host)
 
@@ -464,12 +462,6 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 	expDuration := 5 * time.Minute
 	expDate := time.Now().Add(expDuration).Unix()
 
-	// if expDate < time.Now().Unix() {
-	// 	fmt.Println("ISTEKLO VREME ZA KOD")
-	// } else {
-	// 	fmt.Println("nije isteklo")
-	// }
-
 	updateCodeErr := service.store.UpdateVerifactionCode(response.Id, code)
 	if updateCodeErr != nil {
 		fmt.Println("Updating verification code error")
@@ -481,14 +473,165 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 		return nil, updateErr
 	}
 
-	// TODO SD: send mail
+	message := codeVerificatioMailMessage(code)
+	sendingMailErr := sendMail(request.Email, message)
+	if sendingMailErr != nil {
+		return nil, sendingMailErr
+	}
 
 	return &pb.SendRecoveryCodeResponse{
 		IdAuth: response.Id,
 	}, nil
-
 }
 
 func rangeIn(low, hi int) int {
 	return low + rand.Intn(hi-low)
+}
+
+func codeVerificatioMailMessage(verificationCode string) []byte {
+	subject := "Subject: Account recovery\n"
+	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	body := "<html><body style=\"background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;\">\n" +
+		"    <div style=\"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\"> We're thrilled to have you here! Get ready to dive into your new account.\n" +
+		"    </div>\n" +
+		"    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n" +
+		"        <tr>\n" +
+		"            <td bgcolor=\"#FFA73B\" align=\"center\">\n" +
+		"                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n" +
+		"                    <tr>\n" +
+		"                        <td align=\"center\" valign=\"top\" style=\"padding: 40px 10px 40px 10px;\"> </td>\n" +
+		"                    </tr>\n" +
+		"                </table>\n" +
+		"            </td>\n" +
+		"        </tr>\n" +
+		"        <tr>\n" +
+		"            <td bgcolor=\"#FFA73B\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\n" +
+		"                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n" +
+		"                    <tr>\n" +
+		"                        <td bgcolor=\"#ffffff\" align=\"center\" valign=\"top\" style=\"padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\">\n" +
+		"                            <h1 style=\"font-size: 48px; font-weight: 400; margin: 2;\">Verify your account</h1> <img src=\"https://img.icons8.com/external-inipagistudio-lineal-color-inipagistudio/100/000000/external-verification-email-phising-inipagistudio-lineal-color-inipagistudio.png\" width=\"125\" height=\"120\" style=\"display: block; border: 0px;\" />\n" +
+		"                        </td>\n" +
+		"                    </tr>\n" +
+		"                </table>\n" +
+		"            </td>\n" +
+		"        </tr>\n" +
+		"        <tr>\n" +
+		"            <td bgcolor=\"#f4f4f4\" align=\"center\" style=\"padding: 0px 10px 0px 10px;\">\n" +
+		"                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px;\">\n" +
+		"                    <tr>\n" +
+		"                        <td bgcolor=\"#ffffff\" align=\"left\" style=\"padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">\n" +
+		"                            <p style=\"margin: 0;\">To reset your password you need to verify your account with a verification code.</p>\n" +
+		"                        </td>\n" +
+		"                    </tr>\n" +
+		"                    <tr>\n" +
+		"                        <td bgcolor=\"#ffffff\" align=\"left\">\n" +
+		"                            <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n" +
+		"                                <tr>\n" +
+		"                                    <td bgcolor=\"#ffffff\" align=\"center\" style=\"padding: 20px 30px 60px 30px;\">\n" +
+		"                                        <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n" +
+		"                                            <tr>\n" +
+		"                                                <td align=\"center\" style=\"border-radius: 3px;\" >\n" +
+		"                                                    <p>Your verification code:</p><h1><b> " + verificationCode + "</b></h1>\n" +
+		"                                                </td>\n" +
+		"                                            </tr>\n" +
+		"                                        </table>\n" +
+		"                                    </td>\n" +
+		"                                </tr>\n" +
+		"                            </table>\n" +
+		"                        </td>\n" +
+		"                    </tr> \n" +
+		"                    <tr>\n" +
+		"                        <td bgcolor=\"#ffffff\" align=\"left\" style=\"padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">\n" +
+		"                            <p style=\"margin: 0;\">Sincerely,<br>Dislinkt</p>\n" +
+		"                        </td>\n" +
+		"                    </tr>\n" +
+		"    </table>\n" +
+		"    <br> <br>\n" +
+		"</body>\n" +
+		"</html"
+	message := []byte(subject + mime + body)
+	return message
+}
+
+func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.VerifyRecoveryCodeRequest) (*pb.Response, error) {
+	auth, err := service.store.FindById(request.IdAuth)
+	if err != nil {
+		return nil, err
+	}
+
+	if auth.VerificationCode != request.VerificationCode {
+		return &pb.Response{
+			StatusCode: "500",
+			Message:    "Invalid verification code",
+		}, errors.New("Invalid verification code")
+	}
+
+	if auth.ExpirationTime < time.Now().Unix() {
+		return &pb.Response{
+			StatusCode: "500",
+			Message:    "Verification code has expired",
+		}, errors.New("Verification code has expired")
+	}
+
+	updateCodeErr := service.store.UpdateVerifactionCode(request.IdAuth, "")
+	if updateCodeErr != nil {
+		fmt.Println("Updating verification code error")
+		return nil, updateCodeErr
+	}
+	updateErr := service.store.UpdateExpirationTime(request.IdAuth, 0)
+	if updateErr != nil {
+		fmt.Println("Updating expiration time error")
+		return nil, updateErr
+	}
+
+	return &pb.Response{
+		StatusCode: "200",
+		Message:    "Verification code is correct",
+	}, nil
+}
+
+func (service *AuthService) ResetForgottenPassword(ctx context.Context, request *pb.ResetForgottenPasswordRequest) (*pb.Response, error) {
+	auth, err := service.store.FindById(request.IdAuth)
+	if err != nil {
+		return &pb.Response{
+			StatusCode: "500",
+			Message:    "Auth credentials not found",
+		}, errors.New("Auth credentials not found")
+	}
+
+	if request.Password != request.ReenteredPassword {
+		return &pb.Response{
+			StatusCode: "500",
+			Message:    "New passwords do not match",
+		}, errors.New("New passwords do not match")
+	}
+
+	err = checkPasswordCriteria(request.Password)
+	if err != nil {
+		return &pb.Response{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+
+	hashedPassword, err := auth.HashPassword(request.Password)
+	if err != nil || hashedPassword == "" {
+		return &pb.Response{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+
+	err = service.store.UpdatePassword(request.IdAuth, hashedPassword)
+	if err != nil {
+		return &pb.Response{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+
+	return &pb.Response{
+		StatusCode: "200",
+		Message:    "Password updated successfully",
+	}, nil
 }

@@ -50,7 +50,21 @@ service AuthService{
 
     rpc SendRecoveryCode(SendRecoveryCodeRequest) returns (SendRecoveryCodeResponse) {
         option (google.api.http) = {
-            post: "/api/auth/sendCode"
+            put: "/api/auth/sendCode"
+            body: "*"
+        };
+    }
+
+    rpc VerifyRecoveryCode(VerifyRecoveryCodeRequest) returns (Response) {
+        option (google.api.http) = {
+            post: "/api/auth/verifyCode"
+            body: "*"
+        };
+    }
+
+    rpc ResetForgottenPassword(ResetForgottenPasswordRequest) returns (Response) { // forgotten password
+        option (google.api.http) = {
+            post: "/api/auth/resetPassword"
             body: "*"
         };
     }
@@ -138,7 +152,6 @@ message Experience{
     string place=4;
     google.protobuf.Timestamp startDate =5;
     google.protobuf.Timestamp endDate=6;
-
 }
 
 message Skill{
@@ -181,3 +194,21 @@ message SendRecoveryCodeRequest {
 message SendRecoveryCodeResponse {
     string idAuth = 1;
 }
+
+message VerifyRecoveryCodeRequest {
+    string idAuth = 1;
+    string verificationCode = 2;
+    string email = 3;
+}
+
+message Response {
+    string statusCode = 1;
+    string message = 2;
+}
+
+message ResetForgottenPasswordRequest {
+    string idAuth = 1;
+    string password = 2;
+    string reenteredPassword = 3;
+}
+

@@ -45,3 +45,7 @@ func (handler *AuthHandler) ActivateAccount(ctx context.Context, request *pb.Act
 func (handler *AuthHandler) SendRecoveryCode(ctx context.Context, request *pb.SendRecoveryCodeRequest) (*pb.SendRecoveryCodeResponse, error) {
 	return handler.service.SendRecoveryCode(ctx, request)
 }
+
+func (handler *AuthHandler) VerifyRecoveryCode(ctx context.Context, request *pb.VerifyRecoveryCodeRequest) (*pb.Response, error) {
+	return handler.service.VerifyRecoveryCode(ctx, request)
+}
