@@ -158,9 +158,8 @@ func (store *UserMongoDBStore) Search(criteria string) ([]*domain.User, error) {
 			if user.IsActive {
 				name := strings.ToLower(user.Name)
 				lastName := strings.ToLower(user.LastName)
-				// username := strings.ToLower(user.Username)
 
-				if strings.Contains(name, word) || strings.Contains(lastName, word) /*|| strings.Contains(username, word)*/ {
+				if strings.Contains(name, word) || strings.Contains(lastName, word) {
 					ret = append(ret, user)
 				}
 			}
@@ -307,10 +306,12 @@ func (store *UserMongoDBStore) UpdateIsActiveById(userId string) error {
 	if err != nil {
 		panic(err)
 	}
+
 	oldData := bson.M{"_id": objID}
 	newData := bson.M{"$set": bson.M{
 		"is_active": true,
 	}}
+
 	opts := options.Update().SetUpsert(true)
 	result, err := store.users.UpdateOne(context.TODO(), oldData, newData, opts)
 	if err != nil || result.ModifiedCount == 0 {
