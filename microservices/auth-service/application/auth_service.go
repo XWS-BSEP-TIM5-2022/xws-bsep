@@ -4,9 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
-	"unicode"
-
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
@@ -15,6 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"log"
+	"net/smtp"
+	"unicode"
 )
 
 type AuthService struct {
@@ -202,18 +202,38 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 		Id: authCredentials.Id,
 	}
 
-	//getUserResponse, err := service.userServiceClient.Get(context.TODO(), getUserRequest)
-	usr, err := service.userServiceClient.GetEmail(context.TODO(), getUserRequest)
+	user, err := service.userServiceClient.GetEmail(context.TODO(), getUserRequest)
 
 	if err != nil {
 		return nil, errors.New("no user found")
 	}
- 
-	//ok := authCredentials.CheckPassword(request.Password)
-	//if !ok {
-	//	return nil, status.Errorf(codes.Unauthenticated, "Invalid username or password")
-	//}
-	fmt.Println("No error validating password")
+
+	from := "firma1pomocni@gmail.com"
+	password := "Firma1Pomocni*"
+
+	to := []string{
+		user.Email,
+	}
+
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	subject := "Subject: Verification mail\n"
+	body := "Someone tried to sign in to your account. Was that you?"
+
+	message := []byte(subject + body)
+
+	// Authentication.
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	// Sending email.
+	err = smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
+	if err != nil {
+		fmt.Println(err)
+		return nil, errors.New("error while sending mail")
+	}
+	fmt.Println("Email Sent Successfully!")
+
 	token, err := service.jwtService.GenerateToken(authCredentials)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Could not generate JWT token")

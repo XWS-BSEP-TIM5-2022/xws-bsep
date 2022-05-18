@@ -5,6 +5,7 @@ go 1.18
 replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
 
 require (
+	github.com/AfterShip/email-verifier v1.3.0
 	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-00010101000000-000000000000
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	go.mongodb.org/mongo-driver v1.9.1
@@ -13,7 +14,11 @@ require (
 	gorm.io/gorm v1.23.5
 )
 
-require google.golang.org/protobuf v1.28.0 // indirect
+require (
+	github.com/hbollon/go-edlib v1.4.0 // indirect
+	google.golang.org/protobuf v1.28.0 // indirect
+	h12.io/socks v1.0.3 // indirect
+)
 
 require (
 	github.com/golang/protobuf v1.5.2 // indirect
