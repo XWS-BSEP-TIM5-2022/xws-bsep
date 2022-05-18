@@ -10,7 +10,6 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
-	"github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -194,6 +193,113 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	}, nil
 }
 
+func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
+	auths, err := service.store.FindAll()
+	if err != nil || *auths == nil {
+		return nil, err
+	}
+	response := &pb.GetAllResponse{
+		Auth: []*pb.Auth{},
+	}
+	for _, auth := range *auths {
+		current := &pb.Auth{
+			Id:       auth.Id,
+			Username: auth.Username,
+			Password: auth.Password,
+			Role:     auth.Role,
+		}
+		response.Auth = append(response.Auth, current)
+	}
+	return response, nil
+}
+
+func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.UpdateUsernameRequest) (*pb.UpdateUsernameResponse, error) {
+	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	if userId == "" {
+		return &pb.UpdateUsernameResponse{
+			StatusCode: "500",
+			Message:    "User id not found",
+		}, nil
+	} else {
+		auths, err := service.store.FindAll()
+		for _, auth := range *auths {
+			if auth.Username == request.Username {
+				log.Println("Username is not unique")
+				return &pb.UpdateUsernameResponse{
+					StatusCode: "500",
+					Message:    "Username is not unique",
+				}, errors.New("Username is not unique")
+			}
+		}
+		response, err := service.store.UpdateUsername(userId, request.Username)
+		if err != nil {
+			return &pb.UpdateUsernameResponse{
+				StatusCode: "500",
+				Message:    "Auth service credentials not found from JWT token",
+			}, err
+		}
+		log.Print(response)
+		return &pb.UpdateUsernameResponse{
+			StatusCode: "200",
+			Message:    "Username updated",
+		}, nil
+	}
+}
+
+func (service *AuthService) ChangePassword(ctx context.Context, request *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
+	authId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	auth, err := service.store.FindById(authId)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    "Auth credentials not found",
+		}, errors.New("Auth credentials not found")
+	}
+
+	if request.NewPassword != request.NewReenteredPassword {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    "New passwords do not match",
+		}, errors.New("New passwords do not match")
+	}
+
+	oldMatched := auth.CheckPassword(request.OldPassword)
+	if !oldMatched {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    "Old password does not match",
+		}, errors.New("Old password does not match")
+	}
+
+	err = checkPasswordCriteria(request.NewPassword)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+
+	hashedPassword, err := auth.HashPassword(request.NewPassword)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+
+	err = service.store.UpdatePassword(authId, hashedPassword)
+	if err != nil {
+		return &pb.ChangePasswordResponse{
+			StatusCode: "500",
+			Message:    err.Error(),
+		}, err
+	}
+	return &pb.ChangePasswordResponse{
+		StatusCode: "200",
+		Message:    "New password updated",
+	}, nil
+}
+
 func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.PasswordlessLoginResponse, error) {
 	authCredentials, err := service.store.FindByUsername(request.Username)
 	if err != nil {
@@ -303,113 +409,6 @@ func passwordlessLoginMailMessage(token string) []byte {
 		"</html>"
 	message := []byte(subject + mime + body)
 	return message
-}
-
-func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
-	auths, err := service.store.FindAll()
-	if err != nil || *auths == nil {
-		return nil, err
-	}
-	response := &pb.GetAllResponse{
-		Auth: []*pb.Auth{},
-	}
-	for _, auth := range *auths {
-		current := &pb.Auth{
-			Id:       auth.Id,
-			Username: auth.Username,
-			Password: auth.Password,
-			Role:     auth.Role,
-		}
-		response.Auth = append(response.Auth, current)
-	}
-	return response, nil
-}
-
-func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.UpdateUsernameRequest) (*pb.UpdateUsernameResponse, error) {
-	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	if userId == "" {
-		return &pb.UpdateUsernameResponse{
-			StatusCode: "500",
-			Message:    "User id not found",
-		}, nil
-	} else {
-		auths, err := service.store.FindAll()
-		for _, auth := range *auths {
-			if auth.Username == request.Username {
-				log.Println("Username is not unique")
-				return &pb.UpdateUsernameResponse{
-					StatusCode: "500",
-					Message:    "Username is not unique",
-				}, errors.New("Username is not unique")
-			}
-		}
-		response, err := service.store.UpdateUsername(userId, request.Username)
-		if err != nil {
-			return &pb.UpdateUsernameResponse{
-				StatusCode: "500",
-				Message:    "Auth service credentials not found from JWT token",
-			}, err
-		}
-		log.Print(response)
-		return &pb.UpdateUsernameResponse{
-			StatusCode: "200",
-			Message:    "Username updated",
-		}, nil
-	}
-}
-
-func (service *AuthService) ChangePassword(ctx context.Context, request *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
-	authId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	auth, err := service.store.FindById(authId)
-	if err != nil {
-		return &pb.ChangePasswordResponse{
-			StatusCode: "500",
-			Message:    "Auth credentials not found",
-		}, errors.New("Auth credentials not found")
-	}
-
-	if request.NewPassword != request.NewReenteredPassword {
-		return &pb.ChangePasswordResponse{
-			StatusCode: "500",
-			Message:    "New passwords do not match",
-		}, errors.New("New passwords do not match")
-	}
-
-	oldMatched := auth.CheckPassword(request.OldPassword)
-	if !oldMatched {
-		return &pb.ChangePasswordResponse{
-			StatusCode: "500",
-			Message:    "Old password does not match",
-		}, errors.New("Old password does not match")
-	}
-
-	err = checkPasswordCriteria(request.NewPassword)
-	if err != nil {
-		return &pb.ChangePasswordResponse{
-			StatusCode: "500",
-			Message:    err.Error(),
-		}, err
-	}
-
-	hashedPassword, err := auth.HashPassword(request.NewPassword)
-	if err != nil {
-		return &pb.ChangePasswordResponse{
-			StatusCode: "500",
-			Message:    err.Error(),
-		}, err
-	}
-
-	err = service.store.UpdatePassword(authId, hashedPassword)
-	if err != nil {
-		return &pb.ChangePasswordResponse{
-			StatusCode: "500",
-			Message:    err.Error(),
-		}, err
-	}
-	return &pb.ChangePasswordResponse{
-		StatusCode: "200",
-		Message:    "New password updated",
-	}, nil
 }
 
 func (service *AuthService) ConfirmEmailLogin(ctx context.Context, request *pb.ConfirmEmailLoginRequest) (*pb.ConfirmEmailLoginResponse, error) {
