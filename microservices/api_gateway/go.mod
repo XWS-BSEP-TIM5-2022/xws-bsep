@@ -7,6 +7,7 @@ replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
 require (
 	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.1.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
+	github.com/rs/cors v1.8.2
 	google.golang.org/grpc v1.46.0
 )
 
