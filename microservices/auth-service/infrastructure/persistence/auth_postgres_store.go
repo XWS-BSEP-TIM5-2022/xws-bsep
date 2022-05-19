@@ -94,3 +94,23 @@ func (store *AuthPostgresStore) UpdatePassword(id, password string) error {
 	}
 	return nil
 }
+
+func (store *AuthPostgresStore) UpdateVerifactionCode(id, code string) error {
+	var auth domain.Authentication
+	err := store.db.First(&auth, "id = ?", id)
+	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("VerificationCode", code)
+	if err != nil {
+		return err.Error
+	}
+	return nil
+}
+
+func (store *AuthPostgresStore) UpdateExpirationTime(id string, expTime int64) error {
+	var auth domain.Authentication
+	err := store.db.First(&auth, "id = ?", id)
+	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("ExpirationTime", expTime)
+	if err != nil {
+		return err.Error
+	}
+	return nil
+}

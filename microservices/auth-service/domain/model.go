@@ -12,6 +12,7 @@ type Authentication struct {
 	Password         string `gorm:"index:idx_name"`
 	Role             string `gorm:"index:idx_name"`
 	VerificationCode string `gorm:"index:idx_name"` // za oporavak lozinke
+	ExpirationTime   int64  `gorm:"index:idx_name"`
 }
 
 func NewAuthCredentials(id, username, password, role string) (*Authentication, error) {
@@ -25,6 +26,7 @@ func NewAuthCredentials(id, username, password, role string) (*Authentication, e
 		Password:         string(hashedPassword),
 		Role:             role,
 		VerificationCode: "",
+		ExpirationTime:   0,
 	}
 	return credentials, nil
 }

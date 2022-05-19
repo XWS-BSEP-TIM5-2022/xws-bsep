@@ -319,3 +319,15 @@ func (store *UserMongoDBStore) UpdateIsActiveById(userId string) error {
 	}
 	return nil
 }
+
+func (store *UserMongoDBStore) GetIdByEmail(email string) (string, error) {
+	filter := bson.M{"email": email}
+	user, err := store.filterOne(filter)
+	if err != nil {
+		return "", err
+	}
+	if !user.IsActive {
+		return "", errors.New("User is not actived")
+	}
+	return user.Id.Hex(), nil
+}

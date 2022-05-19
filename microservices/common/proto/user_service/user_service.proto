@@ -79,6 +79,11 @@ service UserService{
         option (google.api.http) = {
             get: "/api/user/isActive"
         };
+    }
+    rpc GetIdByEmail(GetIdByEmailRequest) returns (InsertResponse) {
+        option (google.api.http) = {
+            get: "/api/user/getIdByEmail"
+        };
     } 
 }
 
@@ -219,4 +224,8 @@ message ActivateAccountResponse {
 
 message IsActiveResponse {
     bool isActive = 1;
+}
+
+message GetIdByEmailRequest {
+    string email = 1;
 }
