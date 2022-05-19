@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 	"unicode"
-  
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup/config"
@@ -22,6 +22,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+var verificationCodeDurationInMinutes int = 5
+var min6DigitNumber int = 100000
+var max6DigitNumber int = 999999
 
 type AuthService struct {
 	store             *persistence.AuthPostgresStore
@@ -86,7 +90,6 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 }
 
 func passwordlessLoginMailMessage(token string) []byte {
-
 	urlRedirection := "http://localhost:" + "8080" + "/api/auth/confirm-email-login/" + token
 
 	subject := "Subject: Passwordless login\n"
@@ -589,14 +592,16 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 	}
 	response, err := service.userServiceClient.GetIdByEmail(ctx, userServiceRequest)
 	if err != nil {
+		fmt.Println("User not found by this email")
+		fmt.Println(err)
 		return nil, err
 	}
 
-	randomCode := rangeIn(100000, 999999)
+	randomCode := rangeIn(min6DigitNumber, max6DigitNumber)
 	fmt.Println(randomCode)
 	code := strconv.Itoa(randomCode)
 
-	expDuration := 5 * time.Minute
+	expDuration := time.Duration(verificationCodeDurationInMinutes) * time.Minute
 	expDate := time.Now().Add(expDuration).Unix()
 
 	updateCodeErr := service.store.UpdateVerifactionCode(response.Id, code)
