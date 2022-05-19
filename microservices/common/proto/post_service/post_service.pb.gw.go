@@ -370,7 +370,7 @@ func RegisterPostServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/Get", runtime.WithHTTPPathPattern("/post/{id}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/Get", runtime.WithHTTPPathPattern("/api/post/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -394,7 +394,7 @@ func RegisterPostServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/LikePost", runtime.WithHTTPPathPattern("/post/like"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/LikePost", runtime.WithHTTPPathPattern("/api/post/like"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -418,7 +418,7 @@ func RegisterPostServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/DislikePost", runtime.WithHTTPPathPattern("/post/dislike"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/DislikePost", runtime.WithHTTPPathPattern("/api/post/dislike"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -442,7 +442,7 @@ func RegisterPostServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/NeutralPost", runtime.WithHTTPPathPattern("/post/neutral"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/NeutralPost", runtime.WithHTTPPathPattern("/api/post/neutral"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -466,7 +466,7 @@ func RegisterPostServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/CommentPost", runtime.WithHTTPPathPattern("/post/comment"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/CommentPost", runtime.WithHTTPPathPattern("/api/post/comment"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -490,7 +490,7 @@ func RegisterPostServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/GetAll", runtime.WithHTTPPathPattern("/post"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/GetAll", runtime.WithHTTPPathPattern("/api/post"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -514,7 +514,7 @@ func RegisterPostServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/Insert", runtime.WithHTTPPathPattern("/post"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/Insert", runtime.WithHTTPPathPattern("/api/post"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -538,7 +538,7 @@ func RegisterPostServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/Update", runtime.WithHTTPPathPattern("/post"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/Update", runtime.WithHTTPPathPattern("/api/post"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -562,7 +562,7 @@ func RegisterPostServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/GetAllByUser", runtime.WithHTTPPathPattern("/post/user/{id}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/post_service.PostService/GetAllByUser", runtime.WithHTTPPathPattern("/api/post/user/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -625,7 +625,7 @@ func RegisterPostServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/Get", runtime.WithHTTPPathPattern("/post/{id}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/Get", runtime.WithHTTPPathPattern("/api/post/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -646,7 +646,7 @@ func RegisterPostServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/LikePost", runtime.WithHTTPPathPattern("/post/like"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/LikePost", runtime.WithHTTPPathPattern("/api/post/like"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -667,7 +667,7 @@ func RegisterPostServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/DislikePost", runtime.WithHTTPPathPattern("/post/dislike"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/DislikePost", runtime.WithHTTPPathPattern("/api/post/dislike"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -688,7 +688,7 @@ func RegisterPostServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/NeutralPost", runtime.WithHTTPPathPattern("/post/neutral"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/NeutralPost", runtime.WithHTTPPathPattern("/api/post/neutral"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -709,7 +709,7 @@ func RegisterPostServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/CommentPost", runtime.WithHTTPPathPattern("/post/comment"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/CommentPost", runtime.WithHTTPPathPattern("/api/post/comment"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -730,7 +730,7 @@ func RegisterPostServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/GetAll", runtime.WithHTTPPathPattern("/post"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/GetAll", runtime.WithHTTPPathPattern("/api/post"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -751,7 +751,7 @@ func RegisterPostServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/Insert", runtime.WithHTTPPathPattern("/post"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/Insert", runtime.WithHTTPPathPattern("/api/post"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -772,7 +772,7 @@ func RegisterPostServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/Update", runtime.WithHTTPPathPattern("/post"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/Update", runtime.WithHTTPPathPattern("/api/post"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -793,7 +793,7 @@ func RegisterPostServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/GetAllByUser", runtime.WithHTTPPathPattern("/post/user/{id}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/post_service.PostService/GetAllByUser", runtime.WithHTTPPathPattern("/api/post/user/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -813,23 +813,23 @@ func RegisterPostServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 }
 
 var (
-	pattern_PostService_Get_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"post", "id"}, ""))
+	pattern_PostService_Get_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "post", "id"}, ""))
 
-	pattern_PostService_LikePost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"post", "like"}, ""))
+	pattern_PostService_LikePost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "post", "like"}, ""))
 
-	pattern_PostService_DislikePost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"post", "dislike"}, ""))
+	pattern_PostService_DislikePost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "post", "dislike"}, ""))
 
-	pattern_PostService_NeutralPost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"post", "neutral"}, ""))
+	pattern_PostService_NeutralPost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "post", "neutral"}, ""))
 
-	pattern_PostService_CommentPost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"post", "comment"}, ""))
+	pattern_PostService_CommentPost_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "post", "comment"}, ""))
 
-	pattern_PostService_GetAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"post"}, ""))
+	pattern_PostService_GetAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "post"}, ""))
 
-	pattern_PostService_Insert_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"post"}, ""))
+	pattern_PostService_Insert_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "post"}, ""))
 
-	pattern_PostService_Update_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"post"}, ""))
+	pattern_PostService_Update_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "post"}, ""))
 
-	pattern_PostService_GetAllByUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"post", "user", "id"}, ""))
+	pattern_PostService_GetAllByUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "post", "user", "id"}, ""))
 )
 
 var (

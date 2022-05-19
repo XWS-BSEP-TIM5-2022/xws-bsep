@@ -27,75 +27,11 @@ func NewPostHandler(postClientAddress, connectionClientAddress string) Handler {
 func (handler *PostHandler) Init(mux *runtime.ServeMux) {
 	fmt.Println("uslo 1")
 
-	err := mux.HandlePath("GET", "/connection/{userID}/posts", handler.GetPosts) // prikaz postova od strane zapracenog profila
+	err := mux.HandlePath("GET", "/api/feed/{userID}", handler.GetPosts) // prikaz postova od strane zapracenog profila
 	if err != nil {
 		panic(err)
 	}
 }
-
-//func (handler *PostHandler) GetResult(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-//	id := pathParams["userID"]
-//	if id == "" {
-//		w.WriteHeader(http.StatusBadRequest)
-//		return
-//	}
-//
-//	posts := &domain.Posts{}
-//	postClient := services.NewPostClient(handler.postClientAddress)
-//
-//	postsByUser, err := postClient.GetAllByUser(context.TODO(), &post.GetRequest{Id: id})
-//	if err != nil {
-//		fmt.Println("desio se error")
-//		fmt.Println(err)
-//		return
-//	}
-//
-//	for _, post := range postsByUser.Posts {
-//		newPost := domain.Post{
-//			Id:          post.Id,
-//			Text:        post.Text,
-//			Images:      post.Images,
-//			Links:       post.Links,
-//			DateCreated: post.DateCreated.AsTime(),
-//			UserId:      post.UserId,
-//		}
-//
-//		for _, like := range post.Likes {
-//			newLike := domain.Like{
-//				Id:     like.Id,
-//				UserId: like.UserId,
-//			}
-//			newPost.Likes = append(newPost.Likes, newLike)
-//		}
-//
-//		for _, dislike := range post.Dislikes {
-//			newDislike := domain.Dislike{
-//				Id:     dislike.Id,
-//				UserId: dislike.UserId,
-//			}
-//			newPost.Dislikes = append(newPost.Dislikes, newDislike)
-//		}
-//
-//		for _, comment := range post.Comments {
-//			newComment := domain.Comment{
-//				Id:     comment.Id,
-//				UserId: comment.UserId,
-//				Text:   comment.Text,
-//			}
-//			newPost.Comments = append(newPost.Comments, newComment)
-//		}
-//
-//		posts.AllPosts = append(posts.AllPosts, newPost) // dodati post u listu postova
-//	}
-//
-//	response, err := json.Marshal(posts)
-//	if err != nil {
-//		w.WriteHeader(http.StatusInternalServerError)
-//		return
-//	}
-//	w.WriteHeader(http.StatusOK)
-//	w.Write(response)
-//}
 
 func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 	id := pathParams["userID"]
