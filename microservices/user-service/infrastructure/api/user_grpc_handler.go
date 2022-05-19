@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
@@ -207,6 +208,26 @@ func (handler *UserHandler) UpdateSkillsAndInterests(ctx context.Context, reques
 	return response, err
 }
 
+func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest) (*pb.GetEmailResponse, error) {
+	id := request.Id
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	user, err := handler.service.Get(objectId)
+	if err != nil {
+		return nil, err
+	}
+
+	if !user.IsActive {
+		return nil, errors.New("Account is not activated")
+	}
+	
+	response := &pb.GetEmailResponse{
+		Email: user.Email,
+	}
+	return response, nil
+}
 func (handler *UserHandler) UpdateIsActiveById(ctx context.Context, request *pb.ActivateAccountRequest) (*pb.ActivateAccountResponse, error) {
 	err := handler.service.UpdateIsActiveById(request.Id)
 	if err != nil {

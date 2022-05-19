@@ -26,6 +26,14 @@ func (handler *AuthHandler) Login(ctx context.Context, request *pb.LoginRequest)
 	return handler.service.Login(ctx, request)
 }
 
+func (handler *AuthHandler) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.PasswordlessLoginResponse, error) {
+	return handler.service.PasswordlessLogin(ctx, request)
+}
+
+func (handler *AuthHandler) ConfirmEmailLogin(ctx context.Context, request *pb.ConfirmEmailLoginRequest) (*pb.ConfirmEmailLoginResponse, error) {
+	return handler.service.ConfirmEmailLogin(ctx, request)
+}
+
 func (handler *AuthHandler) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
 	return handler.service.GetAll(ctx, request)
 }
