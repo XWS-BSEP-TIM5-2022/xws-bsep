@@ -183,7 +183,7 @@ message RegisterResponse {
 }
 
 message PasswordlessLoginRequest{
-    string username = 1;
+    string email = 1;
 }
 
 message PasswordlessLoginResponse{
