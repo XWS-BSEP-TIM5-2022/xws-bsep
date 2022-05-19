@@ -42,26 +42,27 @@ func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService
 }
 
 func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.PasswordlessLoginResponse, error) {
-	authCredentials, err := service.store.FindByUsername(request.Username)
-	if err != nil {
-		return nil, errors.New("there is no user with that username")
+
+	getUserRequest := &user.GetIdByEmailRequest{
+		Email: request.Email,
 	}
 
-	getUserRequest := &user.GetRequest{
-		Id: authCredentials.Id,
-	}
-
-	user, err := service.userServiceClient.GetEmail(context.TODO(), getUserRequest)
+	user, err := service.userServiceClient.GetIdByEmail(context.TODO(), getUserRequest)
 
 	if err != nil {
-		return nil, errors.New("no user found")
+		return nil, errors.New("there is no user with that email or account is not activated")
+	}
+
+	authCredentials, err := service.store.FindById(user.Id)
+	if err != nil {
+		return nil, errors.New("user not found")
 	}
 
 	from := config.NewConfig().EmailFrom
 	password := config.NewConfig().EmailPassword
 
 	to := []string{
-		user.Email,
+		request.Email,
 	}
 
 	smtpHost := config.NewConfig().EmailHost
