@@ -17,6 +17,15 @@ func NewAuthPostgresStore(db *gorm.DB) (*AuthPostgresStore, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = db.AutoMigrate(&domain.Role{})
+	if err != nil {
+		return nil, err
+	}
+	err = db.AutoMigrate(&domain.Permission{})
+	if err != nil {
+		return nil, err
+	}
+
 	return &AuthPostgresStore{
 		db: db,
 	}, nil
@@ -113,4 +122,13 @@ func (store *AuthPostgresStore) UpdateExpirationTime(id string, expTime int64) e
 		return err.Error
 	}
 	return nil
+}
+
+func (store *AuthPostgresStore) FindAllRolesAndPermissions() (*[]domain.Role, error) {
+	var auths []domain.Role
+	result := store.db.Preload("Permissions").Find(&auths)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &auths, nil
 }
