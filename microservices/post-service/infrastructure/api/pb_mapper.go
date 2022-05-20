@@ -4,6 +4,7 @@ import (
 	"fmt"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
+	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"time"
@@ -13,7 +14,7 @@ func mapPost(post *domain.Post) *pb.Post {
 	postPb := &pb.Post{
 		Id:          post.Id.Hex(),
 		Text:        post.Text,
-		DateCreated: timestamppb.New(post.DateCreated), // TODO
+		DateCreated: timestamppb.New(post.DateCreated),
 		UserId:      post.UserId,
 		Images:      post.Images,
 		Links:       post.Links,
@@ -44,7 +45,7 @@ func mapPost(post *domain.Post) *pb.Post {
 	return postPb
 }
 
-func mapInsertPost(post *pb.Post) *domain.Post {
+func mapInsertPost(post *pb.Post) (*domain.Post, error) {
 	id, _ := primitive.ObjectIDFromHex(post.Id)
 
 	postPb := &domain.Post{
@@ -56,7 +57,31 @@ func mapInsertPost(post *pb.Post) *domain.Post {
 		DateCreated: time.Now(),
 	}
 
-	return postPb
+	err := validate.Struct(postPb)
+	if err != nil {
+
+		// this check is only needed when your code could produce
+		// an invalid value for validation such as interface with nil
+		// value most including myself do not usually have code like this.
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		for _, err := range err.(validator.ValidationErrors) {
+			fmt.Println("---------------- pocetak greske ----------------")
+			fmt.Println(err.Field())
+			fmt.Println(err.Tag())
+			fmt.Println(err.Type())
+			fmt.Println(err.Value())
+			fmt.Println(err.Param())
+			fmt.Println("---------------- kraj greske ----------------")
+		}
+
+		return nil, err
+	}
+
+	return postPb, nil
 }
 
 func mapLike(like *pb.Like) *domain.Like { // TODO : InsertLike ???

@@ -63,6 +63,8 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
+	//w.Header().Set("Authorization", "Bearer " )
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }

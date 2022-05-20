@@ -6,10 +6,13 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
+	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // implementacije gRPC servera koji smo definisali u okviru common paketa
+
+var validate *validator.Validate
 
 type PostHandler struct {
 	pb.UnimplementedPostServiceServer
@@ -17,6 +20,8 @@ type PostHandler struct {
 }
 
 func NewPostHandler(service *application.PostService) *PostHandler {
+	validate = validator.New()
+
 	return &PostHandler{
 		service: service,
 	}
@@ -56,10 +61,6 @@ func (handler *PostHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 
 func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetRequest) (*pb.GetAllResponse, error) {
 	id := request.Id
-	//objectId, err := primitive.ObjectIDFromHex(id)
-	//if err != nil {
-	//	return nil, err
-	//}
 	posts, err := handler.service.GetAllByUser(id)
 	if err != nil {
 		return nil, err
@@ -75,17 +76,19 @@ func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetReq
 }
 
 func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
-	//if request.Post.UserId == "" { // mora postojati user koji je kreirao post
-	//	return &pb.InsertResponse{
-	//		Success: "error",
-	//	}, error(nil)
-	//}		// vrati status 200 ok, ali success: error
 
-	if request.Post.UserId == "" { // mora postojati user koji je kreirao post
-		return nil, error(nil) // vrati status 500
+	fmt.Println("ovo je request", request)
+
+	// TODO : validirati sve iz request-a
+	// TODO: do napada moze doci pri :
+	// dodavanju post-a
+	// like, dislike, comment post-a
+
+	post, err := mapInsertPost(request.Post) // validacija post-a
+	if err != nil {
+		return nil, err
 	}
 
-	post := mapInsertPost(request.Post)
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	post.UserId = userId
 	success, err := handler.service.Insert(post)
@@ -128,7 +131,6 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 
 	postHelper, err := handler.service.Get(objectId)
 
-	//userId := request.UserId
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
 	// provera - da li je korisnik vec lajkovao post
