@@ -91,7 +91,7 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 }
 
 func passwordlessLoginMailMessage(token string) []byte {
-	urlRedirection := "http://localhost:" + "8080" + "/api/auth/confirm-email-login/" + token
+	urlRedirection := "http://" + config.NewConfig().FrontendHost + ":" + config.NewConfig().FrontendPort + "/confirmed-mail/" + token
 
 	subject := "Subject: Passwordless login\n"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
