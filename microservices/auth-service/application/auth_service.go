@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net/smtp"
 	"strconv"
+	"strings"
 	"time"
 	"unicode"
 
@@ -245,7 +246,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		User: userRequest,
 	}
 
-	err := checkPasswordCriteria(request.Password)
+	err := checkPasswordCriteria(request.Password, request.Username)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err
@@ -288,12 +289,15 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	}, nil
 }
 
-func checkPasswordCriteria(password string) error {
+func checkPasswordCriteria(password, username string) error {
 	var err error
-	var passLowercase, passUppercase, passNumber, passSpecial, passLength, passNoSpaces bool
+	var passLowercase, passUppercase, passNumber, passSpecial, passLength, passNoSpaces, passNoUsername bool
 	passNoSpaces = true
 	if len(password) >= 8 {
 		passLength = true
+	}
+	if !strings.Contains(strings.ToLower(password), strings.ToLower(username)) {
+		passNoUsername = true
 	}
 	for _, char := range password {
 		switch {
@@ -309,7 +313,7 @@ func checkPasswordCriteria(password string) error {
 			passNoSpaces = false
 		}
 	}
-	if !passLowercase || !passUppercase || !passNumber || !passSpecial || !passLength || !passNoSpaces {
+	if !passLowercase || !passUppercase || !passNumber || !passSpecial || !passLength || !passNoSpaces || !passNoUsername {
 		switch false {
 		case passLowercase:
 			err = errors.New("Password must contain at least one lowercase letter")
@@ -323,6 +327,8 @@ func checkPasswordCriteria(password string) error {
 			err = errors.New("Password must be longer than 8 characters")
 		case passNoSpaces:
 			err = errors.New("Password should not contain any spaces")
+		case passNoUsername:
+			err = errors.New("Password should not contain your username")
 		}
 		return err
 	}
@@ -442,7 +448,7 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 		}, errors.New("Old password does not match")
 	}
 
-	err = checkPasswordCriteria(request.NewPassword)
+	err = checkPasswordCriteria(request.NewPassword, auth.Username)
 	if err != nil {
 		return &pb.ChangePasswordResponse{
 			StatusCode: "500",
@@ -749,7 +755,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 		}, errors.New("New passwords do not match")
 	}
 
-	err = checkPasswordCriteria(request.Password)
+	err = checkPasswordCriteria(request.Password, auth.Username)
 	if err != nil {
 		return &pb.Response{
 			StatusCode: "500",
