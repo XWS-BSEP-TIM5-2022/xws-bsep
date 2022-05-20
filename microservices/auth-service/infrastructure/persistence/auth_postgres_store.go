@@ -17,11 +17,11 @@ func NewAuthPostgresStore(db *gorm.DB) (*AuthPostgresStore, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = db.AutoMigrate(&domain.Role{})
+	err = db.AutoMigrate(&domain.Permission{})
 	if err != nil {
 		return nil, err
 	}
-	err = db.AutoMigrate(&domain.Permission{})
+	err = db.AutoMigrate(&domain.Role{})
 	if err != nil {
 		return nil, err
 	}
@@ -54,6 +54,11 @@ func (store *AuthPostgresStore) FindAll() (*[]domain.Authentication, error) {
 func (store *AuthPostgresStore) DeleteAll() {
 	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
 		Delete(&domain.Authentication{})
+	store.db.Exec("DELETE FROM role_permissions CASCADE")
+	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
+		Delete(&domain.Role{})
+	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
+		Delete(&domain.Permission{})
 }
 
 func (store *AuthPostgresStore) Insert(auth *domain.Authentication) error {
@@ -131,4 +136,12 @@ func (store *AuthPostgresStore) FindAllRolesAndPermissions() (*[]domain.Role, er
 		return nil, result.Error
 	}
 	return &auths, nil
+}
+
+func (store *AuthPostgresStore) InsertRole(role *domain.Role) error {
+	result := store.db.Create(role)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
