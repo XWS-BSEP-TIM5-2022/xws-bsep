@@ -44,7 +44,7 @@ func (store *AuthPostgresStore) FindByUsername(username string) (*domain.Authent
 
 func (store *AuthPostgresStore) FindAll() (*[]domain.Authentication, error) {
 	var auths []domain.Authentication
-	result := store.db.Find(&auths)
+	result := store.db.Preload("Roles").Find(&auths)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -52,9 +52,10 @@ func (store *AuthPostgresStore) FindAll() (*[]domain.Authentication, error) {
 }
 
 func (store *AuthPostgresStore) DeleteAll() {
+	store.db.Exec("DELETE FROM role_permissions CASCADE")
+	store.db.Exec("DELETE FROM auth_roles CASCADE")
 	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
 		Delete(&domain.Authentication{})
-	store.db.Exec("DELETE FROM role_permissions CASCADE")
 	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
 		Delete(&domain.Role{})
 	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
@@ -130,12 +131,12 @@ func (store *AuthPostgresStore) UpdateExpirationTime(id string, expTime int64) e
 }
 
 func (store *AuthPostgresStore) FindAllRolesAndPermissions() (*[]domain.Role, error) {
-	var auths []domain.Role
-	result := store.db.Preload("Permissions").Find(&auths)
+	var roles []domain.Role
+	result := store.db.Preload("Permissions").Find(&roles)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return &auths, nil
+	return &roles, nil
 }
 
 func (store *AuthPostgresStore) InsertRole(role *domain.Role) error {
@@ -144,4 +145,31 @@ func (store *AuthPostgresStore) InsertRole(role *domain.Role) error {
 		return result.Error
 	}
 	return nil
+}
+
+func (store *AuthPostgresStore) GetAllPermissionsByRole(role string) (*[]domain.Permission, error) {
+	var permissions []domain.Permission
+	roles, err := store.FindAllRolesAndPermissions()
+	if err != nil {
+		return nil, err
+	}
+	for _, role := range *roles {
+		if role.Name == "User" {
+			for _, permission := range role.Permissions {
+				permissions = append(permissions, *permission)
+			}
+		}
+	}
+	return &permissions, nil
+}
+
+func (store *AuthPostgresStore) FindRoleByName(name string) (*[]domain.Role, error) {
+	var roles []domain.Role
+	rolesWithPermissions, err := store.FindAllRolesAndPermissions()
+	for _, role := range *rolesWithPermissions {
+		if role.Name == name {
+			roles = append(roles, role)
+		}
+	}
+	return &roles, err
 }

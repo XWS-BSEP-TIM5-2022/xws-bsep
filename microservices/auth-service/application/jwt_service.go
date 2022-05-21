@@ -15,8 +15,9 @@ type JWTService struct {
 }
 
 type Claims struct {
-	Username string `json:"username"`
-	Role     string `json:"role"`
+	Username    string   `json:"username"`
+	Roles       []string `json:"roles"`
+	Permissions []string `json:"permissions"`
 	jwt.StandardClaims
 }
 
@@ -32,18 +33,26 @@ func NewJWTManager(privateKey, publicKey string) (*JWTService, error) {
 	return &JWTService{
 		privateKey:          parsedPrivateKey,
 		publicKey:           parsedPublicKey,
-		accessTokenDuration: 10 * time.Minute, // TODO: bilo je 10
+		accessTokenDuration: 10 * time.Minute,
 	}, nil
 }
 
 func (manager *JWTService) GenerateToken(auth *domain.Authentication) (string, error) {
+	var roleNames, permissionNames []string
+	for _, role := range *auth.Roles {
+		roleNames = append(roleNames, role.Name)
+		for _, permission := range role.Permissions {
+			permissionNames = append(permissionNames, permission.Name)
+		}
+	}
 	claims := Claims{
 		StandardClaims: jwt.StandardClaims{
 			Subject:   auth.Id,
 			ExpiresAt: time.Now().Add(manager.accessTokenDuration).Unix(),
 		},
-		Username: auth.Username,
-		Role:     auth.Role,
+		Username:    auth.Username,
+		Roles:       roleNames,
+		Permissions: permissionNames,
 	}
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodRS256,

@@ -14,14 +14,14 @@ import (
 )
 
 type AuthInterceptor struct {
-	accessibleRoles map[string][]string
-	publicKey       *rsa.PublicKey
+	accessiblePermissions map[string]string
+	publicKey             *rsa.PublicKey
 }
 
-func NewAuthInterceptor(accessibleRoles map[string][]string, publicKey *rsa.PublicKey) *AuthInterceptor {
+func NewAuthInterceptor(accessibleRoles map[string]string, publicKey *rsa.PublicKey) *AuthInterceptor {
 	return &AuthInterceptor{
-		accessibleRoles: accessibleRoles,
-		publicKey:       publicKey,
+		accessiblePermissions: accessibleRoles,
+		publicKey:             publicKey,
 	}
 }
 
@@ -37,7 +37,8 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 }
 
 func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string) (context.Context, error) {
-	accessibleRoles, ok := interceptor.accessibleRoles[method]
+	// accessibleRoles, ok := interceptor.accessibleRoles[method]
+	accessiblePermission, ok := interceptor.accessiblePermissions[method]
 	// u mapi ne postoje role za ovu metodu => javno dostupna putanja
 	if !ok {
 		return ctx, nil
@@ -65,8 +66,8 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 		return ctx, status.Errorf(codes.Unauthenticated, "Unauthorized")
 	}
 
-	for _, role := range accessibleRoles {
-		if role == claims.Role {
+	for _, jwtPermission := range claims.Permissions {
+		if accessiblePermission == jwtPermission {
 			return context.WithValue(ctx, LoggedInUserKey{}, claims.Subject), nil
 		}
 	}
@@ -99,8 +100,9 @@ func (interceptor *AuthInterceptor) verifyToken(accessToken string) (*UserClaims
 }
 
 type UserClaims struct {
-	Username string `json:"username"`
-	Role     string `json:"role"`
+	Username    string   `json:"username"`
+	Roles       []string `json:"roles"`
+	Permissions []string `json:"permissions"`
 	jwt.StandardClaims
 }
 

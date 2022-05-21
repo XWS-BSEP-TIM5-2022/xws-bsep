@@ -80,6 +80,13 @@ service AuthService{
             body: "*"
         };
     }
+
+    rpc GetAllPermissionsByRole(Empty) returns (Response) { 
+        option (google.api.http) = {
+            put: "/api/auth/getAllPermissionsByRole"
+            body: "*"
+        };
+    }
 }
 
 message ChangePasswordRequest {
@@ -114,7 +121,7 @@ message Auth {
     string id = 1;
     string username = 2;
     string password = 3;
-    string role = 4;
+    repeated Role roles = 4;
     string verificationCode = 5;
     int64 expirationTime = 6;
 }
@@ -240,3 +247,13 @@ message ResetForgottenPasswordRequest {
     string reenteredPassword = 3;
 }
 
+message Role {
+    uint32 ID = 1;
+    string Name = 2;
+    repeated Permission Permissions = 3;
+}
+
+message Permission {
+    uint32 ID = 1;
+    string Name = 2;
+}

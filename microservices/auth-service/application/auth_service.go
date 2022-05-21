@@ -154,7 +154,6 @@ func passwordlessLoginMailMessage(token string) []byte {
 }
 
 func (service *AuthService) ConfirmEmailLogin(ctx context.Context, request *pb.ConfirmEmailLoginRequest) (*pb.ConfirmEmailLoginResponse, error) {
-
 	token, err := jwt.ParseWithClaims(
 		request.Token,
 		&interceptor.UserClaims{},
@@ -257,11 +256,13 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		return nil, err
 	}
 
+	roles, err := service.store.FindRoleByName(request.Role)
+
 	authCredentials, err := domain.NewAuthCredentials(
 		createUserResponse.Id,
 		request.Username,
 		request.Password,
-		request.Role,
+		roles,
 	)
 	if err != nil {
 		return nil, err
@@ -272,7 +273,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		return nil, err
 	}
 
-	token, err := service.jwtService.GenerateToken(authCredentials)
+	token, err := service.jwtService.GenerateToken(authCredentials) //
 	if err != nil {
 		return nil, err
 	}
@@ -376,14 +377,39 @@ func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 	response := &pb.GetAllResponse{
 		Auth: []*pb.Auth{},
 	}
+
 	for _, auth := range *auths {
+
 		current := &pb.Auth{
-			Id:               auth.Id,
-			Username:         auth.Username,
-			Password:         auth.Password,
-			Role:             auth.Role,
+			Id:       auth.Id,
+			Username: auth.Username,
+			Password: auth.Password,
+			// Roles:            auth.Roles,
 			VerificationCode: auth.VerificationCode,
 			ExpirationTime:   auth.ExpirationTime,
+		}
+
+		for _, role := range *auth.Roles {
+			fmt.Println("**********")
+			fmt.Println("Role name", role.Name)
+			rolePermissions, err := service.store.GetAllPermissionsByRole(role.Name)
+			if err != nil {
+				fmt.Println("Greska GetAll - GetAllPermissionsByRole")
+			}
+
+			var rolePermissionsPb []*pb.Permission
+			for _, perm := range *rolePermissions {
+				permPb := pb.Permission{
+					ID:   uint32(perm.ID),
+					Name: perm.Name,
+				}
+				rolePermissionsPb = append(rolePermissionsPb, &permPb)
+			}
+			current.Roles = append(current.Roles, &pb.Role{
+				ID:          uint32(role.ID),
+				Name:        role.Name,
+				Permissions: rolePermissionsPb,
+			})
 		}
 		response.Auth = append(response.Auth, current)
 	}
@@ -783,4 +809,17 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 		StatusCode: "200",
 		Message:    "Password updated successfully",
 	}, nil
+}
+
+func (service *AuthService) GetAllPermissionsByRole(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
+	permissions, err := service.store.GetAllPermissionsByRole("User")
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("Permmm ***********", permissions)
+	return &pb.Response{
+		StatusCode: "200",
+		Message:    "OK",
+	}, nil
+
 }
