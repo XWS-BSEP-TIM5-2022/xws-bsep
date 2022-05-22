@@ -38,7 +38,7 @@ func (store *AuthPostgresStore) Create(auth *domain.Authentication) (*domain.Aut
 
 func (store *AuthPostgresStore) FindByUsername(username string) (*domain.Authentication, error) {
 	var auth domain.Authentication
-	err := store.db.First(&auth, "username = ?", username)
+	err := store.db.Preload("Roles").First(&auth, "username = ?", username)
 	return &auth, err.Error
 }
 
