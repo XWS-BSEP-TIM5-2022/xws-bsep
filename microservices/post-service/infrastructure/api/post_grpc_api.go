@@ -6,13 +6,10 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
-	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // implementacije gRPC servera koji smo definisali u okviru common paketa
-
-var validate *validator.Validate
 
 type PostHandler struct {
 	pb.UnimplementedPostServiceServer
@@ -20,8 +17,6 @@ type PostHandler struct {
 }
 
 func NewPostHandler(service *application.PostService) *PostHandler {
-	validate = validator.New()
-
 	return &PostHandler{
 		service: service,
 	}
@@ -84,7 +79,7 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 	// dodavanju post-a
 	// like, dislike, comment post-a
 
-	post, err := mapInsertPost(request.Post) // validacija post-a
+	post, err := mapInsertPost(request.Post)
 	if err != nil {
 		return nil, err
 	}
@@ -101,6 +96,7 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 	return response, err
 }
 
+// TODO: obrisati, ne koristi se
 func (handler *PostHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 	id, _ := primitive.ObjectIDFromHex(request.Post.Id)
 

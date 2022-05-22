@@ -5,14 +5,19 @@ import (
 	_ "context"
 	"errors"
 	_ "errors"
+	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
+	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 	_ "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	_ "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"net/url"
 )
+
+var validate *validator.Validate
 
 const (
 	DATABASE   = "post_db"
@@ -26,6 +31,8 @@ type PostMongoDBStore struct {
 }
 
 func NewPostMongoDBStore(client *mongo.Client) domain.PostStore {
+	validate = validator.New()
+
 	posts := client.Database(DATABASE).Collection(COLLECTION) // preuzimamo kolekciju proizvoda nad kojima radimo sve ostale operacije
 	return &PostMongoDBStore{
 		posts: posts,
@@ -49,6 +56,39 @@ func (store *PostMongoDBStore) GetAllByUser(id string) ([]*domain.Post, error) {
 
 func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 	post.Id = primitive.NewObjectID()
+
+	// validate links
+	for _, link := range post.Links {
+		u, err := url.ParseRequestURI(link)
+		if err != nil {
+			fmt.Println("URL: ", u)
+			return "error", err
+		}
+	}
+
+	// validate post
+	err := validate.Struct(post)
+	if err != nil {
+		// this check is only needed when your code could produce
+		// an invalid value for validation such as interface with nil
+		// value most including myself do not usually have code like this.
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			fmt.Println(err)
+			return "error", err
+		}
+
+		for _, err := range err.(validator.ValidationErrors) {
+			fmt.Println("---------------- pocetak greske ----------------")
+			fmt.Println(err.Field())
+			fmt.Println(err.Tag())
+			fmt.Println(err.Type())
+			fmt.Println(err.Value())
+			fmt.Println(err.Param())
+			fmt.Println("---------------- kraj greske ----------------")
+		}
+		return "error", err
+	}
+
 	result, err := store.posts.InsertOne(context.TODO(), post)
 	if err != nil {
 		return "error", err
