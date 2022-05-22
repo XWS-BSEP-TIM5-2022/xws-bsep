@@ -8,9 +8,10 @@ import (
 	"math/rand"
 	"net/smtp"
 	"strconv"
+	"strings"
 	"time"
 	"unicode"
-  
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup/config"
@@ -22,6 +23,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+var verificationCodeDurationInMinutes int = 5
+var min6DigitNumber int = 100000
+var max6DigitNumber int = 999999
 
 type AuthService struct {
 	store             *persistence.AuthPostgresStore
@@ -38,26 +43,27 @@ func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService
 }
 
 func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.PasswordlessLoginResponse, error) {
-	authCredentials, err := service.store.FindByUsername(request.Username)
-	if err != nil {
-		return nil, errors.New("there is no user with that username")
+
+	getUserRequest := &user.GetIdByEmailRequest{
+		Email: request.Email,
 	}
 
-	getUserRequest := &user.GetRequest{
-		Id: authCredentials.Id,
-	}
-
-	user, err := service.userServiceClient.GetEmail(context.TODO(), getUserRequest)
+	user, err := service.userServiceClient.GetIdByEmail(context.TODO(), getUserRequest)
 
 	if err != nil {
-		return nil, errors.New("no user found")
+		return nil, errors.New("there is no user with that email or account is not activated")
+	}
+
+	authCredentials, err := service.store.FindById(user.Id)
+	if err != nil {
+		return nil, errors.New("user not found")
 	}
 
 	from := config.NewConfig().EmailFrom
 	password := config.NewConfig().EmailPassword
 
 	to := []string{
-		user.Email,
+		request.Email,
 	}
 
 	smtpHost := config.NewConfig().EmailHost
@@ -86,8 +92,7 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 }
 
 func passwordlessLoginMailMessage(token string) []byte {
-
-	urlRedirection := "http://localhost:" + "8080" + "/api/auth/confirm-email-login/" + token
+	urlRedirection := "http://" + config.NewConfig().FrontendHost + ":" + config.NewConfig().FrontendPort + "/confirmed-mail/" + token
 
 	subject := "Subject: Passwordless login\n"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
@@ -241,7 +246,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		User: userRequest,
 	}
 
-	err := checkPasswordCriteria(request.Password)
+	err := checkPasswordCriteria(request.Password, request.Username)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err
@@ -284,12 +289,15 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	}, nil
 }
 
-func checkPasswordCriteria(password string) error {
+func checkPasswordCriteria(password, username string) error {
 	var err error
-	var passLowercase, passUppercase, passNumber, passSpecial, passLength, passNoSpaces bool
+	var passLowercase, passUppercase, passNumber, passSpecial, passLength, passNoSpaces, passNoUsername bool
 	passNoSpaces = true
 	if len(password) >= 8 {
 		passLength = true
+	}
+	if !strings.Contains(strings.ToLower(password), strings.ToLower(username)) {
+		passNoUsername = true
 	}
 	for _, char := range password {
 		switch {
@@ -305,7 +313,7 @@ func checkPasswordCriteria(password string) error {
 			passNoSpaces = false
 		}
 	}
-	if !passLowercase || !passUppercase || !passNumber || !passSpecial || !passLength || !passNoSpaces {
+	if !passLowercase || !passUppercase || !passNumber || !passSpecial || !passLength || !passNoSpaces || !passNoUsername {
 		switch false {
 		case passLowercase:
 			err = errors.New("Password must contain at least one lowercase letter")
@@ -319,6 +327,8 @@ func checkPasswordCriteria(password string) error {
 			err = errors.New("Password must be longer than 8 characters")
 		case passNoSpaces:
 			err = errors.New("Password should not contain any spaces")
+		case passNoUsername:
+			err = errors.New("Password should not contain your username")
 		}
 		return err
 	}
@@ -438,7 +448,7 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 		}, errors.New("Old password does not match")
 	}
 
-	err = checkPasswordCriteria(request.NewPassword)
+	err = checkPasswordCriteria(request.NewPassword, auth.Username)
 	if err != nil {
 		return &pb.ChangePasswordResponse{
 			StatusCode: "500",
@@ -488,7 +498,7 @@ func sendMail(emailTo string, message []byte) error {
 
 func verificationMailMessage(token string) []byte {
 	// TODO SD: port se moze izvuci iz env var - 4200
-	urlRedirection := "http://localhost:" + "8080" + "/api/auth/activateAccount/" + token
+	urlRedirection := "http://localhost:" + "4200" + "/activate-account/" + token
 
 	subject := "Subject: Account activation\n"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
@@ -589,14 +599,16 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 	}
 	response, err := service.userServiceClient.GetIdByEmail(ctx, userServiceRequest)
 	if err != nil {
+		fmt.Println("User not found by this email")
+		fmt.Println(err)
 		return nil, err
 	}
 
-	randomCode := rangeIn(100000, 999999)
+	randomCode := rangeIn(min6DigitNumber, max6DigitNumber)
 	fmt.Println(randomCode)
 	code := strconv.Itoa(randomCode)
 
-	expDuration := 5 * time.Minute
+	expDuration := time.Duration(verificationCodeDurationInMinutes) * time.Minute
 	expDate := time.Now().Add(expDuration).Unix()
 
 	updateCodeErr := service.store.UpdateVerifactionCode(response.Id, code)
@@ -743,7 +755,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 		}, errors.New("New passwords do not match")
 	}
 
-	err = checkPasswordCriteria(request.Password)
+	err = checkPasswordCriteria(request.Password, auth.Username)
 	if err != nil {
 		return &pb.Response{
 			StatusCode: "500",

@@ -15,6 +15,8 @@ type Config struct {
 	EmailHost       string
 	EmailFrom       string
 	EmailPassword   string
+	FrontendHost    string
+	FrontendPort    string
 }
 
 func NewConfig() *Config {
@@ -44,5 +46,7 @@ func NewConfig() *Config {
 		EmailHost:       "smtp.gmail.com",
 		EmailFrom:       "dislinkt.e2@gmail.com",
 		EmailPassword:   "Dislinkt123*",
+		FrontendHost:    "localhost",
+		FrontendPort:    "4200",
 	}
 }
