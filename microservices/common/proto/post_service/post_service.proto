@@ -121,23 +121,19 @@ message Dislike {
 
 message InsertLike{
   string post_id = 1;
-//  string user_id = 2;
 }
 
 message InsertDislike{
   string post_id = 1;
-//  string user_id = 2;
 }
 
 message InsertNeutralReaction{
   string post_id = 1;
-//  string user_id = 2;
 }
 
 message InsertComment{
   string post_id = 1;
-//  string user_id = 2;
-  string text = 3;
+  string text = 3;  // TODO: 2
 }
 
 message Empty {}

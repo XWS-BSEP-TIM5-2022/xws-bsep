@@ -667,7 +667,7 @@ type InsertLike struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PostId string `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"` //  string user_id = 2;
+	PostId string `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"`
 }
 
 func (x *InsertLike) Reset() {
@@ -714,7 +714,7 @@ type InsertDislike struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PostId string `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"` //  string user_id = 2;
+	PostId string `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"`
 }
 
 func (x *InsertDislike) Reset() {
@@ -761,7 +761,7 @@ type InsertNeutralReaction struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PostId string `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"` //  string user_id = 2;
+	PostId string `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"`
 }
 
 func (x *InsertNeutralReaction) Reset() {
@@ -809,8 +809,7 @@ type InsertComment struct {
 	unknownFields protoimpl.UnknownFields
 
 	PostId string `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"`
-	//  string user_id = 2;
-	Text string `protobuf:"bytes,3,opt,name=text,proto3" json:"text,omitempty"`
+	Text   string `protobuf:"bytes,3,opt,name=text,proto3" json:"text,omitempty"`
 }
 
 func (x *InsertComment) Reset() {

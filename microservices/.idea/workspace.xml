@@ -7,12 +7,7 @@
     <list default="true" id="a8f3ec4b-cc79-44af-88ba-bcfd2d499761" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/proto/post_service/post_service.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/post_service/post_service.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/proto/post_service/post_service.pb.gw.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/post_service/post_service.pb.gw.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/proto/post_service/post_service.proto" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/post_service/post_service.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/proto/post_service/post_service_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/post_service/post_service_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/application/post_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/application/post_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/domain/post_store.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/domain/post_store.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/infrastructure/api/pb_mapper.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/infrastructure/api/pb_mapper.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/post-service/infrastructure/api/post_grpc_api.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/infrastructure/api/post_grpc_api.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/post-service/infrastructure/persistence/post_mongodb_store.go" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/infrastructure/persistence/post_mongodb_store.go" afterDir="false" />
     </list>

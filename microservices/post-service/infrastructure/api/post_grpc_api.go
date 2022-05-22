@@ -7,6 +7,7 @@ import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"strings"
 )
 
 // implementacije gRPC servera koji smo definisali u okviru common paketa
@@ -203,7 +204,7 @@ func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertC
 	}
 
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	success, err := handler.service.CommentPost(post, userId, request.Text)
+	success, err := handler.service.CommentPost(post, userId, strings.TrimSpace(request.Text)) // Trim - function to remove leading and trailing whitespace
 	if err != nil {
 		return nil, err
 	}

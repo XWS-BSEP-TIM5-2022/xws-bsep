@@ -224,8 +224,28 @@ func (store *PostMongoDBStore) CommentPost(post *domain.Post, user_id string, te
 	comment.Id = primitive.NewObjectID()
 	comment.UserId = user_id
 	comment.Text = text
-	post.Comments = append(post.Comments, comment)
 
+	// validate comment
+	err := validate.Struct(comment)
+	if err != nil {
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			fmt.Println(err)
+			return "error", err
+		}
+
+		for _, err := range err.(validator.ValidationErrors) {
+			fmt.Println("---------------- pocetak greske ----------------")
+			fmt.Println(err.Field())
+			fmt.Println(err.Tag())
+			fmt.Println(err.Type())
+			fmt.Println(err.Value())
+			fmt.Println(err.Param())
+			fmt.Println("---------------- kraj greske ----------------")
+		}
+		return "error", err
+	}
+
+	post.Comments = append(post.Comments, comment)
 	newData := bson.M{"$set": bson.M{
 		"text":         post.Text,
 		"date_created": post.DateCreated,
