@@ -34,7 +34,12 @@ var roles = []*domain.Role{
 	},
 }
 
-var adminPermissions = []*domain.Permission{}
+var adminPermissions = []*domain.Permission{
+	{
+		ID:   15,
+		Name: "AdminsEndpoint",
+	},
+}
 
 var userPermissions = []*domain.Permission{
 	{ // auth service
@@ -59,7 +64,7 @@ var userPermissions = []*domain.Permission{
 	},
 	{
 		ID:   6,
-		Name: "GetAll",
+		Name: "GetAllUsers",
 	},
 	{ // post service
 		ID:   7,
@@ -92,5 +97,21 @@ var userPermissions = []*domain.Permission{
 	{
 		ID:   14,
 		Name: "NeutralPost",
+	},
+	{ // connection service
+		ID:   16,
+		Name: "RegisterConnection",
+	},
+	{
+		ID:   17,
+		Name: "CreateConnection",
+	},
+	{
+		ID:   18,
+		Name: "RejectConnection",
+	},
+	{
+		ID:   19,
+		Name: "ApproveConnection",
 	},
 }

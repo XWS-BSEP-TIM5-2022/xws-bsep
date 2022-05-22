@@ -65,3 +65,7 @@ func (handler *AuthHandler) ResetForgottenPassword(ctx context.Context, request 
 func (handler *AuthHandler) GetAllPermissionsByRole(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
 	return handler.service.GetAllPermissionsByRole(ctx, request)
 }
+
+func (handler *AuthHandler) AdminsEndpoint(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
+	return handler.service.AdminsEndpoint(ctx, request)
+}

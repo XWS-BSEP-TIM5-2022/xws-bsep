@@ -27,6 +27,7 @@ import (
 var verificationCodeDurationInMinutes int = 5
 var min6DigitNumber int = 100000
 var max6DigitNumber int = 999999
+var minPasswordLength int = 8
 
 type AuthService struct {
 	store             *persistence.AuthPostgresStore
@@ -310,7 +311,7 @@ func checkPasswordCriteria(password, username string) error {
 	var err error
 	var passLowercase, passUppercase, passNumber, passSpecial, passLength, passNoSpaces, passNoUsername bool
 	passNoSpaces = true
-	if len(password) >= 8 {
+	if len(password) >= minPasswordLength {
 		passLength = true
 	}
 	if !strings.Contains(strings.ToLower(password), strings.ToLower(username)) {
@@ -416,8 +417,6 @@ func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 		}
 
 		for _, role := range *auth.Roles {
-			fmt.Println("**********")
-			fmt.Println("Role name", role.Name)
 			rolePermissions, err := service.store.GetAllPermissionsByRole(role.Name)
 			if err != nil {
 				fmt.Println("Greska GetAll - GetAllPermissionsByRole")
@@ -838,14 +837,21 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 }
 
 func (service *AuthService) GetAllPermissionsByRole(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
-	permissions, err := service.store.GetAllPermissionsByRole("User")
+	permissions, err := service.store.GetAllPermissionsByRole("Admin")
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("Permmm ***********", permissions)
+	fmt.Println("Permissions: ", permissions)
 	return &pb.Response{
 		StatusCode: "200",
 		Message:    "OK",
 	}, nil
 
+}
+
+func (service *AuthService) AdminsEndpoint(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
+	return &pb.Response{
+		StatusCode: "200",
+		Message:    "OK",
+	}, nil
 }

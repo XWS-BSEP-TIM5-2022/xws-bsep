@@ -6,7 +6,7 @@ func AccessiblePermissions() map[string]string {
 	return map[string]string{
 		connectionService + "Register":          "RegisterConnection",
 		connectionService + "AddConnection":     "CreateConnection",
-		connectionService + "RejectConnection":  "UpdateConnection",
-		connectionService + "ApproveConnection": "UpdateConnection",
+		connectionService + "RejectConnection":  "RejectConnection",
+		connectionService + "ApproveConnection": "ApproveConnection",
 	}
 }

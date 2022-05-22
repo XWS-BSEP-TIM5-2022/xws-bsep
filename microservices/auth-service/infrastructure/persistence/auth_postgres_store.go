@@ -149,14 +149,14 @@ func (store *AuthPostgresStore) InsertRole(role *domain.Role) error {
 	return nil
 }
 
-func (store *AuthPostgresStore) GetAllPermissionsByRole(role string) (*[]domain.Permission, error) {
+func (store *AuthPostgresStore) GetAllPermissionsByRole(roleName string) (*[]domain.Permission, error) {
 	var permissions []domain.Permission
 	roles, err := store.FindAllRolesAndPermissions()
 	if err != nil {
 		return nil, err
 	}
 	for _, role := range *roles {
-		if role.Name == "User" {
+		if role.Name == roleName {
 			for _, permission := range role.Permissions {
 				permissions = append(permissions, *permission)
 			}

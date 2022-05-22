@@ -83,8 +83,13 @@ service AuthService{
 
     rpc GetAllPermissionsByRole(Empty) returns (Response) { 
         option (google.api.http) = {
-            put: "/api/auth/getAllPermissionsByRole"
-            body: "*"
+            get: "/api/auth/getAllPermissionsByRole"
+        };
+    }
+
+    rpc AdminsEndpoint(Empty) returns (Response) {  // auth
+        option (google.api.http) = {
+            get: "/api/auth/adminsEndpoint"
         };
     }
 }

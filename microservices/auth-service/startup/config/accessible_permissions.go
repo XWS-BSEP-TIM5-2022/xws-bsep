@@ -6,5 +6,6 @@ func AccessiblePermissions() map[string]string {
 	return map[string]string{
 		authService + "UpdateUsername": "UpdateUsername",
 		authService + "ChangePassword": "UpdatePassword",
+		authService + "AdminsEndpoint": "AdminsEndpoint", // empty endpoint
 	}
 }

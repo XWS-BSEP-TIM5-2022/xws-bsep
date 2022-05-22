@@ -34,6 +34,7 @@ type AuthServiceClient interface {
 	VerifyRecoveryCode(ctx context.Context, in *VerifyRecoveryCodeRequest, opts ...grpc.CallOption) (*Response, error)
 	ResetForgottenPassword(ctx context.Context, in *ResetForgottenPasswordRequest, opts ...grpc.CallOption) (*Response, error)
 	GetAllPermissionsByRole(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Response, error)
+	AdminsEndpoint(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Response, error)
 }
 
 type authServiceClient struct {
@@ -152,6 +153,15 @@ func (c *authServiceClient) GetAllPermissionsByRole(ctx context.Context, in *Emp
 	return out, nil
 }
 
+func (c *authServiceClient) AdminsEndpoint(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/auth_service.AuthService/AdminsEndpoint", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -168,6 +178,7 @@ type AuthServiceServer interface {
 	VerifyRecoveryCode(context.Context, *VerifyRecoveryCodeRequest) (*Response, error)
 	ResetForgottenPassword(context.Context, *ResetForgottenPasswordRequest) (*Response, error)
 	GetAllPermissionsByRole(context.Context, *Empty) (*Response, error)
+	AdminsEndpoint(context.Context, *Empty) (*Response, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -210,6 +221,9 @@ func (UnimplementedAuthServiceServer) ResetForgottenPassword(context.Context, *R
 }
 func (UnimplementedAuthServiceServer) GetAllPermissionsByRole(context.Context, *Empty) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllPermissionsByRole not implemented")
+}
+func (UnimplementedAuthServiceServer) AdminsEndpoint(context.Context, *Empty) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminsEndpoint not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -440,6 +454,24 @@ func _AuthService_GetAllPermissionsByRole_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_AdminsEndpoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).AdminsEndpoint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth_service.AuthService/AdminsEndpoint",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).AdminsEndpoint(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -494,6 +526,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllPermissionsByRole",
 			Handler:    _AuthService_GetAllPermissionsByRole_Handler,
+		},
+		{
+			MethodName: "AdminsEndpoint",
+			Handler:    _AuthService_AdminsEndpoint_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
