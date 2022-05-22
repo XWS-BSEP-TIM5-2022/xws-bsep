@@ -108,6 +108,50 @@ func (store *PostMongoDBStore) Update(post *domain.Post) (string, error) {
 		"comments":     post.Comments,
 		"user_id":      post.UserId,
 	}}
+	
+	// validate likes
+	for _, like := range post.Likes {
+		err := validate.Struct(like)
+		if err != nil {
+			if _, ok := err.(*validator.InvalidValidationError); ok {
+				fmt.Println(err)
+				return "error", err
+			}
+
+			for _, err := range err.(validator.ValidationErrors) {
+				fmt.Println("---------------- pocetak greske ----------------")
+				fmt.Println(err.Field())
+				fmt.Println(err.Tag())
+				fmt.Println(err.Type())
+				fmt.Println(err.Value())
+				fmt.Println(err.Param())
+				fmt.Println("---------------- kraj greske ----------------")
+			}
+			return "error", err
+		}
+	}
+
+	// validate dislikes
+	for _, dislike := range post.Dislikes {
+		err := validate.Struct(dislike)
+		if err != nil {
+			if _, ok := err.(*validator.InvalidValidationError); ok {
+				fmt.Println(err)
+				return "error", err
+			}
+
+			for _, err := range err.(validator.ValidationErrors) {
+				fmt.Println("---------------- pocetak greske ----------------")
+				fmt.Println(err.Field())
+				fmt.Println(err.Tag())
+				fmt.Println(err.Type())
+				fmt.Println(err.Value())
+				fmt.Println(err.Param())
+				fmt.Println("---------------- kraj greske ----------------")
+			}
+			return "error", err
+		}
+	}
 
 	opts := options.Update().SetUpsert(true)
 	result, err := store.posts.UpdateOne(context.TODO(), bson.M{"_id": post.Id}, newData, opts)
