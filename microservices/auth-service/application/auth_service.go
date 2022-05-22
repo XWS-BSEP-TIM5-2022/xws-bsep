@@ -379,12 +379,10 @@ func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 	}
 
 	for _, auth := range *auths {
-
 		current := &pb.Auth{
-			Id:       auth.Id,
-			Username: auth.Username,
-			Password: auth.Password,
-			// Roles:            auth.Roles,
+			Id:               auth.Id,
+			Username:         auth.Username,
+			Password:         auth.Password,
 			VerificationCode: auth.VerificationCode,
 			ExpirationTime:   auth.ExpirationTime,
 		}

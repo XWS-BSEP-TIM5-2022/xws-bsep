@@ -37,17 +37,17 @@ var roles = []*domain.Role{
 var adminPermissions = []*domain.Permission{}
 
 var userPermissions = []*domain.Permission{
-	{
+	{ // auth service
 		ID:   1,
 		Name: "UpdateUsername",
 	},
 	{
 		ID:   2,
-		Name: "ChangePassword",
+		Name: "UpdatePassword",
 	},
-	{
+	{ // user-service
 		ID:   3,
-		Name: "UpdateBasicInfo",
+		Name: "UpdateUserProfile",
 	},
 	{
 		ID:   4,
@@ -55,18 +55,42 @@ var userPermissions = []*domain.Permission{
 	},
 	{
 		ID:   5,
-		Name: "Get",
+		Name: "GetUserById",
 	},
 	{
 		ID:   6,
 		Name: "GetAll",
 	},
-	{
+	{ // post service
 		ID:   7,
-		Name: "UpdateUserProfile",
+		Name: "GetPostById",
 	},
 	{
 		ID:   8,
-		Name: "GetLoggedInUserInfo",
+		Name: "GetAllPosts",
+	},
+	{
+		ID:   9,
+		Name: "UpdatePost",
+	},
+	{
+		ID:   10,
+		Name: "CreatePost",
+	},
+	{
+		ID:   11,
+		Name: "UpdatePostLikes",
+	},
+	{
+		ID:   12,
+		Name: "UpdatePostDislikes",
+	},
+	{
+		ID:   13,
+		Name: "UpdatePostComments",
+	},
+	{
+		ID:   14,
+		Name: "NeutralPost",
 	},
 }

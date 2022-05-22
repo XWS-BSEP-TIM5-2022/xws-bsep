@@ -4,9 +4,9 @@ func AccessiblePermissions() map[string]string {
 	const userService = "/user_service.UserService/"
 
 	return map[string]string{
-		userService + "Get":                          "Get",
+		userService + "Get":                          "GetUserById",
 		userService + "GetAll":                       "GetAll",
-		userService + "Update":                       "Update",
+		userService + "Update":                       "UpdateUserProfile",
 		userService + "UpdateBasicInfo":              "UpdateUserProfile",
 		userService + "UpdateExperienceAndEducation": "UpdateUserProfile",
 		userService + "UpdateSkillsAndInterests":     "UpdateUserProfile",
