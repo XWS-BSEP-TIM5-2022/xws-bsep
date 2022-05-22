@@ -71,15 +71,7 @@ func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetReq
 }
 
 func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
-
-	fmt.Println("ovo je request", request)
-
-	// TODO : validirati sve iz request-a
-	// TODO: do napada moze doci pri :
-	// dodavanju post-a
-	// like, dislike, comment post-a
-
-	post, err := mapInsertPost(request.Post)
+	post, err := mapInsertPost(request.InsertPost)
 	if err != nil {
 		return nil, err
 	}
@@ -96,25 +88,6 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 	return response, err
 }
 
-// TODO: obrisati, ne koristi se
-func (handler *PostHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-	id, _ := primitive.ObjectIDFromHex(request.Post.Id)
-
-	oldPost, err := handler.service.Get(id)
-	if err != nil {
-		return &pb.UpdateResponse{
-			Success: "error",
-		}, err
-	}
-
-	post := mapUpdatePost(mapPost(oldPost), request.Post)
-	success, err := handler.service.Update(post)
-	response := &pb.UpdateResponse{
-		Success: success,
-	}
-	return response, err
-}
-
 func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike) (*pb.InsertResponse, error) {
 	id := request.PostId
 	objectId, err := primitive.ObjectIDFromHex(id)
@@ -126,7 +99,6 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 	}
 
 	postHelper, err := handler.service.Get(objectId)
-
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
 	// provera - da li je korisnik vec lajkovao post
@@ -159,7 +131,6 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 	}
 
 	success, err := handler.service.LikePost(post, userId)
-
 	if err != nil {
 		return nil, err
 	}
@@ -180,8 +151,6 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 	}
 
 	postHelper, err := handler.service.Get(objectId)
-
-	//userId := request.UserId
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
 	// provera - da li je korisnik vec dislajkovao post
@@ -214,7 +183,6 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 	}
 
 	success, err := handler.service.DislikePost(post, userId)
-
 	if err != nil {
 		return nil, err
 	}
@@ -234,11 +202,8 @@ func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertC
 		}, err
 	}
 
-	//userId := request.UserId
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-
 	success, err := handler.service.CommentPost(post, userId, request.Text)
-
 	if err != nil {
 		return nil, err
 	}
@@ -259,7 +224,6 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 	}
 
 	postHelper, err := handler.service.Get(objectId)
-
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
 	flagDisliked := false
@@ -301,7 +265,6 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 	}
 
 	success, err := handler.service.Update(post)
-
 	if err != nil {
 		return nil, err
 	}

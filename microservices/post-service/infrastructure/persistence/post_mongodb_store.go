@@ -125,8 +125,28 @@ func (store *PostMongoDBStore) LikePost(post *domain.Post, user_id string) (stri
 	like := domain.Like{}
 	like.Id = primitive.NewObjectID()
 	like.UserId = user_id
-	post.Likes = append(post.Likes, like)
 
+	// validate like
+	err := validate.Struct(like)
+	if err != nil {
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			fmt.Println(err)
+			return "error", err
+		}
+
+		for _, err := range err.(validator.ValidationErrors) {
+			fmt.Println("---------------- pocetak greske ----------------")
+			fmt.Println(err.Field())
+			fmt.Println(err.Tag())
+			fmt.Println(err.Type())
+			fmt.Println(err.Value())
+			fmt.Println(err.Param())
+			fmt.Println("---------------- kraj greske ----------------")
+		}
+		return "error", err
+	}
+
+	post.Likes = append(post.Likes, like)
 	newData := bson.M{"$set": bson.M{
 		"text":         post.Text,
 		"date_created": post.DateCreated,
@@ -154,8 +174,28 @@ func (store *PostMongoDBStore) DislikePost(post *domain.Post, user_id string) (s
 	dislike := domain.Dislike{}
 	dislike.Id = primitive.NewObjectID()
 	dislike.UserId = user_id
-	post.Dislikes = append(post.Dislikes, dislike)
 
+	// validate dislike
+	err := validate.Struct(dislike)
+	if err != nil {
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			fmt.Println(err)
+			return "error", err
+		}
+
+		for _, err := range err.(validator.ValidationErrors) {
+			fmt.Println("---------------- pocetak greske ----------------")
+			fmt.Println(err.Field())
+			fmt.Println(err.Tag())
+			fmt.Println(err.Type())
+			fmt.Println(err.Value())
+			fmt.Println(err.Param())
+			fmt.Println("---------------- kraj greske ----------------")
+		}
+		return "error", err
+	}
+
+	post.Dislikes = append(post.Dislikes, dislike)
 	newData := bson.M{"$set": bson.M{
 		"text":         post.Text,
 		"date_created": post.DateCreated,
@@ -208,30 +248,6 @@ func (store *PostMongoDBStore) CommentPost(post *domain.Post, user_id string, te
 	}
 	return "success", nil
 }
-
-//func (store *PostMongoDBStore) NeutralPost(post *domain.Post, user_id string) (string, error) {
-//	newData := bson.M{"$set": bson.M{
-//		"text":         post.Text,
-//		"date_created": post.DateCreated,
-//		"images":       post.Images,
-//		"links":        post.Links,
-//		"likes":        post.Likes,
-//		"dislikes":     post.Dislikes,
-//		"comments":     post.Comments,
-//		"user_id":      post.UserId,
-//	}}
-//
-//	opts := options.Update().SetUpsert(true)
-//	result, err := store.posts.UpdateOne(context.TODO(), bson.M{"_id": post.Id}, newData, opts)
-//
-//	if err != nil {
-//		return "error", err
-//	}
-//	if result.MatchedCount != 1 {
-//		return "one document should've been updated", errors.New("one document should've been updated")
-//	}
-//	return "success", nil
-//}
 
 func (store *PostMongoDBStore) DeleteAll() {
 	store.posts.DeleteMany(context.TODO(), bson.D{{}})

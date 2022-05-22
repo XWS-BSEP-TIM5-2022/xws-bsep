@@ -1,10 +1,8 @@
 package api
 
 import (
-	"fmt"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"strings"
 	"time"
@@ -45,7 +43,7 @@ func mapPost(post *domain.Post) *pb.Post {
 	return postPb
 }
 
-func mapInsertPost(post *pb.Post) (*domain.Post, error) {
+func mapInsertPost(post *pb.InsertPost) (*domain.Post, error) {
 
 	postPb := &domain.Post{
 		Text:        strings.TrimSpace(post.Text), // function to remove leading and trailing whitespace
@@ -57,104 +55,92 @@ func mapInsertPost(post *pb.Post) (*domain.Post, error) {
 	return postPb, nil
 }
 
-func mapLike(like *pb.Like) *domain.Like { // TODO : InsertLike ???
-	id := primitive.NewObjectID()
+//func mapUpdatePost(oldData *pb.InsertPost, newData *pb.InsertPost) *domain.Post {
+//	id, _ := primitive.ObjectIDFromHex(oldData.Id)
+//
+//	postPb := &domain.Post{
+//		Id:     id,
+//		Text:   newData.Text,
+//		UserId: oldData.UserId, // ne moze se kreator post-a
+//		Images: newData.Images,
+//		Links:  newData.Links,
+//	}
+//
+//	for _, like := range newData.Likes {
+//		if like.Id == "" {
+//			if likedPostByUser(oldData, like.UserId) == false {
+//				like_id := primitive.NewObjectID()
+//				postPb.Likes = append(postPb.Likes, domain.Like{
+//					Id:     like_id,
+//					UserId: like.UserId,
+//				})
+//			}
+//		} else {
+//			like_id, _ := primitive.ObjectIDFromHex(like.Id)
+//			postPb.Likes = append(postPb.Likes, domain.Like{
+//				Id:     like_id,
+//				UserId: like.UserId,
+//			})
+//		}
+//	}
+//
+//	for _, dislike := range newData.Dislikes {
+//		if dislike.Id == "" {
+//			if dislikedPostByUser(oldData, dislike.UserId) == false {
+//				dislike_id := primitive.NewObjectID()
+//				postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
+//					Id:     dislike_id,
+//					UserId: dislike.UserId,
+//				})
+//			}
+//		} else {
+//			dislike_id, _ := primitive.ObjectIDFromHex(dislike.Id)
+//			postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
+//				Id:     dislike_id,
+//				UserId: dislike.UserId,
+//			})
+//		}
+//	}
+//
+//	for _, comment := range newData.Comments {
+//		if comment.Id == "" {
+//			comment_id := primitive.NewObjectID()
+//			postPb.Comments = append(postPb.Comments, domain.Comment{
+//				Id:     comment_id,
+//				UserId: comment.UserId,
+//				Text:   comment.Text,
+//			})
+//		} else {
+//			comment_id, _ := primitive.ObjectIDFromHex(comment.Id)
+//			postPb.Comments = append(postPb.Comments, domain.Comment{
+//				Id:     comment_id,
+//				UserId: comment.UserId,
+//				Text:   comment.Text,
+//			})
+//		}
+//	}
+//
+//	return postPb
+//}
 
-	likePb := &domain.Like{
-		Id:     id,
-		UserId: like.UserId,
-	}
-
-	return likePb
-}
-
-func mapUpdatePost(oldData *pb.Post, newData *pb.Post) *domain.Post {
-	id, _ := primitive.ObjectIDFromHex(oldData.Id)
-
-	postPb := &domain.Post{
-		Id:          id,
-		Text:        newData.Text,
-		UserId:      oldData.UserId, // ne moze se kreator post-a
-		Images:      newData.Images,
-		Links:       newData.Links,
-		DateCreated: oldData.DateCreated.AsTime(),
-	}
-
-	for _, like := range newData.Likes {
-		if like.Id == "" {
-			if likedPostByUser(oldData, like.UserId) == false {
-				like_id := primitive.NewObjectID()
-				postPb.Likes = append(postPb.Likes, domain.Like{
-					Id:     like_id,
-					UserId: like.UserId,
-				})
-			}
-		} else {
-			like_id, _ := primitive.ObjectIDFromHex(like.Id)
-			postPb.Likes = append(postPb.Likes, domain.Like{
-				Id:     like_id,
-				UserId: like.UserId,
-			})
-		}
-	}
-
-	for _, dislike := range newData.Dislikes {
-		if dislike.Id == "" {
-			if dislikedPostByUser(oldData, dislike.UserId) == false {
-				dislike_id := primitive.NewObjectID()
-				postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
-					Id:     dislike_id,
-					UserId: dislike.UserId,
-				})
-			}
-		} else {
-			dislike_id, _ := primitive.ObjectIDFromHex(dislike.Id)
-			postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
-				Id:     dislike_id,
-				UserId: dislike.UserId,
-			})
-		}
-	}
-
-	for _, comment := range newData.Comments {
-		if comment.Id == "" {
-			comment_id := primitive.NewObjectID()
-			postPb.Comments = append(postPb.Comments, domain.Comment{
-				Id:     comment_id,
-				UserId: comment.UserId,
-				Text:   comment.Text,
-			})
-		} else {
-			comment_id, _ := primitive.ObjectIDFromHex(comment.Id)
-			postPb.Comments = append(postPb.Comments, domain.Comment{
-				Id:     comment_id,
-				UserId: comment.UserId,
-				Text:   comment.Text,
-			})
-		}
-	}
-
-	return postPb
-}
-
-func likedPostByUser(post *pb.Post, userId string) bool {
-	for _, like := range post.Likes {
-		if like.UserId == userId {
-			fmt.Println("Postoji duplikat - like")
-			fmt.Println("ISPIS:", like.UserId, userId)
-			return true
-		}
-	}
-	return false
-}
-
-func dislikedPostByUser(post *pb.Post, userId string) bool {
-	for _, dislike := range post.Dislikes {
-		if dislike.UserId == userId {
-			fmt.Println("Postoji duplikat - dislike")
-			fmt.Println("ISPIS:", dislike.UserId, userId)
-			return true
-		}
-	}
-	return false
-}
+//func likedPostByUser(post *pb.InsertPost, userId string) bool {
+//	for _, like := range post.Likes {
+//		if like.UserId == userId {
+//			fmt.Println("Postoji duplikat - like")
+//			fmt.Println("ISPIS:", like.UserId, userId)
+//			return true
+//		}
+//	}
+//	return false
+//}
+//
+//func dislikedPostByUser(post *pb.InsertPost, userId string) bool {
+//	for _, dislike := range post.Dislikes {
+//		if dislike.UserId == userId {
+//			fmt.Println("Postoji duplikat - dislike")
+//			fmt.Println("ISPIS:", dislike.UserId, userId)
+//			return true
+//		}
+//	}
+//	return false
+//}
