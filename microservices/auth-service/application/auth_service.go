@@ -27,6 +27,7 @@ import (
 var verificationCodeDurationInMinutes int = 5
 var min6DigitNumber int = 100000
 var max6DigitNumber int = 999999
+var minPasswordLength int = 8
 
 type AuthService struct {
 	store             *persistence.AuthPostgresStore
@@ -58,6 +59,18 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 	if err != nil {
 		return nil, errors.New("user not found")
 	}
+
+	var authRoles []domain.Role
+	for _, authRole := range *authCredentials.Roles {
+		roles, err := service.store.FindRoleByName(authRole.Name)
+		if err != nil {
+			fmt.Println("Error finding role by name")
+			return nil, err
+		}
+		authRoles = append(authRoles, *roles...)
+	}
+	authCredentials.Roles = &authRoles
+	fmt.Println("No error finding roles and permissions")
 
 	from := config.NewConfig().EmailFrom
 	password := config.NewConfig().EmailPassword
@@ -154,7 +167,6 @@ func passwordlessLoginMailMessage(token string) []byte {
 }
 
 func (service *AuthService) ConfirmEmailLogin(ctx context.Context, request *pb.ConfirmEmailLoginRequest) (*pb.ConfirmEmailLoginResponse, error) {
-
 	token, err := jwt.ParseWithClaims(
 		request.Token,
 		&interceptor.UserClaims{},
@@ -252,6 +264,16 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		return nil, err
 	}
 
+	var authRoles []domain.Role
+	for _, authRole := range request.Role {
+		roles, err := service.store.FindRoleByName(authRole)
+		if err != nil {
+			fmt.Println("Error finding role by name")
+			return nil, err
+		}
+		authRoles = append(authRoles, *roles...)
+	}
+
 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
 	if err != nil {
 		return nil, err
@@ -261,7 +283,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		createUserResponse.Id,
 		request.Username,
 		request.Password,
-		request.Role,
+		&authRoles,
 	)
 	if err != nil {
 		return nil, err
@@ -293,7 +315,7 @@ func checkPasswordCriteria(password, username string) error {
 	var err error
 	var passLowercase, passUppercase, passNumber, passSpecial, passLength, passNoSpaces, passNoUsername bool
 	passNoSpaces = true
-	if len(password) >= 8 {
+	if len(password) >= minPasswordLength {
 		passLength = true
 	}
 	if !strings.Contains(strings.ToLower(password), strings.ToLower(username)) {
@@ -342,6 +364,18 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	}
 	fmt.Println("No error finding auth credentials")
 
+	var authRoles []domain.Role
+	for _, authRole := range *authCredentials.Roles {
+		roles, err := service.store.FindRoleByName(authRole.Name)
+		if err != nil {
+			fmt.Println("Error finding role by name")
+			return nil, err
+		}
+		authRoles = append(authRoles, *roles...)
+	}
+	authCredentials.Roles = &authRoles
+	fmt.Println("No error finding roles and permissions for auth credentials")
+
 	userReq := &user.GetRequest{
 		Id: authCredentials.Id,
 	}
@@ -376,14 +410,35 @@ func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 	response := &pb.GetAllResponse{
 		Auth: []*pb.Auth{},
 	}
+
 	for _, auth := range *auths {
 		current := &pb.Auth{
 			Id:               auth.Id,
 			Username:         auth.Username,
 			Password:         auth.Password,
-			Role:             auth.Role,
 			VerificationCode: auth.VerificationCode,
 			ExpirationTime:   auth.ExpirationTime,
+		}
+
+		for _, role := range *auth.Roles {
+			rolePermissions, err := service.store.GetAllPermissionsByRole(role.Name)
+			if err != nil {
+				fmt.Println("Greska GetAll - GetAllPermissionsByRole")
+			}
+
+			var rolePermissionsPb []*pb.Permission
+			for _, perm := range *rolePermissions {
+				permPb := pb.Permission{
+					ID:   uint32(perm.ID),
+					Name: perm.Name,
+				}
+				rolePermissionsPb = append(rolePermissionsPb, &permPb)
+			}
+			current.Roles = append(current.Roles, &pb.Role{
+				ID:          uint32(role.ID),
+				Name:        role.Name,
+				Permissions: rolePermissionsPb,
+			})
 		}
 		response.Auth = append(response.Auth, current)
 	}
@@ -782,5 +837,25 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 	return &pb.Response{
 		StatusCode: "200",
 		Message:    "Password updated successfully",
+	}, nil
+}
+
+func (service *AuthService) GetAllPermissionsByRole(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
+	permissions, err := service.store.GetAllPermissionsByRole("Admin")
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("Permissions: ", permissions)
+	return &pb.Response{
+		StatusCode: "200",
+		Message:    "OK",
+	}, nil
+
+}
+
+func (service *AuthService) AdminsEndpoint(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
+	return &pb.Response{
+		StatusCode: "200",
+		Message:    "OK",
 	}, nil
 }

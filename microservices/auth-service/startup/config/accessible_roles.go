@@ -1,5 +1,7 @@
 package config
 
+// TODO SD: delete
+
 func AccessibleRoles() map[string][]string {
 	const authService = "/auth_service.AuthService/"
 

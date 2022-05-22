@@ -71,6 +71,12 @@ func (server *Server) initAuthStore(client *gorm.DB) *persistence.AuthPostgresSt
 			log.Fatal(err)
 		}
 	}
+	for _, Role := range roles {
+		err := store.InsertRole(Role)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 	return store
 }
 
@@ -102,7 +108,8 @@ func (server *Server) startGrpcServer(authHandler *api.AuthHandler) {
 		log.Fatalf("failed to parse public key: %v", err)
 	}
 
-	interceptor := interceptor.NewAuthInterceptor(config.AccessibleRoles(), publicKey)
+	// interceptor := interceptor.NewAuthInterceptor(config.AccessibleRoles(), publicKey)
+	interceptor := interceptor.NewAuthInterceptor(config.AccessiblePermissions(), publicKey)
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(interceptor.Unary()))
 	auth_service_proto.RegisterAuthServiceServer(grpcServer, authHandler)
 	if err := grpcServer.Serve(listener); err != nil {
