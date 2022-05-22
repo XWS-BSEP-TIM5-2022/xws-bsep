@@ -11,53 +11,47 @@ import "google/protobuf/timestamp.proto";
 service PostService{
   rpc Get(GetRequest) returns(GetResponse) { // definicja rpc metode
     option (google.api.http) = {
-      get: "/post/{id}"
+      get: "/api/post/{id}"
     };
   }
   rpc LikePost(InsertLike) returns(InsertResponse) {
     option (google.api.http) = {
-      post: "/post/like"
+      post: "/api/post/like"
       body: "*"
     };
   }
   rpc DislikePost(InsertDislike) returns(InsertResponse) {
     option (google.api.http) = {
-      post: "/post/dislike"
+      post: "/api/post/dislike"
       body: "*"
     };
   }
   rpc NeutralPost(InsertNeutralReaction) returns(InsertResponse) {
     option (google.api.http) = {
-      post: "/post/neutral"
+      post: "/api/post/neutral"
       body: "*"
     };
   }
   rpc CommentPost(InsertComment) returns(InsertResponse) {
     option (google.api.http) = {
-      post: "/post/comment"
+      post: "/api/post/comment"
       body: "*"
     };
   }
   rpc GetAll(GetAllRequest) returns(GetAllResponse) {
     option (google.api.http) = {
-      get: "/post"
+      get: "/api/post"
     };
   }
   rpc Insert(InsertRequest) returns(InsertResponse) {
     option (google.api.http) = {
-      post: "/post"
-      body: "post"
-    };
-  }
-  rpc Update(UpdateRequest) returns(UpdateResponse) {
-    option (google.api.http) = {
-      put: "/post"
-      body: "post"
+      post: "/api/post"
+      body: "insertPost"
     };
   }
   rpc GetAllByUser(GetRequest) returns(GetAllResponse) {
     option (google.api.http) = {
-      get: "/post/user/{id}"
+      get: "/api/post/user/{id}"
     };
   }
 }
@@ -78,19 +72,23 @@ message GetAllResponse {
 }
 
 message InsertRequest {
-  Post post = 1;
+  InsertPost insertPost = 1;
 }
 
 message InsertResponse {
   string success = 1;
 }
 
-message UpdateRequest {
-  Post post = 1;
-}
-
-message UpdateResponse {
-  string success = 1;
+message InsertPost {
+  string id = 1;
+  string text = 2;
+  repeated string images = 3;
+  repeated string links = 4;
+//  google.protobuf.Timestamp dateCreated = 5;
+//  repeated Like likes = 5;
+//  repeated Dislike dislikes = 6;
+//  repeated Comment comments = 7;
+  string user_id = 5;
 }
 
 message Post {
@@ -123,23 +121,19 @@ message Dislike {
 
 message InsertLike{
   string post_id = 1;
-  string user_id = 2;
 }
 
 message InsertDislike{
   string post_id = 1;
-  string user_id = 2;
 }
 
 message InsertNeutralReaction{
   string post_id = 1;
-  string user_id = 2;
 }
 
 message InsertComment{
   string post_id = 1;
-  string user_id = 2;
-  string text = 3;
+  string text = 3;  // TODO: 2
 }
 
 message Empty {}
