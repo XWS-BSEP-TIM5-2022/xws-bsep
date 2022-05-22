@@ -264,10 +264,14 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		return nil, err
 	}
 
-	roles, err := service.store.FindRoleByName(request.Role)
-	if err != nil {
-		fmt.Println("Error finding role by name")
-		return nil, err
+	var authRoles []domain.Role
+	for _, authRole := range request.Role {
+		roles, err := service.store.FindRoleByName(authRole)
+		if err != nil {
+			fmt.Println("Error finding role by name")
+			return nil, err
+		}
+		authRoles = append(authRoles, *roles...)
 	}
 
 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
@@ -279,7 +283,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		createUserResponse.Id,
 		request.Username,
 		request.Password,
-		roles,
+		&authRoles,
 	)
 	if err != nil {
 		return nil, err

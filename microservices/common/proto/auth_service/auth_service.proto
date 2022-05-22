@@ -150,7 +150,7 @@ message RegisterRequest {
     repeated Experience experience = 12;
     repeated Skill skills = 13;
     repeated Interest interests = 14;
-    string role = 15;
+    repeated string role = 15;
 }
 
 message Education{
