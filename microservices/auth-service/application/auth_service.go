@@ -59,6 +59,18 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 		return nil, errors.New("user not found")
 	}
 
+	var authRoles []domain.Role
+	for _, authRole := range *authCredentials.Roles {
+		roles, err := service.store.FindRoleByName(authRole.Name)
+		if err != nil {
+			fmt.Println("Error finding role by name")
+			return nil, err
+		}
+		authRoles = append(authRoles, *roles...)
+	}
+	authCredentials.Roles = &authRoles
+	fmt.Println("No error finding roles and permissions")
+
 	from := config.NewConfig().EmailFrom
 	password := config.NewConfig().EmailPassword
 
@@ -251,12 +263,16 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		return nil, err
 	}
 
+	roles, err := service.store.FindRoleByName(request.Role)
+	if err != nil {
+		fmt.Println("Error finding role by name")
+		return nil, err
+	}
+
 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
 	if err != nil {
 		return nil, err
 	}
-
-	roles, err := service.store.FindRoleByName(request.Role)
 
 	authCredentials, err := domain.NewAuthCredentials(
 		createUserResponse.Id,
@@ -273,7 +289,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		return nil, err
 	}
 
-	token, err := service.jwtService.GenerateToken(authCredentials) //
+	token, err := service.jwtService.GenerateToken(authCredentials)
 	if err != nil {
 		return nil, err
 	}
@@ -342,6 +358,18 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 		return nil, err
 	}
 	fmt.Println("No error finding auth credentials")
+
+	var authRoles []domain.Role
+	for _, authRole := range *authCredentials.Roles {
+		roles, err := service.store.FindRoleByName(authRole.Name)
+		if err != nil {
+			fmt.Println("Error finding role by name")
+			return nil, err
+		}
+		authRoles = append(authRoles, *roles...)
+	}
+	authCredentials.Roles = &authRoles
+	fmt.Println("No error finding roles and permissions for auth credentials")
 
 	userReq := &user.GetRequest{
 		Id: authCredentials.Id,

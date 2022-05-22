@@ -2,10 +2,11 @@ package startup
 
 import (
 	"fmt"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
-	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net"
+
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
+	"github.com/dgrijalva/jwt-go"
 
 	inventory "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/application"
@@ -88,7 +89,7 @@ func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) 
 		log.Fatalf("failed to parse public key: %v", err)
 	}
 
-	interceptor := interceptor.NewAuthInterceptor(config.AccessibleRoles(), publicKey)
+	interceptor := interceptor.NewAuthInterceptor(config.AccessiblePermissions(), publicKey)
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(interceptor.Unary()))
 
 	inventory.RegisterConnectionServiceServer(grpcServer, connectionHandler)

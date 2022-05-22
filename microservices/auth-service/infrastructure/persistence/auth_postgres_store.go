@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
@@ -39,6 +40,7 @@ func (store *AuthPostgresStore) Create(auth *domain.Authentication) (*domain.Aut
 func (store *AuthPostgresStore) FindByUsername(username string) (*domain.Authentication, error) {
 	var auth domain.Authentication
 	err := store.db.Preload("Roles").First(&auth, "username = ?", username)
+	fmt.Println(auth.Roles)
 	return &auth, err.Error
 }
 
@@ -96,7 +98,7 @@ func updateUsernameById(tx *gorm.DB, auth *domain.Authentication, username strin
 
 func (store *AuthPostgresStore) FindById(id string) (*domain.Authentication, error) {
 	var auth domain.Authentication
-	err := store.db.First(&auth, "id = ?", id)
+	err := store.db.Preload("Roles").First(&auth, "id = ?", id)
 	return &auth, err.Error
 }
 

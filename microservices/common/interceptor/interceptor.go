@@ -18,9 +18,9 @@ type AuthInterceptor struct {
 	publicKey             *rsa.PublicKey
 }
 
-func NewAuthInterceptor(accessibleRoles map[string]string, publicKey *rsa.PublicKey) *AuthInterceptor {
+func NewAuthInterceptor(accessiblePermissions map[string]string, publicKey *rsa.PublicKey) *AuthInterceptor {
 	return &AuthInterceptor{
-		accessiblePermissions: accessibleRoles,
+		accessiblePermissions: accessiblePermissions,
 		publicKey:             publicKey,
 	}
 }
@@ -38,7 +38,9 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 
 func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string) (context.Context, error) {
 	// accessibleRoles, ok := interceptor.accessibleRoles[method]
+	fmt.Println(method)
 	accessiblePermission, ok := interceptor.accessiblePermissions[method]
+	fmt.Println(accessiblePermission)
 	// u mapi ne postoje role za ovu metodu => javno dostupna putanja
 	if !ok {
 		return ctx, nil
