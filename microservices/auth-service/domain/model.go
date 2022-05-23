@@ -16,14 +16,14 @@ type Authentication struct {
 }
 
 type Role struct {
-	ID          uint `gorm:"primaryKey;auto_increment:true"`
-	Name        string
+	ID          uint          `gorm:"primaryKey;auto_increment:true"`
+	Name        string        `gorm:"index:idx_name,unique"`
 	Permissions []*Permission `gorm:"many2many:role_permissions"`
 }
 
 type Permission struct {
-	ID   uint `gorm:"primaryKey;auto_increment:true"`
-	Name string
+	ID   uint   `gorm:"primaryKey;auto_increment:true"`
+	Name string `gorm:"index:idx_name,unique"`
 }
 
 func NewAuthCredentials(id, username, password string, roles *[]Role) (*Authentication, error) {

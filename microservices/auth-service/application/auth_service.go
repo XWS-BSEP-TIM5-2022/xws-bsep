@@ -70,7 +70,7 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 		authRoles = append(authRoles, *roles...)
 	}
 	authCredentials.Roles = &authRoles
-	fmt.Println("No error finding roles and permissions")
+	// fmt.Println("No error finding roles and permissions")
 
 	from := config.NewConfig().EmailFrom
 	password := config.NewConfig().EmailPassword
@@ -274,6 +274,11 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		authRoles = append(authRoles, *roles...)
 	}
 
+	uniqueUsername, err := service.store.IsUsernameUnique(request.Username)
+	if err != nil || uniqueUsername == false {
+		return nil, err
+	}
+
 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
 	if err != nil {
 		return nil, err
@@ -362,7 +367,7 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("No error finding auth credentials")
+	// fmt.Println("No error finding auth credentials")
 
 	var authRoles []domain.Role
 	for _, authRole := range *authCredentials.Roles {
@@ -374,7 +379,7 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 		authRoles = append(authRoles, *roles...)
 	}
 	authCredentials.Roles = &authRoles
-	fmt.Println("No error finding roles and permissions for auth credentials")
+	// fmt.Println("No error finding roles and permissions for auth credentials")
 
 	userReq := &user.GetRequest{
 		Id: authCredentials.Id,
@@ -392,7 +397,8 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	if !ok {
 		return nil, status.Errorf(codes.Unauthenticated, "Invalid username or password")
 	}
-	fmt.Println("No error validating password")
+	// fmt.Println("No error validating password")
+
 	token, err := service.jwtService.GenerateToken(authCredentials)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Could not generate JWT token")
@@ -453,16 +459,14 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 			Message:    "User id not found",
 		}, nil
 	} else {
-		auths, err := service.store.FindAll()
-		for _, auth := range *auths {
-			if auth.Username == request.Username {
-				log.Println("Username is not unique")
-				return &pb.UpdateUsernameResponse{
-					StatusCode: "500",
-					Message:    "Username is not unique",
-				}, errors.New("Username is not unique")
-			}
+		isUniqueUsername, err := service.store.IsUsernameUnique(request.Username)
+		if err != nil || isUniqueUsername == false {
+			return &pb.UpdateUsernameResponse{
+				StatusCode: "500",
+				Message:    "Username is not unique",
+			}, errors.New("Username is not unique")
 		}
+
 		response, err := service.store.UpdateUsername(userId, request.Username)
 		if err != nil {
 			return &pb.UpdateUsernameResponse{
@@ -660,7 +664,6 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 	}
 
 	randomCode := rangeIn(min6DigitNumber, max6DigitNumber)
-	fmt.Println(randomCode)
 	code := strconv.Itoa(randomCode)
 
 	expDuration := time.Duration(verificationCodeDurationInMinutes) * time.Minute
@@ -841,11 +844,11 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 }
 
 func (service *AuthService) GetAllPermissionsByRole(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
-	permissions, err := service.store.GetAllPermissionsByRole("Admin")
+	_, err := service.store.GetAllPermissionsByRole("Admin")
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("Permissions: ", permissions)
+	// fmt.Println("Permissions: ", permissions)
 	return &pb.Response{
 		StatusCode: "200",
 		Message:    "OK",
