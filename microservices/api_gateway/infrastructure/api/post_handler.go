@@ -9,6 +9,7 @@ import (
 	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"html"
 	"net/http"
 )
 
@@ -25,7 +26,7 @@ func NewPostHandler(postClientAddress, connectionClientAddress string) Handler {
 }
 
 func (handler *PostHandler) Init(mux *runtime.ServeMux) {
-	fmt.Println("uslo 1")
+	fmt.Println("Hello from api gateway")
 
 	err := mux.HandlePath("GET", "/api/feed/{userID}", handler.GetPosts) // prikaz postova od strane zapracenog profila
 	if err != nil {
@@ -40,13 +41,24 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 		return
 	}
 
+	if len(id) != 24 {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	/** Escape '$' - Prevent NoSQL Injection **/
+	var checkId = ""
+	for i := 0; i < len(id); i++ {
+		char := string(id[i])
+		if char != "$" {
+			checkId = checkId + char
+		}
+	}
+
 	posts := &domain.Posts{}
 	users := &domain.Users{}
 
-	// getAllFriends -> lista user-a (zapraceni profili)
-	// getAllPostsByUserId
-
-	err := handler.getAllConnections(users, id)
+	err := handler.getAllConnections(users, html.EscapeString(checkId)) /** EscapeString **/
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -64,7 +76,7 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	//w.Header().Set("Authorization", "Bearer " )
+	//w.Header().Set("Authorization", "Bearer " )	// TODO
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
