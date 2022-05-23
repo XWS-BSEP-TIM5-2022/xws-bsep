@@ -37,11 +37,7 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 }
 
 func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string) (context.Context, error) {
-	// accessibleRoles, ok := interceptor.accessibleRoles[method]
-	fmt.Println(method)
 	accessiblePermission, ok := interceptor.accessiblePermissions[method]
-	fmt.Println(accessiblePermission)
-	// u mapi ne postoje role za ovu metodu => javno dostupna putanja
 	if !ok {
 		return ctx, nil
 	}
