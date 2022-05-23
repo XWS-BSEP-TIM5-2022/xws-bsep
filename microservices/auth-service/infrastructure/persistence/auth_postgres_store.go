@@ -175,3 +175,16 @@ func (store *AuthPostgresStore) FindRoleByName(name string) (*[]domain.Role, err
 	}
 	return &roles, err
 }
+
+func (store *AuthPostgresStore) IsUsernameUnique(username string) (bool, error) {
+	auths, err := store.FindAll()
+	if err != nil || auths == nil {
+		return false, nil
+	}
+	for _, authCredentials := range *auths {
+		if authCredentials.Username == username {
+			return false, errors.New("Username is not unique")
+		}
+	}
+	return true, nil
+}

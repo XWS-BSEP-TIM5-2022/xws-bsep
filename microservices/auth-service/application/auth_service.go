@@ -274,6 +274,11 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		authRoles = append(authRoles, *roles...)
 	}
 
+	uniqueUsername, err := service.store.IsUsernameUnique(request.Username)
+	if err != nil || uniqueUsername == false {
+		return nil, err
+	}
+
 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
 	if err != nil {
 		return nil, err
