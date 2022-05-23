@@ -65,6 +65,11 @@ func (store *PostMongoDBStore) GetAll() ([]*domain.Post, error) {
 }
 
 func (store *PostMongoDBStore) GetAllByUser(id string) ([]*domain.Post, error) {
+	if len(id) != 24 {
+		err := errors.New("id not valid")
+		return nil, err
+	}
+
 	/** Escape '$' - Prevent NoSQL Injection **/
 	var checkId = ""
 	for i := 0; i < len(id); i++ {
