@@ -14,7 +14,9 @@ import (
 	_ "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"html"
 	"net/url"
+	"strings"
 )
 
 var validate *validator.Validate
@@ -40,7 +42,20 @@ func NewPostMongoDBStore(client *mongo.Client) domain.PostStore {
 }
 
 func (store *PostMongoDBStore) Get(id primitive.ObjectID) (*domain.Post, error) {
-	filter := bson.M{"_id": id}
+	/** Escape '$' - Prevent NoSQL Injection **/
+	var convertedID = id.Hex()
+	var lenId = len(convertedID)
+	var checkId = ""
+	for i := 0; i < lenId; i++ {
+		char := string(convertedID[i])
+		if char != "$" {
+			checkId = checkId + char
+		}
+	}
+
+	/** EscapeString **/
+	newId, _ := primitive.ObjectIDFromHex(html.EscapeString(strings.TrimSpace(checkId)))
+	filter := bson.M{"_id": newId}
 	return store.filterOne(filter)
 }
 
@@ -50,12 +65,30 @@ func (store *PostMongoDBStore) GetAll() ([]*domain.Post, error) {
 }
 
 func (store *PostMongoDBStore) GetAllByUser(id string) ([]*domain.Post, error) {
-	filter := bson.M{"user_id": id}
+	if len(id) != 24 {
+		err := errors.New("id not valid")
+		return nil, err
+	}
+
+	/** Escape '$' - Prevent NoSQL Injection **/
+	var checkId = ""
+	for i := 0; i < len(id); i++ {
+		char := string(id[i])
+		if char != "$" {
+			checkId = checkId + char
+		}
+	}
+
+	/** EscapeString - escapes special characters  <, >, &, ', " **/
+	filter := bson.M{"user_id": html.EscapeString(checkId)}
 	return store.filter(filter)
 }
 
 func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 	post.Id = primitive.NewObjectID()
+
+	/** EscapeString **/
+	post.Text = html.EscapeString(post.Text)
 
 	// validate links
 	for _, link := range post.Links {
@@ -108,7 +141,7 @@ func (store *PostMongoDBStore) Update(post *domain.Post) (string, error) {
 		"comments":     post.Comments,
 		"user_id":      post.UserId,
 	}}
-	
+
 	// validate likes
 	for _, like := range post.Likes {
 		err := validate.Struct(like)
@@ -267,7 +300,8 @@ func (store *PostMongoDBStore) CommentPost(post *domain.Post, user_id string, te
 	comment := domain.Comment{}
 	comment.Id = primitive.NewObjectID()
 	comment.UserId = user_id
-	comment.Text = text
+	/** EscapeString **/
+	comment.Text = html.EscapeString(text)
 
 	// validate comment
 	err := validate.Struct(comment)

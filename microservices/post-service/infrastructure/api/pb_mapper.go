@@ -4,6 +4,7 @@ import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"html"
 	"strings"
 	"time"
 )
@@ -11,7 +12,7 @@ import (
 func mapPost(post *domain.Post) *pb.Post {
 	postPb := &pb.Post{
 		Id:          post.Id.Hex(),
-		Text:        post.Text,
+		Text:        html.UnescapeString(post.Text), /** UnescapeString **/
 		DateCreated: timestamppb.New(post.DateCreated),
 		UserId:      post.UserId,
 		Images:      post.Images,
@@ -36,7 +37,7 @@ func mapPost(post *domain.Post) *pb.Post {
 		postPb.Comments = append(postPb.Comments, &pb.Comment{
 			Id:     comment.Id.Hex(),
 			UserId: comment.UserId,
-			Text:   comment.Text,
+			Text:   html.UnescapeString(comment.Text), /** UnescapeString **/
 		})
 	}
 
@@ -44,7 +45,6 @@ func mapPost(post *domain.Post) *pb.Post {
 }
 
 func mapInsertPost(post *pb.InsertPost) (*domain.Post, error) {
-
 	postPb := &domain.Post{
 		Text:        strings.TrimSpace(post.Text), // function to remove leading and trailing whitespace
 		Images:      post.Images,
