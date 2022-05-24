@@ -5,7 +5,8 @@ import (
 	_ "context"
 	"errors"
 	_ "errors"
-
+	"fmt"
+	"github.com/go-playground/validator/v10"
 	"strings"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
@@ -17,6 +18,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var validate *validator.Validate
+
 const (
 	DATABASE   = "user"
 	COLLECTION = "user"
@@ -27,6 +30,8 @@ type UserMongoDBStore struct {
 }
 
 func NewUserMongoDBStore(client *mongo.Client) domain.UserStore {
+	validate = validator.New()
+
 	users := client.Database(DATABASE).Collection(COLLECTION)
 	return &UserMongoDBStore{
 		users: users,
@@ -62,6 +67,29 @@ func (store *UserMongoDBStore) Insert(user *domain.User) (*domain.User, error) {
 
 	if checkEmail != nil {
 		return nil, errors.New("email already exists")
+	}
+	fmt.Printf("var1 = %T\n", user.IsPublic)
+
+	err := validate.Struct(user)
+	if err != nil {
+		// this check is only needed when your code could produce
+		// an invalid value for validation such as interface with nil
+		// value most including myself do not usually have code like this.
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		for _, err := range err.(validator.ValidationErrors) {
+			fmt.Println("---------------- pocetak greske ----------------")
+			fmt.Println(err.Field())
+			fmt.Println(err.Tag())
+			fmt.Println(err.Type())
+			fmt.Println(err.Value())
+			fmt.Println(err.Param())
+			fmt.Println("---------------- kraj greske ----------------")
+		}
+		return nil, err
 	}
 
 	result, err := store.users.InsertOne(context.TODO(), user)
