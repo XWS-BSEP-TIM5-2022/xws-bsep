@@ -82,8 +82,8 @@ func (server *Server) initCustomHandlers() {
 }
 
 func (server *Server) Start() {
-	crtPath, _ := filepath.Abs("../localhost.crt")
-	keyPath, _ := filepath.Abs("../localhost.key")
+	crtPath, _ := filepath.Abs("../server.crt")
+	keyPath, _ := filepath.Abs("../server.key")
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), muxMiddleware(server)))
 
 	cors := handlers.CORS(
