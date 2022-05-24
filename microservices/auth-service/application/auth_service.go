@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"log"
 	"math/rand"
+	"net/mail"
 	"net/smtp"
 	"strconv"
 	"strings"
@@ -28,11 +30,17 @@ var verificationCodeDurationInMinutes int = 5
 var min6DigitNumber int = 100000
 var max6DigitNumber int = 999999
 var minPasswordLength int = 8
+var validate *validator.Validate
 
 type AuthService struct {
 	store             *persistence.AuthPostgresStore
 	jwtService        *JWTService
 	userServiceClient user.UserServiceClient
+}
+
+type LoginData struct {
+	username string `validate:"required"`
+	password string `validate:"required"`
 }
 
 func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService, userServiceClient user.UserServiceClient) *AuthService {
@@ -44,6 +52,12 @@ func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService
 }
 
 func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.PasswordlessLoginResponse, error) {
+
+	err := checkEmailCriteria(request.Email)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
 
 	getUserRequest := &user.GetIdByEmailRequest{
 		Email: request.Email,
@@ -192,6 +206,19 @@ func (service *AuthService) ConfirmEmailLogin(ctx context.Context, request *pb.C
 }
 
 func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+
+	err := checkUsernameCriteria(request.Username)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	err = checkEmailCriteria(request.Email)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
 	userRequest := &user.User{
 		Name:         request.Name,
 		LastName:     request.LastName,
@@ -258,7 +285,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		User: userRequest,
 	}
 
-	err := checkPasswordCriteria(request.Password, request.Username)
+	err = checkPasswordCriteria(request.Password, request.Username)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err
@@ -362,7 +389,55 @@ func checkPasswordCriteria(password, username string) error {
 	return nil
 }
 
+func checkEmailCriteria(email string) error {
+
+	if len(email) == 0 {
+		return errors.New("Email should not be empty")
+	}
+
+	_, err := mail.ParseAddress(email)
+
+	if err != nil {
+		return errors.New("Email is invalid.")
+	}
+
+	return nil
+}
+
+func checkUsernameCriteria(username string) error {
+
+	if len(username) == 0 {
+		return errors.New("Username should not be empty")
+	}
+
+	for _, char := range username {
+
+		if unicode.IsSpace(int32(char)) {
+			return errors.New("Username should not contain any spaces")
+		}
+	}
+	return nil
+}
+
 func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
+
+	//t := &LoginData{
+	//	username: request.Username,
+	//	password: request.Password,
+	//}
+
+	err := checkUsernameCriteria(request.Username)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	err = checkPasswordCriteria(request.Password, request.Username)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
 	authCredentials, err := service.store.FindByUsername(request.Username)
 	if err != nil {
 		return nil, err
