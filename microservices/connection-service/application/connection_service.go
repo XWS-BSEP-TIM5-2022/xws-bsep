@@ -44,3 +44,7 @@ func (service *ConnectionService) ApproveConnection(userIDa, userIDb string) (*p
 func (service *ConnectionService) RejectConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
 	return service.store.RejectConnection(userIDa, userIDb)
 }
+
+func (service *ConnectionService) CheckConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
+	return service.store.CheckConnection(userIDa, userIDb)
+}

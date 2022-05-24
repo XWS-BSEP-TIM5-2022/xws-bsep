@@ -78,6 +78,10 @@ func (store *ConnectionDBStore) GetConnections(userID string) ([]domain.UserConn
 }
 
 func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, isPublic bool) (*pb.ActionResult, error) {
+	fmt.Println("Adding new connection")
+	fmt.Println(userIDa)
+	fmt.Println(userIDb)
+	fmt.Println(isPublic)
 
 	if userIDa == userIDb {
 		return &pb.ActionResult{Msg: "userIDa is same as userIDb"}, nil
@@ -305,6 +309,44 @@ func (store *ConnectionDBStore) RejectConnection(userIDa, userIDb string) (*pb.A
 		actionResult.Msg = "Successfully rejected connection request IDa:" + userIDa + " to IDb:" + userIDb
 
 		return actionResult, nil
+	})
+
+	if result == nil {
+		return &pb.ActionResult{Msg: "error"}, err
+	} else {
+		return result.(*pb.ActionResult), err
+	}
+
+}
+
+func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
+	actionResult := &pb.ActionResult{Msg: "msg"}
+	actionResult.Msg = "Provjera konekcije"
+
+	if userIDa == userIDb {
+		return &pb.ActionResult{Msg: "UserIDa is same as userIDb"}, nil
+	}
+
+	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+
+		actionResult := &pb.ActionResult{Msg: "msg"}
+
+		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
+			if checkIfFriendExist(userIDa, userIDb, transaction) {
+				actionResult.Msg = "User A is friend with user B!"
+				return actionResult, nil
+			}
+
+			actionResult.Msg = "User A isn't friend with user B!"
+			return actionResult, nil
+
+		} else {
+			actionResult.Msg = "User does not exist"
+			return actionResult, nil
+		}
 	})
 
 	if result == nil {

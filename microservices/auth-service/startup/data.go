@@ -114,4 +114,8 @@ var userPermissions = []*domain.Permission{
 		ID:   19,
 		Name: "ApproveConnection",
 	},
+	{
+		ID:   20,
+		Name: "CheckConnection",
+	},
 }

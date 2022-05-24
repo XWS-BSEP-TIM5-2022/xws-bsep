@@ -50,6 +50,11 @@ service ConnectionService{
     };
   }
 
+  rpc CheckConnection(CheckConnectionRequest) returns(ActionResult) {
+    option (google.api.http) = {
+      get: "/connection/user/{userID}/checkConnection/{userIDb}"
+    };
+  }
 
 }
 
@@ -79,6 +84,12 @@ message ActionResult{
 
 message GetRequest {
   string userID = 1;
+}
+
+message CheckConnectionRequest {
+  string userID = 1;
+  string userIDb = 2;
+
 }
 
 message UserAction{
