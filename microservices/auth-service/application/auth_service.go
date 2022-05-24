@@ -119,7 +119,7 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 }
 
 func passwordlessLoginMailMessage(token string) []byte {
-	urlRedirection := "http://" + config.NewConfig().FrontendHost + ":" + config.NewConfig().FrontendPort + "/confirmed-mail/" + token
+	urlRedirection := "https://" + config.NewConfig().FrontendHost + ":" + config.NewConfig().FrontendPort + "/confirmed-mail/" + token
 
 	subject := "Subject: Passwordless login\n"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
@@ -632,7 +632,7 @@ func sendMail(emailTo string, message []byte) error {
 
 func verificationMailMessage(token string) []byte {
 	// TODO SD: port se moze izvuci iz env var - 4200
-	urlRedirection := "http://localhost:" + "4200" + "/activate-account/" + token
+	urlRedirection := "https://localhost:" + "4200" + "/activate-account/" + token
 
 	subject := "Subject: Account activation\n"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
