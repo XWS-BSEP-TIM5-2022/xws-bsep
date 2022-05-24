@@ -227,8 +227,8 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		Birthday:     request.Birthday,
 		Email:        request.Email,
 		Biography:    request.Biography,
-		IsPublic:     request.IsPublic,
-		IsActive:     false,
+		IsPublic:     false,
+		IsActive:     true,
 		Role:         request.Role,
 	}
 

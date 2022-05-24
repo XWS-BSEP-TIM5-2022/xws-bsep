@@ -145,12 +145,12 @@ message RegisterRequest {
     string username = 7;
     string biography = 8;
     string password = 9;
-    bool isPublic = 10;
-    repeated Education education = 11;
-    repeated Experience experience = 12;
-    repeated Skill skills = 13;
-    repeated Interest interests = 14;
-    repeated string role = 15;
+    //bool isPublic = 10;
+    repeated Education education = 10;
+    repeated Experience experience = 11;
+    repeated Skill skills = 12;
+    repeated Interest interests = 13;
+    repeated string role = 14;
 }
 
 message Education{
