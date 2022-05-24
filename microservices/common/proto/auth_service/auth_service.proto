@@ -22,6 +22,13 @@ service AuthService{
         };
     }
 
+    rpc PasswordlessLogin(PasswordlessLoginRequest) returns (PasswordlessLoginResponse) {
+        option (google.api.http) = {
+            post: "/api/auth/passwordless-login"
+            body: "*"
+        };
+    }
+
     rpc GetAll(Empty) returns (GetAllResponse) {
         option (google.api.http) = {
           get: "/api/auth"
@@ -34,12 +41,73 @@ service AuthService{
             body: "*"
         };
     }
+
+    rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {
+        option (google.api.http) = {
+            post: "/api/auth/changePassword"
+            body: "*"
+        };
+    }
+
+    rpc ConfirmEmailLogin(ConfirmEmailLoginRequest) returns(ConfirmEmailLoginResponse) {  // auth
+        option (google.api.http) = {
+            get: "/api/auth/confirm-email-login/{token}"
+        };
+    }
+    rpc ActivateAccount(ActivationRequest) returns(ActivationResponse) {  // auth
+        option (google.api.http) = {
+            get: "/api/auth/activateAccount/{jwt}" 
+        };
+    }
+
+    rpc SendRecoveryCode(SendRecoveryCodeRequest) returns (SendRecoveryCodeResponse) {
+        option (google.api.http) = {
+            put: "/api/auth/sendCode"
+            body: "*"
+        };
+    }
+
+    rpc VerifyRecoveryCode(VerifyRecoveryCodeRequest) returns (Response) {
+        option (google.api.http) = {
+            post: "/api/auth/verifyCode"
+            body: "*"
+        };
+    }
+
+    rpc ResetForgottenPassword(ResetForgottenPasswordRequest) returns (Response) { // forgotten password
+        option (google.api.http) = {
+            put: "/api/auth/resetPassword"
+            body: "*"
+        };
+    }
+
+    rpc GetAllPermissionsByRole(Empty) returns (Response) { 
+        option (google.api.http) = {
+            get: "/api/auth/getAllPermissionsByRole"
+        };
+    }
+
+    rpc AdminsEndpoint(Empty) returns (Response) {  // auth
+        option (google.api.http) = {
+            get: "/api/auth/adminsEndpoint"
+        };
+    }
+}
+
+message ChangePasswordRequest {
+    string oldPassword = 1;
+    string newPassword = 2;
+    string newReenteredPassword = 3;
+}
+
+message ChangePasswordResponse {
+    string message = 1;
+    string statusCode = 2;
 }
 
 message UpdateUsernameRequest {
     string username = 1;
 }
-
 
 message UpdateUsernameResponse {
     string statusCode = 1;
@@ -58,7 +126,9 @@ message Auth {
     string id = 1;
     string username = 2;
     string password = 3;
-    string role = 4;
+    repeated Role roles = 4;
+    string verificationCode = 5;
+    int64 expirationTime = 6;
 }
 
 message RegisterRequest {
@@ -75,11 +145,12 @@ message RegisterRequest {
     string username = 7;
     string biography = 8;
     string password = 9;
-    bool isPublic = 10;
-    repeated Education education = 11;
-    repeated Experience experience = 12;
-    repeated Skill skills = 13;
-    repeated Interest interests = 14;
+    //bool isPublic = 10;
+    repeated Education education = 10;
+    repeated Experience experience = 11;
+    repeated Skill skills = 12;
+    repeated Interest interests = 13;
+    repeated string role = 14;
 }
 
 message Education{
@@ -105,7 +176,6 @@ message Experience{
     string place=4;
     google.protobuf.Timestamp startDate =5;
     google.protobuf.Timestamp endDate=6;
-
 }
 
 message Skill{
@@ -120,7 +190,16 @@ message Interest{
 }
 
 message RegisterResponse {
-    string token = 1;
+    string statusCode = 1;
+    string message = 2;
+}
+
+message PasswordlessLoginRequest{
+    string email = 1;
+}
+
+message PasswordlessLoginResponse{
+    string success = 1;
 }
   
 message LoginRequest {
@@ -130,4 +209,56 @@ message LoginRequest {
   
 message LoginResponse {
     string token = 1;
+}
+
+message ConfirmEmailLoginRequest{
+    string token = 1;
+}
+
+message ConfirmEmailLoginResponse{
+    string token = 1;
+}
+
+message ActivationRequest {
+    string jwt = 1;
+}
+
+message ActivationResponse { 
+    string token = 1;
+}
+
+message SendRecoveryCodeRequest {
+    string email = 1;
+}
+
+message SendRecoveryCodeResponse {
+    string idAuth = 1;
+}
+
+message VerifyRecoveryCodeRequest {
+    string idAuth = 1;
+    string verificationCode = 2;
+    string email = 3;
+}
+
+message Response {
+    string statusCode = 1;
+    string message = 2;
+}
+
+message ResetForgottenPasswordRequest {
+    string idAuth = 1;
+    string password = 2;
+    string reenteredPassword = 3;
+}
+
+message Role {
+    uint32 ID = 1;
+    string Name = 2;
+    repeated Permission Permissions = 3;
+}
+
+message Permission {
+    uint32 ID = 1;
+    string Name = 2;
 }

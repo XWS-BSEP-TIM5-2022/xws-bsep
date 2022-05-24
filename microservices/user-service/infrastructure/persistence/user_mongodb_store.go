@@ -5,17 +5,19 @@ import (
 	_ "context"
 	"errors"
 	_ "errors"
-
-	"strings"
-
+	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
+	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 	_ "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	_ "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"strings"
 )
+
+var validate *validator.Validate
 
 const (
 	DATABASE   = "user"
@@ -27,6 +29,8 @@ type UserMongoDBStore struct {
 }
 
 func NewUserMongoDBStore(client *mongo.Client) domain.UserStore {
+	validate = validator.New()
+
 	users := client.Database(DATABASE).Collection(COLLECTION)
 	return &UserMongoDBStore{
 		users: users,
@@ -63,6 +67,29 @@ func (store *UserMongoDBStore) Insert(user *domain.User) (*domain.User, error) {
 	if checkEmail != nil {
 		return nil, errors.New("email already exists")
 	}
+	fmt.Printf("var1 = %T\n", user.IsPublic)
+
+	err := validate.Struct(user)
+	if err != nil {
+		// this check is only needed when your code could produce
+		// an invalid value for validation such as interface with nil
+		// value most including myself do not usually have code like this.
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		for _, err := range err.(validator.ValidationErrors) {
+			fmt.Println("---------------- pocetak greske ----------------")
+			fmt.Println(err.Field())
+			fmt.Println(err.Tag())
+			fmt.Println(err.Type())
+			fmt.Println(err.Value())
+			fmt.Println(err.Param())
+			fmt.Println("---------------- kraj greske ----------------")
+		}
+		return nil, err
+	}
 
 	result, err := store.users.InsertOne(context.TODO(), user)
 	if err != nil {
@@ -73,12 +100,12 @@ func (store *UserMongoDBStore) Insert(user *domain.User) (*domain.User, error) {
 }
 
 func (store *UserMongoDBStore) GetAll() ([]*domain.User, error) {
-	filter := bson.D{{}}
+	filter := bson.D{{"is_active", true}}
 	return store.filter(filter)
 }
 
 func (store *UserMongoDBStore) GetAllPublic() ([]*domain.User, error) {
-	filter := bson.D{{"is_public", true}}
+	filter := bson.D{{"is_public", true}, {"is_active", true}, {"role", "User"}}
 	return store.filter(filter)
 }
 
@@ -97,18 +124,16 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 		"gender":        user.Gender,
 		"birthday":      user.Birthday,
 		"email":         user.Email,
-		"biography":     user.Biography, 
-		// "username":      user.Username, 
-		// "password":      user.Password,
-		"is_public":  user.IsPublic,
-		"education":  user.Education,
-		"experience": user.Experience,
-		"skills":     user.Skills,
-		"interests":  user.Interests,
+		"biography":     user.Biography,
+		"is_public":     user.IsPublic,
+		"education":     user.Education,
+		"experience":    user.Experience,
+		"skills":        user.Skills,
+		"interests":     user.Interests,
 	}}
 
-	oldUser, _ := store.filterOne(oldData) 
-  
+	oldUser, _ := store.filterOne(oldData)
+
 	// if oldUser != nil && user.Username != "" && user.Username != oldUser.Username {
 
 	// 	checkUsername, _ := store.GetByUsername(user.Username)
@@ -116,7 +141,7 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 	// 	if checkUsername != nil {
 	// 		return "username already exists", errors.New("username already exists")
 	// 	}
-	// } 
+	// }
 
 	if oldUser != nil && user.Email != "" && user.Email != oldUser.Email {
 
@@ -157,13 +182,13 @@ func (store *UserMongoDBStore) Search(criteria string) ([]*domain.User, error) {
 	for _, word := range words {
 
 		for _, user := range users {
+			if user.IsActive {
+				name := strings.ToLower(user.Name)
+				lastName := strings.ToLower(user.LastName)
 
-			name := strings.ToLower(user.Name)
-			lastName := strings.ToLower(user.LastName)
-			// username := strings.ToLower(user.Username)
-
-			if strings.Contains(name, word) || strings.Contains(lastName, word) /*|| strings.Contains(username, word)*/ {
-				ret = append(ret, user)
+				if strings.Contains(name, word) || strings.Contains(lastName, word) {
+					ret = append(ret, user)
+				}
 			}
 		}
 	}
@@ -208,7 +233,11 @@ func (store *UserMongoDBStore) GetById(hexId string) (*domain.User, error) {
 	}
 
 	filter := bson.M{"_id": id}
-	return store.filterOne(filter)
+	user, err := store.filterOne(filter)
+	if !user.IsActive {
+		return nil, errors.New("User is not actived")
+	}
+	return user, nil
 }
 
 func hexIdToId(hexId string) (primitive.ObjectID, error) {
@@ -227,8 +256,7 @@ func (store *UserMongoDBStore) UpdateBasicInfo(user *domain.User) (string, error
 		"birthday":      user.Birthday,
 		"email":         user.Email,
 		"biography":     user.Biography,
-		// "password":      user.Password,
-		"is_public": user.IsPublic,
+		"is_public":     user.IsPublic,
 	}}
 
 	oldUser, _ := store.filterOne(oldData)
@@ -298,4 +326,35 @@ func (store *UserMongoDBStore) UpdateSkillsAndInterests(user *domain.User) (stri
 	}
 	return "success", nil
 
+}
+
+func (store *UserMongoDBStore) UpdateIsActiveById(userId string) error {
+	objID, err := primitive.ObjectIDFromHex(userId)
+	if err != nil {
+		panic(err)
+	}
+
+	oldData := bson.M{"_id": objID}
+	newData := bson.M{"$set": bson.M{
+		"is_active": true,
+	}}
+
+	opts := options.Update().SetUpsert(true)
+	result, err := store.users.UpdateOne(context.TODO(), oldData, newData, opts)
+	if err != nil || result.ModifiedCount == 0 {
+		return err
+	}
+	return nil
+}
+
+func (store *UserMongoDBStore) GetIdByEmail(email string) (string, error) {
+	filter := bson.M{"email": email}
+	user, err := store.filterOne(filter)
+	if err != nil {
+		return "", err
+	}
+	if !user.IsActive {
+		return "", errors.New("User is not actived")
+	}
+	return user.Id.Hex(), nil
 }

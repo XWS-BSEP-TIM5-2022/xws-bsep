@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
@@ -17,6 +18,15 @@ func NewAuthPostgresStore(db *gorm.DB) (*AuthPostgresStore, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = db.AutoMigrate(&domain.Permission{})
+	if err != nil {
+		return nil, err
+	}
+	err = db.AutoMigrate(&domain.Role{})
+	if err != nil {
+		return nil, err
+	}
+
 	return &AuthPostgresStore{
 		db: db,
 	}, nil
@@ -29,13 +39,14 @@ func (store *AuthPostgresStore) Create(auth *domain.Authentication) (*domain.Aut
 
 func (store *AuthPostgresStore) FindByUsername(username string) (*domain.Authentication, error) {
 	var auth domain.Authentication
-	err := store.db.First(&auth, "username = ?", username)
+	err := store.db.Preload("Roles").First(&auth, "username = ?", username)
+	fmt.Println(auth.Roles)
 	return &auth, err.Error
 }
 
 func (store *AuthPostgresStore) FindAll() (*[]domain.Authentication, error) {
 	var auths []domain.Authentication
-	result := store.db.Find(&auths)
+	result := store.db.Preload("Roles").Find(&auths)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -43,8 +54,14 @@ func (store *AuthPostgresStore) FindAll() (*[]domain.Authentication, error) {
 }
 
 func (store *AuthPostgresStore) DeleteAll() {
+	store.db.Exec("DELETE FROM role_permissions CASCADE")
+	store.db.Exec("DELETE FROM auth_roles CASCADE")
 	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
 		Delete(&domain.Authentication{})
+	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
+		Delete(&domain.Role{})
+	store.db.Session(&gorm.Session{AllowGlobalUpdate: true}).
+		Delete(&domain.Permission{})
 }
 
 func (store *AuthPostgresStore) Insert(auth *domain.Authentication) error {
@@ -77,4 +94,97 @@ func updateUsernameById(tx *gorm.DB, auth *domain.Authentication, username strin
 		return errors.New("update error")
 	}
 	return nil
+}
+
+func (store *AuthPostgresStore) FindById(id string) (*domain.Authentication, error) {
+	var auth domain.Authentication
+	err := store.db.Preload("Roles").First(&auth, "id = ?", id)
+	return &auth, err.Error
+}
+
+func (store *AuthPostgresStore) UpdatePassword(id, password string) error {
+	var auth domain.Authentication
+	err := store.db.First(&auth, "id = ?", id)
+	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("Password", password)
+	if err != nil {
+		return err.Error
+	}
+	return nil
+}
+
+func (store *AuthPostgresStore) UpdateVerifactionCode(id, code string) error {
+	var auth domain.Authentication
+	err := store.db.First(&auth, "id = ?", id)
+	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("VerificationCode", code)
+	if err != nil {
+		return err.Error
+	}
+	return nil
+}
+
+func (store *AuthPostgresStore) UpdateExpirationTime(id string, expTime int64) error {
+	var auth domain.Authentication
+	err := store.db.First(&auth, "id = ?", id)
+	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("ExpirationTime", expTime)
+	if err != nil {
+		return err.Error
+	}
+	return nil
+}
+
+func (store *AuthPostgresStore) FindAllRolesAndPermissions() (*[]domain.Role, error) {
+	var roles []domain.Role
+	result := store.db.Preload("Permissions").Find(&roles)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &roles, nil
+}
+
+func (store *AuthPostgresStore) InsertRole(role *domain.Role) error {
+	result := store.db.Create(role)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (store *AuthPostgresStore) GetAllPermissionsByRole(roleName string) (*[]domain.Permission, error) {
+	var permissions []domain.Permission
+	roles, err := store.FindAllRolesAndPermissions()
+	if err != nil {
+		return nil, err
+	}
+	for _, role := range *roles {
+		if role.Name == roleName {
+			for _, permission := range role.Permissions {
+				permissions = append(permissions, *permission)
+			}
+		}
+	}
+	return &permissions, nil
+}
+
+func (store *AuthPostgresStore) FindRoleByName(name string) (*[]domain.Role, error) {
+	var roles []domain.Role
+	rolesWithPermissions, err := store.FindAllRolesAndPermissions()
+	for _, role := range *rolesWithPermissions {
+		if role.Name == name {
+			roles = append(roles, role)
+		}
+	}
+	return &roles, err
+}
+
+func (store *AuthPostgresStore) IsUsernameUnique(username string) (bool, error) {
+	auths, err := store.FindAll()
+	if err != nil || auths == nil {
+		return false, nil
+	}
+	for _, authCredentials := range *auths {
+		if authCredentials.Username == username {
+			return false, errors.New("Username is not unique")
+		}
+	}
+	return true, nil
 }

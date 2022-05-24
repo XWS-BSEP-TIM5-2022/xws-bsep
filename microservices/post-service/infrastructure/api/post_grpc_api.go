@@ -7,6 +7,7 @@ import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"strings"
 )
 
 // implementacije gRPC servera koji smo definisali u okviru common paketa
@@ -56,10 +57,6 @@ func (handler *PostHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 
 func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetRequest) (*pb.GetAllResponse, error) {
 	id := request.Id
-	//objectId, err := primitive.ObjectIDFromHex(id)
-	//if err != nil {
-	//	return nil, err
-	//}
 	posts, err := handler.service.GetAllByUser(id)
 	if err != nil {
 		return nil, err
@@ -75,17 +72,11 @@ func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetReq
 }
 
 func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
-	//if request.Post.UserId == "" { // mora postojati user koji je kreirao post
-	//	return &pb.InsertResponse{
-	//		Success: "error",
-	//	}, error(nil)
-	//}		// vrati status 200 ok, ali success: error
-
-	if request.Post.UserId == "" { // mora postojati user koji je kreirao post
-		return nil, error(nil) // vrati status 500
+	post, err := mapInsertPost(request.InsertPost)
+	if err != nil {
+		return nil, err
 	}
 
-	post := mapInsertPost(request.Post)
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	post.UserId = userId
 	success, err := handler.service.Insert(post)
@@ -93,24 +84,6 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 		return nil, err
 	}
 	response := &pb.InsertResponse{
-		Success: success,
-	}
-	return response, err
-}
-
-func (handler *PostHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-	id, _ := primitive.ObjectIDFromHex(request.Post.Id)
-
-	oldPost, err := handler.service.Get(id)
-	if err != nil {
-		return &pb.UpdateResponse{
-			Success: "error",
-		}, err
-	}
-
-	post := mapUpdatePost(mapPost(oldPost), request.Post)
-	success, err := handler.service.Update(post)
-	response := &pb.UpdateResponse{
 		Success: success,
 	}
 	return response, err
@@ -127,8 +100,6 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 	}
 
 	postHelper, err := handler.service.Get(objectId)
-
-	//userId := request.UserId
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
 	// provera - da li je korisnik vec lajkovao post
@@ -161,7 +132,6 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 	}
 
 	success, err := handler.service.LikePost(post, userId)
-
 	if err != nil {
 		return nil, err
 	}
@@ -182,8 +152,6 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 	}
 
 	postHelper, err := handler.service.Get(objectId)
-
-	//userId := request.UserId
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
 	// provera - da li je korisnik vec dislajkovao post
@@ -216,7 +184,6 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 	}
 
 	success, err := handler.service.DislikePost(post, userId)
-
 	if err != nil {
 		return nil, err
 	}
@@ -236,11 +203,8 @@ func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertC
 		}, err
 	}
 
-	//userId := request.UserId
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-
-	success, err := handler.service.CommentPost(post, userId, request.Text)
-
+	success, err := handler.service.CommentPost(post, userId, strings.TrimSpace(request.Text)) // Trim - function to remove leading and trailing whitespace
 	if err != nil {
 		return nil, err
 	}
@@ -261,7 +225,6 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 	}
 
 	postHelper, err := handler.service.Get(objectId)
-
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
 	flagDisliked := false
@@ -303,7 +266,6 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 	}
 
 	success, err := handler.service.Update(post)
-
 	if err != nil {
 		return nil, err
 	}

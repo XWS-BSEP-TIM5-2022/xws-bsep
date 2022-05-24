@@ -73,9 +73,6 @@ message AddBlockUserRequest{
   UserAction addBlockUserDTO = 1;
 }
 
-
-
-
 message ActionResult{
   string msg = 2;
 }

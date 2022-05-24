@@ -35,12 +35,11 @@ const (
 func (server *Server) Start() {
 	postgresClient := server.initPostgresClient()
 	authStore := server.initAuthStore(postgresClient)
-	// kreiranje jwt servisa
+
 	jwtServiceClient, err := server.initJWTManager(server.config.PrivateKey, server.config.PublicKey)
 	if err != nil {
 		log.Fatal(err)
 	}
-	// kreiranje user servisa
 	userServiceClient := server.initUserServiceClient()
 
 	authService := server.initAuthService(authStore, userServiceClient, jwtServiceClient)
@@ -68,6 +67,12 @@ func (server *Server) initAuthStore(client *gorm.DB) *persistence.AuthPostgresSt
 	store.DeleteAll()
 	for _, Auth := range auths {
 		err := store.Insert(Auth)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	for _, Role := range roles {
+		err := store.InsertRole(Role)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -103,7 +108,8 @@ func (server *Server) startGrpcServer(authHandler *api.AuthHandler) {
 		log.Fatalf("failed to parse public key: %v", err)
 	}
 
-	interceptor := interceptor.NewAuthInterceptor(config.AccessibleRoles(), publicKey)
+	// interceptor := interceptor.NewAuthInterceptor(config.AccessibleRoles(), publicKey)
+	interceptor := interceptor.NewAuthInterceptor(config.AccessiblePermissions(), publicKey)
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(interceptor.Unary()))
 	auth_service_proto.RegisterAuthServiceServer(grpcServer, authHandler)
 	if err := grpcServer.Serve(listener); err != nil {

@@ -2,7 +2,8 @@ package api
 
 import (
 	"context"
-	"log"
+	"errors"
+	"fmt"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -125,10 +126,7 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	return response, nil
 }
 
-// user/info
 func (handler *UserHandler) GetLoggedInUserInfo(ctx context.Context, request *pb.GetAllRequest) (*pb.User, error) {
-	log.Println(" ------------------- CONTEXT VALUE - USER ID: %w ------------------- ", ctx.Value(interceptor.LoggedInUserKey{}))
-	// izvlacenje id usera iz context-a
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	user, err := handler.service.GetById(userId)
 	if err != nil {
@@ -208,4 +206,58 @@ func (handler *UserHandler) UpdateSkillsAndInterests(ctx context.Context, reques
 		Success: success,
 	}
 	return response, err
+}
+
+func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest) (*pb.GetEmailResponse, error) {
+	id := request.Id
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	user, err := handler.service.Get(objectId)
+	if err != nil {
+		return nil, err
+	}
+
+	if !user.IsActive {
+		return nil, errors.New("Account is not activated")
+	}
+	
+	response := &pb.GetEmailResponse{
+		Email: user.Email,
+	}
+	return response, nil
+}
+func (handler *UserHandler) UpdateIsActiveById(ctx context.Context, request *pb.ActivateAccountRequest) (*pb.ActivateAccountResponse, error) {
+	err := handler.service.UpdateIsActiveById(request.Id)
+	if err != nil {
+		return &pb.ActivateAccountResponse{
+			Success: err.Error(),
+		}, err
+	}
+	return &pb.ActivateAccountResponse{
+		Success: "Success",
+	}, nil
+}
+
+func (handler *UserHandler) GetIsActive(ctx context.Context, request *pb.GetRequest) (*pb.IsActiveResponse, error) {
+	fmt.Println(request.Id)
+	user, err := handler.service.GetById(request.Id)
+	if err != nil {
+		fmt.Println("* error :", err)
+		return nil, err
+	}
+	return &pb.IsActiveResponse{
+		IsActive: user.IsActive,
+	}, nil
+}
+
+func (handler *UserHandler) GetIdByEmail(ctx context.Context, request *pb.GetIdByEmailRequest) (*pb.InsertResponse, error) {
+	userId, err := handler.service.GetIdByEmail(request.Email)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InsertResponse{
+		Id: userId,
+	}, nil
 }

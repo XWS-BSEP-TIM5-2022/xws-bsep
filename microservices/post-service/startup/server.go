@@ -2,6 +2,9 @@ package startup
 
 import (
 	"fmt"
+	"log"
+	"net"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
@@ -12,8 +15,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
-	"log"
-	"net"
 )
 
 type Server struct {
@@ -73,7 +74,7 @@ func (server *Server) startGrpcServer(postHandler *api.PostHandler) {
 		log.Fatalf("failed to parse public key: %v", err)
 	}
 
-	interceptor := interceptor.NewAuthInterceptor(config.AccessibleRoles(), publicKey)
+	interceptor := interceptor.NewAuthInterceptor(config.AccessiblePermissions(), publicKey)
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(interceptor.Unary()))
 	post.RegisterPostServiceServer(grpcServer, postHandler)
 	if err := grpcServer.Serve(listener); err != nil {
