@@ -6,16 +6,15 @@ import (
 	"errors"
 	_ "errors"
 	"fmt"
-	"github.com/go-playground/validator/v10"
-	"strings"
-
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
+	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 	_ "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	_ "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"strings"
 )
 
 var validate *validator.Validate
