@@ -8,6 +8,7 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/services"
 	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
+	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"html"
 	"net/http"
@@ -16,12 +17,14 @@ import (
 type PostHandler struct {
 	postClientAddress       string
 	connectionClientAddress string
+	userClientAddress       string
 }
 
-func NewPostHandler(postClientAddress, connectionClientAddress string) Handler {
+func NewPostHandler(postClientAddress, connectionClientAddress, userClientAddress string) Handler {
 	return &PostHandler{
 		postClientAddress:       postClientAddress,
 		connectionClientAddress: connectionClientAddress,
+		userClientAddress:       userClientAddress,
 	}
 }
 
@@ -29,6 +32,11 @@ func (handler *PostHandler) Init(mux *runtime.ServeMux) {
 	fmt.Println("Hello from api gateway")
 
 	err := mux.HandlePath("GET", "/api/feed/{userID}", handler.GetPosts) // prikaz postova od strane zapracenog profila
+	if err != nil {
+		panic(err)
+	}
+
+	err = mux.HandlePath("GET", "/api/feed/public", handler.GetPublicPosts)
 	if err != nil {
 		panic(err)
 	}
@@ -77,6 +85,72 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 	}
 	w.Header().Set("Content-Type", "application/json")
 	//w.Header().Set("Authorization", "Bearer " )	// TODO
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
+}
+
+func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	postClient := services.NewPostClient(handler.postClientAddress)
+	posts, err := postClient.GetAll(context.TODO(), &post.GetAllRequest{})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(err)
+		return
+	}
+	allPosts := &domain.Posts{}
+
+	for _, post := range posts.Posts {
+		isPublic, err := handler.isUserPublic(post.UserId)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Println(err)
+			return
+		}
+
+		if isPublic {
+			newPost := domain.Post{
+				Id:          post.Id,
+				Text:        post.Text,
+				Images:      post.Images,
+				Links:       post.Links,
+				DateCreated: post.DateCreated.AsTime(),
+				UserId:      post.UserId,
+			}
+
+			for _, like := range post.Likes {
+				newLike := domain.Like{
+					Id:     like.Id,
+					UserId: like.UserId,
+				}
+				newPost.Likes = append(newPost.Likes, newLike)
+			}
+
+			for _, dislike := range post.Dislikes {
+				newDislike := domain.Dislike{
+					Id:     dislike.Id,
+					UserId: dislike.UserId,
+				}
+				newPost.Dislikes = append(newPost.Dislikes, newDislike)
+			}
+
+			for _, comment := range post.Comments {
+				newComment := domain.Comment{
+					Id:     comment.Id,
+					UserId: comment.UserId,
+					Text:   comment.Text,
+				}
+				newPost.Comments = append(newPost.Comments, newComment)
+			}
+			allPosts.AllPosts = append(allPosts.AllPosts, newPost)
+		}
+	}
+
+	response, err := json.Marshal(allPosts)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
@@ -146,4 +220,20 @@ func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) e
 		}
 	}
 	return nil
+}
+
+func (handler *PostHandler) isUserPublic(id string) (bool, error) {
+	userClient := services.NewUserClient(handler.userClientAddress)
+	users, err := userClient.GetAllPublic(context.TODO(), &user.GetAllPublicRequest{})
+	if err != nil {
+		fmt.Println("isUserPublic vratilo gresku")
+		return false, err
+	}
+
+	for _, user := range users.Users {
+		if user.Id == id {
+			return true, nil
+		}
+	}
+	return false, nil
 }
