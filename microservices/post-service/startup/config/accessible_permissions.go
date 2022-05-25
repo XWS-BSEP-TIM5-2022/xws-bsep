@@ -5,7 +5,7 @@ func AccessiblePermissions() map[string]string {
 
 	return map[string]string{
 		postService + "Get": "GetPostById",
-		//postService + "GetAll":      "GetAllPosts",
+		//postService + "GetAll":      "GetAllPosts",	// TODO: TM
 		postService + "Update":      "UpdatePost",
 		postService + "Insert":      "CreatePost",
 		postService + "LikePost":    "UpdatePostLikes",

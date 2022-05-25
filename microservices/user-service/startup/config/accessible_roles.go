@@ -5,7 +5,7 @@ func AccessibleRoles() map[string][]string {
 	const userService = "/user_service.UserService/"
 
 	return map[string][]string{
-		//userService + "Get":                          {"User"},
+		//userService + "Get":                          {"User"},	// TODO: TM
 		userService + "GetAll":                       {"User"},
 		userService + "Update":                       {"User"},
 		userService + "UpdateBasicInfo":              {"User"},
