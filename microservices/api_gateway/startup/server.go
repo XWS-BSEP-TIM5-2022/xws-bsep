@@ -77,7 +77,8 @@ func (server *Server) initHandlers() {
 func (server *Server) initCustomHandlers() {
 	postEmdpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	connectionEmdpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
-	postsHandler := api.NewPostHandler(postEmdpoint, connectionEmdpoint)
+	userEmdpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	postsHandler := api.NewPostHandler(postEmdpoint, connectionEmdpoint, userEmdpoint)
 	postsHandler.Init(server.mux)
 }
 
