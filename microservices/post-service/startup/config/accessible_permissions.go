@@ -4,7 +4,7 @@ func AccessiblePermissions() map[string]string {
 	const postService = "/post_service.PostService/"
 
 	return map[string]string{
-		postService + "Get": "GetPostById",
+		//postService + "Get": "GetPostById",			// TODO: TM
 		//postService + "GetAll":      "GetAllPosts",	// TODO: TM
 		postService + "Update":      "UpdatePost",
 		postService + "Insert":      "CreatePost",
