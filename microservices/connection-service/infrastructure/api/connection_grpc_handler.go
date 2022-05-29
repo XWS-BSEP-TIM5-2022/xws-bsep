@@ -38,6 +38,25 @@ func (handler *ConnectionHandler) GetConnections(ctx context.Context, request *p
 	return response, nil
 }
 
+func (handler *ConnectionHandler) GetRequests(ctx context.Context, request *pb.GetRequest) (*pb.Users, error) {
+
+	fmt.Println("GetRequests")
+
+	id := request.UserID
+	//prosledili smo registrovanog korisnika
+	//id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	friends, err := handler.service.GetRequests(id)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.Users{}
+	for _, user := range friends {
+		fmt.Println("User", id, "has reqiests by", user.UserID)
+		response.Users = append(response.Users, mapUserConn(user))
+	}
+	return response, nil
+}
+
 func (handler *ConnectionHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.ActionResult, error) {
 	fmt.Println("Register")
 	userID := request.User.UserID
@@ -45,7 +64,7 @@ func (handler *ConnectionHandler) Register(ctx context.Context, request *pb.Regi
 	return handler.service.Register(userID, isPublic)
 }
 
-func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb.AddConnectionRequest) (*pb.ActionResult, error) {
+func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb.AddConnectionRequest) (*pb.AddConnectionResult, error) {
 	fmt.Println("AddConnection")
 
 	//prosledili smo registrovanog korisnika
@@ -71,7 +90,7 @@ func (handler *ConnectionHandler) RejectConnection(ctx context.Context, request 
 	return handler.service.RejectConnection(userIDa, userIDb)
 }
 
-func (handler *ConnectionHandler) CheckConnection(ctx context.Context, request *pb.CheckConnectionRequest) (*pb.ActionResult, error) {
+func (handler *ConnectionHandler) CheckConnection(ctx context.Context, request *pb.CheckConnectionRequest) (*pb.ConnectedResult, error) {
 	fmt.Println("CheckConnection")
 	//prosledili smo registrovanog korisnika
 	userIDa := request.UserID

@@ -15,6 +15,12 @@ service ConnectionService{
       get: "/connection/user/{userID}/friends"
     };
   }
+
+  rpc GetRequests(GetRequest) returns(Users) {
+    option (google.api.http) = {
+      get: "/connection/user/{userID}/requests"
+    };
+  }
 //
 //  rpc GetBlockeds(GetRequest) returns(Users) {
 //    option (google.api.http) = {
@@ -29,7 +35,7 @@ service ConnectionService{
     };
   }
 
-  rpc AddConnection(AddConnectionRequest) returns (ActionResult) {
+  rpc AddConnection(AddConnectionRequest) returns (AddConnectionResult) {
     option (google.api.http) = {
       post: "/connection"
       body:"addConnectionDTO"
@@ -50,7 +56,7 @@ service ConnectionService{
     };
   }
 
-  rpc CheckConnection(CheckConnectionRequest) returns(ActionResult) {
+  rpc CheckConnection(CheckConnectionRequest) returns(ConnectedResult) {
     option (google.api.http) = {
       get: "/connection/user/{userID}/checkConnection/{userIDb}"
     };
@@ -80,6 +86,18 @@ message AddBlockUserRequest{
 
 message ActionResult{
   string msg = 2;
+}
+
+message AddConnectionResult{
+  bool connected = 1;
+  string msg = 2;
+  bool error = 3;
+}
+
+message ConnectedResult{
+  bool connected = 1;
+  bool request = 2;
+
 }
 
 message GetRequest {
