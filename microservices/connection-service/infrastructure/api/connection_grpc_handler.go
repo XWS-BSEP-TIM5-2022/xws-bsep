@@ -70,3 +70,11 @@ func (handler *ConnectionHandler) RejectConnection(ctx context.Context, request 
 	userIDb := request.RejectConnectionDTO.UserID
 	return handler.service.RejectConnection(userIDa, userIDb)
 }
+
+func (handler *ConnectionHandler) CheckConnection(ctx context.Context, request *pb.CheckConnectionRequest) (*pb.ActionResult, error) {
+	fmt.Println("CheckConnection")
+	//prosledili smo registrovanog korisnika
+	userIDa := request.UserID
+	userIDb := request.UserIDb
+	return handler.service.CheckConnection(userIDa, userIDb)
+}
