@@ -9,4 +9,5 @@ type ConnectionStore interface {
 	ApproveConnection(userIDa, userIDb string) (*pb.ActionResult, error)
 	RejectConnection(userIDa, userIDb string) (*pb.ActionResult, error)
 	CheckConnection(userIDa, userIDb string) (*pb.ConnectedResult, error)
+	GetRequests(id string) ([]UserConn, error)
 }

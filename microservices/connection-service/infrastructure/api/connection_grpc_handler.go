@@ -38,6 +38,25 @@ func (handler *ConnectionHandler) GetConnections(ctx context.Context, request *p
 	return response, nil
 }
 
+func (handler *ConnectionHandler) GetRequests(ctx context.Context, request *pb.GetRequest) (*pb.Users, error) {
+
+	fmt.Println("GetRequests")
+
+	id := request.UserID
+	//prosledili smo registrovanog korisnika
+	//id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	friends, err := handler.service.GetRequests(id)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.Users{}
+	for _, user := range friends {
+		fmt.Println("User", id, "has reqiests by", user.UserID)
+		response.Users = append(response.Users, mapUserConn(user))
+	}
+	return response, nil
+}
+
 func (handler *ConnectionHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.ActionResult, error) {
 	fmt.Println("Register")
 	userID := request.User.UserID

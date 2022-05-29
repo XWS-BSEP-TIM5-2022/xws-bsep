@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ConnectionServiceClient interface {
 	GetConnections(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error)
+	GetRequests(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	AddConnection(ctx context.Context, in *AddConnectionRequest, opts ...grpc.CallOption) (*AddConnectionResult, error)
 	RejectConnection(ctx context.Context, in *RejectConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
@@ -41,6 +42,15 @@ func NewConnectionServiceClient(cc grpc.ClientConnInterface) ConnectionServiceCl
 func (c *connectionServiceClient) GetConnections(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error) {
 	out := new(Users)
 	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/GetConnections", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *connectionServiceClient) GetRequests(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error) {
+	out := new(Users)
+	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/GetRequests", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -97,6 +107,7 @@ func (c *connectionServiceClient) CheckConnection(ctx context.Context, in *Check
 // for forward compatibility
 type ConnectionServiceServer interface {
 	GetConnections(context.Context, *GetRequest) (*Users, error)
+	GetRequests(context.Context, *GetRequest) (*Users, error)
 	Register(context.Context, *RegisterRequest) (*ActionResult, error)
 	AddConnection(context.Context, *AddConnectionRequest) (*AddConnectionResult, error)
 	RejectConnection(context.Context, *RejectConnectionRequest) (*ActionResult, error)
@@ -111,6 +122,9 @@ type UnimplementedConnectionServiceServer struct {
 
 func (UnimplementedConnectionServiceServer) GetConnections(context.Context, *GetRequest) (*Users, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetConnections not implemented")
+}
+func (UnimplementedConnectionServiceServer) GetRequests(context.Context, *GetRequest) (*Users, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRequests not implemented")
 }
 func (UnimplementedConnectionServiceServer) Register(context.Context, *RegisterRequest) (*ActionResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
@@ -154,6 +168,24 @@ func _ConnectionService_GetConnections_Handler(srv interface{}, ctx context.Cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ConnectionServiceServer).GetConnections(ctx, req.(*GetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConnectionService_GetRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionServiceServer).GetRequests(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connection_service.ConnectionService/GetRequests",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionServiceServer).GetRequests(ctx, req.(*GetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -258,6 +290,10 @@ var ConnectionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetConnections",
 			Handler:    _ConnectionService_GetConnections_Handler,
+		},
+		{
+			MethodName: "GetRequests",
+			Handler:    _ConnectionService_GetRequests_Handler,
 		},
 		{
 			MethodName: "Register",

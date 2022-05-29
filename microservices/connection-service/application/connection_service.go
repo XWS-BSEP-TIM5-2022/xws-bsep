@@ -29,6 +29,20 @@ func (service *ConnectionService) GetConnections(id string) ([]*domain.UserConn,
 	return friendsRetVal, nil
 }
 
+func (service *ConnectionService) GetRequests(id string) ([]*domain.UserConn, error) {
+
+	var friendsRetVal []*domain.UserConn
+
+	friends, err := service.store.GetRequests(id)
+	if err != nil {
+		return nil, nil
+	}
+	for _, s := range friends {
+		friendsRetVal = append(friendsRetVal, &domain.UserConn{UserID: s.UserID, IsPublic: s.IsPublic})
+	}
+	return friendsRetVal, nil
+}
+
 func (service *ConnectionService) Register(userID string, isPublic bool) (*pb.ActionResult, error) {
 	return service.store.Register(userID, isPublic)
 }

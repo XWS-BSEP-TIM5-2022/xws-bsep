@@ -55,8 +55,46 @@ func (store *ConnectionDBStore) GetConnections(userID string) ([]domain.UserConn
 	defer session.Close()
 
 	friends, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		//result, err := transaction.Run(
+		//	"MATCH (this_user:USER) -[:FRIEND]-> (my_friend:USER) WHERE this_user.userID=$uID RETURN my_friend.userID, my_friend.isPublic",
+		//	map[string]interface{}{"uID": userID})
 		result, err := transaction.Run(
-			"MATCH (this_user:USER) -[:FRIEND]-> (my_friend:USER) WHERE this_user.userID=$uID RETURN my_friend.userID, my_friend.isPublic",
+			"MATCH (this_user:USER) -[:FRIEND]-> (my_friend:USER)"+
+				" WHERE this_user.userID=$uID "+
+				"MATCH (this_user:USER) <-[:FRIEND]- (my_friend:USER)"+
+				" WHERE this_user.userID=$uID "+
+				"RETURN my_friend.userID, my_friend.isPublic",
+			map[string]interface{}{"uID": userID})
+
+		if err != nil {
+			return nil, err
+		}
+
+		var friends []domain.UserConn
+		for result.Next() {
+			friends = append(friends, domain.UserConn{UserID: result.Record().Values[0].(string), IsPublic: result.Record().Values[1].(bool)})
+		}
+		return friends, nil
+
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return friends.([]domain.UserConn), nil
+}
+
+func (store *ConnectionDBStore) GetRequests(userID string) ([]domain.UserConn, error) {
+
+	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	defer session.Close()
+
+	friends, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		result, err := transaction.Run(
+			"MATCH (u1:USER) WHERE u1.userID=$uID"+
+				" MATCH (u2:USER)"+
+				"WHERE NOT (u1)-[:FRIEND]->(u2) AND (u2)-[:FRIEND]->(u1)"+
+				"RETURN u2.userID, u2.isPublic",
 			map[string]interface{}{"uID": userID})
 
 		if err != nil {
