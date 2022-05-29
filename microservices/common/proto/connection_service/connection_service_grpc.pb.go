@@ -27,7 +27,7 @@ type ConnectionServiceClient interface {
 	AddConnection(ctx context.Context, in *AddConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	RejectConnection(ctx context.Context, in *RejectConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	ApproveConnection(ctx context.Context, in *ApproveConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
-	CheckConnection(ctx context.Context, in *CheckConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
+	CheckConnection(ctx context.Context, in *CheckConnectionRequest, opts ...grpc.CallOption) (*ConnectedResult, error)
 }
 
 type connectionServiceClient struct {
@@ -83,8 +83,8 @@ func (c *connectionServiceClient) ApproveConnection(ctx context.Context, in *App
 	return out, nil
 }
 
-func (c *connectionServiceClient) CheckConnection(ctx context.Context, in *CheckConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error) {
-	out := new(ActionResult)
+func (c *connectionServiceClient) CheckConnection(ctx context.Context, in *CheckConnectionRequest, opts ...grpc.CallOption) (*ConnectedResult, error) {
+	out := new(ConnectedResult)
 	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/CheckConnection", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -101,7 +101,7 @@ type ConnectionServiceServer interface {
 	AddConnection(context.Context, *AddConnectionRequest) (*ActionResult, error)
 	RejectConnection(context.Context, *RejectConnectionRequest) (*ActionResult, error)
 	ApproveConnection(context.Context, *ApproveConnectionRequest) (*ActionResult, error)
-	CheckConnection(context.Context, *CheckConnectionRequest) (*ActionResult, error)
+	CheckConnection(context.Context, *CheckConnectionRequest) (*ConnectedResult, error)
 	mustEmbedUnimplementedConnectionServiceServer()
 }
 
@@ -124,7 +124,7 @@ func (UnimplementedConnectionServiceServer) RejectConnection(context.Context, *R
 func (UnimplementedConnectionServiceServer) ApproveConnection(context.Context, *ApproveConnectionRequest) (*ActionResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApproveConnection not implemented")
 }
-func (UnimplementedConnectionServiceServer) CheckConnection(context.Context, *CheckConnectionRequest) (*ActionResult, error) {
+func (UnimplementedConnectionServiceServer) CheckConnection(context.Context, *CheckConnectionRequest) (*ConnectedResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckConnection not implemented")
 }
 func (UnimplementedConnectionServiceServer) mustEmbedUnimplementedConnectionServiceServer() {}

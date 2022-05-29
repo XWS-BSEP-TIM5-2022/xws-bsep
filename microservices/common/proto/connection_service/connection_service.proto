@@ -50,7 +50,7 @@ service ConnectionService{
     };
   }
 
-  rpc CheckConnection(CheckConnectionRequest) returns(ActionResult) {
+  rpc CheckConnection(CheckConnectionRequest) returns(ConnectedResult) {
     option (google.api.http) = {
       get: "/connection/user/{userID}/checkConnection/{userIDb}"
     };
@@ -80,6 +80,16 @@ message AddBlockUserRequest{
 
 message ActionResult{
   string msg = 2;
+}
+
+message AddConnectionResult{
+  bool connected = 1;
+  string msg = 2;
+  bool error = 3;
+}
+
+message ConnectedResult{
+  bool connected = 1;
 }
 
 message GetRequest {

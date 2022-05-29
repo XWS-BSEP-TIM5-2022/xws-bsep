@@ -71,7 +71,7 @@ func (handler *ConnectionHandler) RejectConnection(ctx context.Context, request 
 	return handler.service.RejectConnection(userIDa, userIDb)
 }
 
-func (handler *ConnectionHandler) CheckConnection(ctx context.Context, request *pb.CheckConnectionRequest) (*pb.ActionResult, error) {
+func (handler *ConnectionHandler) CheckConnection(ctx context.Context, request *pb.CheckConnectionRequest) (*pb.ConnectedResult, error) {
 	fmt.Println("CheckConnection")
 	//prosledili smo registrovanog korisnika
 	userIDa := request.UserID

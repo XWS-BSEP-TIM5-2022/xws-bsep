@@ -98,7 +98,7 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 		if !checkIfUserExist(userIDa, transaction) {
 			_, err := transaction.Run(
 				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
-				map[string]interface{}{"userID": userIDa, "isPublic": true}) //ispraviti na isPublic od ulogovanog
+				map[string]interface{}{"userID": userIDa, "isPublic": true}) //TODO:ispraviti na isPublic od ulogovanog
 
 			if err != nil {
 				actionResult.Msg = "Error while creating new user node with ID:" + userIDa
@@ -319,12 +319,15 @@ func (store *ConnectionDBStore) RejectConnection(userIDa, userIDb string) (*pb.A
 
 }
 
-func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
-	actionResult := &pb.ActionResult{Msg: "msg"}
-	actionResult.Msg = "Provjera konekcije"
+func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.ConnectedResult, error) {
+	fmt.Println(userIDa)
+	fmt.Println(userIDb)
+
+	actionResult := &pb.ConnectedResult{}
+	actionResult.Connected = false
 
 	if userIDa == userIDb {
-		return &pb.ActionResult{Msg: "UserIDa is same as userIDb"}, nil
+		return &pb.ConnectedResult{Connected: false}, nil
 	}
 
 	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
@@ -332,27 +335,28 @@ func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.Ac
 
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 
-		actionResult := &pb.ActionResult{Msg: "msg"}
+		actionResult := &pb.ConnectedResult{}
 
 		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
 			if checkIfFriendExist(userIDa, userIDb, transaction) {
-				actionResult.Msg = "User A is friend with user B!"
+				actionResult.Connected = true
 				return actionResult, nil
 			}
 
-			actionResult.Msg = "User A isn't friend with user B!"
+			actionResult.Connected = false
+
 			return actionResult, nil
 
 		} else {
-			actionResult.Msg = "User does not exist"
+			actionResult.Connected = false
 			return actionResult, nil
 		}
 	})
 
 	if result == nil {
-		return &pb.ActionResult{Msg: "error"}, err
+		return &pb.ConnectedResult{Connected: false}, err
 	} else {
-		return result.(*pb.ActionResult), err
+		return result.(*pb.ConnectedResult), err
 	}
 
 }
