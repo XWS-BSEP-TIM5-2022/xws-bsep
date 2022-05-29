@@ -45,7 +45,7 @@ func (handler *ConnectionHandler) Register(ctx context.Context, request *pb.Regi
 	return handler.service.Register(userID, isPublic)
 }
 
-func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb.AddConnectionRequest) (*pb.ActionResult, error) {
+func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb.AddConnectionRequest) (*pb.AddConnectionResult, error) {
 	fmt.Println("AddConnection")
 
 	//prosledili smo registrovanog korisnika

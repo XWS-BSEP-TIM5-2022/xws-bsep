@@ -77,14 +77,14 @@ func (store *ConnectionDBStore) GetConnections(userID string) ([]domain.UserConn
 	return friends.([]domain.UserConn), nil
 }
 
-func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, isPublic bool) (*pb.ActionResult, error) {
+func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, isPublic bool) (*pb.AddConnectionResult, error) {
 	fmt.Println("Adding new connection")
 	fmt.Println(userIDa)
 	fmt.Println(userIDb)
 	fmt.Println(isPublic)
 
 	if userIDa == userIDb {
-		return &pb.ActionResult{Msg: "userIDa is same as userIDb"}, nil
+		return &pb.AddConnectionResult{Msg: "userIDa is same as userIDb", Connected: false, Error: false}, nil
 	}
 
 	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
@@ -92,7 +92,7 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 
-		actionResult := &pb.ActionResult{Msg: "msg"}
+		actionResult := &pb.AddConnectionResult{Msg: "msg", Connected: false, Error: false}
 
 		//ako ne postoji userA, kreira ga
 		if !checkIfUserExist(userIDa, transaction) {
@@ -102,6 +102,8 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 
 			if err != nil {
 				actionResult.Msg = "Error while creating new user node with ID:" + userIDa
+				actionResult.Connected = false
+				actionResult.Error = true
 				return actionResult, err
 			}
 		}
@@ -113,6 +115,8 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 
 			if err != nil {
 				actionResult.Msg = "Error while creating new user node with ID:" + userIDb
+				actionResult.Connected = false
+				actionResult.Error = true
 				return actionResult, err
 			}
 		}
@@ -120,6 +124,8 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
 			if checkIfFriendExist(userIDa, userIDb, transaction) || checkIfFriendExist(userIDb, userIDa, transaction) {
 				actionResult.Msg = "Users are already connected"
+				actionResult.Connected = true
+				actionResult.Error = false
 				return actionResult, nil
 			} else {
 
@@ -135,8 +141,14 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 							"RETURN r1.date, r2.date",
 						map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb, "dateNow": dateNow, "isApproved": true})
 
+					actionResult.Msg = "Successfully created new connection IDa:" + userIDa + " and IDb:" + userIDb
+					actionResult.Connected = true
+					actionResult.Error = false
+
 					if err != nil || result == nil {
 						actionResult.Msg = "Error while creating new connection IDa:" + userIDa + " and IDb:" + userIDb
+						actionResult.Connected = false
+						actionResult.Error = true
 						return actionResult, err
 					}
 				} else {
@@ -149,27 +161,33 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 							"RETURN r1.date",
 						map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb, "dateNow": dateNow, "isApproved": false})
 
+					actionResult.Msg = "Successfully created new request for connection IDa:" + userIDa + " and IDb:" + userIDb
+					actionResult.Connected = false
+					actionResult.Error = false
+
 					if err != nil || result == nil {
 						actionResult.Msg = "Error while creating new connection IDa:" + userIDa + " and IDb:" + userIDb
-						return actionResult, err
+						actionResult.Connected = false
+						actionResult.Error = true
 					}
 				}
 			}
 
 		} else {
-			actionResult.Msg = "User does not exist"
+			actionResult.Msg = "User does not exists"
+			actionResult.Connected = false
+			actionResult.Error = true
+
 			return actionResult, nil
 		}
-
-		actionResult.Msg = "Successfully created new connection IDa:" + userIDa + " and IDb:" + userIDb
 
 		return actionResult, nil
 	})
 
 	if result == nil {
-		return &pb.ActionResult{Msg: "Error"}, err
+		return &pb.AddConnectionResult{Msg: "Error"}, err
 	} else {
-		return result.(*pb.ActionResult), err
+		return result.(*pb.AddConnectionResult), err
 	}
 }
 
@@ -338,12 +356,24 @@ func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.Co
 		actionResult := &pb.ConnectedResult{}
 
 		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
-			if checkIfFriendExist(userIDa, userIDb, transaction) {
+			if checkIfFriendExist(userIDa, userIDb, transaction) && checkIfFriendExist(userIDb, userIDa, transaction) {
 				actionResult.Connected = true
+				actionResult.Request = false
+				return actionResult, nil
+			}
+			if checkIfFriendExist(userIDa, userIDb, transaction) && !checkIfFriendExist(userIDb, userIDa, transaction) {
+				actionResult.Connected = false
+				actionResult.Request = true
+				return actionResult, nil
+			}
+			if checkIfFriendExist(userIDb, userIDa, transaction) && !checkIfFriendExist(userIDa, userIDb, transaction) {
+				actionResult.Connected = false
+				actionResult.Request = true
 				return actionResult, nil
 			}
 
 			actionResult.Connected = false
+			actionResult.Request = false
 
 			return actionResult, nil
 

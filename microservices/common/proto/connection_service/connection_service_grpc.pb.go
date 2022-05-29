@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type ConnectionServiceClient interface {
 	GetConnections(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*ActionResult, error)
-	AddConnection(ctx context.Context, in *AddConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
+	AddConnection(ctx context.Context, in *AddConnectionRequest, opts ...grpc.CallOption) (*AddConnectionResult, error)
 	RejectConnection(ctx context.Context, in *RejectConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	ApproveConnection(ctx context.Context, in *ApproveConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	CheckConnection(ctx context.Context, in *CheckConnectionRequest, opts ...grpc.CallOption) (*ConnectedResult, error)
@@ -56,8 +56,8 @@ func (c *connectionServiceClient) Register(ctx context.Context, in *RegisterRequ
 	return out, nil
 }
 
-func (c *connectionServiceClient) AddConnection(ctx context.Context, in *AddConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error) {
-	out := new(ActionResult)
+func (c *connectionServiceClient) AddConnection(ctx context.Context, in *AddConnectionRequest, opts ...grpc.CallOption) (*AddConnectionResult, error) {
+	out := new(AddConnectionResult)
 	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/AddConnection", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ func (c *connectionServiceClient) CheckConnection(ctx context.Context, in *Check
 type ConnectionServiceServer interface {
 	GetConnections(context.Context, *GetRequest) (*Users, error)
 	Register(context.Context, *RegisterRequest) (*ActionResult, error)
-	AddConnection(context.Context, *AddConnectionRequest) (*ActionResult, error)
+	AddConnection(context.Context, *AddConnectionRequest) (*AddConnectionResult, error)
 	RejectConnection(context.Context, *RejectConnectionRequest) (*ActionResult, error)
 	ApproveConnection(context.Context, *ApproveConnectionRequest) (*ActionResult, error)
 	CheckConnection(context.Context, *CheckConnectionRequest) (*ConnectedResult, error)
@@ -115,7 +115,7 @@ func (UnimplementedConnectionServiceServer) GetConnections(context.Context, *Get
 func (UnimplementedConnectionServiceServer) Register(context.Context, *RegisterRequest) (*ActionResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedConnectionServiceServer) AddConnection(context.Context, *AddConnectionRequest) (*ActionResult, error) {
+func (UnimplementedConnectionServiceServer) AddConnection(context.Context, *AddConnectionRequest) (*AddConnectionResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddConnection not implemented")
 }
 func (UnimplementedConnectionServiceServer) RejectConnection(context.Context, *RejectConnectionRequest) (*ActionResult, error) {

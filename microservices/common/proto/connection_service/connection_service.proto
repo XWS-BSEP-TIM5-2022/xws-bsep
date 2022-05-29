@@ -29,7 +29,7 @@ service ConnectionService{
     };
   }
 
-  rpc AddConnection(AddConnectionRequest) returns (ActionResult) {
+  rpc AddConnection(AddConnectionRequest) returns (AddConnectionResult) {
     option (google.api.http) = {
       post: "/connection"
       body:"addConnectionDTO"
@@ -90,6 +90,8 @@ message AddConnectionResult{
 
 message ConnectedResult{
   bool connected = 1;
+  bool request = 2;
+
 }
 
 message GetRequest {
