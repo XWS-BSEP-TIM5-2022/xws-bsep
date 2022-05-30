@@ -46,5 +46,11 @@ func (manager *APITokenService) GenerateAPIToken(auth *domain.Authentication) (s
 		jwt.SigningMethodRS256,
 		claims,
 	)
-	return token.SignedString(manager.privateKey)
+
+	signed, _ := token.SignedString(manager.privateKey) // potpisivanje (potencijalno nepotrebno)
+	hashedPassword, err := auth.HashPassword(signed)    // hesiranje
+	if err != nil {
+		return "error", err
+	}
+	return hashedPassword, nil
 }
