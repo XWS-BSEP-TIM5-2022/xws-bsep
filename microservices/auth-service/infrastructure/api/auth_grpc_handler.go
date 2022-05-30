@@ -69,3 +69,7 @@ func (handler *AuthHandler) GetAllPermissionsByRole(ctx context.Context, request
 func (handler *AuthHandler) AdminsEndpoint(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
 	return handler.service.AdminsEndpoint(ctx, request)
 }
+
+func (handler *AuthHandler) CreateNewAPIToken(ctx context.Context, request *pb.APITokenRequest) (*pb.NewAPITokenResponse, error) {
+	return handler.service.CreateNewAPIToken(ctx, request)
+}

@@ -188,3 +188,13 @@ func (store *AuthPostgresStore) IsUsernameUnique(username string) (bool, error) 
 	}
 	return true, nil
 }
+
+func (store *AuthPostgresStore) UpdateAPIToken(id, code string) error {
+	var auth domain.Authentication
+	err := store.db.First(&auth, "id = ?", id)
+	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("APIToken", code)
+	if err != nil {
+		return err.Error
+	}
+	return nil
+}

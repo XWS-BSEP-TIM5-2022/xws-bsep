@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.20.1
-// source: common/proto/auth_service/auth_service.proto
+// source: auth_service.proto
 
 package auth
 
@@ -35,6 +35,7 @@ type AuthServiceClient interface {
 	ResetForgottenPassword(ctx context.Context, in *ResetForgottenPasswordRequest, opts ...grpc.CallOption) (*Response, error)
 	GetAllPermissionsByRole(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Response, error)
 	AdminsEndpoint(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Response, error)
+	CreateNewAPIToken(ctx context.Context, in *APITokenRequest, opts ...grpc.CallOption) (*NewAPITokenResponse, error)
 }
 
 type authServiceClient struct {
@@ -162,6 +163,15 @@ func (c *authServiceClient) AdminsEndpoint(ctx context.Context, in *Empty, opts 
 	return out, nil
 }
 
+func (c *authServiceClient) CreateNewAPIToken(ctx context.Context, in *APITokenRequest, opts ...grpc.CallOption) (*NewAPITokenResponse, error) {
+	out := new(NewAPITokenResponse)
+	err := c.cc.Invoke(ctx, "/auth_service.AuthService/CreateNewAPIToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -179,6 +189,7 @@ type AuthServiceServer interface {
 	ResetForgottenPassword(context.Context, *ResetForgottenPasswordRequest) (*Response, error)
 	GetAllPermissionsByRole(context.Context, *Empty) (*Response, error)
 	AdminsEndpoint(context.Context, *Empty) (*Response, error)
+	CreateNewAPIToken(context.Context, *APITokenRequest) (*NewAPITokenResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -224,6 +235,9 @@ func (UnimplementedAuthServiceServer) GetAllPermissionsByRole(context.Context, *
 }
 func (UnimplementedAuthServiceServer) AdminsEndpoint(context.Context, *Empty) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminsEndpoint not implemented")
+}
+func (UnimplementedAuthServiceServer) CreateNewAPIToken(context.Context, *APITokenRequest) (*NewAPITokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNewAPIToken not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -472,6 +486,24 @@ func _AuthService_AdminsEndpoint_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_CreateNewAPIToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(APITokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CreateNewAPIToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth_service.AuthService/CreateNewAPIToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CreateNewAPIToken(ctx, req.(*APITokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -531,7 +563,11 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "AdminsEndpoint",
 			Handler:    _AuthService_AdminsEndpoint_Handler,
 		},
+		{
+			MethodName: "CreateNewAPIToken",
+			Handler:    _AuthService_CreateNewAPIToken_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "common/proto/auth_service/auth_service.proto",
+	Metadata: "auth_service.proto",
 }

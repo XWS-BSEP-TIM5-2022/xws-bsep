@@ -35,6 +35,7 @@ var validate *validator.Validate
 type AuthService struct {
 	store             *persistence.AuthPostgresStore
 	jwtService        *JWTService
+	apiTokenService   *APITokenService
 	userServiceClient user.UserServiceClient
 }
 
@@ -43,11 +44,12 @@ type LoginData struct {
 	password string `validate:"required"`
 }
 
-func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService, userServiceClient user.UserServiceClient) *AuthService {
+func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService, userServiceClient user.UserServiceClient, apiTokenService *APITokenService) *AuthService {
 	return &AuthService{
 		store:             store,
 		jwtService:        jwtService,
 		userServiceClient: userServiceClient,
+		apiTokenService:   apiTokenService,
 	}
 }
 
@@ -225,6 +227,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		MobileNumber: request.MobileNumber,
 		Gender:       user.User_GenderEnum(request.Gender),
 		Birthday:     request.Birthday,
+		Username:     request.Username, // TM
 		Email:        request.Email,
 		Biography:    request.Biography,
 		IsPublic:     false,
@@ -479,6 +482,28 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 		return nil, status.Errorf(codes.Internal, "Could not generate JWT token")
 	}
 	return &pb.LoginResponse{
+		Token: token,
+	}, nil
+}
+
+func (service *AuthService) CreateNewAPIToken(ctx context.Context, request *pb.APITokenRequest) (*pb.NewAPITokenResponse, error) {
+	authCredentials, err := service.store.FindByUsername(request.Username)
+	if err != nil {
+		return nil, err
+	}
+
+	token, err := service.apiTokenService.GenerateAPIToken(authCredentials)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Could not generate API token")
+	}
+
+	updateCodeErr := service.store.UpdateAPIToken(authCredentials.Id, token)
+	if updateCodeErr != nil {
+		fmt.Println("Updating api token error")
+		return nil, updateCodeErr
+	}
+
+	return &pb.NewAPITokenResponse{
 		Token: token,
 	}, nil
 }

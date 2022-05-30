@@ -42,7 +42,12 @@ func (server *Server) Start() {
 	}
 	userServiceClient := server.initUserServiceClient()
 
-	authService := server.initAuthService(authStore, userServiceClient, jwtServiceClient)
+	apiTokenServiceClient, err := server.initApiTokenManager(server.config.PrivateKey, server.config.PublicKey)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	authService := server.initAuthService(authStore, userServiceClient, jwtServiceClient, apiTokenServiceClient)
 	authHandler := server.initAuthHandler(authService)
 
 	server.startGrpcServer(authHandler)
@@ -80,8 +85,8 @@ func (server *Server) initAuthStore(client *gorm.DB) *persistence.AuthPostgresSt
 	return store
 }
 
-func (server *Server) initAuthService(store *persistence.AuthPostgresStore, userServiceClient user.UserServiceClient, jwtService *application.JWTService) *application.AuthService {
-	return application.NewAuthService(store, jwtService, userServiceClient)
+func (server *Server) initAuthService(store *persistence.AuthPostgresStore, userServiceClient user.UserServiceClient, jwtService *application.JWTService, apiTokenService *application.APITokenService) *application.AuthService {
+	return application.NewAuthService(store, jwtService, userServiceClient, apiTokenService)
 }
 
 func (server *Server) initAuthHandler(service *application.AuthService) *api.AuthHandler {
@@ -90,6 +95,9 @@ func (server *Server) initAuthHandler(service *application.AuthService) *api.Aut
 
 func (server *Server) initJWTManager(privateKey, publicKey string) (*application.JWTService, error) {
 	return application.NewJWTManager(privateKey, publicKey)
+}
+func (server *Server) initApiTokenManager(privateKey, publicKey string) (*application.APITokenService, error) {
+	return application.NewAPITokenManager(privateKey, publicKey)
 }
 
 func (server *Server) initUserServiceClient() user.UserServiceClient {

@@ -13,6 +13,7 @@ type Authentication struct {
 	Roles            *[]Role `gorm:"many2many:auth_roles"` //  []*Role - Role             string `gorm:"index:idx_name"`
 	VerificationCode string  `gorm:"index:idx_name"`
 	ExpirationTime   int64   `gorm:"index:idx_name"`
+	APIToken         string  `gorm:"index:idx_name,unique"`
 }
 
 type Role struct {
