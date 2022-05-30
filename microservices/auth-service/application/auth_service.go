@@ -576,20 +576,14 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 		}
 		log.Print(response)
 
-		// TODO: update username in user service
 		currentUser, err := service.userServiceClient.Get(ctx, &user.GetRequest{Id: userId})
 		if err != nil {
 			return nil, err
-		} else {
-			fmt.Println("sve je okej proslo 1")
 		}
 		currentUser.User.Username = request.Username
 		_, err = service.userServiceClient.Update(ctx, &user.UpdateRequest{User: currentUser.User})
 		if err != nil {
-			fmt.Println("greska 1 ")
 			return nil, err
-		} else {
-			fmt.Println("sve je okej proslo 2 ")
 		}
 
 		return &pb.UpdateUsernameResponse{
