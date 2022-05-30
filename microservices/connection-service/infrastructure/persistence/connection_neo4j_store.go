@@ -444,7 +444,32 @@ func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string) (*pb.ActionRe
 		//TODO: ako su prijatelji obrisati veze
 		//TODO: ako ne postoje u bazi, dodati ih
 		//TODO: provjeri ako je vec blokirao useraB
+		//TODO: u zahtjevu slati i isPublic za oba usera
+
 		actionResult := &pb.ActionResult{Msg: "msg"}
+
+		//ako ne postoji userA, kreira ga
+		if !checkIfUserExist(userIDa, transaction) {
+			_, err := transaction.Run(
+				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
+				map[string]interface{}{"userID": userIDa, "isPublic": true}) //TODO:ispraviti na isPublic od ulogovanog
+
+			if err != nil {
+				actionResult.Msg = "Error while creating new user node with ID:" + userIDa
+				return actionResult, err
+			}
+		}
+		//ako ne postoji userB, kreira ga
+		if !checkIfUserExist(userIDb, transaction) {
+			_, err := transaction.Run(
+				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
+				map[string]interface{}{"userID": userIDb, "isPublic": true})
+
+			if err != nil {
+				actionResult.Msg = "Error while creating new user node with ID:" + userIDb
+				return actionResult, err
+			}
+		}
 
 		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
 
