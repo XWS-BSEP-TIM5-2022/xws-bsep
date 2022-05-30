@@ -160,6 +160,11 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 		}
 
 		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
+			if checkIfBlockExist(userIDa, userIDb, transaction) || checkIfBlockExist(userIDb, userIDa, transaction) {
+				actionResult.Msg = "Exists blocked" + userIDb
+				return actionResult, nil
+			}
+
 			if checkIfFriendExist(userIDa, userIDb, transaction) || checkIfFriendExist(userIDb, userIDa, transaction) {
 				actionResult.Msg = "Users are already connected"
 				actionResult.Connected = true
@@ -441,11 +446,11 @@ func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string) (*pb.ActionRe
 	defer session.Close()
 
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
-		//TODO: ako su prijatelji obrisati veze
-		//TODO: ako ne postoje u bazi, dodati ih
-		//TODO: provjeri ako je vec blokirao useraB
+		//TODO: ako su prijatelji obrisati veze - uradjeno?
+		//TODO: ako ne postoje u bazi, dodati ih - uradjeno?
+		//TODO: provjeri ako je vec blokirao useraB - uradjeno?
 		//TODO: u zahtjevu slati i isPublic za oba usera
-
+		//TODO: dodaj kod kreiranja konekcija provjeru da li su jedan drugog blokirali - uradjeno?
 		actionResult := &pb.ActionResult{Msg: "msg"}
 
 		//ako ne postoji userA, kreira ga
@@ -473,7 +478,42 @@ func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string) (*pb.ActionRe
 
 		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
 
-			//prebacuje status zahtjeva na true -> approved
+			//ako je jedan od usera blokirao drugog
+			if checkIfBlockExist(userIDa, userIDb, transaction) || checkIfBlockExist(userIDb, userIDa, transaction) {
+				fmt.Println("BLOCKED!!!!!")
+				actionResult.Msg = "Already blocked" + userIDb
+				return actionResult, nil
+			}
+
+			if checkIfFriendExist(userIDa, userIDb, transaction) {
+				fmt.Println("VEZA 1!!!!!")
+
+				//brise vezu izmedju A i B
+				_, err := transaction.Run(
+					"MATCH (u1:USER{userID:$u2ID})<-[rel:FRIEND]-(u2:USER{userID:$u1ID}) DELETE rel",
+					map[string]interface{}{"u1ID": userIDa, "u2ID": userIDb})
+
+				if err != nil {
+					actionResult.Msg = "Error while deleting relationship between ID:" + userIDa + "and ID" + userIDb
+					return actionResult, err
+				}
+			}
+
+			if checkIfFriendExist(userIDb, userIDa, transaction) {
+				fmt.Println("VEZA 2!!!!!")
+
+				//brise vezu/zahjev izmedju B i A
+				_, err := transaction.Run(
+					"MATCH (u1:USER{userID:$u1ID})<-[rel:FRIEND]-(u2:USER{userID:$u2ID}) DELETE rel",
+					map[string]interface{}{"u1ID": userIDa, "u2ID": userIDb})
+
+				if err != nil {
+					actionResult.Msg = "Error while deleting relationship between ID:" + userIDa + "and ID" + userIDb
+					return actionResult, err
+				}
+			}
+
+			//kreira vezu BLOCK
 			result, err := transaction.Run(
 				"MATCH (u1:USER) WHERE u1.userID=$uIDa "+
 					"MATCH (u2:USER) WHERE u2.userID=$uIDb "+
