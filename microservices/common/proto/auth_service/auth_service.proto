@@ -92,6 +92,12 @@ service AuthService{
             get: "/api/auth/adminsEndpoint"
         };
     }
+
+    rpc CreateNewAPIToken(APITokenRequest) returns (NewAPITokenResponse) {
+        option (google.api.http) = {
+            get: "/api/auth/newApiToken/{username}"
+        };
+    }
 }
 
 message ChangePasswordRequest {
@@ -261,4 +267,12 @@ message Role {
 message Permission {
     uint32 ID = 1;
     string Name = 2;
+}
+
+message APITokenRequest {
+    string username = 1;
+}
+
+message NewAPITokenResponse {
+    string token = 1;
 }
