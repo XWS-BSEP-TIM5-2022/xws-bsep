@@ -8,7 +8,7 @@ type ConnectionStore interface {
 	Register(userID string, isPublic bool) (*pb.ActionResult, error)
 	ApproveConnection(userIDa, userIDb string) (*pb.ActionResult, error)
 	RejectConnection(userIDa, userIDb string) (*pb.ActionResult, error)
-	BlockUser(userIDa, userIDb string) (*pb.ActionResult, error)
+	BlockUser(userIDa, userIDb string, isPublicA, isPublicB bool) (*pb.ActionResult, error)
 	CheckConnection(userIDa, userIDb string) (*pb.ConnectedResult, error)
 	GetRequests(id string) ([]UserConn, error)
 }

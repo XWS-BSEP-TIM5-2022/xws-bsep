@@ -434,7 +434,7 @@ func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.Co
 
 }
 
-func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string) (*pb.ActionResult, error) {
+func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string, isPublicA, isPublicB bool) (*pb.ActionResult, error) {
 	actionResult := &pb.ActionResult{Msg: "msg"}
 	actionResult.Msg = "Blokiranje korisnika"
 
@@ -457,7 +457,7 @@ func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string) (*pb.ActionRe
 		if !checkIfUserExist(userIDa, transaction) {
 			_, err := transaction.Run(
 				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
-				map[string]interface{}{"userID": userIDa, "isPublic": true}) //TODO:ispraviti na isPublic od ulogovanog
+				map[string]interface{}{"userID": userIDa, "isPublic": isPublicA}) //TODO:ispraviti na isPublic od ulogovanog
 
 			if err != nil {
 				actionResult.Msg = "Error while creating new user node with ID:" + userIDa
@@ -468,7 +468,7 @@ func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string) (*pb.ActionRe
 		if !checkIfUserExist(userIDb, transaction) {
 			_, err := transaction.Run(
 				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
-				map[string]interface{}{"userID": userIDb, "isPublic": true})
+				map[string]interface{}{"userID": userIDb, "isPublic": isPublicB})
 
 			if err != nil {
 				actionResult.Msg = "Error while creating new user node with ID:" + userIDb

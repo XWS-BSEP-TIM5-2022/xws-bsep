@@ -84,7 +84,7 @@ message ApproveConnectionRequest{
 }
 
 message BlockUserRequest{
-  UserAction blockUserDTO = 1;
+  BlockAction blockUserDTO = 1;
 }
 
 message RejectConnectionRequest{
@@ -125,6 +125,11 @@ message UserAction{
   string userID = 1;
 }
 
+message BlockAction{
+  string userIDb = 1;
+  bool isPublicA = 2;
+  bool isPublicB = 3;
+}
 
 message AddConnectionAction{
   string userID = 1;
