@@ -118,4 +118,8 @@ var userPermissions = []*domain.Permission{
 		ID:   20,
 		Name: "CheckConnection",
 	},
+	{
+		ID:   21,
+		Name: "BlockUser",
+	},
 }

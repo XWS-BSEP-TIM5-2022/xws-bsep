@@ -59,6 +59,10 @@ func (service *ConnectionService) RejectConnection(userIDa, userIDb string) (*pb
 	return service.store.RejectConnection(userIDa, userIDb)
 }
 
+func (service *ConnectionService) BlockUser(userIDa, userIDb string) (*pb.ActionResult, error) {
+	return service.store.BlockUser(userIDa, userIDb)
+}
+
 func (service *ConnectionService) CheckConnection(userIDa, userIDb string) (*pb.ConnectedResult, error) {
 	return service.store.CheckConnection(userIDa, userIDb)
 }

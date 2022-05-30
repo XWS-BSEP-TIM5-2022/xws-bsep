@@ -428,3 +428,51 @@ func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.Co
 	}
 
 }
+
+func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string) (*pb.ActionResult, error) {
+	actionResult := &pb.ActionResult{Msg: "msg"}
+	actionResult.Msg = "Blokiranje korisnika"
+
+	if userIDa == userIDb {
+		return &pb.ActionResult{Msg: "UserIDa is same as userIDb"}, nil
+	}
+
+	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		//TODO: ako su prijatelji obrisati veze
+		//TODO: ako ne postoje u bazi, dodati ih
+		//TODO: provjeri ako je vec blokirao useraB
+		actionResult := &pb.ActionResult{Msg: "msg"}
+
+		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
+
+			//prebacuje status zahtjeva na true -> approved
+			result, err := transaction.Run(
+				"MATCH (u1:USER) WHERE u1.userID=$uIDa "+
+					"MATCH (u2:USER) WHERE u2.userID=$uIDb "+
+					"CREATE (u1)-[r1:BLOCK]->(u2) "+
+					"RETURN r1", map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb})
+
+			if err != nil && result != nil {
+				actionResult.Msg = "Error while blocking request with ID:" + userIDb
+				return actionResult, err
+			}
+
+		} else {
+			actionResult.Msg = "User does not exist"
+			return actionResult, nil
+		}
+
+		actionResult.Msg = "Successfully blocked IDa:" + userIDa + " and IDb:" + userIDb
+
+		return actionResult, nil
+	})
+
+	if result == nil {
+		return &pb.ActionResult{Msg: "error"}, err
+	} else {
+		return result.(*pb.ActionResult), err
+	}
+}

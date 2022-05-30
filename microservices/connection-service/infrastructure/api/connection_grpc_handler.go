@@ -90,6 +90,14 @@ func (handler *ConnectionHandler) RejectConnection(ctx context.Context, request 
 	return handler.service.RejectConnection(userIDa, userIDb)
 }
 
+func (handler *ConnectionHandler) BlockUser(ctx context.Context, request *pb.BlockUserRequest) (*pb.ActionResult, error) {
+	fmt.Println("BlockUser")
+	//prosledili smo registrovanog korisnika
+	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	userIDb := request.BlockUserDTO.UserID
+	return handler.service.BlockUser(userIDa, userIDb)
+}
+
 func (handler *ConnectionHandler) CheckConnection(ctx context.Context, request *pb.CheckConnectionRequest) (*pb.ConnectedResult, error) {
 	fmt.Println("CheckConnection")
 	//prosledili smo registrovanog korisnika

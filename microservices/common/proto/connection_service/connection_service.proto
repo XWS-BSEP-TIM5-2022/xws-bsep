@@ -56,6 +56,13 @@ service ConnectionService{
     };
   }
 
+  rpc BlockUser(BlockUserRequest) returns (ActionResult) {
+    option (google.api.http) = {
+      post: "/connection/block"
+      body:"blockUserDTO"
+    };
+  }
+
   rpc CheckConnection(CheckConnectionRequest) returns(ConnectedResult) {
     option (google.api.http) = {
       get: "/connection/user/{userID}/checkConnection/{userIDb}"
@@ -74,6 +81,10 @@ message AddConnectionRequest{
 
 message ApproveConnectionRequest{
   UserAction approveConnectionDTO = 1;
+}
+
+message BlockUserRequest{
+  UserAction blockUserDTO = 1;
 }
 
 message RejectConnectionRequest{
