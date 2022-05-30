@@ -66,6 +66,10 @@ var userPermissions = []*domain.Permission{
 		ID:   6,
 		Name: "GetAllUsers",
 	},
+	{
+		ID:   21,
+		Name: "GenerateApiToken",
+	},
 	{ // post service
 		ID:   7,
 		Name: "GetPostById",
