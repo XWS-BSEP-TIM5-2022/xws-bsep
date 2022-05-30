@@ -492,12 +492,12 @@ func (service *AuthService) CreateNewAPIToken(ctx context.Context, request *pb.A
 		return nil, err
 	}
 
-	token, err := service.apiTokenService.GenerateAPIToken(authCredentials)
+	token, hashedToken, err := service.apiTokenService.GenerateAPIToken(authCredentials)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Could not generate API token")
 	}
 
-	updateCodeErr := service.store.UpdateAPIToken(authCredentials.Id, token)
+	updateCodeErr := service.store.UpdateAPIToken(authCredentials.Id, hashedToken)
 	if updateCodeErr != nil {
 		fmt.Println("Updating api token error")
 		return nil, updateCodeErr

@@ -34,7 +34,7 @@ func NewAPITokenManager(privateKey, publicKey string) (*APITokenService, error) 
 	}, nil
 }
 
-func (manager *APITokenService) GenerateAPIToken(auth *domain.Authentication) (string, error) {
+func (manager *APITokenService) GenerateAPIToken(auth *domain.Authentication) (string, string, error) {
 	claims := APITokenClaims{
 		StandardClaims: jwt.StandardClaims{
 			Subject:   auth.Id,
@@ -47,10 +47,10 @@ func (manager *APITokenService) GenerateAPIToken(auth *domain.Authentication) (s
 		claims,
 	)
 
-	signed, _ := token.SignedString(manager.privateKey) // potpisivanje (potencijalno nepotrebno)
-	hashedPassword, err := auth.HashPassword(signed)    // hesiranje
+	signed, _ := token.SignedString(manager.privateKey)
+	hashedPassword, err := auth.HashPassword(signed) // hesiranje
 	if err != nil {
-		return "error", err
+		return "error", "error", err
 	}
-	return hashedPassword, nil
+	return signed, hashedPassword, nil
 }
