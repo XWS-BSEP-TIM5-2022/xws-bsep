@@ -227,6 +227,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		MobileNumber: request.MobileNumber,
 		Gender:       user.User_GenderEnum(request.Gender),
 		Birthday:     request.Birthday,
+		Username:     request.Username, // TM
 		Email:        request.Email,
 		Biography:    request.Biography,
 		IsPublic:     false,

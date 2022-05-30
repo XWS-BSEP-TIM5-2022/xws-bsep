@@ -11,6 +11,7 @@ type User struct {
 	Name         string             `bson:"name" validate:"required"`
 	LastName     string             `bson:"last_name" validate:"required"`
 	MobileNumber string             `bson:"mobile_number"`
+	Username     string             `bson:"username"`
 	Gender       GenderEnum         `bson:"gender"`
 	Birthday     time.Time          `bson:"birthday" validate:"required"`
 	Email        string             `bson:"email" validate:"required"`
