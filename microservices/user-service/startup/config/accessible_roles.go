@@ -6,8 +6,8 @@ func AccessibleRoles() map[string][]string {
 
 	return map[string][]string{
 		//userService + "Get":                          {"User"},	// TODO: TM
-		userService + "GetAll":                       {"User"},
-		userService + "Update":                       {"User"},
+		userService + "GetAll": {"User"},
+		//userService + "Update":                       {"User"},
 		userService + "UpdateBasicInfo":              {"User"},
 		userService + "UpdateExperienceAndEducation": {"User"},
 		userService + "UpdateSkillsAndInterests":     {"User"},

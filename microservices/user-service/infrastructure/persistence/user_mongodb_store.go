@@ -130,18 +130,19 @@ func (store *UserMongoDBStore) Update(user *domain.User) (string, error) {
 		"experience":    user.Experience,
 		"skills":        user.Skills,
 		"interests":     user.Interests,
+		"username":      user.Username,
 	}}
 
 	oldUser, _ := store.filterOne(oldData)
 
-	// if oldUser != nil && user.Username != "" && user.Username != oldUser.Username {
+	if oldUser != nil && user.Username != "" && user.Username != oldUser.Username {
 
-	// 	checkUsername, _ := store.GetByUsername(user.Username)
+		checkUsername, _ := store.GetByUsername(user.Username)
 
-	// 	if checkUsername != nil {
-	// 		return "username already exists", errors.New("username already exists")
-	// 	}
-	// }
+		if checkUsername != nil {
+			return "username already exists", errors.New("username already exists")
+		}
+	}
 
 	if oldUser != nil && user.Email != "" && user.Email != oldUser.Email {
 

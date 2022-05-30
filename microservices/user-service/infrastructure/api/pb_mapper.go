@@ -151,7 +151,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 		IsPublic:     oldData.IsPublic,
 		IsActive:     oldData.IsActive,
 		Role:         oldData.Role,
-		Username:     oldData.Username,
+		Username:     newData.Username,
 	}
 
 	if mapInsertGender(newData.Gender) == -1 {

@@ -87,8 +87,8 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertReques
 
 func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 
-	id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	objectId, err := primitive.ObjectIDFromHex(id)
+	//id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	objectId, err := primitive.ObjectIDFromHex(request.User.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -222,7 +222,7 @@ func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest
 	if !user.IsActive {
 		return nil, errors.New("Account is not activated")
 	}
-	
+
 	response := &pb.GetEmailResponse{
 		Email: user.Email,
 	}
