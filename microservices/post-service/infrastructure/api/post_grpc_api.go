@@ -90,11 +90,11 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 }
 
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
-	//api_token := request.InsertJobOfferPost.ApiToken;
+	//api_token := request.InsertJobOfferPost.ApiToken
 
 	// iz auth servisa na osnovu tokena izvuci usera ili username
 	// iz user servisa na osnovu username izvuci usera
-	// kreirati post u ime tog izvucenog usera
+	// kreirati post u ime tog izvucenog usera (+)
 
 	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
 	if err != nil {
