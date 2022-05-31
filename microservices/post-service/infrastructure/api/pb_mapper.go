@@ -3,8 +3,10 @@ package api
 import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"html"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -17,6 +19,25 @@ func mapPost(post *domain.Post) *pb.Post {
 		UserId:      post.UserId,
 		Images:      post.Images,
 		Links:       post.Links,
+		IsJobOffer:  post.IsJobOffer,
+		Company: &pb.Company{
+			//Id:
+			Name:        post.Company.Name,
+			Description: post.Company.Description,
+			PhoneNumber: post.Company.PhoneNumber,
+			IsActive:    post.Company.IsActive,
+		},
+		JobOffer: &pb.JobOffer{
+			//Id: post.JobOffer.Id.Hex().,
+			Position: &pb.Position{
+				//Id: post.JobOffer.Id.Hex().,
+				Name: post.JobOffer.Position.Name,
+				Pay:  post.JobOffer.Position.Pay,
+			},
+			Preconditions:   post.JobOffer.Preconditions,
+			DailyActivities: post.JobOffer.DailyActivities,
+			JobDescription:  post.JobOffer.JobDescription,
+		},
 	}
 
 	for _, like := range post.Likes {
@@ -50,97 +71,109 @@ func mapInsertPost(post *pb.InsertPost) (*domain.Post, error) {
 		Images:      post.Images,
 		Links:       post.Links,
 		DateCreated: time.Now(),
+		IsJobOffer:  false,
 	}
 
 	return postPb, nil
 }
 
-//func mapUpdatePost(oldData *pb.InsertPost, newData *pb.InsertPost) *domain.Post {
-//	id, _ := primitive.ObjectIDFromHex(oldData.Id)
-//
-//	postPb := &domain.Post{
-//		Id:     id,
-//		Text:   newData.Text,
-//		UserId: oldData.UserId, // ne moze se kreator post-a
-//		Images: newData.Images,
-//		Links:  newData.Links,
-//	}
-//
-//	for _, like := range newData.Likes {
-//		if like.Id == "" {
-//			if likedPostByUser(oldData, like.UserId) == false {
-//				like_id := primitive.NewObjectID()
-//				postPb.Likes = append(postPb.Likes, domain.Like{
-//					Id:     like_id,
-//					UserId: like.UserId,
-//				})
-//			}
-//		} else {
-//			like_id, _ := primitive.ObjectIDFromHex(like.Id)
-//			postPb.Likes = append(postPb.Likes, domain.Like{
-//				Id:     like_id,
-//				UserId: like.UserId,
-//			})
-//		}
-//	}
-//
-//	for _, dislike := range newData.Dislikes {
-//		if dislike.Id == "" {
-//			if dislikedPostByUser(oldData, dislike.UserId) == false {
-//				dislike_id := primitive.NewObjectID()
-//				postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
-//					Id:     dislike_id,
-//					UserId: dislike.UserId,
-//				})
-//			}
-//		} else {
-//			dislike_id, _ := primitive.ObjectIDFromHex(dislike.Id)
-//			postPb.Dislikes = append(postPb.Dislikes, domain.Dislike{
-//				Id:     dislike_id,
-//				UserId: dislike.UserId,
-//			})
-//		}
-//	}
-//
-//	for _, comment := range newData.Comments {
-//		if comment.Id == "" {
-//			comment_id := primitive.NewObjectID()
-//			postPb.Comments = append(postPb.Comments, domain.Comment{
-//				Id:     comment_id,
-//				UserId: comment.UserId,
-//				Text:   comment.Text,
-//			})
-//		} else {
-//			comment_id, _ := primitive.ObjectIDFromHex(comment.Id)
-//			postPb.Comments = append(postPb.Comments, domain.Comment{
-//				Id:     comment_id,
-//				UserId: comment.UserId,
-//				Text:   comment.Text,
-//			})
-//		}
-//	}
-//
-//	return postPb
-//}
+func mapInsertPosition(position *pb.Position) (*domain.Position, error) {
+	positionPb := &domain.Position{
+		Id:   primitive.NewObjectID(),
+		Name: position.Name,
+		Pay:  position.Pay,
+	}
 
-//func likedPostByUser(post *pb.InsertPost, userId string) bool {
-//	for _, like := range post.Likes {
-//		if like.UserId == userId {
-//			fmt.Println("Postoji duplikat - like")
-//			fmt.Println("ISPIS:", like.UserId, userId)
-//			return true
-//		}
-//	}
-//	return false
-//}
-//
-//func dislikedPostByUser(post *pb.InsertPost, userId string) bool {
-//	for _, dislike := range post.Dislikes {
-//		if dislike.UserId == userId {
-//			fmt.Println("Postoji duplikat - dislike")
-//			fmt.Println("ISPIS:", dislike.UserId, userId)
-//			return true
-//		}
-//	}
-//	return false
-//}
+	return positionPb, nil
+}
+
+func mapInsertCompany(company *pb.Company) (*domain.Company, error) {
+	copmanyPb := &domain.Company{
+		Id:          primitive.NewObjectID(),
+		Name:        company.Name,
+		Description: company.Description,
+		PhoneNumber: company.PhoneNumber,
+		IsActive:    company.IsActive,
+	}
+
+	return copmanyPb, nil
+}
+
+func mapInsertJobOffer(jobOffer *pb.JobOffer) (*domain.JobOffer, error) {
+	var jobOfferPb = &domain.JobOffer{
+		Id:              primitive.NewObjectID(),
+		JobDescription:  jobOffer.JobDescription,
+		DailyActivities: jobOffer.DailyActivities,
+		Preconditions:   jobOffer.Preconditions,
+	}
+
+	return jobOfferPb, nil
+}
+
+func mapInsertJobOfferPost(post *pb.InsertJobOfferPost) (*domain.Post, error) {
+	postPb := &domain.Post{
+		Text:        strings.TrimSpace(post.Text),
+		DateCreated: time.Now(),
+		IsJobOffer:  true,
+		JobOffer: domain.JobOffer{
+			Id:              primitive.NewObjectID(),
+			JobDescription:  post.JobOffer.JobDescription,
+			DailyActivities: post.JobOffer.DailyActivities,
+			Preconditions:   post.JobOffer.Preconditions,
+			Position: domain.Position{
+				Id:   primitive.NewObjectID(),
+				Name: post.JobOffer.Position.Name,
+				Pay:  post.JobOffer.Position.Pay,
+			},
+		},
+		Company: domain.Company{
+			Id:          primitive.NewObjectID(),
+			Name:        post.Company.Name,
+			Description: post.Company.Description,
+			PhoneNumber: post.Company.PhoneNumber,
+			IsActive:    post.Company.IsActive,
+		},
+	}
+
+	return postPb, nil
+}
+
+func mapJobOffer(jobOffer *pb.JobOffer) (*domain.JobOffer, error) {
+	v := strconv.FormatFloat(jobOffer.Id, 64, 5, 5)
+	v1, _ := primitive.ObjectIDFromHex(v)
+
+	var jobOfferPb = &domain.JobOffer{
+		Id:              v1, // TODO !
+		JobDescription:  jobOffer.JobDescription,
+		DailyActivities: jobOffer.DailyActivities,
+		Preconditions:   jobOffer.Preconditions,
+		Position: domain.Position{
+			Name: jobOffer.Position.Name,
+			Pay:  jobOffer.Position.Pay,
+		},
+	}
+
+	return jobOfferPb, nil
+}
+
+func mapCompany(company *pb.Company) (*domain.Company, error) {
+	copmanyPb := &domain.Company{
+		//Id:          company.Id,		// TODO !
+		Name:        company.Name,
+		Description: company.Description,
+		PhoneNumber: company.PhoneNumber,
+		IsActive:    company.IsActive,
+	}
+
+	return copmanyPb, nil
+}
+
+func mapPosition(position *pb.Position) (*domain.Position, error) {
+	positionPb := &domain.Position{
+		//Id:   primitive.NewObjectID(),	// TODO ?
+		Name: position.Name,
+		Pay:  position.Pay,
+	}
+
+	return positionPb, nil
+}

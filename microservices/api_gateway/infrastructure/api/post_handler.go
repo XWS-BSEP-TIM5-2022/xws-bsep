@@ -68,18 +68,21 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 
 	err := handler.getAllConnections(users, html.EscapeString(checkId)) /** EscapeString **/
 	if err != nil {
+		fmt.Println("error 1")
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	err = handler.addPosts(posts, users)
 	if err != nil {
+		fmt.Println("error 2")
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	response, err := json.Marshal(posts)
 	if err != nil {
+		fmt.Println("error 3")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -115,6 +118,24 @@ func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Reques
 				Links:       post.Links,
 				DateCreated: post.DateCreated.AsTime(),
 				UserId:      post.UserId,
+				JobOffer: domain.JobOffer{
+					//Id: string(post.JobOffer.Id),
+					JobDescription:  post.JobOffer.JobDescription,
+					Preconditions:   post.JobOffer.Preconditions,
+					DailyActivities: post.JobOffer.DailyActivities,
+					Position: domain.Position{
+						//Id:
+						Name: post.JobOffer.Position.Name,
+						Pay:  post.JobOffer.Position.Pay,
+					},
+				},
+				IsJobOffer: post.IsJobOffer,
+				Company: domain.Company{
+					Name:        post.Company.Name,
+					Description: post.Company.Description,
+					PhoneNumber: post.Company.PhoneNumber,
+					IsActive:    post.Company.IsActive,
+				},
 			}
 
 			for _, like := range post.Likes {
@@ -157,12 +178,13 @@ func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Reques
 
 func (handler *PostHandler) getAllConnections(users *domain.Users, userId string) error {
 	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
-	conections, err := connectionClient.GetConnections(context.TODO(), &connection.GetRequest{UserID: userId})
+	connections, err := connectionClient.GetConnections(context.TODO(), &connection.GetRequest{UserID: userId})
 	if err != nil {
 		return err
 	}
 
-	for _, user := range conections.Users {
+	fmt.Println("konekcije", connections) // TODO greska
+	for _, user := range connections.Users {
 		newUser := domain.User{
 			Id: user.UserID,
 		}
@@ -175,12 +197,17 @@ func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) e
 	postClient := services.NewPostClient(handler.postClientAddress)
 
 	for _, user := range users.UsersDetails {
+
+		fmt.Println("77777777777777777")
+		// TODO: ovo je greska
+
 		postsByUser, err := postClient.GetAllByUser(context.TODO(), &post.GetRequest{Id: user.Id})
+
+		fmt.Println("ove je uslo jjjjjjjjjjjjeeeej", postsByUser)
 		if err != nil {
 			fmt.Println("desio se error!")
 			return err
 		}
-
 		for _, post := range postsByUser.Posts {
 			newPost := domain.Post{
 				Id:          post.Id,
@@ -189,6 +216,24 @@ func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) e
 				Links:       post.Links,
 				DateCreated: post.DateCreated.AsTime(),
 				UserId:      post.UserId,
+				JobOffer: domain.JobOffer{
+					//Id: string(post.JobOffer.Id),
+					JobDescription:  post.JobOffer.JobDescription,
+					Preconditions:   post.JobOffer.Preconditions,
+					DailyActivities: post.JobOffer.DailyActivities,
+					Position: domain.Position{
+						//Id:
+						Name: post.JobOffer.Position.Name,
+						Pay:  post.JobOffer.Position.Pay,
+					},
+				},
+				IsJobOffer: post.IsJobOffer,
+				Company: domain.Company{
+					Name:        post.Company.Name,
+					Description: post.Company.Description,
+					PhoneNumber: post.Company.PhoneNumber,
+					IsActive:    post.Company.IsActive,
+				},
 			}
 
 			for _, like := range post.Likes {

@@ -117,6 +117,31 @@ type Post struct {
 	Dislikes    []Dislike
 	Comments    []Comment
 	UserId      string
+	JobOffer    JobOffer
+	Company     Company
+	IsJobOffer  bool
+}
+
+type JobOffer struct {
+	Id              string
+	Position        Position
+	JobDescription  string
+	DailyActivities string
+	Preconditions   string
+}
+
+type Position struct {
+	Id   string
+	Name string
+	Pay  float64
+}
+
+type Company struct {
+	Id          string
+	Name        string
+	Description string
+	PhoneNumber string
+	IsActive    bool
 }
 
 type Posts struct {

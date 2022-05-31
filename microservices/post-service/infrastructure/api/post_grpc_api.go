@@ -89,6 +89,31 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 	return response, err
 }
 
+func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
+	//api_token := request.InsertJobOfferPost.ApiToken
+
+	// iz auth servisa na osnovu tokena izvuci usera ili username
+	// iz user servisa na osnovu username izvuci usera
+	// kreirati post u ime tog izvucenog usera (+)
+
+	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
+	if err != nil {
+		return nil, err
+	}
+
+	post.UserId = "629662bf49f680dff2878261" // TODO: change
+
+	success, err := handler.service.Insert(post)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("ovo je request:", request)
+	response := &pb.InsertResponse{
+		Success: success,
+	}
+	return response, nil
+}
+
 func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike) (*pb.InsertResponse, error) {
 	id := request.PostId
 	objectId, err := primitive.ObjectIDFromHex(id)
