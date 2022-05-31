@@ -101,7 +101,7 @@ func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.Inse
 		return nil, err
 	}
 
-	post.UserId = "6295f438b2b4c212b7c369e4" // TODO: change
+	post.UserId = "629662bf49f680dff2878261" // TODO: change
 
 	success, err := handler.service.Insert(post)
 	if err != nil {

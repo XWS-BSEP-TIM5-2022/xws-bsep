@@ -71,7 +71,7 @@ func mapInsertPost(post *pb.InsertPost) (*domain.Post, error) {
 		Images:      post.Images,
 		Links:       post.Links,
 		DateCreated: time.Now(),
-		//IsJobOffer: false,		// TODO ??
+		IsJobOffer:  false,
 	}
 
 	return postPb, nil
