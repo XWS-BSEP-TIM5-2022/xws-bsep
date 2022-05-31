@@ -90,20 +90,58 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 }
 
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
-	//post, err := mapInsertPost(request.InsertPost)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	//post.UserId = userId
-	//success, err := handler.service.Insert(post)
-	//if err != nil {
-	//	return nil, err
-	//}
+	//api_token := request.InsertJobOfferPost.ApiToken;
+
+	// iz auth servisa na osnovu tokena izvuci usera ili username
+	// iz user servisa na osnovu username izvuci usera
+	// kreirati post u ime tog izvucenog usera
+
+	// 6295f438b2b4c212b7c369e4 user_id
+	jobOffer, err := mapInsertJobOffer(request.InsertJobOfferPost.JobOffer)
+	if err != nil {
+		return nil, err
+	}
+
+	position, err := mapInsertPosition(request.InsertJobOfferPost.JobOffer.Position)
+	if err != nil {
+		return nil, err
+	}
+
+	company, err := mapInsertCompany(request.InsertJobOfferPost.JobOffer.Company)
+	if err != nil {
+		return nil, err
+	}
+
+	jobOffer.Position.Id = position.Id
+	jobOffer.Position.Name = position.Name
+	jobOffer.Position.Pay = position.Pay
+	jobOffer.Company.Id = company.Id
+	jobOffer.Company.Name = company.Name
+	jobOffer.Company.Description = company.Description
+	jobOffer.Company.PhoneNumber = company.PhoneNumber
+	jobOffer.Company.IsActive = company.IsActive
+
+	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
+	if err != nil {
+		return nil, err
+	}
+
+	post.JobOffer.Id = jobOffer.Id
+	post.JobOffer.Preconditions = jobOffer.Preconditions
+	post.JobOffer.JobDescription = jobOffer.JobDescription
+	post.JobOffer.DailyActivities = jobOffer.DailyActivities
+	post.JobOffer.Position = jobOffer.Position
+	post.JobOffer.Company = jobOffer.Company
+
+	post.UserId = "6295f438b2b4c212b7c369e4" // TODO: change
+
+	success, err := handler.service.Insert(post)
+	if err != nil {
+		return nil, err
+	}
 	fmt.Println("ovo je request:", request)
 	response := &pb.InsertResponse{
-		Success: "hhh",
+		Success: success,
 	}
 	return response, nil
 }

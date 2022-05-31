@@ -3,6 +3,7 @@ package api
 import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"html"
 	"strings"
@@ -50,6 +51,50 @@ func mapInsertPost(post *pb.InsertPost) (*domain.Post, error) {
 		Images:      post.Images,
 		Links:       post.Links,
 		DateCreated: time.Now(),
+		//IsJobOffer: false,		// TODO ??
+	}
+
+	return postPb, nil
+}
+
+func mapInsertPosition(position *pb.Position) (*domain.Position, error) {
+	positionPb := &domain.Position{
+		Id:   primitive.NewObjectID(),
+		Name: position.Name,
+		Pay:  position.Pay,
+	}
+
+	return positionPb, nil
+}
+
+func mapInsertCompany(company *pb.Company) (*domain.Company, error) {
+	copmanyPb := &domain.Company{
+		Id:          primitive.NewObjectID(),
+		Name:        company.Name,
+		Description: company.Description,
+		PhoneNumber: company.PhoneNumber,
+		IsActive:    company.IsActive,
+	}
+
+	return copmanyPb, nil
+}
+
+func mapInsertJobOffer(jobOffer *pb.JobOffer) (*domain.JobOffer, error) {
+	var jobOfferPb = &domain.JobOffer{
+		Id:              primitive.NewObjectID(),
+		JobDescription:  jobOffer.JobDescription,
+		DailyActivities: jobOffer.DailyActivities,
+		Preconditions:   jobOffer.Preconditions,
+	}
+
+	return jobOfferPb, nil
+}
+
+func mapInsertJobOfferPost(post *pb.InsertJobOfferPost) (*domain.Post, error) {
+	postPb := &domain.Post{
+		Text:        strings.TrimSpace(post.Text), // function to remove leading and trailing whitespace
+		DateCreated: time.Now(),
+		IsJobOffer:  true,
 	}
 
 	return postPb, nil

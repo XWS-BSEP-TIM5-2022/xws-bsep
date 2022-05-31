@@ -31,4 +31,29 @@ type Post struct {
 	Dislikes    []Dislike          `bson:"dislikes"`
 	Comments    []Comment          `bson:"comments"`
 	UserId      string             `bson:"user_id" validate:"required"`
+	JobOffer    JobOffer           `bson:"job_offer"`
+	IsJobOffer  bool               `bson:"is_job_offer"`
+}
+
+type JobOffer struct {
+	Id              primitive.ObjectID `bson:"_id"` // TODO: tip id-a ??
+	Position        Position           `bson:"position"`
+	JobDescription  string             `bson:"job_description"`
+	DailyActivities string             `bson:"daily_activities"`
+	Preconditions   string             `bson:"preconditions"`
+	Company         Company            `bson:"company"`
+}
+
+type Company struct {
+	Id          primitive.ObjectID `bson:"_id"` // TODO: tip id-a ??
+	Name        string             `bson:"name"`
+	Description string             `bson:"description"`
+	PhoneNumber string             `bson:"phone_number"`
+	IsActive    bool               `bson:"is_active"`
+}
+
+type Position struct {
+	Id   primitive.ObjectID `bson:"_id"` // TODO: tip id-a ??
+	Name string             `bson:"name"`
+	Pay  float64            `bson:"pay"`
 }
