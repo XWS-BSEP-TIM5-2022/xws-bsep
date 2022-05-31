@@ -29,6 +29,8 @@ type PostServiceClient interface {
 	CommentPost(ctx context.Context, in *InsertComment, opts ...grpc.CallOption) (*InsertResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	Insert(ctx context.Context, in *InsertRequest, opts ...grpc.CallOption) (*InsertResponse, error)
+	InsertJobOffer(ctx context.Context, in *InsertJobOfferRequest, opts ...grpc.CallOption) (*InsertResponse, error)
+	Test(ctx context.Context, in *TestRequest, opts ...grpc.CallOption) (*InsertResponse, error)
 	GetAllByUser(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 }
 
@@ -103,6 +105,24 @@ func (c *postServiceClient) Insert(ctx context.Context, in *InsertRequest, opts 
 	return out, nil
 }
 
+func (c *postServiceClient) InsertJobOffer(ctx context.Context, in *InsertJobOfferRequest, opts ...grpc.CallOption) (*InsertResponse, error) {
+	out := new(InsertResponse)
+	err := c.cc.Invoke(ctx, "/post_service.PostService/InsertJobOffer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postServiceClient) Test(ctx context.Context, in *TestRequest, opts ...grpc.CallOption) (*InsertResponse, error) {
+	out := new(InsertResponse)
+	err := c.cc.Invoke(ctx, "/post_service.PostService/Test", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *postServiceClient) GetAllByUser(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetAllResponse, error) {
 	out := new(GetAllResponse)
 	err := c.cc.Invoke(ctx, "/post_service.PostService/GetAllByUser", in, out, opts...)
@@ -123,6 +143,8 @@ type PostServiceServer interface {
 	CommentPost(context.Context, *InsertComment) (*InsertResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	Insert(context.Context, *InsertRequest) (*InsertResponse, error)
+	InsertJobOffer(context.Context, *InsertJobOfferRequest) (*InsertResponse, error)
+	Test(context.Context, *TestRequest) (*InsertResponse, error)
 	GetAllByUser(context.Context, *GetRequest) (*GetAllResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
@@ -151,6 +173,12 @@ func (UnimplementedPostServiceServer) GetAll(context.Context, *GetAllRequest) (*
 }
 func (UnimplementedPostServiceServer) Insert(context.Context, *InsertRequest) (*InsertResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Insert not implemented")
+}
+func (UnimplementedPostServiceServer) InsertJobOffer(context.Context, *InsertJobOfferRequest) (*InsertResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InsertJobOffer not implemented")
+}
+func (UnimplementedPostServiceServer) Test(context.Context, *TestRequest) (*InsertResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Test not implemented")
 }
 func (UnimplementedPostServiceServer) GetAllByUser(context.Context, *GetRequest) (*GetAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllByUser not implemented")
@@ -294,6 +322,42 @@ func _PostService_Insert_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_InsertJobOffer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertJobOfferRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).InsertJobOffer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/post_service.PostService/InsertJobOffer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).InsertJobOffer(ctx, req.(*InsertJobOfferRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostService_Test_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).Test(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/post_service.PostService/Test",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).Test(ctx, req.(*TestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _PostService_GetAllByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetRequest)
 	if err := dec(in); err != nil {
@@ -346,6 +410,14 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Insert",
 			Handler:    _PostService_Insert_Handler,
+		},
+		{
+			MethodName: "InsertJobOffer",
+			Handler:    _PostService_InsertJobOffer_Handler,
+		},
+		{
+			MethodName: "Test",
+			Handler:    _PostService_Test_Handler,
 		},
 		{
 			MethodName: "GetAllByUser",

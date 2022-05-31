@@ -89,6 +89,34 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 	return response, err
 }
 
+func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
+	//post, err := mapInsertPost(request.InsertPost)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	//post.UserId = userId
+	//success, err := handler.service.Insert(post)
+	//if err != nil {
+	//	return nil, err
+	//}
+	fmt.Println("ovo je request:", request)
+	response := &pb.InsertResponse{
+		Success: "hhh",
+	}
+	return response, nil
+}
+
+// TODO: delete
+func (handler *PostHandler) Test(ctx context.Context, request *pb.TestRequest) (*pb.InsertResponse, error) {
+	fmt.Println("ovo je request:", request)
+	response := &pb.InsertResponse{
+		Success: "hhh",
+	}
+	return response, nil
+}
+
 func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike) (*pb.InsertResponse, error) {
 	id := request.PostId
 	objectId, err := primitive.ObjectIDFromHex(id)

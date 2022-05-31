@@ -49,6 +49,18 @@ service PostService{
       body: "insertPost"
     };
   }
+  rpc InsertJobOffer(InsertJobOfferRequest) returns(InsertResponse) {
+    option (google.api.http) = {
+      post: "/api/post/agents"
+      body: "insertJobOfferPost"
+    };
+  }
+  rpc Test(TestRequest) returns(InsertResponse) {
+    option (google.api.http) = {
+      post: "/api/post/test"
+      body: "test"
+    };
+  }
   rpc GetAllByUser(GetRequest) returns(GetAllResponse) {
     option (google.api.http) = {
       get: "/api/post/user/{id}"
@@ -75,8 +87,43 @@ message InsertRequest {
   InsertPost insertPost = 1;
 }
 
+message InsertJobOfferRequest {
+  InsertJobOfferPost insertJobOfferPost = 1;
+}
+
 message InsertResponse {
   string success = 1;
+}
+
+message InsertJobOfferPost {
+  string id = 1;
+  string text = 2;
+  JobOffer jobOffer = 3;
+  string api_token = 4;
+}
+
+message JobOffer {
+    double id = 1;  // TODO: number ?
+    double companyId = 2;  // TODO: number ?
+    Position position = 3;
+    string jobDescription = 4;
+    string dailyActivities = 5;
+    string preconditions = 6;
+    Company company = 7;
+}
+
+message Position {
+    double id = 1;
+    string name = 2;
+    double pay = 3;
+}
+
+message Company {
+    double id = 1;
+    string name = 2;
+    string description = 3;
+    string phoneNumber = 4;
+    bool isActive = 5;
 }
 
 message InsertPost {
@@ -137,3 +184,11 @@ message InsertComment{
 }
 
 message Empty {}
+
+message TestRequest{
+  Test test = 1;
+}
+
+message Test{
+  string test = 1;
+}
