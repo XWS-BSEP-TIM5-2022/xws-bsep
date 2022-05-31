@@ -55,12 +55,6 @@ service PostService{
       body: "insertJobOfferPost"
     };
   }
-  rpc Test(TestRequest) returns(InsertResponse) {
-    option (google.api.http) = {
-      post: "/api/post/test"
-      body: "test"
-    };
-  }
   rpc GetAllByUser(GetRequest) returns(GetAllResponse) {
     option (google.api.http) = {
       get: "/api/post/user/{id}"
@@ -74,6 +68,10 @@ message GetRequest {
 
 message GetResponse {
   Post post = 1;
+}
+
+message GetJobOfferResponse {
+  JobOffer jobOffer = 1;
 }
 
 message GetAllRequest {
@@ -100,6 +98,7 @@ message InsertJobOfferPost {
   string text = 2;
   JobOffer jobOffer = 3;
   string api_token = 4;
+  Company company = 5;
 }
 
 message JobOffer {
@@ -109,7 +108,7 @@ message JobOffer {
     string jobDescription = 4;
     string dailyActivities = 5;
     string preconditions = 6;
-    Company company = 7;
+//    Company company = 7;
 }
 
 message Position {
@@ -148,6 +147,9 @@ message Post {
   repeated Dislike dislikes = 7;
   repeated Comment comments = 8;
   string user_id = 9;
+  JobOffer job_offer = 10;
+  bool is_job_offer = 11;
+  Company company = 12;
 }
 
 message Comment {
@@ -184,11 +186,3 @@ message InsertComment{
 }
 
 message Empty {}
-
-message TestRequest{
-  Test test = 1;
-}
-
-message Test{
-  string test = 1;
-}

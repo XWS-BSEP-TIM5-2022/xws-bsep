@@ -32,6 +32,7 @@ type Post struct {
 	Comments    []Comment          `bson:"comments"`
 	UserId      string             `bson:"user_id" validate:"required"`
 	JobOffer    JobOffer           `bson:"job_offer"`
+	Company     Company            `bson:"company"`
 	IsJobOffer  bool               `bson:"is_job_offer"`
 }
 
@@ -41,7 +42,6 @@ type JobOffer struct {
 	JobDescription  string             `bson:"job_description"`
 	DailyActivities string             `bson:"daily_activities"`
 	Preconditions   string             `bson:"preconditions"`
-	Company         Company            `bson:"company"`
 }
 
 type Company struct {
