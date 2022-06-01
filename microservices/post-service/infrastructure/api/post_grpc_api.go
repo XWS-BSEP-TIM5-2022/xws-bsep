@@ -15,15 +15,11 @@ import (
 type PostHandler struct {
 	pb.UnimplementedPostServiceServer
 	service *application.PostService
-	//userServiceClient user.UserServiceClient
-	//authServiceClient auth.AuthServiceClient
 }
 
-func NewPostHandler(service *application.PostService /*, userServiceClient user.UserServiceClient, authServiceClient auth.AuthServiceClient*/) *PostHandler {
+func NewPostHandler(service *application.PostService) *PostHandler {
 	return &PostHandler{
 		service: service,
-		//userServiceClient: userServiceClient,
-		//authServiceClient: authServiceClient,
 	}
 }
 
@@ -94,14 +90,12 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 }
 
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
-
 	apiToken := request.InsertJobOfferPost.ApiToken
 	username, err := handler.service.GetUsernameByApiToken(ctx, apiToken)
 	if err != nil {
 		fmt.Println("desila se greska, ne moze se naci username- GetUsernameByApiToken !!!!")
 		return nil, err
 	}
-
 	fmt.Println("ovo je username: ", username)
 
 	userId, err := handler.service.GetIdByUsername(ctx, username.Username)

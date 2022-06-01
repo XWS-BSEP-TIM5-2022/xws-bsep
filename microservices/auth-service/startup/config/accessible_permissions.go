@@ -7,6 +7,7 @@ func AccessiblePermissions() map[string]string {
 		authService + "UpdateUsername":    "UpdateUsername",
 		authService + "ChangePassword":    "UpdatePassword",
 		authService + "AdminsEndpoint":    "AdminsEndpoint", // empty endpoint
-		authService + "CreateNewAPIToken": "GenerateApiToken",
+		authService + "CreateNewAPIToken": "CreateNewAPIToken",
+		//authService + "GetUsernameByApiToken": "GetUsernameByApiToken",
 	}
 }

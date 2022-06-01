@@ -38,7 +38,7 @@ func (manager *APITokenService) GenerateAPIToken(auth *domain.Authentication) (s
 	claims := APITokenClaims{
 		StandardClaims: jwt.StandardClaims{
 			Subject: auth.Id,
-			//ExpiresAt: time.Now().Add(manager.accessAPITokenDuration).Unix(),
+			//ExpiresAt: time.Now().Add(manager.accessAPITokenDuration).Unix(),	// TODO: mozda zbog bezbednosti ?
 		},
 		Username: auth.Username,
 	}
