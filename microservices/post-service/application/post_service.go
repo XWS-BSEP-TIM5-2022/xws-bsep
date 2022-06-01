@@ -48,3 +48,7 @@ func (service *PostService) DislikePost(post *domain.Post, id string) (string, e
 func (service *PostService) CommentPost(post *domain.Post, id string, text string) (string, error) {
 	return service.store.CommentPost(post, id, text)
 }
+
+func (service *PostService) UpdateCompanyInfo(company *domain.Company, oldName string) (string, error) {
+	return service.store.UpdateCompanyInfo(company, oldName)
+}

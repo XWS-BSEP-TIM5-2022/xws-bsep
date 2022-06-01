@@ -60,6 +60,14 @@ service PostService{
       get: "/api/post/user/{id}"
     };
   }
+
+  rpc UpdateCompanyInfo(UpdateCompanyInfoRequest) returns(InsertResponse) {
+    option (google.api.http) = {
+      put: "/api/post/updateCompanyInfo"
+      body: "companyInfoDTO"
+    };
+  }
+
 }
 
 message GetRequest {
@@ -89,8 +97,21 @@ message InsertJobOfferRequest {
   InsertJobOfferPost insertJobOfferPost = 1;
 }
 
+message UpdateCompanyInfoRequest {
+  CompanyInfoDTO companyInfoDTO = 1;
+}
+
 message InsertResponse {
   string success = 1;
+}
+
+message CompanyInfoDTO {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string phoneNumber = 4;
+  string oldName = 5;
+  bool isActive = 6;
 }
 
 message InsertJobOfferPost {
