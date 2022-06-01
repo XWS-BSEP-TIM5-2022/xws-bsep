@@ -138,6 +138,17 @@ func mapInsertJobOfferPost(post *pb.InsertJobOfferPost) (*domain.Post, error) {
 	return postPb, nil
 }
 
+func mapCompanyInfo(company *pb.CompanyInfoDTO) (*domain.Company, error) {
+	companyPb := &domain.Company{
+		Name:        company.Name,
+		Description: company.Description,
+		PhoneNumber: company.PhoneNumber,
+		IsActive:    company.IsActive,
+	}
+
+	return companyPb, nil
+}
+
 func mapJobOffer(jobOffer *pb.JobOffer) (*domain.JobOffer, error) {
 	v := strconv.FormatFloat(jobOffer.Id, 64, 5, 5)
 	v1, _ := primitive.ObjectIDFromHex(v)

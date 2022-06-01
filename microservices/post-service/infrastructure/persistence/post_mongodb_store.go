@@ -379,3 +379,30 @@ func decode(cursor *mongo.Cursor) (posts []*domain.Post, err error) {
 	err = cursor.Err()
 	return
 }
+
+func (store *PostMongoDBStore) UpdateCompanyInfo(company *domain.Company, oldName string) (string, error) {
+	newData := bson.M{
+		"id":          primitive.NewObjectID(),
+		"name":        company.Name,
+		"description": company.Description,
+		"phoneNumber": company.PhoneNumber,
+		"is_active":   company.IsActive,
+	}
+
+	newCompany := bson.M{"$set": bson.M{
+		"company": newData,
+	}}
+
+	posts, _ := store.GetAll()
+	opts := options.Update().SetUpsert(true)
+
+	for _, post := range posts {
+		_, err := store.posts.UpdateOne(context.TODO(), bson.M{"_id": post.Id}, newCompany, opts)
+		fmt.Println("azurirao")
+		if err != nil {
+			return "error", err
+		}
+	}
+
+	return "success", nil
+}
