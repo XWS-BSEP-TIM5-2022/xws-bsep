@@ -15,11 +15,15 @@ import (
 type PostHandler struct {
 	pb.UnimplementedPostServiceServer
 	service *application.PostService
+	//userServiceClient user.UserServiceClient
+	//authServiceClient auth.AuthServiceClient
 }
 
-func NewPostHandler(service *application.PostService) *PostHandler {
+func NewPostHandler(service *application.PostService /*, userServiceClient user.UserServiceClient, authServiceClient auth.AuthServiceClient*/) *PostHandler {
 	return &PostHandler{
 		service: service,
+		//userServiceClient: userServiceClient,
+		//authServiceClient: authServiceClient,
 	}
 }
 
@@ -90,24 +94,36 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 }
 
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
-	//api_token := request.InsertJobOfferPost.ApiToken
 
-	// iz auth servisa na osnovu tokena izvuci usera ili username
-	// iz user servisa na osnovu username izvuci usera
-	// kreirati post u ime tog izvucenog usera (+)
+	apiToken := request.InsertJobOfferPost.ApiToken
+	username, err := handler.service.GetUsernameByApiToken(ctx, apiToken)
+	if err != nil {
+		fmt.Println("desila se greska, ne moze se naci username- GetUsernameByApiToken !!!!")
+		return nil, err
+	}
+
+	fmt.Println("ovo je username: ", username)
+
+	userId, err := handler.service.GetIdByUsername(ctx, username.Username)
+	if err != nil {
+		fmt.Println("desila se greska, ne moze se naci user id - GetIdByUsername !!!!")
+		return nil, err
+	}
 
 	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
 	if err != nil {
+		fmt.Println("desila se greska, mapiranje - mapInsertJobOfferPost !!!!")
 		return nil, err
 	}
 
-	post.UserId = "629662bf49f680dff2878261" // TODO: change
+	post.UserId = userId.Id
+	fmt.Println("id user-a je: ", post.UserId)
 
 	success, err := handler.service.Insert(post)
 	if err != nil {
+		fmt.Println("desila se greska, dodavanje post-a !!!!")
 		return nil, err
 	}
-	fmt.Println("ovo je request:", request)
 	response := &pb.InsertResponse{
 		Success: success,
 	}

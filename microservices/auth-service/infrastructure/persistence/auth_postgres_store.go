@@ -102,6 +102,12 @@ func (store *AuthPostgresStore) FindById(id string) (*domain.Authentication, err
 	return &auth, err.Error
 }
 
+func (store *AuthPostgresStore) FindByApiToken(apiToken string) (*domain.Authentication, error) {
+	var auth domain.Authentication
+	err := store.db.Preload("Roles").First(&auth, "apiToken = ?", apiToken)
+	return &auth, err.Error
+}
+
 func (store *AuthPostgresStore) UpdatePassword(id, password string) error {
 	var auth domain.Authentication
 	err := store.db.First(&auth, "id = ?", id)

@@ -98,6 +98,13 @@ service AuthService{
             get: "/api/auth/newApiToken/{username}"
         };
     }
+
+    rpc GetUsernameByApiToken(GetUsernameRequest) returns (GetUsernameResponse) {
+        option (google.api.http) = {
+            post: "/api/auth/username"
+            body: "*"
+        };
+    }
 }
 
 message ChangePasswordRequest {
@@ -275,4 +282,12 @@ message APITokenRequest {
 
 message NewAPITokenResponse {
     string token = 1;
+}
+
+message GetUsernameRequest {
+    string apiToken = 1;
+}
+
+message GetUsernameResponse {
+    string username = 1;
 }
