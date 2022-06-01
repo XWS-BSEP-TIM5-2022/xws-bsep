@@ -37,8 +37,8 @@ func NewAPITokenManager(privateKey, publicKey string) (*APITokenService, error) 
 func (manager *APITokenService) GenerateAPIToken(auth *domain.Authentication) (string, string, error) {
 	claims := APITokenClaims{
 		StandardClaims: jwt.StandardClaims{
-			Subject:   auth.Id,
-			ExpiresAt: time.Now().Add(manager.accessAPITokenDuration).Unix(),
+			Subject: auth.Id,
+			//ExpiresAt: time.Now().Add(manager.accessAPITokenDuration).Unix(),
 		},
 		Username: auth.Username,
 	}
