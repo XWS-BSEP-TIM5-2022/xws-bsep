@@ -172,6 +172,45 @@ func mapInsertJobOffer(jobOffer *pb.JobOffer) (*domain.JobOffer, error) {
 	return jobOfferPb, nil
 }
 
+func mapInsertJobOfferPost(post *pb.InsertJobOfferPost) (*domain.Post, error) {
+	postPb := &domain.Post{
+		Text:        strings.TrimSpace(post.Text),
+		DateCreated: time.Now(),
+		IsJobOffer:  true,
+		JobOffer: domain.JobOffer{
+			Id:              primitive.NewObjectID(),
+			JobDescription:  post.JobOffer.JobDescription,
+			DailyActivities: post.JobOffer.DailyActivities,
+			Preconditions:   post.JobOffer.Preconditions,
+			Position: domain.Position{
+				Id:   primitive.NewObjectID(),
+				Name: post.JobOffer.Position.Name,
+				Pay:  post.JobOffer.Position.Pay,
+			},
+		},
+		Company: domain.Company{
+			Id:          primitive.NewObjectID(),
+			Name:        post.Company.Name,
+			Description: post.Company.Description,
+			PhoneNumber: post.Company.PhoneNumber,
+			IsActive:    post.Company.IsActive,
+		},
+	}
+
+	return postPb, nil
+}
+
+func mapCompanyInfo(company *pb.CompanyInfoDTO) (*domain.Company, error) {
+	companyPb := &domain.Company{
+		Name:        company.Name,
+		Description: company.Description,
+		PhoneNumber: company.PhoneNumber,
+		IsActive:    company.IsActive,
+	}
+
+	return companyPb, nil
+}
+
 func mapJobOffer(jobOffer *pb.JobOffer) (*domain.JobOffer, error) {
 	v := strconv.FormatFloat(jobOffer.Id, 64, 5, 5)
 	v1, _ := primitive.ObjectIDFromHex(v)

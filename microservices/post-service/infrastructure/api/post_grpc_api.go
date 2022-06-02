@@ -357,3 +357,19 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 	}
 	return response, err
 }
+
+func (handler *PostHandler) UpdateCompanyInfo(ctx context.Context, request *pb.UpdateCompanyInfoRequest) (*pb.InsertResponse, error) {
+	company, err := mapCompanyInfo(request.CompanyInfoDTO)
+	if err != nil {
+		return nil, err
+	}
+
+	success, err := handler.service.UpdateCompanyInfo(company, request.CompanyInfoDTO.OldName)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.InsertResponse{
+		Success: success,
+	}
+	return response, err
+}

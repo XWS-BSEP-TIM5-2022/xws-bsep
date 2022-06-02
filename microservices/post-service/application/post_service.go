@@ -67,3 +67,7 @@ func (service *PostService) GetIdByUsername(ctx context.Context, username string
 		Username: username,
 	})
 }
+
+func (service *PostService) UpdateCompanyInfo(company *domain.Company, oldName string) (string, error) {
+	return service.store.UpdateCompanyInfo(company, oldName)
+}
