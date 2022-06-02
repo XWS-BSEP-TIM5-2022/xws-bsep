@@ -12,57 +12,91 @@ import (
 )
 
 func mapPost(post *domain.Post) *pb.Post {
-	postPb := &pb.Post{
-		Id:          post.Id.Hex(),
-		Text:        html.UnescapeString(post.Text), /** UnescapeString **/
-		DateCreated: timestamppb.New(post.DateCreated),
-		UserId:      post.UserId,
-		Images:      post.Images,
-		Links:       post.Links,
-		IsJobOffer:  post.IsJobOffer,
-		Company: &pb.Company{
-			//Id:
-			Name:        post.Company.Name,
-			Description: post.Company.Description,
-			PhoneNumber: post.Company.PhoneNumber,
-			IsActive:    post.Company.IsActive,
-		},
-		JobOffer: &pb.JobOffer{
-			//Id: post.JobOffer.Id.Hex().,
-			Position: &pb.Position{
-				//Id: post.JobOffer.Id.Hex().,
-				Name: post.JobOffer.Position.Name,
-				Pay:  post.JobOffer.Position.Pay,
+	if post.IsJobOffer {
+		postPb := &pb.Post{
+			Id:          post.Id.Hex(),
+			Text:        html.UnescapeString(post.Text), /** UnescapeString **/
+			DateCreated: timestamppb.New(post.DateCreated),
+			UserId:      post.UserId,
+			Images:      post.Images,
+			Links:       post.Links,
+			IsJobOffer:  post.IsJobOffer,
+			Company: &pb.Company{
+				//Id:          float64(companyIdInt),
+				Name:        html.UnescapeString(post.Company.Name),
+				Description: html.UnescapeString(post.Company.Description),
+				PhoneNumber: post.Company.PhoneNumber,
+				IsActive:    true,
 			},
-			Preconditions:   post.JobOffer.Preconditions,
-			DailyActivities: post.JobOffer.DailyActivities,
-			JobDescription:  post.JobOffer.JobDescription,
-		},
-	}
+			JobOffer: &pb.JobOffer{
+				//Id: post.JobOffer.Id.Hex().,
+				Position: &pb.Position{
+					//Id: post.JobOffer.Id.Hex().,
+					Name: post.JobOffer.Position.Name,
+					Pay:  post.JobOffer.Position.Pay,
+				},
+				Preconditions:   html.UnescapeString(post.JobOffer.Preconditions),
+				DailyActivities: html.UnescapeString(post.JobOffer.DailyActivities),
+				JobDescription:  html.UnescapeString(post.JobOffer.JobDescription),
+			},
+		}
 
-	for _, like := range post.Likes {
-		postPb.Likes = append(postPb.Likes, &pb.Like{
-			Id:     like.Id.Hex(),
-			UserId: like.UserId,
-		})
-	}
+		for _, like := range post.Likes {
+			postPb.Likes = append(postPb.Likes, &pb.Like{
+				Id:     like.Id.Hex(),
+				UserId: like.UserId,
+			})
+		}
 
-	for _, dislike := range post.Dislikes {
-		postPb.Dislikes = append(postPb.Dislikes, &pb.Dislike{
-			Id:     dislike.Id.Hex(),
-			UserId: dislike.UserId,
-		})
-	}
+		for _, dislike := range post.Dislikes {
+			postPb.Dislikes = append(postPb.Dislikes, &pb.Dislike{
+				Id:     dislike.Id.Hex(),
+				UserId: dislike.UserId,
+			})
+		}
 
-	for _, comment := range post.Comments {
-		postPb.Comments = append(postPb.Comments, &pb.Comment{
-			Id:     comment.Id.Hex(),
-			UserId: comment.UserId,
-			Text:   html.UnescapeString(comment.Text), /** UnescapeString **/
-		})
-	}
+		for _, comment := range post.Comments {
+			postPb.Comments = append(postPb.Comments, &pb.Comment{
+				Id:     comment.Id.Hex(),
+				UserId: comment.UserId,
+				Text:   html.UnescapeString(comment.Text), /** UnescapeString **/
+			})
+		}
+		return postPb
+	} else {
+		postPb := &pb.Post{
+			Id:          post.Id.Hex(),
+			Text:        html.UnescapeString(post.Text), /** UnescapeString **/
+			DateCreated: timestamppb.New(post.DateCreated),
+			UserId:      post.UserId,
+			Images:      post.Images,
+			Links:       post.Links,
+			IsJobOffer:  post.IsJobOffer,
+		}
 
-	return postPb
+		for _, like := range post.Likes {
+			postPb.Likes = append(postPb.Likes, &pb.Like{
+				Id:     like.Id.Hex(),
+				UserId: like.UserId,
+			})
+		}
+
+		for _, dislike := range post.Dislikes {
+			postPb.Dislikes = append(postPb.Dislikes, &pb.Dislike{
+				Id:     dislike.Id.Hex(),
+				UserId: dislike.UserId,
+			})
+		}
+
+		for _, comment := range post.Comments {
+			postPb.Comments = append(postPb.Comments, &pb.Comment{
+				Id:     comment.Id.Hex(),
+				UserId: comment.UserId,
+				Text:   html.UnescapeString(comment.Text), /** UnescapeString **/
+			})
+		}
+		return postPb
+	}
 }
 
 func mapInsertPost(post *pb.InsertPost) (*domain.Post, error) {
@@ -72,6 +106,34 @@ func mapInsertPost(post *pb.InsertPost) (*domain.Post, error) {
 		Links:       post.Links,
 		DateCreated: time.Now(),
 		IsJobOffer:  false,
+	}
+
+	return postPb, nil
+}
+
+func mapInsertJobOfferPost(post *pb.InsertJobOfferPost) (*domain.Post, error) {
+	postPb := &domain.Post{
+		Text:        strings.TrimSpace(post.Text),
+		DateCreated: time.Now(),
+		IsJobOffer:  true,
+		JobOffer: domain.JobOffer{
+			Id:              primitive.NewObjectID(),
+			JobDescription:  post.JobOffer.JobDescription,
+			DailyActivities: post.JobOffer.DailyActivities,
+			Preconditions:   post.JobOffer.Preconditions,
+			Position: domain.Position{
+				Id:   primitive.NewObjectID(),
+				Name: post.JobOffer.Position.Name,
+				Pay:  post.JobOffer.Position.Pay,
+			},
+		},
+		Company: domain.Company{
+			Id:          primitive.NewObjectID(),
+			Name:        post.Company.Name,
+			Description: post.Company.Description,
+			PhoneNumber: post.Company.PhoneNumber,
+			IsActive:    true,
+		},
 	}
 
 	return postPb, nil
@@ -108,34 +170,6 @@ func mapInsertJobOffer(jobOffer *pb.JobOffer) (*domain.JobOffer, error) {
 	}
 
 	return jobOfferPb, nil
-}
-
-func mapInsertJobOfferPost(post *pb.InsertJobOfferPost) (*domain.Post, error) {
-	postPb := &domain.Post{
-		Text:        strings.TrimSpace(post.Text),
-		DateCreated: time.Now(),
-		IsJobOffer:  true,
-		JobOffer: domain.JobOffer{
-			Id:              primitive.NewObjectID(),
-			JobDescription:  post.JobOffer.JobDescription,
-			DailyActivities: post.JobOffer.DailyActivities,
-			Preconditions:   post.JobOffer.Preconditions,
-			Position: domain.Position{
-				Id:   primitive.NewObjectID(),
-				Name: post.JobOffer.Position.Name,
-				Pay:  post.JobOffer.Position.Pay,
-			},
-		},
-		Company: domain.Company{
-			Id:          primitive.NewObjectID(),
-			Name:        post.Company.Name,
-			Description: post.Company.Description,
-			PhoneNumber: post.Company.PhoneNumber,
-			IsActive:    post.Company.IsActive,
-		},
-	}
-
-	return postPb, nil
 }
 
 func mapJobOffer(jobOffer *pb.JobOffer) (*domain.JobOffer, error) {

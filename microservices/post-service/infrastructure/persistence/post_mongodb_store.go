@@ -89,6 +89,15 @@ func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 
 	/** EscapeString **/
 	post.Text = html.EscapeString(post.Text)
+	if post.IsJobOffer {
+		post.JobOffer.JobDescription = html.EscapeString(post.JobOffer.JobDescription)
+		post.JobOffer.DailyActivities = html.EscapeString(post.JobOffer.DailyActivities)
+		post.JobOffer.Preconditions = html.EscapeString(post.JobOffer.Preconditions)
+		post.Company.Name = html.EscapeString(post.Company.Name)
+		post.Company.Description = html.EscapeString(post.Company.Description)
+
+		// TODO: validacija - da li su neka polja nil ?
+	}
 
 	// validate links
 	for _, link := range post.Links {
