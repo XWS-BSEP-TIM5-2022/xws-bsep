@@ -11,5 +11,6 @@ func AccessiblePermissions() map[string]string {
 		userService + "UpdateExperienceAndEducation": "UpdateUserProfile",
 		userService + "UpdateSkillsAndInterests":     "UpdateUserProfile",
 		userService + "GetLoggedInUserInfo":          "GetLoggedInUserInfo",
+		//userService + "GetIdByUsername":              "GetIdByUsername",
 	}
 }

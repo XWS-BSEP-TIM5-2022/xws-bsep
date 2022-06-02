@@ -261,3 +261,13 @@ func (handler *UserHandler) GetIdByEmail(ctx context.Context, request *pb.GetIdB
 		Id: userId,
 	}, nil
 }
+
+func (handler *UserHandler) GetIdByUsername(ctx context.Context, request *pb.GetIdByUsernameRequest) (*pb.InsertResponse, error) {
+	user, err := handler.service.GetByUsername(request.Username)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InsertResponse{
+		Id: user.Id.Hex(),
+	}, nil
+}

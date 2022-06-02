@@ -12,5 +12,6 @@ func AccessiblePermissions() map[string]string {
 		postService + "DislikePost": "UpdatePostDislikes",
 		postService + "CommentPost": "UpdatePostComments",
 		postService + "NeutralPost": "NeutralPost",
+		//postService + "InsertJobOffer": "InsertJobOffer",
 	}
 }
