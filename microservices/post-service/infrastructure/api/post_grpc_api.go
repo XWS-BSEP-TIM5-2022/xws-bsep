@@ -116,14 +116,17 @@ func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.Inse
 
 	now := time.Now().Unix()
 
-	// dok duzina checkExp nije 9, dodaj nule na kraj
-	if len(checkExp) == 7 {
-		checkExp = checkExp + "000"
-	}
-	if len(checkExp) == 8 {
-		checkExp = checkExp + "00"
-	}
-	if len(checkExp) == 9 {
+	// dok duzina checkExp ne bude 10, dodaj nule na kraj
+	//if len(checkExp) == 7 {
+	//	checkExp = checkExp + "000"
+	//}
+	//if len(checkExp) == 8 {
+	//	checkExp = checkExp + "00"
+	//}
+	//if len(checkExp) == 9 {
+	//	checkExp = checkExp + "0"
+	//}
+	for len(checkExp) == 10 {
 		checkExp = checkExp + "0"
 	}
 	expirationDate, _ := strconv.ParseInt(checkExp, 10, 64)
