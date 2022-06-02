@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"math/rand"
 	"net/mail"
@@ -972,4 +973,33 @@ func (service *AuthService) AdminsEndpoint(ctx context.Context, request *pb.Empt
 		StatusCode: "200",
 		Message:    "OK",
 	}, nil
+}
+
+func CheckString(new string, old string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(old), []byte(new))
+	return err == nil
+}
+
+func (service *AuthService) GetUsernameByApiToken(ctx context.Context, request *pb.GetUsernameRequest) (*pb.GetUsernameResponse, error) {
+	all, err := service.store.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, user := range *all {
+		match := CheckString(request.ApiToken, user.APIToken)
+		fmt.Println("BROJ 1: ", request.ApiToken)
+		fmt.Println("BROJ 2: ", user.APIToken)
+		fmt.Println("da li se podudaraju: ", match)
+
+		if match {
+			return &pb.GetUsernameResponse{
+				Username: user.Username,
+			}, nil
+		}
+	}
+
+	return &pb.GetUsernameResponse{
+		Username: "not found",
+	}, err
 }

@@ -90,6 +90,15 @@ func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 	//fmt.Println("ovo saljem:", post.Image.Data)
 	/** EscapeString **/
 	post.Text = html.EscapeString(post.Text)
+	if post.IsJobOffer {
+		post.JobOffer.JobDescription = html.EscapeString(post.JobOffer.JobDescription)
+		post.JobOffer.DailyActivities = html.EscapeString(post.JobOffer.DailyActivities)
+		post.JobOffer.Preconditions = html.EscapeString(post.JobOffer.Preconditions)
+		post.Company.Name = html.EscapeString(post.Company.Name)
+		post.Company.Description = html.EscapeString(post.Company.Description)
+
+		// TODO: validacija - da li su neka polja nil ?
+	}
 
 	// validate links
 	for _, link := range post.Links {
@@ -387,4 +396,31 @@ func decode(cursor *mongo.Cursor) (posts []*domain.Post, err error) {
 	}
 	err = cursor.Err()
 	return
+}
+
+func (store *PostMongoDBStore) UpdateCompanyInfo(company *domain.Company, oldName string) (string, error) {
+	newData := bson.M{
+		"id":          primitive.NewObjectID(),
+		"name":        company.Name,
+		"description": company.Description,
+		"phoneNumber": company.PhoneNumber,
+		"is_active":   company.IsActive,
+	}
+
+	newCompany := bson.M{"$set": bson.M{
+		"company": newData,
+	}}
+
+	posts, _ := store.GetAll()
+	opts := options.Update().SetUpsert(true)
+
+	for _, post := range posts {
+		_, err := store.posts.UpdateOne(context.TODO(), bson.M{"_id": post.Id}, newCompany, opts)
+		fmt.Println("azurirao")
+		if err != nil {
+			return "error", err
+		}
+	}
+
+	return "success", nil
 }

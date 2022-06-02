@@ -2,6 +2,8 @@ package startup
 
 import (
 	"fmt"
+	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"log"
 	"net"
 
@@ -30,7 +32,10 @@ func NewServer(config *config.Config) *Server {
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	postStore := server.initPostStore(mongoClient)
-	postService := server.initPostService(postStore)
+	userServiceClient := server.initUserServiceClient()
+	authServiceClient := server.initAuthServiceClient()
+	postService := server.initPostService(postStore, userServiceClient, authServiceClient)
+
 	postHandler := server.initPostHandler(postService)
 
 	server.startGrpcServer(postHandler)
@@ -56,11 +61,21 @@ func (server *Server) initPostStore(client *mongo.Client) domain.PostStore { // 
 	return store
 }
 
-func (server *Server) initPostService(store domain.PostStore) *application.PostService {
-	return application.NewPostService(store)
+func (server *Server) initPostService(store domain.PostStore, userServiceClient user.UserServiceClient, authServiceClient auth.AuthServiceClient) *application.PostService {
+	return application.NewPostService(store, userServiceClient, authServiceClient)
 }
 
-func (server *Server) initPostHandler(service *application.PostService) *api.PostHandler { // inicjializacija post handler-a, odnosno post servisa
+func (server *Server) initUserServiceClient() user.UserServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.UserServiceHost, server.config.UserServicePort)
+	return persistence.NewUserServiceClient(address)
+}
+
+func (server *Server) initAuthServiceClient() auth.AuthServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.AuthServiceHost, server.config.AuthServicePort)
+	return persistence.NewAuthServiceClient(address)
+}
+
+func (server *Server) initPostHandler(service *application.PostService) *api.PostHandler {
 	return api.NewPostHandler(service)
 }
 

@@ -73,3 +73,7 @@ func (handler *AuthHandler) AdminsEndpoint(ctx context.Context, request *pb.Empt
 func (handler *AuthHandler) CreateNewAPIToken(ctx context.Context, request *pb.APITokenRequest) (*pb.NewAPITokenResponse, error) {
 	return handler.service.CreateNewAPIToken(ctx, request)
 }
+
+func (handler *AuthHandler) GetUsernameByApiToken(ctx context.Context, request *pb.GetUsernameRequest) (*pb.GetUsernameResponse, error) {
+	return handler.service.GetUsernameByApiToken(ctx, request)
+}

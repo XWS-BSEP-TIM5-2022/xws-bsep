@@ -84,7 +84,12 @@ service UserService{
         option (google.api.http) = {
             get: "/api/user/getIdByEmail"
         };
-    } 
+    }
+    rpc GetIdByUsername(GetIdByUsernameRequest) returns (InsertResponse) {
+        option (google.api.http) = {
+            get: "/api/user/getIdByUsername"
+        };
+    }
 }
 
 message GetRequest {
@@ -229,4 +234,8 @@ message IsActiveResponse {
 
 message GetIdByEmailRequest {
     string email = 1;
+}
+
+message GetIdByUsernameRequest {
+    string username = 1;
 }

@@ -111,58 +111,97 @@ func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Reques
 		}
 
 		if isPublic {
-			newPost := domain.Post{
-				Id:          post.Id,
-				Text:        post.Text,
-				Image:       post.Image,
-				Links:       post.Links,
-				DateCreated: post.DateCreated.AsTime(),
-				UserId:      post.UserId,
-				JobOffer: domain.JobOffer{
-					//Id: string(post.JobOffer.Id),
-					JobDescription:  post.JobOffer.JobDescription,
-					Preconditions:   post.JobOffer.Preconditions,
-					DailyActivities: post.JobOffer.DailyActivities,
-					Position: domain.Position{
-						//Id:
-						Name: post.JobOffer.Position.Name,
-						Pay:  post.JobOffer.Position.Pay,
+			if post.IsJobOffer {
+				newPost := domain.Post{
+					Id:          post.Id,
+					Text:        post.Text,
+					Image:      post.Image,
+					Links:       post.Links,
+					DateCreated: post.DateCreated.AsTime(),
+					UserId:      post.UserId,
+					JobOffer: domain.JobOffer{
+						//Id: string(post.JobOffer.Id),
+						JobDescription:  post.JobOffer.JobDescription,
+						Preconditions:   post.JobOffer.Preconditions,
+						DailyActivities: post.JobOffer.DailyActivities,
+						Position: domain.Position{
+							//Id:
+							Name: post.JobOffer.Position.Name,
+							Pay:  post.JobOffer.Position.Pay,
+						},
 					},
-				},
-				IsJobOffer: post.IsJobOffer,
-				Company: domain.Company{
-					Name:        post.Company.Name,
-					Description: post.Company.Description,
-					PhoneNumber: post.Company.PhoneNumber,
-					IsActive:    post.Company.IsActive,
-				},
-			}
-
-			for _, like := range post.Likes {
-				newLike := domain.Like{
-					Id:     like.Id,
-					UserId: like.UserId,
+					IsJobOffer: post.IsJobOffer,
+					Company: domain.Company{
+						Name:        post.Company.Name,
+						Description: post.Company.Description,
+						PhoneNumber: post.Company.PhoneNumber,
+						IsActive:    post.Company.IsActive,
+					},
 				}
-				newPost.Likes = append(newPost.Likes, newLike)
-			}
 
-			for _, dislike := range post.Dislikes {
-				newDislike := domain.Dislike{
-					Id:     dislike.Id,
-					UserId: dislike.UserId,
+				for _, like := range post.Likes {
+					newLike := domain.Like{
+						Id:     like.Id,
+						UserId: like.UserId,
+					}
+					newPost.Likes = append(newPost.Likes, newLike)
 				}
-				newPost.Dislikes = append(newPost.Dislikes, newDislike)
-			}
 
-			for _, comment := range post.Comments {
-				newComment := domain.Comment{
-					Id:     comment.Id,
-					UserId: comment.UserId,
-					Text:   comment.Text,
+				for _, dislike := range post.Dislikes {
+					newDislike := domain.Dislike{
+						Id:     dislike.Id,
+						UserId: dislike.UserId,
+					}
+					newPost.Dislikes = append(newPost.Dislikes, newDislike)
 				}
-				newPost.Comments = append(newPost.Comments, newComment)
+
+				for _, comment := range post.Comments {
+					newComment := domain.Comment{
+						Id:     comment.Id,
+						UserId: comment.UserId,
+						Text:   comment.Text,
+					}
+					newPost.Comments = append(newPost.Comments, newComment)
+				}
+				allPosts.AllPosts = append(allPosts.AllPosts, newPost)
+			} else {
+				newPost := domain.Post{
+					Id:          post.Id,
+					Text:        post.Text,
+					Images:      post.Images,
+					Links:       post.Links,
+					DateCreated: post.DateCreated.AsTime(),
+					UserId:      post.UserId,
+					IsJobOffer:  post.IsJobOffer,
+				}
+
+				for _, like := range post.Likes {
+					newLike := domain.Like{
+						Id:     like.Id,
+						UserId: like.UserId,
+					}
+					newPost.Likes = append(newPost.Likes, newLike)
+				}
+
+				for _, dislike := range post.Dislikes {
+					newDislike := domain.Dislike{
+						Id:     dislike.Id,
+						UserId: dislike.UserId,
+					}
+					newPost.Dislikes = append(newPost.Dislikes, newDislike)
+				}
+
+				for _, comment := range post.Comments {
+					newComment := domain.Comment{
+						Id:     comment.Id,
+						UserId: comment.UserId,
+						Text:   comment.Text,
+					}
+					newPost.Comments = append(newPost.Comments, newComment)
+				}
+
+				allPosts.AllPosts = append(allPosts.AllPosts, newPost)
 			}
-			allPosts.AllPosts = append(allPosts.AllPosts, newPost)
 		}
 	}
 
@@ -208,60 +247,99 @@ func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) e
 			fmt.Println("desio se error!")
 			return err
 		}
-		for _, post := range postsByUser.Posts {
-			newPost := domain.Post{
-				Id:          post.Id,
-				Text:        post.Text,
-				Image:       post.Image,
-				Links:       post.Links,
-				DateCreated: post.DateCreated.AsTime(),
-				UserId:      post.UserId,
-				JobOffer: domain.JobOffer{
-					//Id: string(post.JobOffer.Id),
-					JobDescription:  post.JobOffer.JobDescription,
-					Preconditions:   post.JobOffer.Preconditions,
-					DailyActivities: post.JobOffer.DailyActivities,
-					Position: domain.Position{
-						//Id:
-						Name: post.JobOffer.Position.Name,
-						Pay:  post.JobOffer.Position.Pay,
+		for _, post := range postsByUser.Posts { 
+			if post.IsJobOffer {
+				newPost := domain.Post{
+					Id:          post.Id,
+					Text:        post.Text,
+					Image:      post.Image,
+					Links:       post.Links,
+					DateCreated: post.DateCreated.AsTime(),
+					UserId:      post.UserId,
+					JobOffer: domain.JobOffer{
+						//Id: string(post.JobOffer.Id),
+						JobDescription:  post.JobOffer.JobDescription,
+						Preconditions:   post.JobOffer.Preconditions,
+						DailyActivities: post.JobOffer.DailyActivities,
+						Position: domain.Position{
+							//Id:
+							Name: post.JobOffer.Position.Name,
+							Pay:  post.JobOffer.Position.Pay,
+						}, 
 					},
-				},
-				IsJobOffer: post.IsJobOffer,
-				Company: domain.Company{
-					Name:        post.Company.Name,
-					Description: post.Company.Description,
-					PhoneNumber: post.Company.PhoneNumber,
-					IsActive:    post.Company.IsActive,
-				},
-			}
-
-			for _, like := range post.Likes {
-				newLike := domain.Like{
-					Id:     like.Id,
-					UserId: like.UserId,
+					IsJobOffer: post.IsJobOffer,
+					Company: domain.Company{
+						Name:        post.Company.Name,
+						Description: post.Company.Description,
+						PhoneNumber: post.Company.PhoneNumber,
+						IsActive:    post.Company.IsActive,
+					},
 				}
-				newPost.Likes = append(newPost.Likes, newLike)
-			}
 
-			for _, dislike := range post.Dislikes {
-				newDislike := domain.Dislike{
-					Id:     dislike.Id,
-					UserId: dislike.UserId,
+				for _, like := range post.Likes {
+					newLike := domain.Like{
+						Id:     like.Id,
+						UserId: like.UserId,
+					}
+					newPost.Likes = append(newPost.Likes, newLike)
 				}
-				newPost.Dislikes = append(newPost.Dislikes, newDislike)
-			}
 
-			for _, comment := range post.Comments {
-				newComment := domain.Comment{
-					Id:     comment.Id,
-					UserId: comment.UserId,
-					Text:   comment.Text,
+				for _, dislike := range post.Dislikes {
+					newDislike := domain.Dislike{
+						Id:     dislike.Id,
+						UserId: dislike.UserId,
+					}
+					newPost.Dislikes = append(newPost.Dislikes, newDislike)
 				}
-				newPost.Comments = append(newPost.Comments, newComment)
-			}
 
-			posts.AllPosts = append(posts.AllPosts, newPost) // dodati post u listu postova
+				for _, comment := range post.Comments {
+					newComment := domain.Comment{
+						Id:     comment.Id,
+						UserId: comment.UserId,
+						Text:   comment.Text,
+					}
+					newPost.Comments = append(newPost.Comments, newComment)
+				}
+
+				posts.AllPosts = append(posts.AllPosts, newPost) // dodati post u listu postova
+			} else {
+				newPost := domain.Post{
+					Id:          post.Id,
+					Text:        post.Text,
+					Images:      post.Images,
+					Links:       post.Links,
+					DateCreated: post.DateCreated.AsTime(),
+					UserId:      post.UserId,
+					IsJobOffer:  post.IsJobOffer,
+				}
+
+				for _, like := range post.Likes {
+					newLike := domain.Like{
+						Id:     like.Id,
+						UserId: like.UserId,
+					}
+					newPost.Likes = append(newPost.Likes, newLike)
+				}
+
+				for _, dislike := range post.Dislikes {
+					newDislike := domain.Dislike{
+						Id:     dislike.Id,
+						UserId: dislike.UserId,
+					}
+					newPost.Dislikes = append(newPost.Dislikes, newDislike)
+				}
+
+				for _, comment := range post.Comments {
+					newComment := domain.Comment{
+						Id:     comment.Id,
+						UserId: comment.UserId,
+						Text:   comment.Text,
+					}
+					newPost.Comments = append(newPost.Comments, newComment)
+				}
+
+				posts.AllPosts = append(posts.AllPosts, newPost)
+			}
 		}
 	}
 	return nil

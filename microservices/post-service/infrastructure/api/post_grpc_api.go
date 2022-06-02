@@ -92,28 +92,83 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 }
 
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
-	//api_token := request.InsertJobOfferPost.ApiToken
+	apiToken := request.InsertJobOfferPost.ApiToken
 
-	// iz auth servisa na osnovu tokena izvuci usera ili username
-	// iz user servisa na osnovu username izvuci usera
-	// kreirati post u ime tog izvucenog usera (+)
+	/** provera vremena vazenja api tokena **/
+	//var claims map[string]interface{}
+	//token, _ := jwt.ParseSigned(apiToken)
+	//_ = token.UnsafeClaimsWithoutVerification(&claims)
+	//
+	//expiration := claims["exp"]
+	//valStr := fmt.Sprint(expiration)
+	//var lenStr = len(valStr)
+	//var checkExp = ""
+	//for i := 0; i < lenStr; i++ {
+	//	char := string(valStr[i])
+	//	if char == "e" {
+	//		break
+	//	}
+	//	if char != "." {
+	//		checkExp = checkExp + char
+	//	}
+	//}
+	//
+	//now := time.Now().Unix()
+	//
+	//// dok duzina checkExp ne bude 10, dodaj nule na kraj
+	////if len(checkExp) == 7 {
+	////	checkExp = checkExp + "000"
+	////}
+	////if len(checkExp) == 8 {
+	////	checkExp = checkExp + "00"
+	////}
+	////if len(checkExp) == 9 {
+	////	checkExp = checkExp + "0"
+	////}
+	//for len(checkExp) == 10 {
+	//	checkExp = checkExp + "0"
+	//}
+	//expirationDate, _ := strconv.ParseInt(checkExp, 10, 64)
+	//
+	//fmt.Println("vreme sad: ", now)
+	//fmt.Println("vreme kad token istice: ", expirationDate)
+	///** kraj provere vremena isticanja tokena **/
+	//
+	//if now < expirationDate {
+	username, err := handler.service.GetUsernameByApiToken(ctx, apiToken)
+	if err != nil {
+		fmt.Println("desila se greska, ne moze se naci username- GetUsernameByApiToken !!!!")
+		return nil, err
+	}
+	fmt.Println("ovo je username: ", username)
+
+	userId, err := handler.service.GetIdByUsername(ctx, username.Username)
+	if err != nil {
+		fmt.Println("desila se greska, ne moze se naci user id - GetIdByUsername !!!!")
+		return nil, err
+	}
 
 	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
 	if err != nil {
+		fmt.Println("desila se greska, mapiranje - mapInsertJobOfferPost !!!!")
 		return nil, err
 	}
 
-	post.UserId = "629662bf49f680dff2878261" // TODO: change
+	post.UserId = userId.Id
+	fmt.Println("id user-a je: ", post.UserId)
 
 	success, err := handler.service.Insert(post)
 	if err != nil {
+		fmt.Println("desila se greska, dodavanje post-a !!!!")
 		return nil, err
 	}
-	fmt.Println("ovo je request:", request)
 	response := &pb.InsertResponse{
 		Success: success,
 	}
 	return response, nil
+	//}
+	//fmt.Println("GRESKA SA API TOKENOM!")
+	//return nil, nil
 }
 
 func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike) (*pb.InsertResponse, error) {
@@ -293,6 +348,22 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 	}
 
 	success, err := handler.service.Update(post)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.InsertResponse{
+		Success: success,
+	}
+	return response, err
+}
+
+func (handler *PostHandler) UpdateCompanyInfo(ctx context.Context, request *pb.UpdateCompanyInfoRequest) (*pb.InsertResponse, error) {
+	company, err := mapCompanyInfo(request.CompanyInfoDTO)
+	if err != nil {
+		return nil, err
+	}
+
+	success, err := handler.service.UpdateCompanyInfo(company, request.CompanyInfoDTO.OldName)
 	if err != nil {
 		return nil, err
 	}

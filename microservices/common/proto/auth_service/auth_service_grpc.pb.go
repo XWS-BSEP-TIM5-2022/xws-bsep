@@ -36,6 +36,7 @@ type AuthServiceClient interface {
 	GetAllPermissionsByRole(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Response, error)
 	AdminsEndpoint(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Response, error)
 	CreateNewAPIToken(ctx context.Context, in *APITokenRequest, opts ...grpc.CallOption) (*NewAPITokenResponse, error)
+	GetUsernameByApiToken(ctx context.Context, in *GetUsernameRequest, opts ...grpc.CallOption) (*GetUsernameResponse, error)
 }
 
 type authServiceClient struct {
@@ -172,6 +173,15 @@ func (c *authServiceClient) CreateNewAPIToken(ctx context.Context, in *APITokenR
 	return out, nil
 }
 
+func (c *authServiceClient) GetUsernameByApiToken(ctx context.Context, in *GetUsernameRequest, opts ...grpc.CallOption) (*GetUsernameResponse, error) {
+	out := new(GetUsernameResponse)
+	err := c.cc.Invoke(ctx, "/auth_service.AuthService/GetUsernameByApiToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -190,6 +200,7 @@ type AuthServiceServer interface {
 	GetAllPermissionsByRole(context.Context, *Empty) (*Response, error)
 	AdminsEndpoint(context.Context, *Empty) (*Response, error)
 	CreateNewAPIToken(context.Context, *APITokenRequest) (*NewAPITokenResponse, error)
+	GetUsernameByApiToken(context.Context, *GetUsernameRequest) (*GetUsernameResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -238,6 +249,9 @@ func (UnimplementedAuthServiceServer) AdminsEndpoint(context.Context, *Empty) (*
 }
 func (UnimplementedAuthServiceServer) CreateNewAPIToken(context.Context, *APITokenRequest) (*NewAPITokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateNewAPIToken not implemented")
+}
+func (UnimplementedAuthServiceServer) GetUsernameByApiToken(context.Context, *GetUsernameRequest) (*GetUsernameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUsernameByApiToken not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -504,6 +518,24 @@ func _AuthService_CreateNewAPIToken_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_GetUsernameByApiToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUsernameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetUsernameByApiToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth_service.AuthService/GetUsernameByApiToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetUsernameByApiToken(ctx, req.(*GetUsernameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -566,6 +598,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateNewAPIToken",
 			Handler:    _AuthService_CreateNewAPIToken_Handler,
+		},
+		{
+			MethodName: "GetUsernameByApiToken",
+			Handler:    _AuthService_GetUsernameByApiToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
