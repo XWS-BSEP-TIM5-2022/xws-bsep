@@ -7,7 +7,10 @@ import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"gopkg.in/square/go-jose.v2/jwt"
+	"strconv"
 	"strings"
+	"time"
 )
 
 // implementacije gRPC servera koji smo definisali u okviru common paketa
@@ -91,37 +94,79 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
 	apiToken := request.InsertJobOfferPost.ApiToken
-	username, err := handler.service.GetUsernameByApiToken(ctx, apiToken)
-	if err != nil {
-		fmt.Println("desila se greska, ne moze se naci username- GetUsernameByApiToken !!!!")
-		return nil, err
-	}
-	fmt.Println("ovo je username: ", username)
 
-	userId, err := handler.service.GetIdByUsername(ctx, username.Username)
-	if err != nil {
-		fmt.Println("desila se greska, ne moze se naci user id - GetIdByUsername !!!!")
-		return nil, err
+	/** provera vremena vazenja api tokena **/
+	var claims map[string]interface{}
+	token, _ := jwt.ParseSigned(apiToken)
+	_ = token.UnsafeClaimsWithoutVerification(&claims)
+
+	expiration := claims["exp"]
+	valStr := fmt.Sprint(expiration)
+	var lenStr = len(valStr)
+	var checkExp = ""
+	for i := 0; i < lenStr; i++ {
+		char := string(valStr[i])
+		if char == "e" {
+			break
+		}
+		if char != "." {
+			checkExp = checkExp + char
+		}
 	}
 
-	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
-	if err != nil {
-		fmt.Println("desila se greska, mapiranje - mapInsertJobOfferPost !!!!")
-		return nil, err
-	}
+	now := time.Now().Unix()
 
-	post.UserId = userId.Id
-	fmt.Println("id user-a je: ", post.UserId)
+	// dok duzina checkExp nije 9, dodaj nule na kraj
+	if len(checkExp) == 7 {
+		checkExp = checkExp + "000"
+	}
+	if len(checkExp) == 8 {
+		checkExp = checkExp + "00"
+	}
+	if len(checkExp) == 9 {
+		checkExp = checkExp + "0"
+	}
+	expirationDate, _ := strconv.ParseInt(checkExp, 10, 64)
 
-	success, err := handler.service.Insert(post)
-	if err != nil {
-		fmt.Println("desila se greska, dodavanje post-a !!!!")
-		return nil, err
+	fmt.Println("vreme sad: ", now)
+	fmt.Println("vreme kad token istice: ", expirationDate)
+	/** kraj provere vremena isticanja tokena **/
+
+	if now < expirationDate {
+		username, err := handler.service.GetUsernameByApiToken(ctx, apiToken)
+		if err != nil {
+			fmt.Println("desila se greska, ne moze se naci username- GetUsernameByApiToken !!!!")
+			return nil, err
+		}
+		fmt.Println("ovo je username: ", username)
+
+		userId, err := handler.service.GetIdByUsername(ctx, username.Username)
+		if err != nil {
+			fmt.Println("desila se greska, ne moze se naci user id - GetIdByUsername !!!!")
+			return nil, err
+		}
+
+		post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
+		if err != nil {
+			fmt.Println("desila se greska, mapiranje - mapInsertJobOfferPost !!!!")
+			return nil, err
+		}
+
+		post.UserId = userId.Id
+		fmt.Println("id user-a je: ", post.UserId)
+
+		success, err := handler.service.Insert(post)
+		if err != nil {
+			fmt.Println("desila se greska, dodavanje post-a !!!!")
+			return nil, err
+		}
+		response := &pb.InsertResponse{
+			Success: success,
+		}
+		return response, nil
 	}
-	response := &pb.InsertResponse{
-		Success: success,
-	}
-	return response, nil
+	fmt.Println("GRESKA SA API TOKENOM!")
+	return nil, nil
 }
 
 func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike) (*pb.InsertResponse, error) {
