@@ -24,7 +24,7 @@ type Comment struct {
 type Post struct {
 	Id          primitive.ObjectID `bson:"_id" validate:"required"`
 	Text        string             `bson:"text" validate:"required"`
-	Images      []string           `bson:"images"`
+	Image       string             `bson:"image"`
 	Links       []string           `bson:"links"`
 	DateCreated time.Time          `bson:"date_created" validate:"required"`
 	Likes       []Like             `bson:"likes"`

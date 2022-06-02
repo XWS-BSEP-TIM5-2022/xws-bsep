@@ -128,7 +128,7 @@ message Company {
 message InsertPost {
   string id = 1;
   string text = 2;
-  repeated string images = 3;
+  string  image = 3;
   repeated string links = 4;
 //  google.protobuf.Timestamp dateCreated = 5;
 //  repeated Like likes = 5;
@@ -140,7 +140,7 @@ message InsertPost {
 message Post {
   string id = 1;
   string text = 2;
-  repeated string images = 3;
+  string image = 3;
   repeated string links = 4;
   google.protobuf.Timestamp dateCreated = 5;
   repeated Like likes = 6;

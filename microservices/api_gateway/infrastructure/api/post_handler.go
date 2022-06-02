@@ -114,7 +114,7 @@ func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Reques
 			newPost := domain.Post{
 				Id:          post.Id,
 				Text:        post.Text,
-				Images:      post.Images,
+				Image:       post.Image,
 				Links:       post.Links,
 				DateCreated: post.DateCreated.AsTime(),
 				UserId:      post.UserId,
@@ -212,7 +212,7 @@ func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) e
 			newPost := domain.Post{
 				Id:          post.Id,
 				Text:        post.Text,
-				Images:      post.Images,
+				Image:       post.Image,
 				Links:       post.Links,
 				DateCreated: post.DateCreated.AsTime(),
 				UserId:      post.UserId,
