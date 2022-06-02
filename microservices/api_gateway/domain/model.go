@@ -110,7 +110,7 @@ type Comment struct {
 type Post struct {
 	Id          string
 	Text        string
-	Images      []string
+	Image       string
 	Links       []string
 	DateCreated time.Time
 	Likes       []Like

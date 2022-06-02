@@ -17,7 +17,7 @@ func mapPost(post *domain.Post) *pb.Post {
 			Text:        html.UnescapeString(post.Text), /** UnescapeString **/
 			DateCreated: timestamppb.New(post.DateCreated),
 			UserId:      post.UserId,
-			Images:      post.Images,
+			Image:       post.Image,
 			Links:       post.Links,
 			IsJobOffer:  post.IsJobOffer,
 			Company: &pb.Company{
@@ -68,7 +68,7 @@ func mapPost(post *domain.Post) *pb.Post {
 			Text:        html.UnescapeString(post.Text), /** UnescapeString **/
 			DateCreated: timestamppb.New(post.DateCreated),
 			UserId:      post.UserId,
-			Images:      post.Images,
+			Image:       post.Image,
 			Links:       post.Links,
 			IsJobOffer:  post.IsJobOffer,
 		}
@@ -99,9 +99,17 @@ func mapPost(post *domain.Post) *pb.Post {
 }
 
 func mapInsertPost(post *pb.InsertPost) (*domain.Post, error) {
+	//fmt.Println("ovde mapiram:", post.Image)
+	//image, errImg := decodeImage(post.Image)
+	//fmt.Println("namapirano:", image)
+
+	//if errImg != nil {
+	//	return nil, errors.New("error with decoding image")
+	//}
+
 	postPb := &domain.Post{
 		Text:        strings.TrimSpace(post.Text), // function to remove leading and trailing whitespace
-		Images:      post.Images,
+		Image:       post.Image,
 		Links:       post.Links,
 		DateCreated: time.Now(),
 		IsJobOffer:  false,
@@ -149,6 +157,29 @@ func mapCompanyInfo(company *pb.CompanyInfoDTO) (*domain.Company, error) {
 	return companyPb, nil
 }
 
+func mapPosition(position *pb.Position) (*domain.Position, error) {
+	positionPb := &domain.Position{
+		//Id:   primitive.NewObjectID(),	// TODO ?
+		Name: position.Name,
+		Pay:  position.Pay,
+	}
+
+	return positionPb, nil
+}
+
+//func encodeImage(image primitive.Binary) string {
+//	return base64.StdEncoding.EncodeToString(image.Data)
+//}
+//
+//func decodeImage(path string) (primitive.Binary, error) {
+//
+//	fmt.Println("usao sam")
+//	image, err := base64.StdEncoding.DecodeString(path)
+//	if err != nil {
+//		return primitive.Binary{}, err
+//	}
+//	return primitive.Binary{Data: image}, nil
+// }
 //func mapInsertPosition(position *pb.Position) (*domain.Position, error) {
 //	positionPb := &domain.Position{
 //		Id:   primitive.NewObjectID(),

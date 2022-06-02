@@ -72,7 +72,9 @@ func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetReq
 }
 
 func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
+	//fmt.Println("ovo je request:", request.InsertPost.Image)
 	post, err := mapInsertPost(request.InsertPost)
+
 	if err != nil {
 		return nil, err
 	}

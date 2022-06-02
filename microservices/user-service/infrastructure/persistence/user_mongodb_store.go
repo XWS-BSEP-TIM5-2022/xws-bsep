@@ -186,8 +186,9 @@ func (store *UserMongoDBStore) Search(criteria string) ([]*domain.User, error) {
 			if user.IsActive {
 				name := strings.ToLower(user.Name)
 				lastName := strings.ToLower(user.LastName)
+				email := strings.ToLower(user.Email)
 
-				if strings.Contains(name, word) || strings.Contains(lastName, word) {
+				if strings.Contains(name, word) || strings.Contains(lastName, word) || strings.Contains(email, word) {
 					ret = append(ret, user)
 				}
 			}

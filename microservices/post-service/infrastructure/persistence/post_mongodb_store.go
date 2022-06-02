@@ -87,6 +87,7 @@ func (store *PostMongoDBStore) GetAllByUser(id string) ([]*domain.Post, error) {
 func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 	post.Id = primitive.NewObjectID()
 
+	//fmt.Println("ovo saljem:", post.Image.Data)
 	/** EscapeString **/
 	post.Text = html.EscapeString(post.Text)
 	if post.IsJobOffer {
@@ -139,11 +140,19 @@ func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 	return "success", nil
 }
 
+//func decodeImage(path string) (primitive.Binary, error) {
+//	image, err := base64.StdEncoding.DecodeString(path)
+//	if err != nil {
+//		return primitive.Binary{}, err
+//	}
+//	return primitive.Binary{Data: image}, nil
+//}
+
 func (store *PostMongoDBStore) Update(post *domain.Post) (string, error) {
 	newData := bson.M{"$set": bson.M{
 		"text":         post.Text,
 		"date_created": post.DateCreated,
-		"images":       post.Images,
+		"image":        post.Image,
 		"links":        post.Links,
 		"likes":        post.Likes,
 		"dislikes":     post.Dislikes,
@@ -236,7 +245,7 @@ func (store *PostMongoDBStore) LikePost(post *domain.Post, user_id string) (stri
 	newData := bson.M{"$set": bson.M{
 		"text":         post.Text,
 		"date_created": post.DateCreated,
-		"images":       post.Images,
+		"image":        post.Image,
 		"links":        post.Links,
 		"likes":        post.Likes,
 		"dislikes":     post.Dislikes,
@@ -285,7 +294,7 @@ func (store *PostMongoDBStore) DislikePost(post *domain.Post, user_id string) (s
 	newData := bson.M{"$set": bson.M{
 		"text":         post.Text,
 		"date_created": post.DateCreated,
-		"images":       post.Images,
+		"image":        post.Image,
 		"links":        post.Links,
 		"likes":        post.Likes,
 		"dislikes":     post.Dislikes,
@@ -336,7 +345,7 @@ func (store *PostMongoDBStore) CommentPost(post *domain.Post, user_id string, te
 	newData := bson.M{"$set": bson.M{
 		"text":         post.Text,
 		"date_created": post.DateCreated,
-		"images":       post.Images,
+		"image":        post.Image,
 		"links":        post.Links,
 		"likes":        post.Likes,
 		"dislikes":     post.Dislikes,
