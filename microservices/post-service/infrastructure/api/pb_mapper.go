@@ -17,7 +17,7 @@ func mapPost(post *domain.Post) *pb.Post {
 			Text:        html.UnescapeString(post.Text), /** UnescapeString **/
 			DateCreated: timestamppb.New(post.DateCreated),
 			UserId:      post.UserId,
-			Image:      post.Image,
+			Image:       post.Image,
 			Links:       post.Links,
 			IsJobOffer:  post.IsJobOffer,
 			Company: &pb.Company{
@@ -68,7 +68,7 @@ func mapPost(post *domain.Post) *pb.Post {
 			Text:        html.UnescapeString(post.Text), /** UnescapeString **/
 			DateCreated: timestamppb.New(post.DateCreated),
 			UserId:      post.UserId,
-			Images:      post.Images,
+			Image:       post.Image,
 			Links:       post.Links,
 			IsJobOffer:  post.IsJobOffer,
 		}

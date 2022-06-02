@@ -115,7 +115,7 @@ func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Reques
 				newPost := domain.Post{
 					Id:          post.Id,
 					Text:        post.Text,
-					Image:      post.Image,
+					Image:       post.Image,
 					Links:       post.Links,
 					DateCreated: post.DateCreated.AsTime(),
 					UserId:      post.UserId,
@@ -168,7 +168,7 @@ func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Reques
 				newPost := domain.Post{
 					Id:          post.Id,
 					Text:        post.Text,
-					Images:      post.Images,
+					Image:       post.Image,
 					Links:       post.Links,
 					DateCreated: post.DateCreated.AsTime(),
 					UserId:      post.UserId,
@@ -247,12 +247,12 @@ func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) e
 			fmt.Println("desio se error!")
 			return err
 		}
-		for _, post := range postsByUser.Posts { 
+		for _, post := range postsByUser.Posts {
 			if post.IsJobOffer {
 				newPost := domain.Post{
 					Id:          post.Id,
 					Text:        post.Text,
-					Image:      post.Image,
+					Image:       post.Image,
 					Links:       post.Links,
 					DateCreated: post.DateCreated.AsTime(),
 					UserId:      post.UserId,
@@ -265,7 +265,7 @@ func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) e
 							//Id:
 							Name: post.JobOffer.Position.Name,
 							Pay:  post.JobOffer.Position.Pay,
-						}, 
+						},
 					},
 					IsJobOffer: post.IsJobOffer,
 					Company: domain.Company{
@@ -306,7 +306,7 @@ func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) e
 				newPost := domain.Post{
 					Id:          post.Id,
 					Text:        post.Text,
-					Images:      post.Images,
+					Image:       post.Image,
 					Links:       post.Links,
 					DateCreated: post.DateCreated.AsTime(),
 					UserId:      post.UserId,
