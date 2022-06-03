@@ -232,7 +232,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		Email:        request.Email,
 		Biography:    request.Biography,
 		IsPublic:     false,
-		IsActive:     true,
+		IsActive:     false,
 		Role:         request.Role,
 	}
 
