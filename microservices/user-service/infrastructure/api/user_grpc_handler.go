@@ -4,6 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
+	"log"
+	"os"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -12,14 +15,44 @@ import (
 )
 
 type UserHandler struct {
-	service *application.UserService
+	service       *application.UserService
+	WarningLogger *log.Logger
+	InfoLogger    *log.Logger
+	ErrorLogger   *log.Logger
+	SuccessLogger *log.Logger
+	DebugLogger   *log.Logger
 	pb.UnimplementedUserServiceServer
 }
 
 func NewUserHandler(service *application.UserService) *UserHandler {
+	InfoLogger := setLogger("infoLogs.txt", "INFO ")
+	// TODO SD:
+	// InfoLogger.Println(strings.ReplaceAll("NewUserHandler created!", " ", "_"))
+	ErrorLogger := setLogger("errorLogs.txt", "ERROR ")
+	WarningLogger := setLogger("warningLogs.txt", "WARNING ")
+	SuccessLogger := setLogger("successLogs.txt", "SUCCESS ")
+	DebugLogger := setLogger("debugLogs.txt", "DEBUG ")
+
 	return &UserHandler{
-		service: service,
+		service:       service,
+		InfoLogger:    InfoLogger,
+		ErrorLogger:   ErrorLogger,
+		WarningLogger: WarningLogger,
+		SuccessLogger: SuccessLogger,
+		DebugLogger:   DebugLogger,
 	}
+}
+
+func setLogger(filename, loggerType string) *log.Logger {
+	file, err := os.OpenFile("logs/"+filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	Logger := log.New(file, loggerType, log.Ldate|log.Ltime|log.Lshortfile) //Llongfile
+
+	mw := io.MultiWriter(os.Stdout, file)
+	Logger.SetOutput(mw)
+	return Logger
 }
 
 func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllRequest) (*pb.GetAllResponse, error) {
@@ -38,6 +71,8 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 }
 
 func (handler *UserHandler) GetAllPublic(ctx context.Context, request *pb.GetAllPublicRequest) (*pb.GetAllPublicResponse, error) {
+	handler.InfoLogger.Println("Hello from get all public")
+
 	users, err := handler.service.GetAllPublic()
 	if err != nil {
 		return nil, err
@@ -53,11 +88,11 @@ func (handler *UserHandler) GetAllPublic(ctx context.Context, request *pb.GetAll
 }
 
 func (handler *UserHandler) Search(ctx context.Context, request *pb.SearchRequest) (*pb.SearchResponse, error) {
-
 	criteria := request.Criteria
 	users, err := handler.service.Search(criteria)
 
 	if err != nil {
+		handler.ErrorLogger.Println("Search error")
 		return nil, err
 	}
 
@@ -90,6 +125,7 @@ func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateReques
 	//id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	objectId, err := primitive.ObjectIDFromHex(request.User.Id)
 	if err != nil {
+
 		return nil, err
 	}
 	oldUser, err := handler.service.Get(objectId)
