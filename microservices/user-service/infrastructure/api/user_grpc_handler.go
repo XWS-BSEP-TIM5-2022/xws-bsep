@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -25,13 +26,13 @@ type UserHandler struct {
 }
 
 func NewUserHandler(service *application.UserService) *UserHandler {
-	InfoLogger := setLogger("infoLogs.txt", "INFO ")
+	InfoLogger := setLogger("info.txt", "INFO ")
 	// TODO SD:
 	// InfoLogger.Println(strings.ReplaceAll("NewUserHandler created!", " ", "_"))
-	ErrorLogger := setLogger("errorLogs.txt", "ERROR ")
-	WarningLogger := setLogger("warningLogs.txt", "WARNING ")
-	SuccessLogger := setLogger("successLogs.txt", "SUCCESS ")
-	DebugLogger := setLogger("debugLogs.txt", "DEBUG ")
+	ErrorLogger := setLogger("error.txt", "ERROR ")
+	WarningLogger := setLogger("warning.txt", "WARNING ")
+	SuccessLogger := setLogger("success.txt", "SUCCESS ")
+	DebugLogger := setLogger("debug.txt", "DEBUG ")
 
 	return &UserHandler{
 		service:       service,
@@ -44,6 +45,10 @@ func NewUserHandler(service *application.UserService) *UserHandler {
 }
 
 func setLogger(filename, loggerType string) *log.Logger {
+	if _, err := os.Stat("logs"); os.IsNotExist(err) {
+		os.Mkdir("logs", 0777)
+
+	}
 	file, err := os.OpenFile("logs/"+filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
@@ -71,7 +76,7 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 }
 
 func (handler *UserHandler) GetAllPublic(ctx context.Context, request *pb.GetAllPublicRequest) (*pb.GetAllPublicResponse, error) {
-	handler.InfoLogger.Println("Hello from get all public")
+	handler.InfoLogger.Println(strings.ReplaceAll("Getting all public accounts", " ", "_"))
 
 	users, err := handler.service.GetAllPublic()
 	if err != nil {
@@ -84,6 +89,8 @@ func (handler *UserHandler) GetAllPublic(ctx context.Context, request *pb.GetAll
 		current := mapUser(user)
 		response.Users = append(response.Users, current)
 	}
+
+	handler.SuccessLogger.Println(strings.ReplaceAll("All public users were supplied", " ", "_"))
 	return response, nil
 }
 
