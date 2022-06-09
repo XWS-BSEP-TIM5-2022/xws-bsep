@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-playground/validator/v10"
 	"log"
 	"math/rand"
 	"net/mail"
@@ -14,6 +13,8 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/go-playground/validator/v10"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup/config"
@@ -21,7 +22,6 @@ import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/dgrijalva/jwt-go"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -205,143 +205,143 @@ func (service *AuthService) ConfirmEmailLogin(ctx context.Context, request *pb.C
 	}, nil
 }
 
-func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+// func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 
-	err := checkUsernameCriteria(request.Username)
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil, err
-	}
+// 	err := checkUsernameCriteria(request.Username)
+// 	if err != nil {
+// 		fmt.Println(err.Error())
+// 		return nil, err
+// 	}
 
-	err = checkEmailCriteria(request.Email)
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil, err
-	}
+// 	err = checkEmailCriteria(request.Email)
+// 	if err != nil {
+// 		fmt.Println(err.Error())
+// 		return nil, err
+// 	}
 
-	userRequest := &user.User{
-		Name:         request.Name,
-		LastName:     request.LastName,
-		MobileNumber: request.MobileNumber,
-		Gender:       user.User_GenderEnum(request.Gender),
-		Birthday:     request.Birthday,
-		Email:        request.Email,
-		Biography:    request.Biography,
-		IsPublic:     false,
-		IsActive:     true,
-		Role:         request.Role,
-	}
+// 	userRequest := &user.User{
+// 		Name:         request.Name,
+// 		LastName:     request.LastName,
+// 		MobileNumber: request.MobileNumber,
+// 		Gender:       user.User_GenderEnum(request.Gender),
+// 		Birthday:     request.Birthday,
+// 		Email:        request.Email,
+// 		Biography:    request.Biography,
+// 		IsPublic:     false,
+// 		IsActive:     true,
+// 		Role:         request.Role,
+// 	}
 
-	for _, education := range request.Education {
+// 	for _, education := range request.Education {
 
-		ed_id := primitive.NewObjectID().Hex()
+// 		ed_id := primitive.NewObjectID().Hex()
 
-		userRequest.Education = append(userRequest.Education, &user.Education{
-			Id:        ed_id,
-			Name:      education.Name,
-			Level:     user.Education_EducationEnum(education.Level),
-			Place:     education.Place,
-			StartDate: education.StartDate,
-			EndDate:   education.EndDate,
-		})
-	}
+// 		userRequest.Education = append(userRequest.Education, &user.Education{
+// 			Id:        ed_id,
+// 			Name:      education.Name,
+// 			Level:     user.Education_EducationEnum(education.Level),
+// 			Place:     education.Place,
+// 			StartDate: education.StartDate,
+// 			EndDate:   education.EndDate,
+// 		})
+// 	}
 
-	for _, experience := range request.Experience {
+// 	for _, experience := range request.Experience {
 
-		ex_id := primitive.NewObjectID().Hex()
+// 		ex_id := primitive.NewObjectID().Hex()
 
-		userRequest.Experience = append(userRequest.Experience, &user.Experience{
-			Id:        ex_id,
-			Name:      experience.Name,
-			Headline:  experience.Headline,
-			Place:     experience.Place,
-			StartDate: experience.StartDate,
-			EndDate:   experience.EndDate,
-		})
-	}
+// 		userRequest.Experience = append(userRequest.Experience, &user.Experience{
+// 			Id:        ex_id,
+// 			Name:      experience.Name,
+// 			Headline:  experience.Headline,
+// 			Place:     experience.Place,
+// 			StartDate: experience.StartDate,
+// 			EndDate:   experience.EndDate,
+// 		})
+// 	}
 
-	for _, skill := range request.Skills {
+// 	for _, skill := range request.Skills {
 
-		s_id := primitive.NewObjectID().Hex()
+// 		s_id := primitive.NewObjectID().Hex()
 
-		userRequest.Skills = append(userRequest.Skills, &user.Skill{
-			Id:   s_id,
-			Name: skill.Name,
-		})
-	}
+// 		userRequest.Skills = append(userRequest.Skills, &user.Skill{
+// 			Id:   s_id,
+// 			Name: skill.Name,
+// 		})
+// 	}
 
-	for _, interest := range request.Interests {
+// 	for _, interest := range request.Interests {
 
-		in_id := primitive.NewObjectID().Hex()
+// 		in_id := primitive.NewObjectID().Hex()
 
-		userRequest.Interests = append(userRequest.Interests, &user.Interest{
-			Id:          in_id,
-			Name:        interest.Name,
-			Description: interest.Description,
-		})
-	}
+// 		userRequest.Interests = append(userRequest.Interests, &user.Interest{
+// 			Id:          in_id,
+// 			Name:        interest.Name,
+// 			Description: interest.Description,
+// 		})
+// 	}
 
-	createUserRequest := &user.InsertRequest{
-		User: userRequest,
-	}
+// 	createUserRequest := &user.InsertRequest{
+// 		User: userRequest,
+// 	}
 
-	err = checkPasswordCriteria(request.Password, request.Username)
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil, err
-	}
+// 	err = checkPasswordCriteria(request.Password, request.Username)
+// 	if err != nil {
+// 		fmt.Println(err.Error())
+// 		return nil, err
+// 	}
 
-	var authRoles []domain.Role
-	for _, authRole := range request.Role {
-		roles, err := service.store.FindRoleByName(authRole)
-		if err != nil {
-			fmt.Println("Error finding role by name")
-			return nil, err
-		}
-		authRoles = append(authRoles, *roles...)
-	}
+// 	var authRoles []domain.Role
+// 	for _, authRole := range request.Role {
+// 		roles, err := service.store.FindRoleByName(authRole)
+// 		if err != nil {
+// 			fmt.Println("Error finding role by name")
+// 			return nil, err
+// 		}
+// 		authRoles = append(authRoles, *roles...)
+// 	}
 
-	uniqueUsername, err := service.store.IsUsernameUnique(request.Username)
-	if err != nil || uniqueUsername == false {
-		return nil, err
-	}
+// 	uniqueUsername, err := service.store.IsUsernameUnique(request.Username)
+// 	if err != nil || uniqueUsername == false {
+// 		return nil, err
+// 	}
 
-	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
-	if err != nil {
-		return nil, err
-	}
+// 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	authCredentials, err := domain.NewAuthCredentials(
-		createUserResponse.Id,
-		request.Username,
-		request.Password,
-		&authRoles,
-	)
-	if err != nil {
-		return nil, err
-	}
+// 	authCredentials, err := domain.NewAuthCredentials(
+// 		createUserResponse.Id,
+// 		request.Username,
+// 		request.Password,
+// 		&authRoles,
+// 	)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	authCredentials, err = service.store.Create(authCredentials)
-	if err != nil {
-		return nil, err
-	}
+// 	authCredentials, err = service.store.Create(authCredentials)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	token, err := service.jwtService.GenerateToken(authCredentials)
-	if err != nil {
-		return nil, err
-	}
-	message := verificationMailMessage(token)
-	errSendingMail := sendMail(request.Email, message)
-	if errSendingMail != nil {
-		fmt.Println("err:  ", errSendingMail)
-		return nil, errSendingMail
-	}
+// 	token, err := service.jwtService.GenerateToken(authCredentials)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	message := verificationMailMessage(token)
+// 	errSendingMail := sendMail(request.Email, message)
+// 	if errSendingMail != nil {
+// 		fmt.Println("err:  ", errSendingMail)
+// 		return nil, errSendingMail
+// 	}
 
-	return &pb.RegisterResponse{
-		StatusCode: "200",
-		Message:    "Success! Check your email to activate your account",
-	}, nil
-}
+// 	return &pb.RegisterResponse{
+// 		StatusCode: "200",
+// 		Message:    "Success! Check your email to activate your account",
+// 	}, nil
+// }
 
 func checkPasswordCriteria(password, username string) error {
 	var err error
@@ -936,4 +936,92 @@ func (service *AuthService) AdminsEndpoint(ctx context.Context, request *pb.Empt
 		StatusCode: "200",
 		Message:    "OK",
 	}, nil
+}
+
+// func (service *AuthService) Create(request *pb.RegisterRequest) error {
+// 	auth := &domain.Authentication{
+// 		Id:       "", // TODO SD: !!!!!!!!! ovo treba ispraviti nakon uspesno dodatog user-a u user servisu
+// 		Username: request.Username,
+// 		Password: request.Password,
+// 		Roles:    &[]domain.Role{},
+// 	}
+// 	auth.Status = domain.PendingApproval
+// 	auth.CreatedAt = time.Now()
+// 	var authRoles []domain.Role
+// 	for _, authRole := range request.Role {
+// 		roles, err := service.store.FindRoleByName(authRole)
+// 		if err != nil {
+// 			fmt.Println("Error finding role by name")
+// 			return err
+// 		}
+// 		authRoles = append(authRoles, *roles...)
+// 	}
+// 	auth.Roles = &authRoles
+
+// 	err := service.store.Insert(auth)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	err = service..Start(request)
+// 	if err != nil {
+// 		auth.Status = domain.Cancelled
+// 		_, err = service.store.UpdateStatus(auth.Id, auth)
+// 		if err != nil {
+// 			fmt.Println("Updating auth status error")
+// 		}
+// 		return err
+// 	}
+// 	return nil
+// }
+
+func (service *AuthService) Register(auth domain.Authentication, roleNames []string, email string) error {
+	var authRoles []domain.Role
+	for _, authRole := range roleNames {
+		roles, err := service.store.FindRoleByName(authRole)
+		if err != nil {
+			fmt.Println("Error finding role by name")
+			return err
+		}
+		authRoles = append(authRoles, *roles...)
+	}
+	auth.Roles = &authRoles
+
+	err := checkPasswordCriteria(auth.Password, auth.Username)
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	uniqueUsername, err := service.store.IsUsernameUnique(auth.Username)
+	if err != nil || uniqueUsername == false {
+		return err
+	}
+
+	fmt.Println(auth)
+	authCredentials, err := domain.NewAuthCredentials(
+		auth.Id,
+		auth.Username,
+		auth.Password,
+		&authRoles,
+	)
+	if err != nil {
+		return err
+	}
+	_, err = service.store.Create(authCredentials)
+	if err != nil {
+		return err
+	}
+
+	token, err := service.jwtService.GenerateToken(&auth)
+	if err != nil {
+		return err
+	}
+	message := verificationMailMessage(token)
+	errSendingMail := sendMail(email, message)
+	if errSendingMail != nil {
+		fmt.Println("err:  ", errSendingMail)
+		return errSendingMail
+	}
+
+	return nil
 }

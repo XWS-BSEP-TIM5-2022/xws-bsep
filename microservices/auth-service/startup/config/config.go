@@ -1,39 +1,53 @@
 package config
 
 type Config struct {
-	Port            string
-	AuthDBHost      string
-	AuthDBPort      string
-	AuthDBName      string
-	AuthDBUser      string
-	AuthDBPass      string
-	UserServicePort string
-	UserServiceHost string
-	PrivateKey      string
-	PublicKey       string
-	EmailPort       string
-	EmailHost       string
-	EmailFrom       string
-	EmailPassword   string
-	FrontendHost    string
-	FrontendPort    string
+	Port                     string
+	AuthDBHost               string
+	AuthDBPort               string
+	AuthDBName               string
+	AuthDBUser               string
+	AuthDBPass               string
+	UserServicePort          string
+	UserServiceHost          string
+	PrivateKey               string
+	PublicKey                string
+	EmailPort                string
+	EmailHost                string
+	EmailFrom                string
+	EmailPassword            string
+	FrontendHost             string
+	FrontendPort             string
+	NatsHost                 string
+	NatsPort                 string
+	NatsUser                 string
+	NatsPass                 string
+	CreateUserCommandSubject string
+	CreateUserReplySubject   string
 }
 
 func NewConfig() *Config {
 	return &Config{
-		//Port:            os.Getenv("AUTH_SERVICE_PORT"),
-		//AuthDBHost:      os.Getenv("AUTH_DB_HOST"),
-		//AuthDBPort:      os.Getenv("AUTH_DB_PORT"),
-		//AuthDBName:      os.Getenv("AUTH_DB_NAME"),
-		//AuthDBUser:      os.Getenv("AUTH_DB_USER"),
-		//AuthDBPass:      os.Getenv("AUTH_DB_PASS"),
-		//UserServicePort: os.Getenv("USER_SERVICE_PORT"),
-		//UserServiceHost: os.Getenv("USER_SERVICE_HOST"),
-		//PrivateKey:      os.Getenv("PRIVATE_KEY"),
-		//PublicKey:       os.Getenv("PUBLIC_KEY"),
+		// Port:                     os.Getenv("AUTH_SERVICE_PORT"),
+		// AuthDBHost:               os.Getenv("AUTH_DB_HOST"),
+		// AuthDBPort:               os.Getenv("AUTH_DB_PORT"),
+		// AuthDBName:               os.Getenv("AUTH_DB_NAME"),
+		// AuthDBUser:               os.Getenv("AUTH_DB_USER"),
+		// AuthDBPass:               os.Getenv("AUTH_DB_PASS"),
+		// UserServicePort:          os.Getenv("USER_SERVICE_PORT"),
+		// UserServiceHost:          os.Getenv("USER_SERVICE_HOST"),
+		// PrivateKey:               os.Getenv("PRIVATE_KEY"),
+		// PublicKey:                os.Getenv("PUBLIC_KEY"),
+		// FrontendHost:             os.Getenv("FRONTEND_HOST"),
+		// FrontendPort:             os.Getenv("FRONTEND_PORT"),
+		// NatsHost:                 os.Getenv("NATS_HOST"),
+		// NatsPort:                 os.Getenv("NATS_PORT"),
+		// NatsUser:                 os.Getenv("NATS_USER"),
+		// NatsPass:                 os.Getenv("NATS_PASS"),
+		// CreateUserCommandSubject: os.Getenv("CREATE_USER_COMMAND_SUBJECT"),
+		// CreateUserReplySubject:   os.Getenv("CREATE_USER_REPLY_SUBJECT"),
 
 		Port:            "8082",
-		AuthDBHost:      "localhost", // ?
+		AuthDBHost:      "localhost",
 		AuthDBPort:      "5432",
 		AuthDBName:      "auth",
 		AuthDBUser:      "postgres",
@@ -48,5 +62,12 @@ func NewConfig() *Config {
 		EmailPassword:   "Dislinkt123*",
 		FrontendHost:    "localhost",
 		FrontendPort:    "4200",
+
+		NatsHost:                 "localhost", // nats
+		NatsPort:                 "4222",
+		NatsUser:                 "ruser",
+		NatsPass:                 "T0pS3cr3t",
+		CreateUserCommandSubject: "user.create.command",
+		CreateUserReplySubject:   "user.create.reply",
 	}
 }

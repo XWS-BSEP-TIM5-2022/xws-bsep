@@ -7,6 +7,7 @@ import (
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -222,7 +223,7 @@ func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest
 	if !user.IsActive {
 		return nil, errors.New("Account is not activated")
 	}
-	
+
 	response := &pb.GetEmailResponse{
 		Email: user.Email,
 	}
@@ -259,5 +260,17 @@ func (handler *UserHandler) GetIdByEmail(ctx context.Context, request *pb.GetIdB
 	}
 	return &pb.InsertResponse{
 		Id: userId,
+	}, nil
+}
+
+func (handler *UserHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+	user := mapInsertUserSagga(request)
+	err := handler.service.Create(user, request.Username, request.Password)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.RegisterResponse{
+		StatusCode: "200",
+		Message:    "OK",
 	}, nil
 }

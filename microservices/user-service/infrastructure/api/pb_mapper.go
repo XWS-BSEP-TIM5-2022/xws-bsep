@@ -533,3 +533,67 @@ func mapSkillsAndInterests(oldData *pb.User, newData *pb.User) *domain.User {
 
 	return userPb
 }
+
+// Sanja - Sagga
+func mapInsertUserSagga(user *pb.RegisterRequest) *domain.User {
+	// id, _ := primitive.ObjectIDFromHex(user.Id)
+
+	userPb := &domain.User{
+		// Id:           id,
+		Name:         user.Name,
+		LastName:     user.LastName,
+		MobileNumber: user.MobileNumber,
+		Gender:       domain.GenderEnum(user.Gender),
+		Email:        user.Email,
+		Biography:    user.Biography,
+		IsActive:     false,
+		Role:         user.Role,
+		// IsPublic:     user.IsPublic,
+	}
+
+	if user.Birthday != nil {
+		userPb.Birthday = user.Birthday.AsTime()
+	}
+
+	for _, education := range user.Education {
+		ed_id := primitive.NewObjectID()
+		userPb.Education = append(userPb.Education, domain.Education{
+			Id:        ed_id,
+			Name:      education.Name,
+			Level:     mapInsertEducation(education.Level),
+			Place:     education.Place,
+			StartDate: education.StartDate.AsTime(),
+			EndDate:   education.EndDate.AsTime(),
+		})
+	}
+
+	for _, experience := range user.Experience {
+		ex_id := primitive.NewObjectID()
+		userPb.Experience = append(userPb.Experience, domain.Experience{
+			Id:        ex_id,
+			Name:      experience.Name,
+			Headline:  experience.Headline,
+			Place:     experience.Place,
+			StartDate: experience.StartDate.AsTime(),
+			EndDate:   experience.EndDate.AsTime(),
+		})
+	}
+
+	for _, skill := range user.Skills {
+		s_id := primitive.NewObjectID()
+		userPb.Skills = append(userPb.Skills, domain.Skill{
+			Id:   s_id,
+			Name: skill.Name,
+		})
+	}
+
+	for _, interest := range user.Interests {
+		in_id := primitive.NewObjectID()
+		userPb.Interests = append(userPb.Interests, domain.Interest{
+			Id:          in_id,
+			Name:        interest.Name,
+			Description: interest.Description,
+		})
+	}
+	return userPb
+}

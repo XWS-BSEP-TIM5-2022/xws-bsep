@@ -22,6 +22,8 @@ type User struct {
 	Interests    []Interest         `bson:"interests"`
 	IsActive     bool               `bson:"is_active"`
 	Role         []string           `bson:"role"`
+	CreatedAt    time.Time          `bson:"created_at"`
+	Status       UserStatus         `bson:"status"`
 }
 
 type Education struct {
@@ -68,3 +70,23 @@ const (
 	Master
 	Doctorate
 )
+
+type UserStatus int8
+
+const (
+	PendingApproval UserStatus = iota
+	Approved
+	Cancelled
+)
+
+func (status UserStatus) String() string {
+	switch status {
+	case PendingApproval:
+		return "Pending Approval"
+	case Approved:
+		return "Approved"
+	case Cancelled:
+		return "Cancelled"
+	}
+	return "Unknown"
+}

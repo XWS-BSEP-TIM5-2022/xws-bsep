@@ -188,3 +188,14 @@ func (store *AuthPostgresStore) IsUsernameUnique(username string) (bool, error) 
 	}
 	return true, nil
 }
+
+func (store *AuthPostgresStore) UpdateStatus(id string, auth *domain.Authentication) (*domain.Authentication, error) {
+	var tempAuth domain.Authentication
+	err := store.db.First(&tempAuth, "id = ?", id)
+	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("Status", auth.Status)
+	log.Println(tempAuth)
+	if err != nil {
+		return nil, err.Error
+	}
+	return &tempAuth, nil
+}

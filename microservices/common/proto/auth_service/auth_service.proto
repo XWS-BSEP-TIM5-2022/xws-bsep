@@ -8,12 +8,12 @@ import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
 service AuthService{
-    rpc Register(RegisterRequest) returns (RegisterResponse) {
-        option (google.api.http) = {
-          post: "/api/auth/register"
-          body: "*"
-        };
-    }
+    // rpc Register(RegisterRequest) returns (RegisterResponse) {
+    //     option (google.api.http) = {
+    //       post: "/api/auth/register"
+    //       body: "*"
+    //     };
+    // }
     
     rpc Login(LoginRequest) returns (LoginResponse) {
         option (google.api.http) = {

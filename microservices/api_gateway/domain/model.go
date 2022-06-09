@@ -83,13 +83,13 @@ type Connection struct {
 	UserBid string
 }
 
-type Authentication struct {
-	Id       string
-	Name     string
-	Password string
-	Role     string
-	Date     time.Time
-}
+// type Authentication struct {
+// 	Id       string
+// 	Name     string
+// 	Password string
+// 	Role     string
+// 	Date     time.Time
+// }
 
 type Like struct {
 	Id     string

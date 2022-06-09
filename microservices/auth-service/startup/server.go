@@ -14,6 +14,8 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	auth_service_proto "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	saga "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/saga/messaging"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/saga/messaging/nats"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
@@ -43,6 +45,11 @@ func (server *Server) Start() {
 	userServiceClient := server.initUserServiceClient()
 
 	authService := server.initAuthService(authStore, userServiceClient, jwtServiceClient)
+
+	commandSubscriber := server.initSubscriber(server.config.CreateUserCommandSubject, QueueGroup)
+	replyPublisher := server.initPublisher(server.config.CreateUserReplySubject)
+	server.initCreateUserHandler(authService, replyPublisher, commandSubscriber)
+
 	authHandler := server.initAuthHandler(authService)
 
 	server.startGrpcServer(authHandler)
@@ -80,8 +87,35 @@ func (server *Server) initAuthStore(client *gorm.DB) *persistence.AuthPostgresSt
 	return store
 }
 
+func (server *Server) initPublisher(subject string) saga.Publisher {
+	publisher, err := nats.NewNATSPublisher(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return publisher
+}
+
+func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscriber {
+	subscriber, err := nats.NewNATSSubscriber(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject, queueGroup)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return subscriber
+}
+
 func (server *Server) initAuthService(store *persistence.AuthPostgresStore, userServiceClient user.UserServiceClient, jwtService *application.JWTService) *application.AuthService {
 	return application.NewAuthService(store, jwtService, userServiceClient)
+}
+
+func (server *Server) initCreateUserHandler(service *application.AuthService, publisher saga.Publisher, subscriber saga.Subscriber) {
+	_, err := api.NewCreateUserCommandHandler(service, publisher, subscriber)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (server *Server) initAuthHandler(service *application.AuthService) *api.AuthHandler {

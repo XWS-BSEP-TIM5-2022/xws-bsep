@@ -2,17 +2,20 @@ package domain
 
 import (
 	"fmt"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Authentication struct {
-	Id               string  `gorm:"index:idx_name,unique"` // id je id usera
-	Username         string  `gorm:"index:idx_name,unique"`
-	Password         string  `gorm:"index:idx_name"`
-	Roles            *[]Role `gorm:"many2many:auth_roles"` //  []*Role - Role             string `gorm:"index:idx_name"`
-	VerificationCode string  `gorm:"index:idx_name"`
-	ExpirationTime   int64   `gorm:"index:idx_name"`
+	Id               string     `gorm:"index:idx_name,unique"` // id je id usera
+	Username         string     `gorm:"index:idx_name,unique"`
+	Password         string     `gorm:"index:idx_name"`
+	Roles            *[]Role    `gorm:"many2many:auth_roles"` //  []*Role - Role             string `gorm:"index:idx_name"`
+	VerificationCode string     `gorm:"index:idx_name"`
+	ExpirationTime   int64      `gorm:"index:idx_name"`
+	Status           UserStatus `gorm:"index:idx_name"`
+	CreatedAt        time.Time  `gorm:"index:idx_name"`
 }
 
 type Role struct {
@@ -24,6 +27,26 @@ type Role struct {
 type Permission struct {
 	ID   uint   `gorm:"primaryKey;auto_increment:true"`
 	Name string `gorm:"index:idx_name,unique"`
+}
+
+type UserStatus int8
+
+const (
+	PendingApproval UserStatus = iota
+	Approved
+	Cancelled
+)
+
+func (status UserStatus) String() string {
+	switch status {
+	case PendingApproval:
+		return "Pending Approval"
+	case Approved:
+		return "Approved"
+	case Cancelled:
+		return "Cancelled"
+	}
+	return "Unknown"
 }
 
 func NewAuthCredentials(id, username, password string, roles *[]Role) (*Authentication, error) {
