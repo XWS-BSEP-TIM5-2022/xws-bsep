@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
@@ -27,8 +28,6 @@ type UserHandler struct {
 
 func NewUserHandler(service *application.UserService) *UserHandler {
 	InfoLogger := setLogger("info.txt", "INFO ")
-	// TODO SD:
-	// InfoLogger.Println(strings.ReplaceAll("NewUserHandler created!", " ", "_"))
 	ErrorLogger := setLogger("error.txt", "ERROR ")
 	WarningLogger := setLogger("warning.txt", "WARNING ")
 	SuccessLogger := setLogger("success.txt", "SUCCESS ")
@@ -76,6 +75,7 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 }
 
 func (handler *UserHandler) GetAllPublic(ctx context.Context, request *pb.GetAllPublicRequest) (*pb.GetAllPublicResponse, error) {
+	// TODO SD:
 	handler.InfoLogger.Println(strings.ReplaceAll("Getting all public accounts", " ", "_"))
 
 	users, err := handler.service.GetAllPublic()
@@ -90,7 +90,8 @@ func (handler *UserHandler) GetAllPublic(ctx context.Context, request *pb.GetAll
 		response.Users = append(response.Users, current)
 	}
 
-	handler.SuccessLogger.Println(strings.ReplaceAll("All public users were supplied", " ", "_"))
+	lenUsers := len(users)
+	handler.SuccessLogger.Println(strings.ReplaceAll("Found "+strconv.Itoa(lenUsers)+" public users", " ", "_"))
 	return response, nil
 }
 
