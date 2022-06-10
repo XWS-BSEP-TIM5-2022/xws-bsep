@@ -1,0 +1,7 @@
+time="2022-06-10T10:39:15+02:00" level=info msg=Aaaaaaaaa func="github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/api.(*UserHandler).GetAllPublic" file="/Users/sanja/Desktop/xws-project/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:149" fields.time="2006-01-02T15:04:05.999999999Z07:00"
+time="2022-06-10T10:40:36+02:00" level=info msg=Aaaaaaaaa
+time="2022-06-10T10:41:25+02:00" level=info msg=Aaaaaaaaa func="github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/api.(*UserHandler).GetAllPublic" file="/Users/sanja/Desktop/xws-project/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:146"
+{"file":"/Users/sanja/Desktop/xws-project/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:143","func":"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/api.(*UserHandler).GetAllPublic","level":"info","msg":"Aaaaaaaaa","time":"2022-06-10T10:44:30+02:00"}
+{"level":"info","msg":"Aaaaaaaaa","time":"2022-06-10T10:47:30+02:00"}
+{"CAO":"CAOCAO","file":"/Users/sanja/Desktop/xws-project/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:143","func":"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/api.(*UserHandler).GetAllPublic","level":"info","msg":"Aaaaaaaaa","time":"2022-06-10T10:50:42+02:00"}
+{"CAO":"CAOCAO","caller":"/infrastructure/api/user_grpc_handler.go:157","level":"info","msg":"Aaaaaaaaa","time":"2022-06-10T10:56:39+02:00"}
