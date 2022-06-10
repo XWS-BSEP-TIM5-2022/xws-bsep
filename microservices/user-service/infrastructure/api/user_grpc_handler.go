@@ -20,28 +20,6 @@ type UserHandler struct {
 }
 
 func NewUserHandler(service *application.UserService) *UserHandler {
-	// InfoLogger := setLogrusLogger(config.NewConfig().InfoLogsFile)
-	// ErrorLogger := setLogrusLogger(config.NewConfig().ErrorLogsFile)
-	// WarningLogger := setLogrusLogger(config.NewConfig().WarningLogsFile)
-	// SuccessLogger := setLogrusLogger(config.NewConfig().SuccessLogsFile)
-	// DebugLogger := setLogrusLogger(config.NewConfig().DebugLogsFile)
-
-	// writer, _ := rotatelogs.New(
-	// 	"logs/cao"+".%Y%m%d%H%M"+".log",
-	// 	rotatelogs.WithLinkName("logs/cao.log"),
-	// 	rotatelogs.WithMaxAge(time.Duration(60)*time.Second),
-	// 	rotatelogs.withMaxSize(),
-	// 	rotatelogs.WithRotationTime(time.Duration(60)*time.Second),
-	// )
-
-	// log.SetOutput(&lumberjack.Logger{
-	// 	Filename:   "logsTest/foo.log",
-	// 	MaxSize:    1, // megabytes
-	// 	MaxBackups: 10,
-	// 	MaxAge:     7,    //days
-	// 	Compress:   true, // disabled by default
-	// })
-
 	CustomLogger := NewCustomLogger()
 	return &UserHandler{
 		service:      service,
@@ -67,7 +45,7 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 }
 
 func (handler *UserHandler) GetAllPublic(ctx context.Context, request *pb.GetAllPublicRequest) (*pb.GetAllPublicResponse, error) {
-	handler.CustomLogger.InfoLogger.Info("Getting all public accounts") //.InfoLogger.WithFields(logrus.Fields{}).Info(...)
+	handler.CustomLogger.InfoLogger.Info("Getting all public accounts")
 	// SD: host and port from request
 	p, _ := peer.FromContext(ctx)
 	fmt.Println("** ** IP: " + p.Addr.String())
@@ -124,7 +102,6 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertReques
 }
 
 func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-
 	//id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	objectId, err := primitive.ObjectIDFromHex(request.User.Id)
 	if err != nil {

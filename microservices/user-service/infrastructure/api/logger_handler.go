@@ -47,20 +47,12 @@ func caller() func(*runtime.Frame) (function string, file string) {
 func setLogrusLogger(filename string) *logrus.Entry {
 	mLog := logrus.New()
 	mLog.SetReportCaller(true)
-	mLog.SetLevel(logrus.DebugLevel)
+	// mLog.SetLevel(logrus.DebugLevel)
 
 	logsFolderName := config.NewConfig().LogsFolder
-
 	if _, err := os.Stat(logsFolderName); os.IsNotExist(err) {
 		os.Mkdir(logsFolderName, 0777)
 	}
-
-	// file, err := os.OpenFile(logsFolderName+filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// fmt.Println(file.siz)
-	// checkFileSizeCriteria(file, logsFolderName, filename)
 	lumberjackLogger := &lumberjack.Logger{
 		Filename:   logsFolderName + filename,
 		MaxSize:    1,
@@ -81,19 +73,6 @@ func setLogrusLogger(filename string) *logrus.Entry {
 	})
 	contextLogger := mLog.WithFields(logrus.Fields{})
 	return contextLogger
-}
-
-func (customLogger *CustomLogger) checkFileSizeCriteria(file *os.File, logsFolderName, filename string) {
-	fi, err := file.Stat()
-	if err != nil {
-		log.Panic("error")
-	}
-	fmt.Printf("The file"+filename+" is %d bytes long\n", fi.Size())
-	if fi.Size() >= 300 {
-		if err := os.Truncate(logsFolderName+filename, 0); err != nil {
-			log.Printf("Failed to truncate: %v", err)
-		}
-	}
 }
 
 func (customLogger *CustomLogger) getFileSize() {
