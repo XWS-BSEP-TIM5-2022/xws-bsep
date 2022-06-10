@@ -46,22 +46,6 @@ func NewUserHandler(service *application.UserService) *UserHandler {
 	}
 }
 
-func setLogger(filename, loggerType string) *log.Logger {
-	logsFolderName := config.NewConfig().LogsFolder
-	if _, err := os.Stat(logsFolderName); os.IsNotExist(err) {
-		os.Mkdir(logsFolderName, 0777)
-	}
-	file, err := os.OpenFile(logsFolderName+filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	Logger := log.New(file, loggerType, log.Ldate|log.Ltime|log.Lshortfile) //Llongfile
-
-	mw := io.MultiWriter(os.Stdout, file)
-	Logger.SetOutput(mw)
-	return Logger
-}
-
 func caller() func(*runtime.Frame) (function string, file string) {
 	return func(f *runtime.Frame) (function string, file string) {
 		p, _ := os.Getwd()
