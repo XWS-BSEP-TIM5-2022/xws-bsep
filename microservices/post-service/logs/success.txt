@@ -1,0 +1,4 @@
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:104","msg":"Post by ID:6298c4c4c59d65d84d67be24 received successfully","time":"2022-06-10T16:44:09+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:104","msg":"Post by ID:6298c4c4c59d65d84d67be24 received successfully","time":"2022-06-10T17:10:31+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:104","msg":"Post_by_ID:6298c4c4c59d65d84d67be24_received_successfully","time":"2022-06-10T17:11:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:116","msg":"Post by ID:6298c4c4c59d65d84d67be24 received successfully","time":"2022-06-10T18:51:23+02:00"}

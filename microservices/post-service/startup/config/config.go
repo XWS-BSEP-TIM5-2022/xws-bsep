@@ -9,6 +9,12 @@ type Config struct {
 	UserServiceHost string
 	AuthServicePort string
 	AuthServiceHost string
+	LogsFolder      string
+	InfoLogsFile    string
+	DebugLogsFile   string
+	ErrorLogsFile   string
+	SuccessLogsFile string
+	WarningLogsFile string
 }
 
 func NewConfig() *Config {
@@ -25,5 +31,11 @@ func NewConfig() *Config {
 		UserServicePort: "8081",
 		AuthServiceHost: "localhost",
 		AuthServicePort: "8082",
+		LogsFolder:      "logs",
+		InfoLogsFile:    "/info.txt",
+		DebugLogsFile:   "/debug.txt",
+		ErrorLogsFile:   "/error.txt",
+		SuccessLogsFile: "/success.txt",
+		WarningLogsFile: "/warning.txt",
 	}
 }
