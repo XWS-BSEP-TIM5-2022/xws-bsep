@@ -1310,3 +1310,17 @@
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 10 posts","time":"2022-06-11T19:36:40+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 9 posts created by user with ID: 62a45db2b13db7d9d7e0877f","time":"2022-06-11T19:36:48+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 9 posts created by user with ID: 62a45db2b13db7d9d7e0877f","time":"2022-06-11T19:40:00+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 10 posts","time":"2022-06-11T19:41:17+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 10 posts","time":"2022-06-11T20:19:03+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 1 posts created by user with ID: 62a4b19cb13db7d9d7e08780","time":"2022-06-11T20:19:08+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 9 posts created by user with ID: 62a45db2b13db7d9d7e0877f","time":"2022-06-11T20:19:09+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 10 posts","time":"2022-06-11T20:31:04+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 0 posts created by user with ID: 62a4df82b13db7d9d7e08781","time":"2022-06-11T20:31:57+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 10 posts","time":"2022-06-11T20:32:28+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 0 posts created by user with ID: 62a4df82b13db7d9d7e08781","time":"2022-06-11T20:32:40+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 1 posts created by user with ID: 62a4b19cb13db7d9d7e08780","time":"2022-06-11T20:32:40+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 10 posts","time":"2022-06-11T20:32:51+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 9 posts created by user with ID: 62a45db2b13db7d9d7e0877f","time":"2022-06-11T20:32:59+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 10 posts","time":"2022-06-11T20:33:06+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 1 posts created by user with ID: 62a4b19cb13db7d9d7e08780","time":"2022-06-11T20:33:32+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 9 posts created by user with ID: 62a45db2b13db7d9d7e0877f","time":"2022-06-11T20:33:32+02:00"}
