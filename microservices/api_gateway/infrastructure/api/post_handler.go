@@ -120,18 +120,19 @@ func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Reques
 					DateCreated: post.DateCreated.AsTime(),
 					UserId:      post.UserId,
 					JobOffer: domain.JobOffer{
-						//Id: string(post.JobOffer.Id),
+						Id:              post.JobOffer.Id,
 						JobDescription:  post.JobOffer.JobDescription,
 						Preconditions:   post.JobOffer.Preconditions,
 						DailyActivities: post.JobOffer.DailyActivities,
 						Position: domain.Position{
-							//Id:
+							Id:   post.JobOffer.Position.Id,
 							Name: post.JobOffer.Position.Name,
 							Pay:  post.JobOffer.Position.Pay,
 						},
 					},
 					IsJobOffer: post.IsJobOffer,
 					Company: domain.Company{
+						Id:          post.Company.Id,
 						Name:        post.Company.Name,
 						Description: post.Company.Description,
 						PhoneNumber: post.Company.PhoneNumber,
@@ -235,6 +236,8 @@ func (handler *PostHandler) getAllConnections(users *domain.Users, userId string
 func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) error {
 	postClient := services.NewPostClient(handler.postClientAddress)
 
+	fmt.Println("uslo je  8888 ")
+
 	for _, user := range users.UsersDetails {
 
 		fmt.Println("77777777777777777")
@@ -257,18 +260,19 @@ func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) e
 					DateCreated: post.DateCreated.AsTime(),
 					UserId:      post.UserId,
 					JobOffer: domain.JobOffer{
-						//Id: string(post.JobOffer.Id),
+						Id:              post.JobOffer.Id,
 						JobDescription:  post.JobOffer.JobDescription,
 						Preconditions:   post.JobOffer.Preconditions,
 						DailyActivities: post.JobOffer.DailyActivities,
 						Position: domain.Position{
-							//Id:
+							Id:   post.JobOffer.Position.Id,
 							Name: post.JobOffer.Position.Name,
 							Pay:  post.JobOffer.Position.Pay,
 						},
 					},
 					IsJobOffer: post.IsJobOffer,
 					Company: domain.Company{
+						Id:          post.Company.Id,
 						Name:        post.Company.Name,
 						Description: post.Company.Description,
 						PhoneNumber: post.Company.PhoneNumber,
