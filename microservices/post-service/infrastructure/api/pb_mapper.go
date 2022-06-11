@@ -21,16 +21,16 @@ func mapPost(post *domain.Post) *pb.Post {
 			Links:       post.Links,
 			IsJobOffer:  post.IsJobOffer,
 			Company: &pb.Company{
-				//Id:          float64(companyIdInt),
+				Id:          post.Company.Id.Hex(),
 				Name:        html.UnescapeString(post.Company.Name),
 				Description: html.UnescapeString(post.Company.Description),
 				PhoneNumber: post.Company.PhoneNumber,
 				IsActive:    true,
 			},
 			JobOffer: &pb.JobOffer{
-				//Id: post.JobOffer.Id.Hex().,
+				Id: post.JobOffer.Id.Hex(),
 				Position: &pb.Position{
-					//Id: post.JobOffer.Id.Hex().,
+					Id:   post.JobOffer.Position.Id.Hex(),
 					Name: post.JobOffer.Position.Name,
 					Pay:  post.JobOffer.Position.Pay,
 				},
@@ -99,14 +99,6 @@ func mapPost(post *domain.Post) *pb.Post {
 }
 
 func mapInsertPost(post *pb.InsertPost) (*domain.Post, error) {
-	//fmt.Println("ovde mapiram:", post.Image)
-	//image, errImg := decodeImage(post.Image)
-	//fmt.Println("namapirano:", image)
-
-	//if errImg != nil {
-	//	return nil, errors.New("error with decoding image")
-	//}
-
 	postPb := &domain.Post{
 		Text:        strings.TrimSpace(post.Text), // function to remove leading and trailing whitespace
 		Image:       post.Image,

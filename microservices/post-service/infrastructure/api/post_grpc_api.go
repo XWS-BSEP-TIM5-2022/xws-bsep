@@ -358,18 +358,18 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 func (handler *PostHandler) UpdateCompanyInfo(ctx context.Context, request *pb.UpdateCompanyInfoRequest) (*pb.InsertResponse, error) {
 	company, err := mapCompanyInfo(request.CompanyInfoDTO)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Company with name: " + request.CompanyInfoDTO.Name + " not found")
+		handler.CustomLogger.ErrorLogger.Error("Company with name: " + request.CompanyInfoDTO.OldName + " not found")
 		return nil, err
 	}
 
 	success, err := handler.service.UpdateCompanyInfo(company, request.CompanyInfoDTO.OldName)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Company with name: " + request.CompanyInfoDTO.Name + " was not updated")
+		handler.CustomLogger.ErrorLogger.Error("Company with name: " + request.CompanyInfoDTO.OldName + " was not updated")
 		return nil, err
 	}
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Company with name: " + company.Name + " updated") // TODO: obaevzno proveriti !
+	handler.CustomLogger.SuccessLogger.Info("Company with name: " + request.CompanyInfoDTO.OldName + " updated")
 	return response, err
 }
