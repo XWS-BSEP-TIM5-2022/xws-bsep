@@ -30,18 +30,14 @@ func NewPostHandler(service *application.PostService) *PostHandler {
 }
 
 func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
-	/* TODO sanitizacija unosa  */
-	str1 := "123#123$123%123^123&123*123(123)-+=|'.,!"
-
+	/* sanitizacija */
+	id := request.Id
 	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
 	if err != nil {
 		log.Fatal(err)
 	}
-	str1 = re.ReplaceAllString(str1, "")
-	fmt.Println(str1)
-	/*  TODO  */
+	id = re.ReplaceAllString(id, " ")
 
-	id := request.Id
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
@@ -49,14 +45,14 @@ func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	}
 	post, err := handler.service.Get(objectId)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Post with ID:" + objectId.Hex() + " not found")
+		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + id + " not found")
 		return nil, err
 	}
 	postPb := mapPost(post) // prepakujemo iz domenskog modela u protobuf oblik
 	response := &pb.GetResponse{
 		Post: postPb,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Post with ID:" + objectId.Hex() + " received successfully")
+	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + id + " received successfully")
 	return response, nil
 }
 
@@ -78,7 +74,14 @@ func (handler *PostHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 }
 
 func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetRequest) (*pb.GetAllResponse, error) {
+	/* sanitizacija unosa */
 	id := request.Id
+	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
+	if err != nil {
+		log.Fatal(err)
+	}
+	id = re.ReplaceAllString(id, " ")
+
 	posts, err := handler.service.GetAllByUser(id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get all by userId: " + id)
@@ -117,16 +120,34 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 }
 
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
+	/* sanitizacija unosa */
 	apiToken := request.InsertJobOfferPost.ApiToken
+	re, err := regexp.Compile(`[^\w\-\.]`) // specijalni karakteri osim .,-,_ (tacka, minus, donja crta)
+	if err != nil {
+		log.Fatal(err)
+	}
+	apiToken = re.ReplaceAllString(apiToken, "")
 
 	username, err := handler.service.GetUsernameByApiToken(ctx, apiToken)
+	/* sanitizacija unosa */
+	re, err = regexp.Compile(`[^\w]`) // specijalni karakteri
 	if err != nil {
+		log.Fatal(err)
+	}
+	username.Username = re.ReplaceAllString(username.Username, " ")
+	if err != nil || username.Username == "not found" {
 		handler.CustomLogger.ErrorLogger.Error("Can not find username by api token")
 		return nil, err
 	}
 	handler.CustomLogger.SuccessLogger.Info("Found user with username: " + username.Username)
 
 	userId, err := handler.service.GetIdByUsername(ctx, username.Username)
+	/* sanitizacija unosa */
+	re, err = regexp.Compile(`[^\w]`) // specijalni karakteri
+	if err != nil {
+		log.Fatal(err)
+	}
+	userId.Id = re.ReplaceAllString(userId.Id, " ")
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Can not find id by username: " + username.Username)
 		return nil, err
@@ -148,12 +169,19 @@ func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.Inse
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Job offer post with ID: " + post.Id.Hex() + " created by user with ID: " + post.UserId)
+	handler.CustomLogger.SuccessLogger.Info("Job offer post with ID: " + post.Id.Hex() + " created by user with ID: " + userId.Id)
 	return response, nil
 }
 
 func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike) (*pb.InsertResponse, error) {
+	/* sanitizacija */
 	id := request.PostId
+	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
+	if err != nil {
+		log.Fatal(err)
+	}
+	id = re.ReplaceAllString(id, " ")
+
 	objectId, err := primitive.ObjectIDFromHex(id)
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	post, err := handler.service.Get(objectId)
@@ -209,7 +237,14 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 }
 
 func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertDislike) (*pb.InsertResponse, error) {
+	/* sanitizacija */
 	id := request.PostId
+	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
+	if err != nil {
+		log.Fatal(err)
+	}
+	id = re.ReplaceAllString(id, " ")
+
 	objectId, err := primitive.ObjectIDFromHex(id)
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	post, err := handler.service.Get(objectId)
@@ -266,7 +301,14 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 }
 
 func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertComment) (*pb.InsertResponse, error) {
+	/* sanitizacija */
 	id := request.PostId
+	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
+	if err != nil {
+		log.Fatal(err)
+	}
+	id = re.ReplaceAllString(id, " ")
+
 	objectId, err := primitive.ObjectIDFromHex(id)
 	post, err := handler.service.Get(objectId)
 	if err != nil {
@@ -290,7 +332,14 @@ func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertC
 }
 
 func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertNeutralReaction) (*pb.InsertResponse, error) {
+	/* sanitizacija */
 	id := request.PostId
+	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
+	if err != nil {
+		log.Fatal(err)
+	}
+	id = re.ReplaceAllString(id, " ")
+
 	objectId, err := primitive.ObjectIDFromHex(id)
 	post, err := handler.service.Get(objectId)
 	if err != nil {
@@ -357,19 +406,27 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 
 func (handler *PostHandler) UpdateCompanyInfo(ctx context.Context, request *pb.UpdateCompanyInfoRequest) (*pb.InsertResponse, error) {
 	company, err := mapCompanyInfo(request.CompanyInfoDTO)
+	oldName := request.CompanyInfoDTO.OldName
+	/* sanitizacija unosa - prevencija log injection - u logove nece biti upisani specijalni karakteri */
+	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Company with name: " + request.CompanyInfoDTO.OldName + " not found")
+		log.Fatal(err)
+	}
+	oldName = re.ReplaceAllString(oldName, " ")
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Company with name: " + "'" + oldName + "'" + " not found")
 		return nil, err
 	}
 
 	success, err := handler.service.UpdateCompanyInfo(company, request.CompanyInfoDTO.OldName)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Company with name: " + request.CompanyInfoDTO.OldName + " was not updated")
+		handler.CustomLogger.ErrorLogger.Error("Company with name: " + "'" + oldName + "'" + " was not updated")
 		return nil, err
 	}
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Company with name: " + request.CompanyInfoDTO.OldName + " updated")
+	handler.CustomLogger.SuccessLogger.Info("Company with name: " + "'" + oldName + "'" + " updated")
 	return response, err
 }
