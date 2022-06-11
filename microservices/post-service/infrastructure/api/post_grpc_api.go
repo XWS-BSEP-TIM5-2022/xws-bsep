@@ -33,7 +33,7 @@ func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	/* TODO sanitizacija unosa  */
 	str1 := "123#123$123%123^123&123*123(123)-+=|'.,!"
 
-	re, err := regexp.Compile(`[^\w]`)
+	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,7 +56,7 @@ func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 	response := &pb.GetResponse{
 		Post: postPb,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Post by ID:" + objectId.Hex() + " received successfully")
+	handler.CustomLogger.SuccessLogger.Info("Post with ID:" + objectId.Hex() + " received successfully")
 	return response, nil
 }
 
@@ -91,7 +91,7 @@ func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetReq
 		current := mapPost(post)
 		response.Posts = append(response.Posts, current)
 	}
-	handler.CustomLogger.SuccessLogger.Info("Found " + strconv.Itoa(len(posts)) + " posts by user with ID:" + id)
+	handler.CustomLogger.SuccessLogger.Info("Found " + strconv.Itoa(len(posts)) + " posts created by user with ID: " + id)
 	return response, nil
 }
 
@@ -112,7 +112,7 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Post created by user with ID: " + post.UserId)
+	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + post.Id.Hex() + " created by user with ID: " + post.UserId)
 	return response, err
 }
 
@@ -131,7 +131,7 @@ func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.Inse
 		handler.CustomLogger.ErrorLogger.Error("Can not find id by username: " + username.Username)
 		return nil, err
 	}
-	handler.CustomLogger.SuccessLogger.Info("Found user with id: " + userId.Id)
+	handler.CustomLogger.SuccessLogger.Info("Found user with ID: " + userId.Id)
 
 	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
 	if err != nil {
@@ -148,7 +148,7 @@ func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.Inse
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Post with job offer created by user with ID: " + post.UserId)
+	handler.CustomLogger.SuccessLogger.Info("Job offer post with ID: " + post.Id.Hex() + " created by user with ID: " + post.UserId)
 	return response, nil
 }
 
@@ -169,7 +169,7 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 	// provera - da li je korisnik vec lajkovao post
 	for _, p := range post.Likes {
 		if p.UserId == userId {
-			handler.CustomLogger.ErrorLogger.Error("User with ID: " + userId + " already liked selected post")
+			handler.CustomLogger.ErrorLogger.Error("User with ID: " + userId + " already liked post with ID: " + id)
 			return &pb.InsertResponse{
 				Success: "error",
 			}, err
@@ -180,7 +180,7 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 	// provera - da li je korisnik vec dislajkovao post
 	for _, p := range post.Dislikes {
 		if p.UserId == userId {
-			handler.CustomLogger.InfoLogger.Info("Deleting dislike by user with ID: " + userId)
+			handler.CustomLogger.InfoLogger.Info("Deleting dislike on post with ID: " + id + " by user with ID: " + userId)
 			fmt.Println("user liked selected post, deleting dislike")
 			flag = true
 		}
@@ -198,13 +198,13 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 
 	success, err := handler.service.LikePost(post, userId)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Post was not liked by user with ID: " + userId)
+		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + post.Id.Hex() + " was not liked by user with ID: " + userId)
 		return nil, err
 	}
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Post liked by user with ID: " + post.UserId)
+	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + post.Id.Hex() + " liked by user with ID: " + post.UserId)
 	return response, err
 }
 
@@ -225,7 +225,7 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 	// provera - da li je korisnik vec dislajkovao post
 	for _, p := range post.Dislikes {
 		if p.UserId == userId {
-			handler.CustomLogger.ErrorLogger.Error("User with ID: " + userId + " already disliked selected post") // TODO: specificirati post, a ne da ostane selected
+			handler.CustomLogger.ErrorLogger.Error("User with ID: " + userId + " already disliked post with ID: " + id)
 			fmt.Println("user already dislikes selected post")
 			return &pb.InsertResponse{
 				Success: "error",
@@ -237,7 +237,7 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 	// provera - da li je korisnik vec lajkovao post
 	for _, p := range post.Likes {
 		if p.UserId == userId {
-			handler.CustomLogger.InfoLogger.Info("Deleting like by user with ID: " + userId)
+			handler.CustomLogger.InfoLogger.Info("Deleting like on post with ID: " + id + " by user with ID: " + userId)
 			fmt.Println("user liked selected post, deleting like")
 			flag = true
 		}
@@ -255,13 +255,13 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 
 	success, err := handler.service.DislikePost(post, userId)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Post was not disliked by user with ID: " + userId)
+		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + post.Id.Hex() + " was not disliked by user with ID: " + userId)
 		return nil, err
 	}
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Post disliked by user with ID: " + post.UserId)
+	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + post.Id.Hex() + " disliked by user with ID: " + post.UserId)
 	return response, err
 }
 
@@ -279,13 +279,13 @@ func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertC
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	success, err := handler.service.CommentPost(post, userId, strings.TrimSpace(request.Text)) // Trim - function to remove leading and trailing whitespace
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Post was not commented by user with ID: " + userId)
+		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + post.Id.Hex() + " was not commented by user with ID: " + userId)
 		return nil, err
 	}
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Post commented by user with ID: " + userId)
+	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + post.Id.Hex() + " was commented by user with ID: " + userId)
 	return response, err
 }
 
@@ -307,7 +307,7 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 	// provera - da li je korisnik vec dislajkovao post
 	for _, p := range post.Dislikes {
 		if p.UserId == userId {
-			handler.CustomLogger.InfoLogger.Info("Deleting like on post by user with ID: " + userId)
+			handler.CustomLogger.InfoLogger.Info("Deleting like on post with ID: " + id + " by user with ID: " + userId)
 			fmt.Println("user already dislikes selected post - neutral")
 			flagDisliked = true
 		}
@@ -317,7 +317,7 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 	// provera - da li je korisnik vec lajkovao post
 	for _, p := range post.Likes {
 		if p.UserId == userId {
-			handler.CustomLogger.InfoLogger.Info("Deleting dislike on post by user with ID: " + userId)
+			handler.CustomLogger.InfoLogger.Info("Deleting dislike on post with ID: " + id + " by user with ID: " + userId)
 			fmt.Println("user true likes selected post - neutral")
 			flagLiked = true
 		}
@@ -345,31 +345,31 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 
 	success, err := handler.service.Update(post)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Neutral reaction on post by user with ID: " + userId + " was not successful")
+		handler.CustomLogger.ErrorLogger.Error("Neutral reaction on post with ID: " + post.Id.Hex() + "  by user with ID: " + userId + " was not successful")
 		return nil, err
 	}
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Neutral reaction on post by user with ID: " + userId)
+	handler.CustomLogger.SuccessLogger.Info("Neutral reaction on post with ID: " + post.Id.Hex() + " by user with ID: " + userId)
 	return response, err
 }
 
 func (handler *PostHandler) UpdateCompanyInfo(ctx context.Context, request *pb.UpdateCompanyInfoRequest) (*pb.InsertResponse, error) {
 	company, err := mapCompanyInfo(request.CompanyInfoDTO)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Company with ID: " + request.CompanyInfoDTO.Id + " not found")
+		handler.CustomLogger.ErrorLogger.Error("Company with name: " + request.CompanyInfoDTO.Name + " not found")
 		return nil, err
 	}
 
 	success, err := handler.service.UpdateCompanyInfo(company, request.CompanyInfoDTO.OldName)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Company with ID: " + request.CompanyInfoDTO.Id + " was not updated")
+		handler.CustomLogger.ErrorLogger.Error("Company with name: " + request.CompanyInfoDTO.Name + " was not updated")
 		return nil, err
 	}
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Company by name: " + company.Name + " updated")
+	handler.CustomLogger.SuccessLogger.Info("Company with name: " + company.Name + " updated") // TODO: obaevzno proveriti !
 	return response, err
 }
