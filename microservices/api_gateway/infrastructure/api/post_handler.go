@@ -51,7 +51,7 @@ func (handler *PostHandler) Init(mux *runtime.ServeMux) {
 }
 
 func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-	/* sanitizacija */
+	/* sanitizacija - prevencija log injection-a */
 	id := pathParams["userID"]
 	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
 	if err != nil {
