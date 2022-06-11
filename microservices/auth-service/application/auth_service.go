@@ -4,9 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-playground/validator/v10"
-	"golang.org/x/crypto/bcrypt"
-	"log"
 	"math/rand"
 	"net/mail"
 	"net/smtp"
@@ -14,6 +11,9 @@ import (
 	"strings"
 	"time"
 	"unicode"
+
+	"github.com/go-playground/validator/v10"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
@@ -38,6 +38,7 @@ type AuthService struct {
 	jwtService        *JWTService
 	apiTokenService   *APITokenService
 	userServiceClient user.UserServiceClient
+	CustomLogger      *CustomLogger
 }
 
 type LoginData struct {
@@ -46,16 +47,17 @@ type LoginData struct {
 }
 
 func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService, userServiceClient user.UserServiceClient, apiTokenService *APITokenService) *AuthService {
+	CustomLogger := NewCustomLogger()
 	return &AuthService{
 		store:             store,
 		jwtService:        jwtService,
 		userServiceClient: userServiceClient,
 		apiTokenService:   apiTokenService,
+		CustomLogger:      CustomLogger,
 	}
 }
 
 func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.PasswordlessLoginResponse, error) {
-
 	err := checkEmailCriteria(request.Email)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -322,22 +324,26 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		&authRoles,
 	)
 	if err != nil {
+		service.CustomLogger.ErrorLogger.Error("The password is not hashed for user with ID:" + createUserResponse.Id + " are not preserved")
 		return nil, err
 	}
 
 	authCredentials, err = service.store.Create(authCredentials)
 	if err != nil {
+		service.CustomLogger.ErrorLogger.Error("Authentication credentials for user with ID:" + createUserResponse.Id + " are not preserved")
 		return nil, err
 	}
 
 	token, err := service.jwtService.GenerateToken(authCredentials)
 	if err != nil {
+		service.CustomLogger.ErrorLogger.Error("JWT token is not generated to user with ID:" + createUserResponse.Id)
 		return nil, err
 	}
 	message := verificationMailMessage(token)
 	errSendingMail := sendMail(request.Email, message)
 	if errSendingMail != nil {
 		fmt.Println("err:  ", errSendingMail)
+		service.CustomLogger.ErrorLogger.Error("No email was sent to user with ID:" + createUserResponse.Id)
 		return nil, errSendingMail
 	}
 
@@ -394,11 +400,9 @@ func checkPasswordCriteria(password, username string) error {
 }
 
 func checkEmailCriteria(email string) error {
-
 	if len(email) == 0 {
 		return errors.New("Email should not be empty")
 	}
-
 	_, err := mail.ParseAddress(email)
 
 	if err != nil {
@@ -409,7 +413,6 @@ func checkEmailCriteria(email string) error {
 }
 
 func checkUsernameCriteria(username string) error {
-
 	if len(username) == 0 {
 		return errors.New("Username should not be empty")
 	}
@@ -424,7 +427,6 @@ func checkUsernameCriteria(username string) error {
 }
 
 func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
-
 	//t := &LoginData{
 	//	username: request.Username,
 	//	password: request.Password,
@@ -510,8 +512,10 @@ func (service *AuthService) CreateNewAPIToken(ctx context.Context, request *pb.A
 }
 
 func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
+	service.CustomLogger.InfoLogger.Info("Finding all auth credentials")
 	auths, err := service.store.FindAll()
 	if err != nil || *auths == nil {
+		service.CustomLogger.ErrorLogger.Error("Error finding all auth credentials")
 		return nil, err
 	}
 	response := &pb.GetAllResponse{
@@ -530,6 +534,7 @@ func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 		for _, role := range *auth.Roles {
 			rolePermissions, err := service.store.GetAllPermissionsByRole(role.Name)
 			if err != nil {
+				service.CustomLogger.ErrorLogger.Error("Error finding all permission by role: " + role.Name)
 				fmt.Println("Greska GetAll - GetAllPermissionsByRole")
 			}
 
@@ -549,11 +554,13 @@ func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 		}
 		response.Auth = append(response.Auth, current)
 	}
+	service.CustomLogger.SuccessLogger.Info("Found " + strconv.Itoa(len(*auths)) + " auth credentials")
 	return response, nil
 }
 
 func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.UpdateUsernameRequest) (*pb.UpdateUsernameResponse, error) {
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	service.CustomLogger.InfoLogger.Info("User with ID:" + userId + " is updating username")
 	if userId == "" {
 		return &pb.UpdateUsernameResponse{
 			StatusCode: "500",
@@ -562,31 +569,35 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 	} else {
 		isUniqueUsername, err := service.store.IsUsernameUnique(request.Username)
 		if err != nil || isUniqueUsername == false {
+			service.CustomLogger.ErrorLogger.Error("User with ID:" + userId + " tried to update a non-unique username")
 			return &pb.UpdateUsernameResponse{
 				StatusCode: "500",
 				Message:    "Username is not unique",
 			}, errors.New("Username is not unique")
 		}
 
-		response, err := service.store.UpdateUsername(userId, request.Username)
+		_, err = service.store.UpdateUsername(userId, request.Username)
 		if err != nil {
+			service.CustomLogger.ErrorLogger.Error("User with ID:" + userId + " did not update username")
 			return &pb.UpdateUsernameResponse{
 				StatusCode: "500",
 				Message:    "Auth service credentials not found from JWT token",
 			}, err
 		}
-		log.Print(response)
 
 		currentUser, err := service.userServiceClient.Get(ctx, &user.GetRequest{Id: userId})
 		if err != nil {
+			service.CustomLogger.ErrorLogger.Error("There is no user with with ID:" + userId)
 			return nil, err
 		}
 		currentUser.User.Username = request.Username
 		_, err = service.userServiceClient.Update(ctx, &user.UpdateRequest{User: currentUser.User})
 		if err != nil {
+			service.CustomLogger.ErrorLogger.Error("User with ID:" + userId + " failed to update profile")
 			return nil, err
 		}
 
+		service.CustomLogger.SuccessLogger.Info("User with ID:" + userId + " has successfully updated the username")
 		return &pb.UpdateUsernameResponse{
 			StatusCode: "200",
 			Message:    "Username updated",
@@ -596,8 +607,11 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 
 func (service *AuthService) ChangePassword(ctx context.Context, request *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
 	authId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	service.CustomLogger.InfoLogger.Info("User with ID:" + authId + " is changing password")
+
 	auth, err := service.store.FindById(authId)
 	if err != nil {
+		service.CustomLogger.ErrorLogger.Error("There is no auth credentials with with ID:" + authId)
 		return &pb.ChangePasswordResponse{
 			StatusCode: "500",
 			Message:    "Auth credentials not found",
@@ -605,6 +619,7 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 	}
 
 	if request.NewPassword != request.NewReenteredPassword {
+		service.CustomLogger.WarningLogger.Warn("User wiht ID:" + authId + " entered passwords that do not match")
 		return &pb.ChangePasswordResponse{
 			StatusCode: "500",
 			Message:    "New passwords do not match",
@@ -613,6 +628,7 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 
 	oldMatched := auth.CheckPassword(request.OldPassword)
 	if !oldMatched {
+		service.CustomLogger.WarningLogger.Warn("User wiht ID:" + authId + " has entered a password that does not match the old one")
 		return &pb.ChangePasswordResponse{
 			StatusCode: "500",
 			Message:    "Old password does not match",
@@ -621,6 +637,7 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 
 	err = checkPasswordCriteria(request.NewPassword, auth.Username)
 	if err != nil {
+		service.CustomLogger.WarningLogger.Warn("User wiht ID:" + authId + " has entered a password that does not match the old one")
 		return &pb.ChangePasswordResponse{
 			StatusCode: "500",
 			Message:    err.Error(),
@@ -629,6 +646,7 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 
 	hashedPassword, err := auth.HashPassword(request.NewPassword)
 	if err != nil || hashedPassword == "" {
+		service.CustomLogger.WarningLogger.Warn("User wiht ID:" + authId + " has entered passwords that do not match the criteria")
 		return &pb.ChangePasswordResponse{
 			StatusCode: "500",
 			Message:    err.Error(),
@@ -637,11 +655,13 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 
 	err = service.store.UpdatePassword(authId, hashedPassword)
 	if err != nil {
+		service.CustomLogger.ErrorLogger.Error("User wiht ID:" + authId + " did not update the password")
 		return &pb.ChangePasswordResponse{
 			StatusCode: "500",
 			Message:    err.Error(),
 		}, err
 	}
+	service.CustomLogger.SuccessLogger.Info("User wiht ID:" + authId + " successfully updated the password")
 	return &pb.ChangePasswordResponse{
 		StatusCode: "200",
 		Message:    "New password updated",
@@ -969,6 +989,7 @@ func (service *AuthService) GetAllPermissionsByRole(ctx context.Context, request
 }
 
 func (service *AuthService) AdminsEndpoint(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
+	service.CustomLogger.InfoLogger.Info("Admin accesses his endpoint")
 	return &pb.Response{
 		StatusCode: "200",
 		Message:    "OK",
