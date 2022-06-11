@@ -87,11 +87,16 @@ func (store *PostMongoDBStore) GetAllByUser(id string) ([]*domain.Post, error) {
 func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 	post.Id = primitive.NewObjectID()
 
-	//fmt.Println("ovo saljem:", post.Image.Data)
 	/** EscapeString **/
 	post.Text = html.EscapeString(post.Text)
+
+	// validacija - da li su neka polja iz job offer-a nepopunjena
 	if post.IsJobOffer {
-		// TODO: validacija - da li su neka polja iz job offer-a nil ?
+		if strings.TrimSpace(post.JobOffer.JobDescription) == "" || strings.TrimSpace(post.JobOffer.DailyActivities) == "" ||
+			strings.TrimSpace(post.JobOffer.Preconditions) == "" || strings.TrimSpace(post.Company.Name) == "" ||
+			strings.TrimSpace(post.Company.Description) == "" {
+			return "error", nil
+		}
 
 		post.JobOffer.JobDescription = html.EscapeString(post.JobOffer.JobDescription)
 		post.JobOffer.DailyActivities = html.EscapeString(post.JobOffer.DailyActivities)

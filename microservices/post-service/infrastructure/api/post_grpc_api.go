@@ -124,12 +124,14 @@ func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.Inse
 		handler.CustomLogger.ErrorLogger.Error("Can not find username by api token")
 		return nil, err
 	}
+	handler.CustomLogger.SuccessLogger.Info("Found user with username: " + username.Username)
 
 	userId, err := handler.service.GetIdByUsername(ctx, username.Username)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Can not find id by username: " + username.Username)
 		return nil, err
 	}
+	handler.CustomLogger.SuccessLogger.Info("Found user with id: " + userId.Id)
 
 	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
 	if err != nil {
