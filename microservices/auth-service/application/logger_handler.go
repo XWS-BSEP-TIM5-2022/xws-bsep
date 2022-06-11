@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"runtime"
-	"strings"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup/config"
 	"github.com/sirupsen/logrus"
@@ -27,7 +26,6 @@ func NewCustomLogger() *CustomLogger {
 	WarningLogger := setLogrusLogger(config.NewConfig().WarningLogsFile)
 	SuccessLogger := setLogrusLogger(config.NewConfig().SuccessLogsFile)
 	DebugLogger := setLogrusLogger(config.NewConfig().DebugLogsFile)
-
 	return &CustomLogger{
 		InfoLogger:    InfoLogger,
 		ErrorLogger:   ErrorLogger,
@@ -40,9 +38,9 @@ func NewCustomLogger() *CustomLogger {
 func caller() func(*runtime.Frame) (function string, file string) {
 	return func(f *runtime.Frame) (function string, file string) {
 		p, _ := os.Getwd()
-		fmt.Println(" *********** ", p, fmt.Sprintf("%s:%d", strings.TrimPrefix(f.File, p), f.Line))
-		fmt.Println(strings.TrimPrefix(f.File, p), f.File, p)
-		return "", fmt.Sprintf("%s:%d", strings.TrimPrefix(f.File, p), f.Line)
+		// fmt.Println(f)
+		p = p + "/application/auth_service.go"
+		return "", fmt.Sprintf("%s:%d", p, f.Line)
 	}
 }
 
@@ -63,8 +61,9 @@ func setLogrusLogger(filename string) *logrus.Entry {
 	}
 	mw := io.MultiWriter(os.Stdout, lumberjackLogger)
 	mLog.SetOutput(mw)
+	mLog.SetReportCaller(true)
 
-	mLog.SetFormatter(&logrus.JSONFormatter{ //TextFormatter //JSONFormatter
+	mLog.SetFormatter(&logrus.JSONFormatter{ //TextFormatter  JSONFormatter
 		CallerPrettyfier: caller(),
 		FieldMap: logrus.FieldMap{
 			logrus.FieldKeyFile: "mehtod",
