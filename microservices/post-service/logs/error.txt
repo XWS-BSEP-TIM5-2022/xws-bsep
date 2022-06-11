@@ -1,0 +1,1 @@
+{"level":"error","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:170","msg":"User with ID: 62a45db2b13db7d9d7e0877f already liked selected post","time":"2022-06-11T11:19:45+02:00"}
