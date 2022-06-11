@@ -1,0 +1,12 @@
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:235","msg":"Found 10 public posts","time":"2022-06-11T19:34:21+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:235","msg":"Found 10 public posts","time":"2022-06-11T19:35:24+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:235","msg":"Found 10 public posts","time":"2022-06-11T19:35:56+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:92","msg":"Found 1 connections for user with ID: 62a45db2b13db7d9d7e0877f","time":"2022-06-11T19:36:02+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:100","msg":"Found 1 posts by connections for user with ID: 62a45db2b13db7d9d7e0877f","time":"2022-06-11T19:36:02+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:108","msg":"Found 1 posts for feed","time":"2022-06-11T19:36:02+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:235","msg":"Found 10 public posts","time":"2022-06-11T19:36:40+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:92","msg":"Found 1 connections for user with ID: 62a4b19cb13db7d9d7e08780","time":"2022-06-11T19:36:48+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:100","msg":"Found 1 posts by connections for user with ID: 62a4b19cb13db7d9d7e08780","time":"2022-06-11T19:36:48+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:108","msg":"Found 9 posts for feed","time":"2022-06-11T19:36:48+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:92","msg":"Found 1 connections for user with ID: 62a4b19cb13db7d9d7e08780","time":"2022-06-11T19:40:00+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:107","msg":"Found 9 posts for feed","time":"2022-06-11T19:40:00+02:00"}

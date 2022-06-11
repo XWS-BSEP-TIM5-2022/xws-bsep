@@ -59,7 +59,7 @@ func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 func (handler *PostHandler) GetAll(ctx context.Context, request *pb.GetAllRequest) (*pb.GetAllResponse, error) {
 	posts, err := handler.service.GetAll()
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Get all")
+		handler.CustomLogger.ErrorLogger.Error("Get all posts unsuccessful")
 		return nil, err
 	}
 	response := &pb.GetAllResponse{

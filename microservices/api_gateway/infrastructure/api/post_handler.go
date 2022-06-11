@@ -11,20 +11,26 @@ import (
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"html"
+	"log"
 	"net/http"
+	"regexp"
+	"strconv"
 )
 
 type PostHandler struct {
 	postClientAddress       string
 	connectionClientAddress string
 	userClientAddress       string
+	CustomLogger            *CustomLogger
 }
 
 func NewPostHandler(postClientAddress, connectionClientAddress, userClientAddress string) Handler {
+	CustomLogger := NewCustomLogger()
 	return &PostHandler{
 		postClientAddress:       postClientAddress,
 		connectionClientAddress: connectionClientAddress,
 		userClientAddress:       userClientAddress,
+		CustomLogger:            CustomLogger,
 	}
 }
 
@@ -33,23 +39,34 @@ func (handler *PostHandler) Init(mux *runtime.ServeMux) {
 
 	err := mux.HandlePath("GET", "/api/feed/{userID}", handler.GetPosts) // prikaz postova od strane zapracenog profila
 	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Feed not found")
 		panic(err)
 	}
 
 	err = mux.HandlePath("GET", "/api/feed/public", handler.GetPublicPosts)
 	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Feed for unregistered user not found")
 		panic(err)
 	}
 }
 
 func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	/* sanitizacija */
 	id := pathParams["userID"]
+	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
+	if err != nil {
+		log.Fatal(err)
+	}
+	id = re.ReplaceAllString(id, " ")
+
 	if id == "" {
+		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + id + " is non-existent")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	if len(id) != 24 {
+		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + id + " is non-existent")
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -66,26 +83,28 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 	posts := &domain.Posts{}
 	users := &domain.Users{}
 
-	err := handler.getAllConnections(users, html.EscapeString(checkId)) /** EscapeString **/
+	err = handler.getAllConnections(users, html.EscapeString(checkId)) /** EscapeString **/
 	if err != nil {
-		fmt.Println("error 1")
+		handler.CustomLogger.ErrorLogger.Error("Get all connections for user with ID: " + id + " unsuccessful")
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	handler.CustomLogger.SuccessLogger.Info("Found " + strconv.Itoa(len(users.UsersDetails)) + " connections for user with ID: " + id)
 
 	err = handler.addPosts(posts, users)
 	if err != nil {
-		fmt.Println("error 2")
+		handler.CustomLogger.ErrorLogger.Error("Get feed for user with ID: " + id + " unsuccessful")
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	response, err := json.Marshal(posts)
 	if err != nil {
-		fmt.Println("error 3")
+		handler.CustomLogger.ErrorLogger.Error("Marshal posts is unsuccessful")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	handler.CustomLogger.SuccessLogger.Info("Found " + strconv.Itoa(len(posts.AllPosts)) + " posts for feed")
 	w.Header().Set("Content-Type", "application/json")
 	//w.Header().Set("Authorization", "Bearer " )	// TODO
 	w.WriteHeader(http.StatusOK)
@@ -96,17 +115,17 @@ func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Reques
 	postClient := services.NewPostClient(handler.postClientAddress)
 	posts, err := postClient.GetAll(context.TODO(), &post.GetAllRequest{})
 	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Get all public posts unsuccessful")
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Println(err)
 		return
 	}
-	allPosts := &domain.Posts{}
 
+	allPosts := &domain.Posts{}
 	for _, post := range posts.Posts {
 		isPublic, err := handler.isUserPublic(post.UserId)
 		if err != nil {
+			handler.CustomLogger.ErrorLogger.Error("Is user public unsuccessful")
 			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Println(err)
 			return
 		}
 
@@ -208,22 +227,25 @@ func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Reques
 
 	response, err := json.Marshal(allPosts)
 	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Marshal public posts is unsuccessful")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	handler.CustomLogger.SuccessLogger.Info("Found " + strconv.Itoa(len(posts.Posts)) + " public posts")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
 
 func (handler *PostHandler) getAllConnections(users *domain.Users, userId string) error {
+	// sanitizacija userId uradjena pre poziva same fje
 	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
 	connections, err := connectionClient.GetConnections(context.TODO(), &connection.GetRequest{UserID: userId})
 	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Get connections for user with ID: " + userId + " unsuccessful")
 		return err
 	}
 
-	fmt.Println("konekcije", connections) // TODO greska
 	for _, user := range connections.Users {
 		newUser := domain.User{
 			Id: user.UserID,
@@ -236,18 +258,10 @@ func (handler *PostHandler) getAllConnections(users *domain.Users, userId string
 func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) error {
 	postClient := services.NewPostClient(handler.postClientAddress)
 
-	fmt.Println("uslo je  8888 ")
-
 	for _, user := range users.UsersDetails {
-
-		fmt.Println("77777777777777777")
-		// TODO: ovo je greska
-
 		postsByUser, err := postClient.GetAllByUser(context.TODO(), &post.GetRequest{Id: user.Id})
-
-		fmt.Println("ove je uslo jjjjjjjjjjjjeeeej", postsByUser)
 		if err != nil {
-			fmt.Println("desio se error!")
+			handler.CustomLogger.ErrorLogger.Error("Get posts by user with ID: " + user.Id + " unsuccessful")
 			return err
 		}
 		for _, post := range postsByUser.Posts {
@@ -353,7 +367,7 @@ func (handler *PostHandler) isUserPublic(id string) (bool, error) {
 	userClient := services.NewUserClient(handler.userClientAddress)
 	users, err := userClient.GetAllPublic(context.TODO(), &user.GetAllPublicRequest{})
 	if err != nil {
-		fmt.Println("isUserPublic vratilo gresku")
+		handler.CustomLogger.ErrorLogger.Error("Get all public users unsuccessful")
 		return false, err
 	}
 
