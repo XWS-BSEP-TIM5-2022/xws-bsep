@@ -46,6 +46,7 @@ func (handler *UserHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 
 func (handler *UserHandler) GetAllPublic(ctx context.Context, request *pb.GetAllPublicRequest) (*pb.GetAllPublicResponse, error) {
 	handler.CustomLogger.InfoLogger.Info("Getting all public accounts")
+	// handler.CustomLogger.getFileSize()
 	// SD: host and port from request
 	p, _ := peer.FromContext(ctx)
 	fmt.Println("** ** IP: " + p.Addr.String())
