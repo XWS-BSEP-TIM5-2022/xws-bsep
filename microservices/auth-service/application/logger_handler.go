@@ -40,6 +40,8 @@ func NewCustomLogger() *CustomLogger {
 func caller() func(*runtime.Frame) (function string, file string) {
 	return func(f *runtime.Frame) (function string, file string) {
 		p, _ := os.Getwd()
+		fmt.Println(" *********** ", p, fmt.Sprintf("%s:%d", strings.TrimPrefix(f.File, p), f.Line))
+		fmt.Println(strings.TrimPrefix(f.File, p), f.File, p)
 		return "", fmt.Sprintf("%s:%d", strings.TrimPrefix(f.File, p), f.Line)
 	}
 }

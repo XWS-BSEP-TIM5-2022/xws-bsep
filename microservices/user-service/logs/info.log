@@ -1,1 +1,3 @@
 {"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:48","msg":"Getting all public accounts","time":"2022-06-11T10:07:42+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:48","msg":"Getting all public accounts","time":"2022-06-11T18:46:18+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:48","msg":"Getting all public accounts","time":"2022-06-11T18:55:43+02:00"}
