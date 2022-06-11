@@ -32,10 +32,10 @@ func NewConfig() *Config {
 		AuthServiceHost: "localhost",
 		AuthServicePort: "8082",
 		LogsFolder:      "logs",
-		InfoLogsFile:    "/info.txt",
-		DebugLogsFile:   "/debug.txt",
-		ErrorLogsFile:   "/error.txt",
-		SuccessLogsFile: "/success.txt",
-		WarningLogsFile: "/warning.txt",
+		InfoLogsFile:    "/info.log",
+		DebugLogsFile:   "/debug.log",
+		ErrorLogsFile:   "/error.log",
+		SuccessLogsFile: "/success.log",
+		WarningLogsFile: "/warning.log",
 	}
 }

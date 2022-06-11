@@ -30,7 +30,7 @@ func NewPostHandler(service *application.PostService) *PostHandler {
 }
 
 func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
-	/* TODO */
+	/* TODO sanitizacija unosa  */
 	str1 := "123#123$123%123^123&123*123(123)-+=|'.,!"
 
 	re, err := regexp.Compile(`[^\w]`)
