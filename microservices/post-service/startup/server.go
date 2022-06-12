@@ -95,5 +95,4 @@ func (server *Server) startGrpcServer(postHandler *api.PostHandler) {
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
-	
 }
