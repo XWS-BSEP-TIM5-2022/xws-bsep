@@ -11,7 +11,7 @@ import (
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
-	api "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/infrastructure/api"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/infrastructure/api"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/startup/config"
 	"github.com/dgrijalva/jwt-go"
@@ -34,16 +34,15 @@ func NewServer(config *config.Config) *Server {
 
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
-
-	postStore := server.initPostStore(mongoClient)
 	server.CustomLogger.SuccessLogger.Info("MongoDB initialization for post service successful")
 
+	postStore := server.initPostStore(mongoClient)
 	userServiceClient := server.initUserServiceClient()
 	authServiceClient := server.initAuthServiceClient()
 	postService := server.initPostService(postStore, userServiceClient, authServiceClient)
 	postHandler := server.initPostHandler(postService)
 
-	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for post service successful")
+	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for post service")
 	server.startGrpcServer(postHandler)
 }
 
@@ -100,6 +99,7 @@ func (server *Server) startGrpcServer(postHandler *api.PostHandler) {
 
 	interceptor := interceptor.NewAuthInterceptor(config.AccessiblePermissions(), publicKey)
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(interceptor.Unary()))
+
 	post.RegisterPostServiceServer(grpcServer, postHandler)
 	if err := grpcServer.Serve(listener); err != nil {
 		server.CustomLogger.ErrorLogger.Error("Serving gRPC server for post service failed")
