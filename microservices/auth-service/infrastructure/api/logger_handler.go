@@ -1,4 +1,4 @@
-package application
+package api
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"runtime"
+	"strings"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup/config"
 	"github.com/sirupsen/logrus"
@@ -38,9 +39,10 @@ func NewCustomLogger() *CustomLogger {
 func caller() func(*runtime.Frame) (function string, file string) {
 	return func(f *runtime.Frame) (function string, file string) {
 		p, _ := os.Getwd()
-		// fmt.Println(f)
-		p = p + "/application/auth_service.go"
-		return "", fmt.Sprintf("%s:%d", p, f.Line)
+		// p = p + "/application/auth_service.go"
+		// return "", fmt.Sprintf("%s:%d", p, f.Line)
+		return "", fmt.Sprintf("%s:%d", strings.TrimPrefix(f.File, p), f.Line)
+
 	}
 }
 

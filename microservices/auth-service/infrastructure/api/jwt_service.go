@@ -1,4 +1,4 @@
-package application
+package api
 
 import (
 	"crypto/rsa"

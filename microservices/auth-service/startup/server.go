@@ -85,19 +85,19 @@ func (server *Server) initAuthStore(client *gorm.DB) *persistence.AuthPostgresSt
 	return store
 }
 
-func (server *Server) initAuthService(store *persistence.AuthPostgresStore, userServiceClient user.UserServiceClient, jwtService *application.JWTService, apiTokenService *application.APITokenService) *application.AuthService {
-	return application.NewAuthService(store, jwtService, userServiceClient, apiTokenService)
+func (server *Server) initAuthService(store *persistence.AuthPostgresStore, userServiceClient user.UserServiceClient, jwtService *api.JWTService, apiTokenService *api.APITokenService) *api.AuthService {
+	return api.NewAuthService(store, jwtService, userServiceClient, apiTokenService)
 }
 
-func (server *Server) initAuthHandler(service *application.AuthService) *api.AuthHandler {
-	return api.NewAuthHandler(service)
+func (server *Server) initAuthHandler(service *api.AuthService) *application.AuthHandler {
+	return application.NewAuthHandler(service)
 }
 
-func (server *Server) initJWTManager(privateKey, publicKey string) (*application.JWTService, error) {
-	return application.NewJWTManager(privateKey, publicKey)
+func (server *Server) initJWTManager(privateKey, publicKey string) (*api.JWTService, error) {
+	return api.NewJWTManager(privateKey, publicKey)
 }
-func (server *Server) initApiTokenManager(privateKey, publicKey string) (*application.APITokenService, error) {
-	return application.NewAPITokenManager(privateKey, publicKey)
+func (server *Server) initApiTokenManager(privateKey, publicKey string) (*api.APITokenService, error) {
+	return api.NewAPITokenManager(privateKey, publicKey)
 }
 
 func (server *Server) initUserServiceClient() user.UserServiceClient {
@@ -105,7 +105,7 @@ func (server *Server) initUserServiceClient() user.UserServiceClient {
 	return persistence.NewUserServiceClient(address)
 }
 
-func (server *Server) startGrpcServer(authHandler *api.AuthHandler) {
+func (server *Server) startGrpcServer(authHandler *application.AuthHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

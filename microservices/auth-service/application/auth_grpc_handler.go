@@ -1,18 +1,18 @@
-package api
+package application
 
 import (
 	"context"
 
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/application"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/api"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 )
 
 type AuthHandler struct {
-	service *application.AuthService
+	service *api.AuthService
 	pb.UnimplementedAuthServiceServer
 }
 
-func NewAuthHandler(service *application.AuthService) *AuthHandler {
+func NewAuthHandler(service *api.AuthService) *AuthHandler {
 	return &AuthHandler{
 		service: service,
 	}

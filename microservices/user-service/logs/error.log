@@ -1,1 +1,4 @@
 {"level":"error","mehtod":"/infrastructure/api/user_grpc_handler.go:157","msg":"ObjectId not created with ID:public]","time":"2022-06-10T22:04:31+02:00"}
+{"level":"error","mehtod":"/infrastructure/api/user_grpc_handler.go:93","msg":"User is not inserted","time":"2022-06-12T09:19:16+02:00"}
+{"level":"error","mehtod":"/infrastructure/api/user_grpc_handler.go:93","msg":"User is not inserted","time":"2022-06-12T09:32:14+02:00"}
+{"level":"error","mehtod":"/infrastructure/api/user_grpc_handler.go:93","msg":"User is not inserted","time":"2022-06-12T09:32:53+02:00"}

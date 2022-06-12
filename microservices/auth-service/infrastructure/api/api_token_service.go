@@ -1,10 +1,11 @@
-package application
+package api
 
 import (
 	"crypto/rsa"
+	"time"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/dgrijalva/jwt-go"
-	"time"
 )
 
 type APITokenService struct {
