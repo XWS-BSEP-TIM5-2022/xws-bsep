@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gopkg.in/square/go-jose.v2/jwt"
 	"html"
 	"log"
 	"net/http"
@@ -61,13 +62,13 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 	id = re.ReplaceAllString(id, " ")
 
 	if id == "" {
-		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + id + " is non-existent")
+		handler.CustomLogger.ErrorLogger.Error("User with ID: " + id + " is non-existent")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	if len(id) != 24 {
-		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + id + " is non-existent")
+		handler.CustomLogger.ErrorLogger.Error("User with ID: " + id + " is non-existent")
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -80,6 +81,15 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 			checkId = checkId + char
 		}
 	}
+
+	err = handler.AuthorizeUser(w, r, id)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("User with can not access feed")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+	handler.CustomLogger.SuccessLogger.Info("User with ID: " + id + " can access feed")
 
 	posts := &domain.Posts{}
 	users := &domain.Users{}
@@ -107,9 +117,33 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 	}
 	handler.CustomLogger.SuccessLogger.Info("Found " + strconv.Itoa(len(posts.AllPosts)) + " posts for feed")
 	w.Header().Set("Content-Type", "application/json")
-	//w.Header().Set("Authorization", "Bearer " )	// TODO
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
+}
+
+func (handler *PostHandler) AuthorizeUser(w http.ResponseWriter, r *http.Request, requestId string) error {
+	jwtToken := r.Header.Get("Authorization")
+	jwtToken = jwtToken[7:]
+	var claims map[string]interface{}
+	token, _ := jwt.ParseSigned(jwtToken)
+	_ = token.UnsafeClaimsWithoutVerification(&claims)
+	username := claims["username"]
+
+	userClient := services.NewUserClient(handler.userClientAddress)
+	idByUsername, err := userClient.GetIdByUsername(context.TODO(), &user.GetIdByUsernameRequest{Username: fmt.Sprint(username)})
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Can not find ID of user with name: " + fmt.Sprint(username))
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		return err
+	}
+	if idByUsername.Id != requestId {
+		handler.CustomLogger.ErrorLogger.Error("User with ID: " + idByUsername.Id + " can not access feed")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusForbidden)
+		return err
+	}
+	return nil
 }
 
 func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
