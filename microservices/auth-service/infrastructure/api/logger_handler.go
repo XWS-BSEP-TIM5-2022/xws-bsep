@@ -39,10 +39,7 @@ func NewCustomLogger() *CustomLogger {
 func caller() func(*runtime.Frame) (function string, file string) {
 	return func(f *runtime.Frame) (function string, file string) {
 		p, _ := os.Getwd()
-		// p = p + "/application/auth_service.go"
-		// return "", fmt.Sprintf("%s:%d", p, f.Line)
 		return "", fmt.Sprintf("%s:%d", strings.TrimPrefix(f.File, p), f.Line)
-
 	}
 }
 
@@ -87,7 +84,5 @@ func (customLogger *CustomLogger) getFileSize() {
 	if err != nil {
 		log.Panic("error")
 	}
-	fmt.Println(" -------------- ")
 	fmt.Println("size: ", fi.Size())
-	fmt.Println(" -------------- ")
 }

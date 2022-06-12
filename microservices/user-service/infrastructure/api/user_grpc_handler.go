@@ -86,6 +86,7 @@ func (handler *UserHandler) Search(ctx context.Context, request *pb.SearchReques
 	return response, nil
 }
 func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
+	handler.CustomLogger.InfoLogger.WithField("email", request.User.Email).Info("User with email: " + request.User.Email + " is updating profile")
 	user := mapInsertUser(request.User)
 	user, err := handler.service.Insert(user)
 
@@ -103,6 +104,7 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertReques
 func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 	//id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	objectId, err := primitive.ObjectIDFromHex(request.User.Id)
+	handler.CustomLogger.InfoLogger.WithField("id", request.User.Id).Info("User with ID: " + request.User.Id + " is updating profile")
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created")
 		return nil, err
@@ -128,6 +130,7 @@ func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateReques
 
 func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
 	id := request.Id
+	handler.CustomLogger.InfoLogger.WithField("id", request.Id).Info("Getting user by id: " + request.Id)
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
@@ -148,6 +151,7 @@ func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 
 func (handler *UserHandler) GetLoggedInUserInfo(ctx context.Context, request *pb.GetAllRequest) (*pb.User, error) {
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	handler.CustomLogger.InfoLogger.WithField("id", userId).Info("Getting logged in user infos by id: " + userId)
 	user, err := handler.service.GetById(userId)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("User with ID:" + userId + " not found")
@@ -159,8 +163,8 @@ func (handler *UserHandler) GetLoggedInUserInfo(ctx context.Context, request *pb
 }
 
 func (handler *UserHandler) UpdateBasicInfo(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-
 	id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	handler.CustomLogger.InfoLogger.WithField("id", id).Info("Updating basic info by user with ID: " + id)
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
@@ -186,8 +190,8 @@ func (handler *UserHandler) UpdateBasicInfo(ctx context.Context, request *pb.Upd
 }
 
 func (handler *UserHandler) UpdateExperienceAndEducation(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-
 	id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	handler.CustomLogger.InfoLogger.WithField("id", id).Info("Updating experience and education by user with ID: " + id)
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
@@ -203,7 +207,6 @@ func (handler *UserHandler) UpdateExperienceAndEducation(ctx context.Context, re
 	}
 
 	user := mapExperienceAndEducation(mapUser(oldUser), request.User)
-
 	success, err := handler.service.Update(user)
 	response := &pb.UpdateResponse{
 		Success: success,
@@ -213,8 +216,8 @@ func (handler *UserHandler) UpdateExperienceAndEducation(ctx context.Context, re
 }
 
 func (handler *UserHandler) UpdateSkillsAndInterests(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-
 	id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	handler.CustomLogger.InfoLogger.WithField("id", id).Info("Updating skilss and interests by user with ID: " + id)
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
@@ -240,6 +243,7 @@ func (handler *UserHandler) UpdateSkillsAndInterests(ctx context.Context, reques
 
 func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest) (*pb.GetEmailResponse, error) {
 	id := request.Id
+	handler.CustomLogger.InfoLogger.WithField("id", id).Info("Get informations about email by user with ID: " + id)
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
@@ -261,6 +265,8 @@ func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest
 	return response, nil
 }
 func (handler *UserHandler) UpdateIsActiveById(ctx context.Context, request *pb.ActivateAccountRequest) (*pb.ActivateAccountResponse, error) {
+	handler.CustomLogger.InfoLogger.WithField("id", request.Id).Info("Checking active status by user with id: " + request.Id)
+
 	err := handler.service.UpdateIsActiveById(request.Id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("User with ID:" + request.Id + " not activated")
@@ -291,7 +297,7 @@ func (handler *UserHandler) GetIsActive(ctx context.Context, request *pb.GetRequ
 func (handler *UserHandler) GetIdByEmail(ctx context.Context, request *pb.GetIdByEmailRequest) (*pb.InsertResponse, error) {
 	userId, err := handler.service.GetIdByEmail(request.Email)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("User with email:" + request.Email + " not found")
+		handler.CustomLogger.ErrorLogger.Error("User with email: " + request.Email + " not found")
 		return nil, err
 	}
 	handler.CustomLogger.SuccessLogger.Info("User by email received successfully")
@@ -303,7 +309,7 @@ func (handler *UserHandler) GetIdByEmail(ctx context.Context, request *pb.GetIdB
 func (handler *UserHandler) GetIdByUsername(ctx context.Context, request *pb.GetIdByUsernameRequest) (*pb.InsertResponse, error) {
 	user, err := handler.service.GetByUsername(request.Username)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("User with username:" + request.Username + " not found")
+		handler.CustomLogger.ErrorLogger.Error("User with username: " + request.Username + " not found")
 		return nil, err
 	}
 	handler.CustomLogger.SuccessLogger.Info("User received successfully")

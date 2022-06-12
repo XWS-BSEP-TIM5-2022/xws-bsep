@@ -213,6 +213,7 @@ func (service *AuthService) ConfirmEmailLogin(ctx context.Context, request *pb.C
 }
 
 func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+	p, _ := peer.FromContext(ctx)
 	service.CustomLogger.InfoLogger.Info("User registration with username: " + request.Username + " and email: " + request.Email)
 	err := checkUsernameCriteria(request.Username)
 	if err != nil {
@@ -329,7 +330,8 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username": userRequest.Username,
+			"username":   userRequest.Username,
+			"ip_address": p.Addr.String(),
 		}).Error("Registration failed for user with username: " + request.Username)
 		return nil, err
 	}
@@ -753,8 +755,7 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 }
 
 func verificationMailMessage(token string) (string, string) {
-	// TODO SD: port se moze izvuci iz env var - 4200
-	urlRedirection := "https://localhost:" + "4200" + "/activate-account/" + token
+	urlRedirection := fmt.Sprintf("https://localhost:%s/activate-account/%s", config.NewConfig().FrontendPort, token)
 	subject := "Account activation"
 	body := "<html><body style=\"background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;\">\n" +
 		"    <!-- HIDDEN PREHEADER TEXT -->\n" +
@@ -805,7 +806,7 @@ func verificationMailMessage(token string) (string, string) {
 		"                            </table>\n" +
 		"                        </td>\n" +
 		"                    </tr> \n" +
-		"    </table>\n" +
+		"    		</table>\n" +
 		"    <br> <br>\n" +
 		"</body>" +
 		"</html>"
