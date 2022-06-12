@@ -336,3 +336,4 @@
 {"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:303","msg":"User by email received successfully","time":"2022-06-12T12:05:10+02:00"}
 {"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:148","msg":"User by ID:62a5b9e188e6ba84ab934af9 received successfully","time":"2022-06-12T12:26:27+02:00"}
 {"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:64","msg":"Found 0 public users","time":"2022-06-12T12:26:31+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:97","msg":"User inserted successfully","time":"2022-06-12T12:48:03+02:00"}

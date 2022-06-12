@@ -12,3 +12,4 @@
 {"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:48","msg":"Getting all public accounts","time":"2022-06-12T12:04:54+02:00"}
 {"id":"62a5b9e188e6ba84ab934af9","level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:133","msg":"Getting user by id: 62a5b9e188e6ba84ab934af9","time":"2022-06-12T12:26:27+02:00"}
 {"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:48","msg":"Getting all public accounts","time":"2022-06-12T12:26:31+02:00"}
+{"email":"sanja.drinic776+1@gmail.com","level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:89","msg":"User with email: sanja.drinic776+1@gmail.com is updating profile","time":"2022-06-12T12:48:03+02:00"}

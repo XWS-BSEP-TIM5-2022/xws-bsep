@@ -22,8 +22,9 @@ var auths = []*domain.Authentication{
 }
 
 var roles = []*domain.Role{
+
 	{
-		ID:          1,
+		ID:          1, //uint(getId()),
 		Name:        "User",
 		Permissions: userPermissions,
 	},

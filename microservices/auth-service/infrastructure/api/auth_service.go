@@ -116,7 +116,7 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 	service.CustomLogger.DebugLogger.Info("Sending passwordless login email for user with ID: " + user.Id)
 	message, subject := passwordlessLoginMailMessage(token)
 
-	err = sendEmail(request.Email, message, subject)
+	err = service.sendEmail(request.Email, message, subject)
 	if err != nil {
 		fmt.Println(err)
 		service.CustomLogger.ErrorLogger.Error("Passwordless login email not sent to user with ID: " + user.Id)
@@ -379,7 +379,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	}).Info("Sending verification email to user with ID: " + authCredentials.Id)
 
 	message, subject := verificationMailMessage(token)
-	errSendingMail := sendEmail(request.Email, message, subject)
+	errSendingMail := service.sendEmail(request.Email, message, subject)
 	if errSendingMail != nil {
 		fmt.Println("err:  ", errSendingMail)
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
@@ -399,7 +399,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	}, nil
 }
 
-func sendEmail(sendTo, body, subject string) error {
+func (service *AuthService) sendEmail(sendTo, body, subject string) error {
 	msg := gomail.NewMessage()
 	msg.SetHeader("From", config.NewConfig().EmailFrom)
 	msg.SetHeader("To", sendTo)
@@ -408,6 +408,16 @@ func sendEmail(sendTo, body, subject string) error {
 	n := gomail.NewDialer(config.NewConfig().EmailHost, config.NewConfig().EmailPort, config.NewConfig().EmailFrom, config.NewConfig().EmailPassword)
 	err := n.DialAndSend(msg)
 	if err != nil {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(config.NewConfig().EmailPassword), bcrypt.DefaultCost)
+		if err != nil {
+			service.CustomLogger.ErrorLogger.Error("Starting the database failed because the password was not hashed")
+		}
+		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+			"email_host":            config.NewConfig().EmailHost,
+			"email_port":            config.NewConfig().EmailPort,
+			"email_sender":          config.NewConfig().EmailFrom,
+			"email_sender_password": hashedPassword,
+		}).Error("Email server did not send the message")
 		return err
 	}
 	return nil
@@ -920,7 +930,7 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 	}
 
 	message, body := codeVerificatioMailMessage(code)
-	sendingMailErr := sendEmail(request.Email, message, body)
+	sendingMailErr := service.sendEmail(request.Email, message, body)
 	if sendingMailErr != nil {
 		service.CustomLogger.ErrorLogger.Error("Email for account recovery is not sent to user with email: " + requestEmail)
 		return nil, sendingMailErr
