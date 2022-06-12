@@ -20,7 +20,6 @@ type Config struct {
 
 func NewConfig() *Config {
 	return &Config{
-
 		Port:            "8080",
 		UserHost:        "localhost",
 		UserPort:        "8081",

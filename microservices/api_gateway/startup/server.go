@@ -36,7 +36,7 @@ func NewServer(config *cfg.Config) *Server {
 	}
 	server.initHandlers()
 	server.initCustomHandlers()
-	server.CustomLogger.SuccessLogger.Info("Starting api gateway successfully")
+	server.CustomLogger.SuccessLogger.Info("Starting api gateway successfully, PORT: ", config.Port) // TODO: ostaviti port ?
 	return server
 }
 
@@ -56,34 +56,34 @@ func (server *Server) initHandlers() {
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	err := userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
 	if err != nil {
-		server.CustomLogger.ErrorLogger.Error("User service registration failed")
+		server.CustomLogger.ErrorLogger.Error("User service registration failed, PORT: ", server.config.UserPort, ", HOST: ", server.config.UserHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("User service registration successful")
+	server.CustomLogger.SuccessLogger.Info("User service registration successful") // TODO: dodati port i host ?
 
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
 	err = authGw.RegisterAuthServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
 	if err != nil {
-		server.CustomLogger.ErrorLogger.Error("Auth service registration failed")
+		server.CustomLogger.ErrorLogger.Error("Auth service registration failed PORT: ", server.config.AuthPort, ", HOST: ", server.config.AuthHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Auth service registration successful")
+	server.CustomLogger.SuccessLogger.Info("Auth service registration successful") // TODO: dodati port i host ?
 
 	connectionEndPoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndPoint, opts)
 	if err != nil {
-		server.CustomLogger.ErrorLogger.Error("Connection service registration failed")
+		server.CustomLogger.ErrorLogger.Error("Connection service registration failed PORT: ", server.config.ConnectionPort, ", HOST: ", server.config.ConnectionHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Connection service registration successful")
+	server.CustomLogger.SuccessLogger.Info("Connection service registration successful") // TODO: dodati port i host ?
 
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
 	if err != nil {
-		server.CustomLogger.ErrorLogger.Error("Post service registration failed")
+		server.CustomLogger.ErrorLogger.Error("Post service registration failed PORT: ", server.config.PostPort, ", HOST: ", server.config.PostHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Post service registration successful")
+	server.CustomLogger.SuccessLogger.Info("Post service registration successful") // TODO: dodati port i host ?
 }
 
 func (server *Server) initCustomHandlers() {
