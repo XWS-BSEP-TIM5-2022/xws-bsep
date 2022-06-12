@@ -105,4 +105,5 @@ func (server *Server) startGrpcServer(postHandler *api.PostHandler) {
 		server.CustomLogger.ErrorLogger.Error("Serving gRPC server for post service failed")
 		log.Fatalf("failed to serve: %s", err)
 	}
+	
 }
