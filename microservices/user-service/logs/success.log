@@ -324,3 +324,15 @@
 {"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:297","msg":"User by email received successfully","time":"2022-06-12T10:58:18+02:00"}
 {"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:285","msg":"User by id received successfully","time":"2022-06-12T10:58:55+02:00"}
 {"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:145","msg":"User by ID:62a5aa78984e71ea2396e40d received successfully","time":"2022-06-12T10:58:55+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:97","msg":"User inserted successfully","time":"2022-06-12T11:42:46+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:278","msg":"User by ID:62a5b516e696d28c4b26412f received successfully","time":"2022-06-12T11:43:05+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:97","msg":"User inserted successfully","time":"2022-06-12T12:00:21+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:278","msg":"User by ID:62a5b935e75c67235384abee received successfully","time":"2022-06-12T12:00:42+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:97","msg":"User inserted successfully","time":"2022-06-12T12:03:13+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:278","msg":"User by ID:62a5b9e188e6ba84ab934af9 received successfully","time":"2022-06-12T12:03:28+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:291","msg":"User by id received successfully","time":"2022-06-12T12:04:45+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:148","msg":"User by ID:62a5b9e188e6ba84ab934af9 received successfully","time":"2022-06-12T12:04:45+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:64","msg":"Found 0 public users","time":"2022-06-12T12:04:54+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:303","msg":"User by email received successfully","time":"2022-06-12T12:05:10+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:148","msg":"User by ID:62a5b9e188e6ba84ab934af9 received successfully","time":"2022-06-12T12:26:27+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:64","msg":"Found 0 public users","time":"2022-06-12T12:26:31+02:00"}

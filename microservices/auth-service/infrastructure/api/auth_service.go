@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"math/rand"
 	"net/mail"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -64,9 +66,15 @@ func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService
 
 func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.PasswordlessLoginResponse, error) {
 	service.CustomLogger.InfoLogger.Info("Passwordless login for user with email: " + request.Email)
-	err := checkEmailCriteria(request.Email)
+	// TODO SD: specijalni karakteri za email
+	re, err := regexp.Compile(`[^\w\.\+\@]`)
 	if err != nil {
-		service.CustomLogger.ErrorLogger.Error("Email: " + request.Email + " is invalid")
+		log.Fatal(err)
+	}
+	requestEmail := re.ReplaceAllString(request.Email, " ")
+	err = checkEmailCriteria(request.Email)
+	if err != nil {
+		service.CustomLogger.ErrorLogger.Error("Email: " + requestEmail + " is invalid")
 		fmt.Println(err.Error())
 		return nil, err
 	}
@@ -76,7 +84,7 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 
 	user, err := service.userServiceClient.GetIdByEmail(context.TODO(), getUserRequest)
 	if err != nil {
-		service.CustomLogger.ErrorLogger.Error("No user with email: " + request.Email + " or account is not activated")
+		service.CustomLogger.ErrorLogger.Error("No user with email: " + requestEmail + " or account is not activated")
 		return nil, errors.New("there is no user with that email or account is not activated")
 	}
 
@@ -479,14 +487,20 @@ func checkUsernameCriteria(username string) error {
 
 func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
 	p, _ := peer.FromContext(ctx)
+	// log injection
+	re, err := regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestUsername := re.ReplaceAllString(request.Username, " ")
 	service.CustomLogger.InfoLogger.WithFields(logrus.Fields{
 		"ip_address": p.Addr.String(),
-	}).Info("Login to application with username: " + request.Username)
-	err := checkUsernameCriteria(request.Username)
+	}).Info("Login to application with username: " + requestUsername)
+	err = checkUsernameCriteria(request.Username)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"username": request.Username,
-		}).Error("No auth credentials found with username: " + request.Username)
+		}).Error("No auth credentials found with username: " + requestUsername)
 		fmt.Println(err.Error())
 		return nil, err
 	}
@@ -504,7 +518,7 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"username": request.Username,
-		}).Error("No auth credentials found with username: " + request.Username)
+		}).Error("No auth credentials found with username: " + requestUsername)
 		return nil, err
 	}
 
@@ -514,7 +528,7 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 		roles, err := service.store.FindRoleByName(authRole.Name)
 		if err != nil {
 			service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-				"username": request.Username,
+				"username": requestUsername,
 			}).Error("No role found by name: " + authRole.Name)
 			fmt.Println("Error finding role by name")
 			return nil, err
@@ -530,13 +544,13 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	if err != nil {
 		fmt.Println("Error finging user data")
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username": request.Username,
+			"username": requestUsername,
 		}).Error("Not found user with ID: " + authCredentials.Id)
 		return nil, err
 	}
 	if !user.IsActive {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username": request.Username,
+			"username": requestUsername,
 		}).Error("Not activated user with ID: " + authCredentials.Id)
 		return nil, errors.New("Account is not activated")
 	}
@@ -544,7 +558,7 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	ok := authCredentials.CheckPassword(request.Password)
 	if !ok {
 		service.CustomLogger.WarningLogger.WithFields(logrus.Fields{
-			"username":   request.Username,
+			"username":   requestUsername,
 			"ip_address": p.Addr.String(),
 		}).Warn("User with ID: " + authCredentials.Id + " tried to log in with the wrong credentials")
 		return nil, status.Errorf(codes.Unauthenticated, "Invalid username or password")
@@ -553,7 +567,7 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	token, err := service.jwtService.GenerateToken(authCredentials)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username":   request.Username,
+			"username":   requestUsername,
 			"ip_address": p.Addr.String(),
 		}).Error("JWT token is not generated for user with ID: " + authCredentials.Id)
 		return nil, status.Errorf(codes.Internal, "Could not generate JWT token")
@@ -565,28 +579,33 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 }
 
 func (service *AuthService) CreateNewAPIToken(ctx context.Context, request *pb.APITokenRequest) (*pb.NewAPITokenResponse, error) {
-	service.CustomLogger.InfoLogger.Info("Generating API token for user: " + request.Username)
+	re, err := regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestUsername := re.ReplaceAllString(request.Username, " ")
+	service.CustomLogger.InfoLogger.Info("Generating API token for user: " + requestUsername)
 	authCredentials, err := service.store.FindByUsername(request.Username)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username": request.Username,
-		}).Error("No found authentication credentials with username: " + request.Username)
+			"username": requestUsername,
+		}).Error("No found authentication credentials with username: " + requestUsername)
 		return nil, err
 	}
 
 	token, hashedToken, err := service.apiTokenService.GenerateAPIToken(authCredentials)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username": request.Username,
-		}).Error("API token not generated for user with username: " + request.Username)
+			"username": requestUsername,
+		}).Error("API token not generated for user with username: " + requestUsername)
 		return nil, status.Errorf(codes.Internal, "Could not generate API token")
 	}
 
 	updateCodeErr := service.store.UpdateAPIToken(authCredentials.Id, hashedToken)
 	if updateCodeErr != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username": request.Username,
-		}).Error("API token not updated by user with username: " + request.Username)
+			"username": requestUsername,
+		}).Error("API token not updated by user with username: " + requestUsername)
 		fmt.Println("Updating api token error")
 		return nil, updateCodeErr
 	}
@@ -856,26 +875,31 @@ func (service *AuthService) ActivateAccount(ctx context.Context, request *pb.Act
 		return nil, err
 	}
 
-	service.CustomLogger.SuccessLogger.Info("Account successfully activated by JWT token:" + request.Jwt)
+	service.CustomLogger.SuccessLogger.Info("Account successfully activated by JWT token")
 	return &pb.ActivationResponse{
 		Token: request.Jwt,
 	}, nil
 }
 
 func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.SendRecoveryCodeRequest) (*pb.SendRecoveryCodeResponse, error) {
-	service.CustomLogger.InfoLogger.Info("Account recovery by user email: " + request.Email)
+	re, err := regexp.Compile(`[^\w\.\+\@]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestEmail := re.ReplaceAllString(request.Email, " ")
+	service.CustomLogger.InfoLogger.Info("Account recovery by user email: " + requestEmail)
 	userServiceRequest := &user.GetIdByEmailRequest{
 		Email: request.Email,
 	}
 	response, err := service.userServiceClient.GetIdByEmail(ctx, userServiceRequest)
 	if err != nil {
-		service.CustomLogger.ErrorLogger.Error("User not found by email: " + request.Email)
+		service.CustomLogger.ErrorLogger.Error("User not found by email: " + requestEmail)
 		fmt.Println("User not found by this email")
 		fmt.Println(err)
 		return nil, err
 	}
 
-	service.CustomLogger.DebugLogger.Info("Generating verification code for account recovery by email: " + request.Email)
+	service.CustomLogger.DebugLogger.Info("Generating verification code for account recovery by email: " + requestEmail)
 	randomCode := rangeIn(min6DigitNumber, max6DigitNumber)
 	code := strconv.Itoa(randomCode)
 
@@ -884,13 +908,13 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 
 	updateCodeErr := service.store.UpdateVerifactionCode(response.Id, code)
 	if updateCodeErr != nil {
-		service.CustomLogger.ErrorLogger.Error("Verification code for account recovery is not updated for user with email: " + request.Email)
+		service.CustomLogger.ErrorLogger.Error("Verification code for account recovery is not updated for user with email: " + requestEmail)
 		fmt.Println("Updating verification code error")
 		return nil, updateCodeErr
 	}
 	updateErr := service.store.UpdateExpirationTime(response.Id, expDate)
 	if updateErr != nil {
-		service.CustomLogger.ErrorLogger.Error("Expiration date for account recovery is not updated for user with email: " + request.Email)
+		service.CustomLogger.ErrorLogger.Error("Expiration date for account recovery is not updated for user with email: " + requestEmail)
 		fmt.Println("Updating expiration time error")
 		return nil, updateErr
 	}
@@ -898,11 +922,11 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 	message, body := codeVerificatioMailMessage(code)
 	sendingMailErr := sendEmail(request.Email, message, body)
 	if sendingMailErr != nil {
-		service.CustomLogger.ErrorLogger.Error("Email for account recovery is not sent to user with email: " + request.Email)
+		service.CustomLogger.ErrorLogger.Error("Email for account recovery is not sent to user with email: " + requestEmail)
 		return nil, sendingMailErr
 	}
 
-	service.CustomLogger.SuccessLogger.Info("Email for account recovery is successfully sent to user with email:" + request.Email)
+	service.CustomLogger.SuccessLogger.Info("Email for account recovery is successfully sent to user with email:" + requestEmail)
 	return &pb.SendRecoveryCodeResponse{
 		IdAuth: response.Id,
 	}, nil
@@ -978,21 +1002,31 @@ func codeVerificatioMailMessage(verificationCode string) (string, string) {
 
 func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.VerifyRecoveryCodeRequest) (*pb.Response, error) {
 	p, _ := peer.FromContext(ctx)
+	re, err := regexp.Compile(`[^\w\.\+\@]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestEmail := re.ReplaceAllString(request.Email, " ")
+	re, err = regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestIdAuth := re.ReplaceAllString(request.IdAuth, " ")
 	service.CustomLogger.InfoLogger.WithFields(logrus.Fields{
 		"ip_address": p.Addr.String(),
-		"email":      request.Email,
-	}).Info("Verification code for account recovery by user with ID: " + request.IdAuth)
-	auth, err := service.store.FindById(request.IdAuth)
+		"email":      requestEmail,
+	}).Info("Verification code for account recovery by user with ID: " + requestIdAuth)
+	auth, err := service.store.FindById(requestIdAuth)
 	if err != nil {
-		service.CustomLogger.ErrorLogger.Error("No user found with ID: " + request.IdAuth)
+		service.CustomLogger.ErrorLogger.Error("No user found with ID: " + requestIdAuth)
 		return nil, err
 	}
 
 	if auth.VerificationCode != request.VerificationCode {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"ip_address": p.Addr.String(),
-			"email":      request.Email,
-		}).Error("Verification code for account recovery by user with ID: " + request.IdAuth + " is invalid")
+			"email":      requestEmail,
+		}).Error("Verification code for account recovery by user with ID: " + requestIdAuth + " is invalid")
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    "Invalid verification code",
@@ -1002,8 +1036,8 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 	if auth.ExpirationTime < time.Now().Unix() {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"ip_address": p.Addr.String(),
-			"email":      request.Email,
-		}).Error("Verification code for account recovery by user with ID: " + request.IdAuth + " is expired")
+			"email":      requestEmail,
+		}).Error("Verification code for account recovery by user with ID: " + requestIdAuth + " is expired")
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    "Verification code has expired",
@@ -1014,8 +1048,8 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 	if updateCodeErr != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"ip_address": p.Addr.String(),
-			"email":      request.Email,
-		}).Error("Used verification code for account recovery by user with ID: " + request.IdAuth + " is not deleted")
+			"email":      requestEmail,
+		}).Error("Used verification code for account recovery by user with ID: " + requestIdAuth + " is not deleted")
 		fmt.Println("Updating verification code error")
 		return nil, updateCodeErr
 	}
@@ -1023,13 +1057,13 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 	if updateErr != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"ip_address": p.Addr.String(),
-			"email":      request.Email,
-		}).Error("Used verification code for account recovery by user with ID: " + request.IdAuth + " - expiration time is not updated")
+			"email":      requestEmail,
+		}).Error("Used verification code for account recovery by user with ID: " + requestIdAuth + " - expiration time is not updated")
 		fmt.Println("Updating expiration time error")
 		return nil, updateErr
 	}
 
-	service.CustomLogger.SuccessLogger.Info("Verification code for account recovery by user with ID: " + request.IdAuth + " is successfully used")
+	service.CustomLogger.SuccessLogger.Info("Verification code for account recovery by user with ID: " + requestIdAuth + " is successfully used")
 	return &pb.Response{
 		StatusCode: "200",
 		Message:    "Verification code is correct",
@@ -1038,12 +1072,17 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 
 func (service *AuthService) ResetForgottenPassword(ctx context.Context, request *pb.ResetForgottenPasswordRequest) (*pb.Response, error) {
 	p, _ := peer.FromContext(ctx)
-	service.CustomLogger.InfoLogger.Info("User with ID: " + request.IdAuth + " recovers the forgotten password")
+	re, err := regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestIdAuth := re.ReplaceAllString(request.IdAuth, " ")
+	service.CustomLogger.InfoLogger.Info("User with ID: " + requestIdAuth + " recovers the forgotten password")
 	auth, err := service.store.FindById(request.IdAuth)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"ip_address": p.Addr.String(),
-		}).Error("No user found with ID: " + request.IdAuth)
+		}).Error("No user found with ID: " + requestIdAuth)
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    "Auth credentials not found",
@@ -1053,7 +1092,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 	if request.Password != request.ReenteredPassword {
 		service.CustomLogger.WarningLogger.WithFields(logrus.Fields{
 			"ip_address": p.Addr.String(),
-		}).Warn("User with ID: " + request.IdAuth + " entered passwords that do not match")
+		}).Warn("User with ID: " + requestIdAuth + " entered passwords that do not match")
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    "New passwords do not match",
@@ -1064,7 +1103,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 	if err != nil {
 		service.CustomLogger.WarningLogger.WithFields(logrus.Fields{
 			"ip_address": p.Addr.String(),
-		}).Warn("User with ID: " + request.IdAuth + " entered password that do not match with password criteria")
+		}).Warn("User with ID: " + requestIdAuth + " entered password that do not match with password criteria")
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    err.Error(),
@@ -1075,7 +1114,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 	if err != nil || hashedPassword == "" {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"ip_address": p.Addr.String(),
-		}).Error("Password is not successfully hashed for user with ID: " + request.IdAuth)
+		}).Error("Password is not successfully hashed for user with ID: " + requestIdAuth)
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    err.Error(),
@@ -1086,13 +1125,13 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"ip_address": p.Addr.String(),
-		}).Error("Password is not successfully updated for user with ID: " + request.IdAuth)
+		}).Error("Password is not successfully updated for user with ID: " + requestIdAuth)
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    err.Error(),
 		}, err
 	}
-	service.CustomLogger.SuccessLogger.Info("Password updated successfully by user with ID: " + request.IdAuth)
+	service.CustomLogger.SuccessLogger.Info("Password updated successfully by user with ID: " + requestIdAuth)
 	return &pb.Response{
 		StatusCode: "200",
 		Message:    "Password updated successfully",
