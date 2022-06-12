@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"math/rand"
 	"net/mail"
-	"net/smtp"
 	"strconv"
 	"strings"
 	"time"
@@ -15,6 +14,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/gomail.v2"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
@@ -29,10 +29,13 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-var verificationCodeDurationInMinutes int = 5
-var min6DigitNumber int = 100000
-var max6DigitNumber int = 999999
-var minPasswordLength int = 8
+const (
+	verificationCodeDurationInMinutes int = 5
+	min6DigitNumber                   int = 100000
+	max6DigitNumber                   int = 999999
+	minPasswordLength                 int = 8
+)
+
 var validate *validator.Validate
 
 type AuthService struct {
@@ -83,7 +86,7 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 		return nil, errors.New("user not found")
 	}
 
-	service.CustomLogger.DebugLogger.Debug("Finding roles from user with ID: " + user.Id)
+	service.CustomLogger.DebugLogger.Info("Finding roles from user with ID: " + user.Id)
 	var authRoles []domain.Role
 	for _, authRole := range *authCredentials.Roles {
 		roles, err := service.store.FindRoleByName(authRole.Name)
@@ -102,19 +105,10 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 		return nil, status.Errorf(codes.Internal, "Could not generate JWT token")
 	}
 
-	from := config.NewConfig().EmailFrom
-	password := config.NewConfig().EmailPassword
-	to := []string{
-		request.Email,
-	}
+	service.CustomLogger.DebugLogger.Info("Sending passwordless login email for user with ID: " + user.Id)
+	message, subject := passwordlessLoginMailMessage(token)
 
-	smtpHost := config.NewConfig().EmailHost
-	smtpPort := config.NewConfig().EmailPort
-	message := passwordlessLoginMailMessage(token)
-	auth := smtp.PlainAuth("", from, password, smtpHost)
-
-	service.CustomLogger.DebugLogger.Debug("Sending passwordless login email for user with ID: " + user.Id)
-	err = smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
+	err = sendEmail(request.Email, message, subject)
 	if err != nil {
 		fmt.Println(err)
 		service.CustomLogger.ErrorLogger.Error("Passwordless login email not sent to user with ID: " + user.Id)
@@ -127,11 +121,10 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 	}, nil
 }
 
-func passwordlessLoginMailMessage(token string) []byte {
+func passwordlessLoginMailMessage(token string) (string, string) {
 	urlRedirection := "https://" + config.NewConfig().FrontendHost + ":" + config.NewConfig().FrontendPort + "/confirmed-mail/" + token
 
-	subject := "Subject: Passwordless login\n"
-	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	subject := "Passwordless login"
 	body := "<html><body style=\"background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;\">\n" +
 		"    <!-- HIDDEN PREHEADER TEXT -->\n" +
 		"    <div style=\"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\"> We're thrilled to have you here! Get ready to dive into your new account.\n" +
@@ -185,8 +178,8 @@ func passwordlessLoginMailMessage(token string) []byte {
 		"    <br> <br>\n" +
 		"</body>" +
 		"</html>"
-	message := []byte(subject + mime + body)
-	return message
+	// message := []byte(subject + mime + body)
+	return body, subject
 }
 
 func (service *AuthService) ConfirmEmailLogin(ctx context.Context, request *pb.ConfirmEmailLoginRequest) (*pb.ConfirmEmailLoginResponse, error) {
@@ -332,7 +325,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	service.CustomLogger.DebugLogger.WithFields(logrus.Fields{
 		"username": request.Username,
 		"email":    request.Email,
-	}).Debug("Creating user")
+	}).Info("Creating user")
 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
@@ -355,7 +348,7 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	service.CustomLogger.DebugLogger.WithFields(logrus.Fields{
 		"username": authCredentials.Username,
 		"password": authCredentials.Password,
-	}).Debug("Saving user credentials with ID: " + authCredentials.Id)
+	}).Info("Saving user credentials with ID: " + authCredentials.Id)
 	authCredentials, err = service.store.Create(authCredentials)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.Error("Authentication credentials for user with ID:" + createUserResponse.Id + " are not created")
@@ -373,9 +366,10 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 	service.CustomLogger.DebugLogger.WithFields(logrus.Fields{
 		"username": request.Username,
 		"email":    request.Email,
-	}).Debug("Sending verification email to user with ID: " + authCredentials.Id)
-	message := verificationMailMessage(token)
-	errSendingMail := sendMail(request.Email, message)
+	}).Info("Sending verification email to user with ID: " + authCredentials.Id)
+
+	message, subject := verificationMailMessage(token)
+	errSendingMail := sendEmail(request.Email, message, subject)
 	if errSendingMail != nil {
 		fmt.Println("err:  ", errSendingMail)
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
@@ -393,6 +387,20 @@ func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRe
 		StatusCode: "200",
 		Message:    "Success! Check your email to activate your account",
 	}, nil
+}
+
+func sendEmail(sendTo, body, subject string) error {
+	msg := gomail.NewMessage()
+	msg.SetHeader("From", config.NewConfig().EmailFrom)
+	msg.SetHeader("To", sendTo)
+	msg.SetHeader("Subject", subject)
+	msg.SetBody("text/html", body)
+	n := gomail.NewDialer(config.NewConfig().EmailHost, config.NewConfig().EmailPort, config.NewConfig().EmailFrom, config.NewConfig().EmailPassword)
+	err := n.DialAndSend(msg)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func checkPasswordCriteria(password, username string) error {
@@ -450,7 +458,6 @@ func checkEmailCriteria(email string) error {
 	if err != nil {
 		return errors.New("Email is invalid.")
 	}
-
 	return nil
 }
 
@@ -499,7 +506,7 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 		return nil, err
 	}
 
-	service.CustomLogger.DebugLogger.Debug("Getting all roles for user with ID:" + authCredentials.Id)
+	service.CustomLogger.DebugLogger.Info("Getting all roles for user with ID:" + authCredentials.Id)
 	var authRoles []domain.Role
 	for _, authRole := range *authCredentials.Roles {
 		roles, err := service.store.FindRoleByName(authRole.Name)
@@ -745,31 +752,10 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 	}, nil
 }
 
-func sendMail(emailTo string, message []byte) error {
-	from := config.NewConfig().EmailFrom
-	emailPassword := config.NewConfig().EmailPassword
-	to := []string{emailTo}
-
-	host := config.NewConfig().EmailHost
-	port := config.NewConfig().EmailPort
-	smtpAddress := host + ":" + port
-
-	authMail := smtp.PlainAuth("", from, emailPassword, host)
-
-	errSendingMail := smtp.SendMail(smtpAddress, authMail, from, to, message)
-	if errSendingMail != nil {
-		fmt.Println("err:  ", errSendingMail)
-		return errSendingMail
-	}
-	return nil
-}
-
-func verificationMailMessage(token string) []byte {
+func verificationMailMessage(token string) (string, string) {
 	// TODO SD: port se moze izvuci iz env var - 4200
 	urlRedirection := "https://localhost:" + "4200" + "/activate-account/" + token
-
-	subject := "Subject: Account activation\n"
-	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	subject := "Account activation"
 	body := "<html><body style=\"background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;\">\n" +
 		"    <!-- HIDDEN PREHEADER TEXT -->\n" +
 		"    <div style=\"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\"> We're thrilled to have you here! Get ready to dive into your new account.\n" +
@@ -823,8 +809,7 @@ func verificationMailMessage(token string) []byte {
 		"    <br> <br>\n" +
 		"</body>" +
 		"</html>"
-	message := []byte(subject + mime + body)
-	return message
+	return body, subject
 }
 
 func (service *AuthService) ActivateAccount(ctx context.Context, request *pb.ActivationRequest) (*pb.ActivationResponse, error) {
@@ -889,7 +874,7 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 		return nil, err
 	}
 
-	service.CustomLogger.DebugLogger.Debug("Generating verification code for account recovery by email: " + request.Email)
+	service.CustomLogger.DebugLogger.Info("Generating verification code for account recovery by email: " + request.Email)
 	randomCode := rangeIn(min6DigitNumber, max6DigitNumber)
 	code := strconv.Itoa(randomCode)
 
@@ -909,8 +894,8 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 		return nil, updateErr
 	}
 
-	message := codeVerificatioMailMessage(code)
-	sendingMailErr := sendMail(request.Email, message)
+	message, body := codeVerificatioMailMessage(code)
+	sendingMailErr := sendEmail(request.Email, message, body)
 	if sendingMailErr != nil {
 		service.CustomLogger.ErrorLogger.Error("Email for account recovery is not sent to user with email: " + request.Email)
 		return nil, sendingMailErr
@@ -926,9 +911,9 @@ func rangeIn(low, hi int) int {
 	return low + rand.Intn(hi-low)
 }
 
-func codeVerificatioMailMessage(verificationCode string) []byte {
-	subject := "Subject: Account recovery\n"
-	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+func codeVerificatioMailMessage(verificationCode string) (string, string) {
+	subject := "Account recovery"
+	// mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	body := "<html><body style=\"background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;\">\n" +
 		"    <div style=\"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\"> We're thrilled to have you here! Get ready to dive into your new account.\n" +
 		"    </div>\n" +
@@ -987,8 +972,7 @@ func codeVerificatioMailMessage(verificationCode string) []byte {
 		"    <br> <br>\n" +
 		"</body>\n" +
 		"</html>"
-	message := []byte(subject + mime + body)
-	return message
+	return body, subject
 }
 
 func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.VerifyRecoveryCodeRequest) (*pb.Response, error) {
