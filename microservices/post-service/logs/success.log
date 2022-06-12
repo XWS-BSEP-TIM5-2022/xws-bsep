@@ -1369,3 +1369,6 @@
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 5 posts created by user with ID: 62a5b8552c49c6f2891948d7","time":"2022-06-12T13:06:31+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:330","msg":"Post with ID: 62a5b86d307ff899e84cf70c was commented by user with ID: 62a5b8552c49c6f2891948d7","time":"2022-06-12T13:06:32+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 5 posts created by user with ID: 62a5b8552c49c6f2891948d7","time":"2022-06-12T13:06:32+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/startup/server.go:37","msg":"MongoDB initialization for post service successful","time":"2022-06-12T13:10:15+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/startup/server.go:45","msg":"Starting gRPC server for post service","time":"2022-06-12T13:10:15+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 15 posts","time":"2022-06-12T13:18:55+02:00"}

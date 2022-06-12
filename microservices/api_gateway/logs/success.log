@@ -45,3 +45,25 @@
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:107","msg":"Found 0 posts for feed","time":"2022-06-12T12:04:07+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:92","msg":"Found 0 connections for user with ID: 62a5b8552c49c6f2891948d7","time":"2022-06-12T12:32:24+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:107","msg":"Found 0 posts for feed","time":"2022-06-12T12:32:24+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:234","msg":"Found 15 public posts","time":"2022-06-12T13:06:24+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:92","msg":"Found 0 connections for user with ID: 62a5b8552c49c6f2891948d7","time":"2022-06-12T13:06:29+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:107","msg":"Found 0 posts for feed","time":"2022-06-12T13:06:29+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:61","msg":"User service registration successful","time":"2022-06-12T13:15:11+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:69","msg":"Auth service registration successful","time":"2022-06-12T13:15:11+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:77","msg":"Connection service registration successful","time":"2022-06-12T13:15:11+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:85","msg":"Post service registration successful","time":"2022-06-12T13:15:11+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:62","msg":"User service registration successful","time":"2022-06-12T13:17:03+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:70","msg":"Auth service registration successful","time":"2022-06-12T13:17:03+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:78","msg":"Connection service registration successful","time":"2022-06-12T13:17:03+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:86","msg":"Post service registration successful","time":"2022-06-12T13:17:03+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:62","msg":"User service registration successful","time":"2022-06-12T13:17:46+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:70","msg":"Auth service registration successful","time":"2022-06-12T13:17:46+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:78","msg":"Connection service registration successful","time":"2022-06-12T13:17:46+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:86","msg":"Post service registration successful","time":"2022-06-12T13:17:46+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:39","msg":"Starting api gateway successful","time":"2022-06-12T13:17:46+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:62","msg":"User service registration successful","time":"2022-06-12T13:18:31+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:70","msg":"Auth service registration successful","time":"2022-06-12T13:18:31+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:78","msg":"Connection service registration successful","time":"2022-06-12T13:18:31+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:86","msg":"Post service registration successful","time":"2022-06-12T13:18:31+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/startup/server.go:39","msg":"Starting api gateway successfully","time":"2022-06-12T13:18:31+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:234","msg":"Found 15 public posts","time":"2022-06-12T13:18:55+02:00"}

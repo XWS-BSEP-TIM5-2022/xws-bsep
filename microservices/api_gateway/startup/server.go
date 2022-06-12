@@ -20,19 +20,23 @@ import (
 )
 
 type Server struct {
-	config *cfg.Config
-	mux    *runtime.ServeMux
+	config       *cfg.Config
+	mux          *runtime.ServeMux
+	CustomLogger *api.CustomLogger
 }
 
 func NewServer(config *cfg.Config) *Server {
+	CustomLogger := api.NewCustomLogger()
 	server := &Server{
 		config: config,
 		mux: runtime.NewServeMux(
 			runtime.WithIncomingHeaderMatcher(customMatcher),
 		),
+		CustomLogger: CustomLogger,
 	}
 	server.initHandlers()
 	server.initCustomHandlers()
+	server.CustomLogger.SuccessLogger.Info("Starting api gateway successfully")
 	return server
 }
 
@@ -49,36 +53,44 @@ func customMatcher(key string) (string, bool) {
 func (server *Server) initHandlers() {
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
-	userEmdpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
-	err := userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEmdpoint, opts)
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	err := userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("User service registration failed")
 		panic(err)
 	}
+	server.CustomLogger.SuccessLogger.Info("User service registration successful")
 
-	authEmdpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
-	err = authGw.RegisterAuthServiceHandlerFromEndpoint(context.TODO(), server.mux, authEmdpoint, opts)
+	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
+	err = authGw.RegisterAuthServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Auth service registration failed")
 		panic(err)
 	}
+	server.CustomLogger.SuccessLogger.Info("Auth service registration successful")
 
 	connectionEndPoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndPoint, opts)
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Connection service registration failed")
 		panic(err)
 	}
+	server.CustomLogger.SuccessLogger.Info("Connection service registration successful")
 
-	postEmdpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEmdpoint, opts)
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Post service registration failed")
 		panic(err)
 	}
+	server.CustomLogger.SuccessLogger.Info("Post service registration successful")
 }
 
 func (server *Server) initCustomHandlers() {
-	postEmdpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
-	connectionEmdpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
-	userEmdpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
-	postsHandler := api.NewPostHandler(postEmdpoint, connectionEmdpoint, userEmdpoint)
+	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
+	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
+	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
+	postsHandler := api.NewPostHandler(postEndpoint, connectionEndpoint, userEndpoint)
 	postsHandler.Init(server.mux)
 }
 
@@ -95,7 +107,6 @@ func (server *Server) Start() {
 		handlers.AllowCredentials(),
 	)
 	log.Fatal(http.ListenAndServeTLS(fmt.Sprintf(":%s", server.config.Port), crtPath, keyPath, cors(muxMiddleware(server))))
-
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), cors(muxMiddleware(server))))
 }
 
