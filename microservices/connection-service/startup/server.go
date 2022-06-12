@@ -37,7 +37,7 @@ const (
 
 func (server *Server) Start() {
 	neo4jClient := server.initNeo4J()
-	server.CustomLogger.SuccessLogger.Info("Neo4J initialization for connection service successful")
+	server.CustomLogger.SuccessLogger.Info("Neo4J initialization for connection service successful, PORT: ", server.config.Port, ", HOST: ", server.config.Host)
 
 	connectionStore := server.initConnectionStore(neo4jClient)
 	connectionService := server.initConnectionService(connectionStore)
@@ -85,12 +85,12 @@ func (server *Server) initConnectionHandler(service *application.ConnectionServi
 func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
-		server.CustomLogger.ErrorLogger.Error("Starting gRPC server for connection service failed")
+		server.CustomLogger.ErrorLogger.Error("Failed to listen in connection service: ", listener)
 		log.Fatalf("failed to listen: %v", err)
 	}
 	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(server.config.PublicKey))
 	if err != nil {
-		server.CustomLogger.ErrorLogger.Error("Parsing RSA public key for connection service failed")
+		server.CustomLogger.ErrorLogger.Error("Parsing RSA public key in connection service failed")
 		log.Fatalf("failed to parse public key: %v", err)
 	}
 
@@ -99,7 +99,7 @@ func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) 
 
 	inventory.RegisterConnectionServiceServer(grpcServer, connectionHandler)
 	if err := grpcServer.Serve(listener); err != nil {
-		server.CustomLogger.ErrorLogger.Error("Serving gRPC server for connection service failed")
+		server.CustomLogger.ErrorLogger.Error("Failed to serve gRPC in connection service: ", listener)
 		log.Fatalf("failed to serve: %s", err)
 	}
 }

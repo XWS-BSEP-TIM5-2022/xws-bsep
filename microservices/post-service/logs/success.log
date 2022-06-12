@@ -1372,3 +1372,13 @@
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/startup/server.go:37","msg":"MongoDB initialization for post service successful","time":"2022-06-12T13:10:15+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/startup/server.go:45","msg":"Starting gRPC server for post service","time":"2022-06-12T13:10:15+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 15 posts","time":"2022-06-12T13:18:55+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/startup/server.go:38","msg":"MongoDB initialization for post service successful","time":"2022-06-12T16:48:01+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/startup/server.go:46","msg":"Starting gRPC server for post service","time":"2022-06-12T16:48:01+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/startup/server.go:38","msg":"MongoDB initialization for post service successful, port: %v, host: %v27017localhost","time":"2022-06-12T16:48:59+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/startup/server.go:46","msg":"Starting gRPC server for post service","time":"2022-06-12T16:48:59+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/startup/server.go:38","msg":"MongoDB initialization for post service successful, port: %, host: %27017localhost","time":"2022-06-12T16:50:26+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/startup/server.go:46","msg":"Starting gRPC server for post service","time":"2022-06-12T16:50:26+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/startup/server.go:38","msg":"MongoDB initialization for post service successful, port: %27017 and hostlocalhost","time":"2022-06-12T16:50:56+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/startup/server.go:46","msg":"Starting gRPC server for post service","time":"2022-06-12T16:50:56+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/startup/server.go:38","msg":"MongoDB initialization for post service successful, port: 27017 , host: localhost","time":"2022-06-12T16:51:20+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/startup/server.go:46","msg":"Starting gRPC server for post service","time":"2022-06-12T16:51:20+02:00"}
