@@ -11,7 +11,7 @@ import (
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/infrastructure/api"
+	api "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/infrastructure/api"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/startup/config"
 	"github.com/dgrijalva/jwt-go"
@@ -20,30 +20,37 @@ import (
 )
 
 type Server struct {
-	config *config.Config
+	config       *config.Config
+	CustomLogger *api.CustomLogger
 }
 
 func NewServer(config *config.Config) *Server {
+	CustomLogger := api.NewCustomLogger()
 	return &Server{
-		config: config,
+		config:       config,
+		CustomLogger: CustomLogger,
 	}
 }
 
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
+
 	postStore := server.initPostStore(mongoClient)
+	server.CustomLogger.SuccessLogger.Info("MongoDB initialization for post service successful")
+
 	userServiceClient := server.initUserServiceClient()
 	authServiceClient := server.initAuthServiceClient()
 	postService := server.initPostService(postStore, userServiceClient, authServiceClient)
-
 	postHandler := server.initPostHandler(postService)
 
+	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for post service successful")
 	server.startGrpcServer(postHandler)
 }
 
 func (server *Server) initMongoClient() *mongo.Client { // inicijalizacija mongo klijenta
 	client, err := persistence.GetClient(server.config.PostDBHost, server.config.PostDBPort)
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("MongoDB initialization for post service failed")
 		log.Fatal(err)
 	}
 	return client
@@ -82,10 +89,12 @@ func (server *Server) initPostHandler(service *application.PostService) *api.Pos
 func (server *Server) startGrpcServer(postHandler *api.PostHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Starting gRPC server for post service failed")
 		log.Fatalf("failed to listen: %v", err)
 	}
 	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(server.config.PublicKey))
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Parsing RSA public key for post service failed")
 		log.Fatalf("failed to parse public key: %v", err)
 	}
 
@@ -93,6 +102,7 @@ func (server *Server) startGrpcServer(postHandler *api.PostHandler) {
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(interceptor.Unary()))
 	post.RegisterPostServiceServer(grpcServer, postHandler)
 	if err := grpcServer.Serve(listener); err != nil {
+		server.CustomLogger.ErrorLogger.Error("Serving gRPC server for post service failed")
 		log.Fatalf("failed to serve: %s", err)
 	}
 }
