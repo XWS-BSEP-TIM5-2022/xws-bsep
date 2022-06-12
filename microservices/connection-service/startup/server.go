@@ -19,12 +19,15 @@ import (
 )
 
 type Server struct {
-	config *config.Config
+	config       *config.Config
+	CustomLogger *api.CustomLogger
 }
 
 func NewServer(config *config.Config) *Server {
+	CustomLogger := api.NewCustomLogger()
 	return &Server{
-		config: config,
+		config:       config,
+		CustomLogger: CustomLogger,
 	}
 }
 
@@ -34,13 +37,13 @@ const (
 
 func (server *Server) Start() {
 	neo4jClient := server.initNeo4J()
+	server.CustomLogger.SuccessLogger.Info("Neo4J initialization for connection service successful")
 
 	connectionStore := server.initConnectionStore(neo4jClient)
-
 	connectionService := server.initConnectionService(connectionStore)
-
 	connectionHandler := server.initConnectionHandler(connectionService)
 
+	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for connection service")
 	server.startGrpcServer(connectionHandler)
 }
 
@@ -51,6 +54,7 @@ func (server *Server) initNeo4J() *neo4j.Driver {
 
 	client, err := persistence.GetClient(dbUri, server.config.Neo4jUsername, server.config.Neo4jPassword)
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Neo4J initialization for connection service failed")
 		log.Fatal(err)
 	}
 	return client
@@ -81,11 +85,12 @@ func (server *Server) initConnectionHandler(service *application.ConnectionServi
 func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Starting gRPC server for connection service failed")
 		log.Fatalf("failed to listen: %v", err)
 	}
-	//grpcServer := grpc.NewServer()
 	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(server.config.PublicKey))
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Parsing RSA public key for connection service failed")
 		log.Fatalf("failed to parse public key: %v", err)
 	}
 
@@ -94,6 +99,7 @@ func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) 
 
 	inventory.RegisterConnectionServiceServer(grpcServer, connectionHandler)
 	if err := grpcServer.Serve(listener); err != nil {
+		server.CustomLogger.ErrorLogger.Error("Serving gRPC server for connection service failed")
 		log.Fatalf("failed to serve: %s", err)
 	}
 }

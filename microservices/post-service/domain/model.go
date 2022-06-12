@@ -37,7 +37,7 @@ type Post struct {
 }
 
 type JobOffer struct {
-	Id              primitive.ObjectID `bson:"_id"` // TODO: tip id-a ??
+	Id              primitive.ObjectID `bson:"_id"`
 	Position        Position           `bson:"position"`
 	JobDescription  string             `bson:"job_description"`
 	DailyActivities string             `bson:"daily_activities"`
@@ -45,7 +45,7 @@ type JobOffer struct {
 }
 
 type Company struct {
-	Id          primitive.ObjectID `bson:"_id"` // TODO: tip id-a ??
+	Id          primitive.ObjectID `bson:"_id"`
 	Name        string             `bson:"name"`
 	Description string             `bson:"description"`
 	PhoneNumber string             `bson:"phone_number"`
@@ -53,7 +53,7 @@ type Company struct {
 }
 
 type Position struct {
-	Id   primitive.ObjectID `bson:"_id"` // TODO: tip id-a ??
+	Id   primitive.ObjectID `bson:"_id"`
 	Name string             `bson:"name"`
 	Pay  float64            `bson:"pay"`
 }
