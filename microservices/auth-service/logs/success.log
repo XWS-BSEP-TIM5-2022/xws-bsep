@@ -8,3 +8,6 @@
 {"level":"info","mehtod":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:888","msg":"Account successfully activated by JWT token","time":"2022-06-12T18:50:21+02:00"}
 {"level":"info","mehtod":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:585","msg":"Successful user login with username: kristina","time":"2022-06-12T18:50:31+02:00"}
 {"level":"info","mehtod":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:585","msg":"Successful user login with username: tea","time":"2022-06-12T18:50:52+02:00"}
+{"level":"info","mehtod":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:585","msg":"Successful user login with username: tea","time":"2022-06-12T19:02:48+02:00"}
+{"level":"info","mehtod":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:585","msg":"Successful user login with username: kristina","time":"2022-06-12T19:03:16+02:00"}
+{"level":"info","mehtod":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:585","msg":"Successful user login with username: tea","time":"2022-06-12T19:05:43+02:00"}

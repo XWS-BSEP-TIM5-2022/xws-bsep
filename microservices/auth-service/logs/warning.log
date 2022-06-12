@@ -1,0 +1,1 @@
+{"ip_address":"[::1]:59379","level":"warning","mehtod":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:573","msg":"User with ID: 62a614eab78bfde0d4a2385d tried to log in with the wrong credentials","time":"2022-06-12T19:05:40+02:00","username":"tea"}
