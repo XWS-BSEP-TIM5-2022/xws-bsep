@@ -10,6 +10,8 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup/config"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	auth_service_proto "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
@@ -19,12 +21,15 @@ import (
 )
 
 type Server struct {
-	config *config.Config
+	config       *config.Config
+	CustomLogger *api.CustomLogger
 }
 
 func NewServer(config *config.Config) *Server {
+	CustomLogger := api.NewCustomLogger()
 	return &Server{
-		config: config,
+		config:       config,
+		CustomLogger: CustomLogger,
 	}
 }
 
@@ -38,12 +43,14 @@ func (server *Server) Start() {
 
 	jwtServiceClient, err := server.initJWTManager(server.config.PrivateKey, server.config.PublicKey)
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Initialization JWT service error")
 		log.Fatal(err)
 	}
 	userServiceClient := server.initUserServiceClient()
 
 	apiTokenServiceClient, err := server.initApiTokenManager(server.config.PrivateKey, server.config.PublicKey)
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Initialization API service error")
 		log.Fatal(err)
 	}
 
@@ -59,7 +66,18 @@ func (server *Server) initPostgresClient() *gorm.DB {
 		server.config.AuthDBPass, server.config.AuthDBName,
 		server.config.AuthDBPort)
 	if err != nil {
-		log.Fatal(err)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(server.config.AuthDBPass), bcrypt.DefaultCost)
+		if err != nil {
+			server.CustomLogger.ErrorLogger.Error("Starting the database failed because the password was not hashed")
+		}
+		server.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+			"auth_db_host":     server.config.AuthDBHost,
+			"auth_db_port":     server.config.AuthDBPort,
+			"auth_db_user":     server.config.AuthDBUser,
+			"auth_db_password": string(hashedPassword), // TODO SD: password kao plain txt/hesirana?
+			"auth_db_name":     server.config.AuthDBName,
+		}).Error("Postgres database initialization error")
+		// log.Fatal(err)
 	}
 	return client
 }
@@ -67,37 +85,40 @@ func (server *Server) initPostgresClient() *gorm.DB {
 func (server *Server) initAuthStore(client *gorm.DB) *persistence.AuthPostgresStore {
 	store, err := persistence.NewAuthPostgresStore(client)
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Auth store initialization error")
 		log.Fatal(err)
 	}
 	store.DeleteAll()
 	for _, Auth := range auths {
 		err := store.Insert(Auth)
 		if err != nil {
+			server.CustomLogger.ErrorLogger.WithField("auth_id", Auth.Id).Error("Failed seed base with auth credentials")
 			log.Fatal(err)
 		}
 	}
 	for _, Role := range roles {
 		err := store.InsertRole(Role)
 		if err != nil {
+			server.CustomLogger.ErrorLogger.WithField("role_id", Role.ID).Error("Failed seed base with user roles")
 			log.Fatal(err)
 		}
 	}
 	return store
 }
 
-func (server *Server) initAuthService(store *persistence.AuthPostgresStore, userServiceClient user.UserServiceClient, jwtService *application.JWTService, apiTokenService *application.APITokenService) *application.AuthService {
-	return application.NewAuthService(store, jwtService, userServiceClient, apiTokenService)
+func (server *Server) initAuthService(store *persistence.AuthPostgresStore, userServiceClient user.UserServiceClient, jwtService *api.JWTService, apiTokenService *api.APITokenService) *api.AuthService {
+	return api.NewAuthService(store, jwtService, userServiceClient, apiTokenService)
 }
 
-func (server *Server) initAuthHandler(service *application.AuthService) *api.AuthHandler {
-	return api.NewAuthHandler(service)
+func (server *Server) initAuthHandler(service *api.AuthService) *application.AuthHandler {
+	return application.NewAuthHandler(service)
 }
 
-func (server *Server) initJWTManager(privateKey, publicKey string) (*application.JWTService, error) {
-	return application.NewJWTManager(privateKey, publicKey)
+func (server *Server) initJWTManager(privateKey, publicKey string) (*api.JWTService, error) {
+	return api.NewJWTManager(privateKey, publicKey)
 }
-func (server *Server) initApiTokenManager(privateKey, publicKey string) (*application.APITokenService, error) {
-	return application.NewAPITokenManager(privateKey, publicKey)
+func (server *Server) initApiTokenManager(privateKey, publicKey string) (*api.APITokenService, error) {
+	return api.NewAPITokenManager(privateKey, publicKey)
 }
 
 func (server *Server) initUserServiceClient() user.UserServiceClient {
@@ -105,22 +126,24 @@ func (server *Server) initUserServiceClient() user.UserServiceClient {
 	return persistence.NewUserServiceClient(address)
 }
 
-func (server *Server) startGrpcServer(authHandler *api.AuthHandler) {
+func (server *Server) startGrpcServer(authHandler *application.AuthHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	// grpcServer := grpc.NewServer()
-	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(server.config.PublicKey))
-	if err != nil {
-		log.Fatalf("failed to parse public key: %v", err)
+		server.CustomLogger.ErrorLogger.Error("Failed to listen: %v", listener)
+		// log.Fatalf("failed to listen: %v", err)
 	}
 
-	// interceptor := interceptor.NewAuthInterceptor(config.AccessibleRoles(), publicKey)
+	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(server.config.PublicKey))
+	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Failed to parse public key")
+		// log.Fatalf("failed to parse public key: %v", err)
+	}
+
 	interceptor := interceptor.NewAuthInterceptor(config.AccessiblePermissions(), publicKey)
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(interceptor.Unary()))
 	auth_service_proto.RegisterAuthServiceServer(grpcServer, authHandler)
 	if err := grpcServer.Serve(listener); err != nil {
-		log.Fatalf("failed to serve: %s", err)
+		server.CustomLogger.ErrorLogger.Error("Failed to serve: %v", listener)
+		// log.Fatalf("failed to serve: %s", err)
 	}
 }

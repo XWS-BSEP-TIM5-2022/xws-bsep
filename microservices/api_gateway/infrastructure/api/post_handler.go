@@ -4,17 +4,18 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"html"
+	"log"
+	"net/http"
+	"regexp"
+	"strconv"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/services"
 	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"html"
-	"log"
-	"net/http"
-	"regexp"
-	"strconv"
 )
 
 type PostHandler struct {

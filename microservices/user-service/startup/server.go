@@ -7,6 +7,7 @@ import (
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/persistence"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 
 	interceptor "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
@@ -19,12 +20,15 @@ import (
 )
 
 type Server struct {
-	config *config.Config
+	config       *config.Config
+	CustomLogger *api.CustomLogger
 }
 
 func NewServer(config *config.Config) *Server {
+	CustomLogger := api.NewCustomLogger()
 	return &Server{
-		config: config,
+		config:       config,
+		CustomLogger: CustomLogger,
 	}
 }
 
@@ -46,7 +50,11 @@ func (server *Server) Start() {
 func (server *Server) initMongoClient() *mongo.Client {
 	client, err := persistence.GetClient(server.config.UserDBHost, server.config.UserDBPort)
 	if err != nil {
-		log.Fatal(err)
+		server.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+			"user_db_host": server.config.UserDBHost,
+			"user_db_port": server.config.UserDBPort,
+		}).Error("Mongo database initialization error")
+		// log.Fatal(err)
 	}
 	return client
 }
@@ -57,7 +65,8 @@ func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
 	for _, user := range users {
 		_, err := store.Insert(user)
 		if err != nil {
-			log.Fatal(err)
+			server.CustomLogger.ErrorLogger.Error("User store initialization error")
+			// log.Fatal(err)
 		}
 	}
 	return store
@@ -74,12 +83,14 @@ func (server *Server) initUserHandler(service *application.UserService) *api.Use
 func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", server.config.Port))
 	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Failed to listen: %v", listener)
 		log.Fatalf("failed to listen: %v", err)
 	}
 	// ****
 	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(server.config.PublicKey))
 	if err != nil {
-		log.Fatalf("failed to parse public key: %v", err)
+		server.CustomLogger.ErrorLogger.Error("Failed to parse public key")
+		// log.Fatalf("failed to parse public key: %v", err)
 	}
 
 	interceptor := interceptor.NewAuthInterceptor(config.AccessiblePermissions(), publicKey)
@@ -87,6 +98,7 @@ func (server *Server) startGrpcServer(userHandler *api.UserHandler) {
 	// ***
 	inventory.RegisterUserServiceServer(grpcServer, userHandler)
 	if err := grpcServer.Serve(listener); err != nil {
-		log.Fatalf("failed to serve: %s", err)
+		server.CustomLogger.ErrorLogger.Error("Failed to serve: %v", listener)
+		// log.Fatalf("failed to serve: %s", err)
 	}
 }

@@ -8,8 +8,11 @@ require (
 	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-00010101000000-000000000000
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/validator/v10 v10.11.0
+	github.com/sirupsen/logrus v1.8.1
 	go.mongodb.org/mongo-driver v1.9.1
 	google.golang.org/grpc v1.46.2
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gorm.io/driver/postgres v1.3.5
 	gorm.io/gorm v1.23.5
 )
@@ -19,6 +22,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 )
 
 require (
