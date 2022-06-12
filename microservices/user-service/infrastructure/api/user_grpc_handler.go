@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+	"regexp"
 	"strconv"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
@@ -66,7 +68,12 @@ func (handler *UserHandler) GetAllPublic(ctx context.Context, request *pb.GetAll
 }
 
 func (handler *UserHandler) Search(ctx context.Context, request *pb.SearchRequest) (*pb.SearchResponse, error) {
-	criteria := request.Criteria
+	re, err := regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestCriteria := re.ReplaceAllString(request.Criteria, " ")
+	criteria := requestCriteria
 	users, err := handler.service.Search(criteria)
 
 	if err != nil {
@@ -86,9 +93,15 @@ func (handler *UserHandler) Search(ctx context.Context, request *pb.SearchReques
 	return response, nil
 }
 func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
-	handler.CustomLogger.InfoLogger.WithField("email", request.User.Email).Info("User with email: " + request.User.Email + " is updating profile")
+	re, err := regexp.Compile(`[^\w\.\+\@]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestUserEmail := re.ReplaceAllString(request.User.Email, " ")
+	handler.CustomLogger.InfoLogger.WithField("email", requestUserEmail).Info("User with email: " + requestUserEmail + " is updating profile")
+
 	user := mapInsertUser(request.User)
-	user, err := handler.service.Insert(user)
+	user, err = handler.service.Insert(user)
 
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("User is not inserted")
@@ -103,8 +116,14 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertReques
 
 func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 	//id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	re, err := regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestUserId := re.ReplaceAllString(request.User.Id, " ")
+
 	objectId, err := primitive.ObjectIDFromHex(request.User.Id)
-	handler.CustomLogger.InfoLogger.WithField("id", request.User.Id).Info("User with ID: " + request.User.Id + " is updating profile")
+	handler.CustomLogger.InfoLogger.WithField("id", requestUserId).Info("User with ID: " + requestUserId + " is updating profile")
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created")
 		return nil, err
@@ -130,7 +149,13 @@ func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateReques
 
 func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
 	id := request.Id
-	handler.CustomLogger.InfoLogger.WithField("id", request.Id).Info("Getting user by id: " + request.Id)
+	re, err := regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestId := re.ReplaceAllString(request.Id, " ")
+
+	handler.CustomLogger.InfoLogger.WithField("id", requestId).Info("Getting user by id: " + requestId)
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
@@ -243,7 +268,13 @@ func (handler *UserHandler) UpdateSkillsAndInterests(ctx context.Context, reques
 
 func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest) (*pb.GetEmailResponse, error) {
 	id := request.Id
-	handler.CustomLogger.InfoLogger.WithField("id", id).Info("Get informations about email by user with ID: " + id)
+	re, err := regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestId := re.ReplaceAllString(request.Id, " ")
+
+	handler.CustomLogger.InfoLogger.WithField("id", requestId).Info("Get informations about email by user with ID: " + requestId)
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
@@ -265,9 +296,14 @@ func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest
 	return response, nil
 }
 func (handler *UserHandler) UpdateIsActiveById(ctx context.Context, request *pb.ActivateAccountRequest) (*pb.ActivateAccountResponse, error) {
-	handler.CustomLogger.InfoLogger.WithField("id", request.Id).Info("Checking active status by user with id: " + request.Id)
+	re, err := regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestId := re.ReplaceAllString(request.Id, " ")
+	handler.CustomLogger.InfoLogger.WithField("id", requestId).Info("Checking active status by user with id: " + requestId)
 
-	err := handler.service.UpdateIsActiveById(request.Id)
+	err = handler.service.UpdateIsActiveById(request.Id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("User with ID:" + request.Id + " not activated")
 
@@ -282,10 +318,14 @@ func (handler *UserHandler) UpdateIsActiveById(ctx context.Context, request *pb.
 }
 
 func (handler *UserHandler) GetIsActive(ctx context.Context, request *pb.GetRequest) (*pb.IsActiveResponse, error) {
-	fmt.Println(request.Id)
+	re, err := regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestId := re.ReplaceAllString(request.Id, " ")
 	user, err := handler.service.GetById(request.Id)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("User with ID:" + request.Id + " not found")
+		handler.CustomLogger.ErrorLogger.Error("User with ID:" + requestId + " not found")
 		return nil, err
 	}
 	handler.CustomLogger.SuccessLogger.Info("User by id received successfully")
@@ -295,9 +335,14 @@ func (handler *UserHandler) GetIsActive(ctx context.Context, request *pb.GetRequ
 }
 
 func (handler *UserHandler) GetIdByEmail(ctx context.Context, request *pb.GetIdByEmailRequest) (*pb.InsertResponse, error) {
+	re, err := regexp.Compile(`[^\w\.\+\@]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestEmail := re.ReplaceAllString(request.Email, " ")
 	userId, err := handler.service.GetIdByEmail(request.Email)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("User with email: " + request.Email + " not found")
+		handler.CustomLogger.ErrorLogger.Error("User with email: " + requestEmail + " not found")
 		return nil, err
 	}
 	handler.CustomLogger.SuccessLogger.Info("User by email received successfully")
@@ -308,8 +353,14 @@ func (handler *UserHandler) GetIdByEmail(ctx context.Context, request *pb.GetIdB
 
 func (handler *UserHandler) GetIdByUsername(ctx context.Context, request *pb.GetIdByUsernameRequest) (*pb.InsertResponse, error) {
 	user, err := handler.service.GetByUsername(request.Username)
+
+	re, err := regexp.Compile(`[^\w\.]`)
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("User with username: " + request.Username + " not found")
+		log.Fatal(err)
+	}
+	requestUsername := re.ReplaceAllString(request.Username, " ")
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("User with username: " + requestUsername + " not found")
 		return nil, err
 	}
 	handler.CustomLogger.SuccessLogger.Info("User received successfully")
