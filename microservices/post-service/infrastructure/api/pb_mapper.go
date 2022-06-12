@@ -21,16 +21,16 @@ func mapPost(post *domain.Post) *pb.Post {
 			Links:       post.Links,
 			IsJobOffer:  post.IsJobOffer,
 			Company: &pb.Company{
-				//Id:          float64(companyIdInt),
+				Id:          post.Company.Id.Hex(),
 				Name:        html.UnescapeString(post.Company.Name),
 				Description: html.UnescapeString(post.Company.Description),
 				PhoneNumber: post.Company.PhoneNumber,
 				IsActive:    true,
 			},
 			JobOffer: &pb.JobOffer{
-				//Id: post.JobOffer.Id.Hex().,
+				Id: post.JobOffer.Id.Hex(),
 				Position: &pb.Position{
-					//Id: post.JobOffer.Id.Hex().,
+					Id:   post.JobOffer.Position.Id.Hex(),
 					Name: post.JobOffer.Position.Name,
 					Pay:  post.JobOffer.Position.Pay,
 				},
@@ -99,14 +99,6 @@ func mapPost(post *domain.Post) *pb.Post {
 }
 
 func mapInsertPost(post *pb.InsertPost) (*domain.Post, error) {
-	//fmt.Println("ovde mapiram:", post.Image)
-	//image, errImg := decodeImage(post.Image)
-	//fmt.Println("namapirano:", image)
-
-	//if errImg != nil {
-	//	return nil, errors.New("error with decoding image")
-	//}
-
 	postPb := &domain.Post{
 		Text:        strings.TrimSpace(post.Text), // function to remove leading and trailing whitespace
 		Image:       post.Image,
@@ -125,19 +117,19 @@ func mapInsertJobOfferPost(post *pb.InsertJobOfferPost) (*domain.Post, error) {
 		IsJobOffer:  true,
 		JobOffer: domain.JobOffer{
 			Id:              primitive.NewObjectID(),
-			JobDescription:  post.JobOffer.JobDescription,
-			DailyActivities: post.JobOffer.DailyActivities,
-			Preconditions:   post.JobOffer.Preconditions,
+			JobDescription:  strings.TrimSpace(post.JobOffer.JobDescription),
+			DailyActivities: strings.TrimSpace(post.JobOffer.DailyActivities),
+			Preconditions:   strings.TrimSpace(post.JobOffer.Preconditions),
 			Position: domain.Position{
 				Id:   primitive.NewObjectID(),
-				Name: post.JobOffer.Position.Name,
+				Name: strings.TrimSpace(post.JobOffer.Position.Name),
 				Pay:  post.JobOffer.Position.Pay,
 			},
 		},
 		Company: domain.Company{
 			Id:          primitive.NewObjectID(),
-			Name:        post.Company.Name,
-			Description: post.Company.Description,
+			Name:        strings.TrimSpace(post.Company.Name),
+			Description: strings.TrimSpace(post.Company.Description),
 			PhoneNumber: post.Company.PhoneNumber,
 			IsActive:    true,
 		},
@@ -157,16 +149,6 @@ func mapCompanyInfo(company *pb.CompanyInfoDTO) (*domain.Company, error) {
 	return companyPb, nil
 }
 
-func mapPosition(position *pb.Position) (*domain.Position, error) {
-	positionPb := &domain.Position{
-		//Id:   primitive.NewObjectID(),	// TODO ?
-		Name: position.Name,
-		Pay:  position.Pay,
-	}
-
-	return positionPb, nil
-}
-
 //func encodeImage(image primitive.Binary) string {
 //	return base64.StdEncoding.EncodeToString(image.Data)
 //}
@@ -180,74 +162,3 @@ func mapPosition(position *pb.Position) (*domain.Position, error) {
 //	}
 //	return primitive.Binary{Data: image}, nil
 // }
-//func mapInsertPosition(position *pb.Position) (*domain.Position, error) {
-//	positionPb := &domain.Position{
-//		Id:   primitive.NewObjectID(),
-//		Name: position.Name,
-//		Pay:  position.Pay,
-//	}
-//
-//	return positionPb, nil
-//}
-
-//func mapInsertCompany(company *pb.Company) (*domain.Company, error) {
-//	copmanyPb := &domain.Company{
-//		Id:          primitive.NewObjectID(),
-//		Name:        company.Name,
-//		Description: company.Description,
-//		PhoneNumber: company.PhoneNumber,
-//		IsActive:    company.IsActive,
-//	}
-//
-//	return copmanyPb, nil
-//}
-
-//func mapInsertJobOffer(jobOffer *pb.JobOffer) (*domain.JobOffer, error) {
-//	var jobOfferPb = &domain.JobOffer{
-//		Id:              primitive.NewObjectID(),
-//		JobDescription:  jobOffer.JobDescription,
-//		DailyActivities: jobOffer.DailyActivities,
-//		Preconditions:   jobOffer.Preconditions,
-//	}
-//
-//	return jobOfferPb, nil
-//}
-//func mapJobOffer(jobOffer *pb.JobOffer) (*domain.JobOffer, error) {
-//	v := strconv.FormatFloat(jobOffer.Id, 64, 5, 5)
-//	v1, _ := primitive.ObjectIDFromHex(v)
-//
-//	var jobOfferPb = &domain.JobOffer{
-//		Id:              v1, // TODO !
-//		JobDescription:  jobOffer.JobDescription,
-//		DailyActivities: jobOffer.DailyActivities,
-//		Preconditions:   jobOffer.Preconditions,
-//		Position: domain.Position{
-//			Name: jobOffer.Position.Name,
-//			Pay:  jobOffer.Position.Pay,
-//		},
-//	}
-//
-//	return jobOfferPb, nil
-//}
-//
-//func mapCompany(company *pb.Company) (*domain.Company, error) {
-//	copmanyPb := &domain.Company{
-//		//Id:          company.Id,		// TODO !
-//		Name:        company.Name,
-//		Description: company.Description,
-//		PhoneNumber: company.PhoneNumber,
-//		IsActive:    company.IsActive,
-//	}
-//
-//	return copmanyPb, nil
-//}
-//
-//func mapPosition(position *pb.Position) (*domain.Position, error) {
-//	positionPb := &domain.Position{
-//		//Id:   primitive.NewObjectID(),	// TODO ?
-//		Name: position.Name,
-//		Pay:  position.Pay,
-//	}
-//
-//	return positionPb, nil
-//}
