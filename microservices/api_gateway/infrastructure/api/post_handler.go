@@ -82,9 +82,9 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 		}
 	}
 
-	err = handler.AuthorizeUser(w, r, id)
-	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("User with can not access feed")
+	result := handler.AuthorizeUser(w, r, id)
+	if result == "error" {
+		handler.CustomLogger.ErrorLogger.Error("Access to feed denied")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusForbidden)
 		return
@@ -121,7 +121,7 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 	w.Write(response)
 }
 
-func (handler *PostHandler) AuthorizeUser(w http.ResponseWriter, r *http.Request, requestId string) error {
+func (handler *PostHandler) AuthorizeUser(w http.ResponseWriter, r *http.Request, requestId string) string {
 	jwtToken := r.Header.Get("Authorization")
 	jwtToken = jwtToken[7:]
 	var claims map[string]interface{}
@@ -135,15 +135,15 @@ func (handler *PostHandler) AuthorizeUser(w http.ResponseWriter, r *http.Request
 		handler.CustomLogger.ErrorLogger.Error("Can not find ID of user with name: " + fmt.Sprint(username))
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
-		return err
+		return "error"
 	}
 	if idByUsername.Id != requestId {
 		handler.CustomLogger.ErrorLogger.Error("User with ID: " + idByUsername.Id + " can not access feed")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusForbidden)
-		return err
+		return "error"
 	}
-	return nil
+	return "success"
 }
 
 func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
