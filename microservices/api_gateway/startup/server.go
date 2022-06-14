@@ -112,7 +112,6 @@ func (server *Server) Start() {
 
 func muxMiddleware(server *Server) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// TODO: sta se ovde loguje ?
 		log.Println(server.config.AuthHost + ":" + server.config.AuthPort)
 		server.mux.ServeHTTP(w, r)
 	})

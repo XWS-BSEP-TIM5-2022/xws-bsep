@@ -45,7 +45,6 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 	var values []string
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-		// TODO: logovanje za neautorizovan pristup ?
 		return ctx, status.Errorf(codes.Unauthenticated, "Unauthorized")
 	}
 
