@@ -48,7 +48,7 @@ func (server *Server) Start() {
 	}
 	userServiceClient := server.initUserServiceClient()
 
-	apiTokenServiceClient, err := server.initApiTokenManager(server.config.PrivateKey, server.config.PublicKey)
+	apiTokenServiceClient, err := server.initApiTokenManager(server.config.PrivateKeyApiToken, server.config.PublicKeyApiToken)
 	if err != nil {
 		server.CustomLogger.ErrorLogger.Error("Initialization API service error")
 		log.Fatal(err)
