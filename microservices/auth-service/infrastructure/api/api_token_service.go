@@ -33,7 +33,7 @@ func NewAPITokenManager(privateKey, publicKey string) (*APITokenService, error) 
 	return &APITokenService{
 		privateKey:             parsedPrivateKey,
 		publicKey:              parsedPublicKey,
-		accessAPITokenDuration: 5 * 60 * time.Minute,
+		accessAPITokenDuration: 24 * 60 * time.Minute,
 		CustomLogger:           CustomLogger,
 	}, nil
 }
@@ -42,7 +42,7 @@ func (manager *APITokenService) GenerateAPIToken(auth *domain.Authentication) (s
 	claims := APITokenClaims{
 		StandardClaims: jwt.StandardClaims{
 			Subject: auth.Id,
-			//ExpiresAt: time.Now().Add(manager.accessAPITokenDuration).Unix(), // TODO: mozda zbog bezbednosti
+			//ExpiresAt: time.Now().Add(manager.accessAPITokenDuration).Unix(),
 		},
 		Username: auth.Username,
 	}
