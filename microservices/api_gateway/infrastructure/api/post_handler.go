@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	"gopkg.in/square/go-jose.v2/jwt"
 	"html"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"regexp"
@@ -23,15 +25,17 @@ type PostHandler struct {
 	postClientAddress       string
 	connectionClientAddress string
 	userClientAddress       string
+	authClientAddress       string
 	CustomLogger            *CustomLogger
 }
 
-func NewPostHandler(postClientAddress, connectionClientAddress, userClientAddress string) Handler {
+func NewPostHandler(postClientAddress, connectionClientAddress, userClientAddress string, authClientAddress string) Handler {
 	CustomLogger := NewCustomLogger()
 	return &PostHandler{
 		postClientAddress:       postClientAddress,
 		connectionClientAddress: connectionClientAddress,
 		userClientAddress:       userClientAddress,
+		authClientAddress:       authClientAddress,
 		CustomLogger:            CustomLogger,
 	}
 }
@@ -50,6 +54,138 @@ func (handler *PostHandler) Init(mux *runtime.ServeMux) {
 		handler.CustomLogger.ErrorLogger.Error("Feed for unregistered user not found")
 		panic(err)
 	}
+
+	err = mux.HandlePath("POST", "/api/post/jobOffer", handler.InsertJobOfferAsPost)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Insert Job Offer for unregistered user not found") // TODO
+		panic(err)
+	}
+}
+
+func (handler *PostHandler) InsertJobOfferAsPost(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+
+	jwtToken := r.Header.Get("Authorization")
+	jwtToken = jwtToken[7:]
+	var claims map[string]interface{}
+	token, _ := jwt.ParseSigned(jwtToken)
+	_ = token.UnsafeClaimsWithoutVerification(&claims)
+	//username := claims["username"]
+	fmt.Println(claims["permissions"])
+
+	post1 := &domain.PostAgents{}
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("BODYYYYYYYYYYY")
+	fmt.Printf("%s", b)
+
+	err = json.Unmarshal(b, &post1)
+	if err != nil {
+		fmt.Println("DESIO SE ERROR", err)
+	}
+	//fmt.Printf("OPET JOB OF", post1.JobOffer.Position.Pay) // TODO: pay ispraviti oblik !
+	//fmt.Printf("OPET COMP", post1.Company)
+	//fmt.Printf("OPET POS", post1.JobOffer.Position)
+	fmt.Printf("CEO POST", post1) // TODO: proveriti sve propertije
+
+	authClient := services.NewAuthClient(handler.authClientAddress)
+	username, err := authClient.GetUsernameByApiToken(context.TODO(), &auth.GetUsernameRequest{ApiToken: post1.ApiToken})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(username)
+
+	userClient := services.NewUserClient(handler.userClientAddress)
+	userId, err := userClient.GetIdByUsername(context.TODO(), &user.GetIdByUsernameRequest{Username: username.Username})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(userId)
+
+	p := &post.InsertJobOfferRequest{InsertJobOfferPost: &post.InsertJobOfferPost{
+		Text: "Job Offer",
+		JobOffer: &post.JobOffer{
+			Position: &post.Position{
+				Name: post1.JobOffer.Position.Name,
+				Pay:  1234, // TODO: ispraviti
+			},
+			JobDescription:  post1.JobOffer.JobDescription,
+			DailyActivities: post1.JobOffer.DailyActivities,
+			Preconditions:   post1.JobOffer.Preconditions,
+		},
+		ApiToken: post1.ApiToken,
+		Company: &post.Company{
+			Name:        post1.Company.Name,
+			Description: post1.Company.Description,
+			PhoneNumber: post1.Company.PhoneNumber,
+			IsActive:    true,
+		},
+		UserId: userId.Id,
+	},
+	}
+
+	postClient := services.NewPostClient(handler.postClientAddress)
+	newPost, err := postClient.InsertJobOffer(context.TODO(), p)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(newPost)
+
+	//w.Header().Set("Content-Type", "application/json")
+	//w.WriteHeader(http.StatusOK)
+	//w.Write(response)
+
+	//apiToken := r.InsertJobOfferPost.ApiToken
+	//re, err := regexp.Compile(`[^\w\-\.]`) // specijalni karakteri osim .,-,_ (tacka, minus, donja crta)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//apiToken = re.ReplaceAllString(apiToken, "")
+	//
+	//username, err := handler.service.GetUsernameByApiToken(ctx, apiToken)
+	///* sanitizacija unosa */
+	//re, err = regexp.Compile(`[^\w]`) // specijalni karakteri
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//username.Username = re.ReplaceAllString(username.Username, " ")
+	//if err != nil || username.Username == "not found" {
+	//	handler.CustomLogger.ErrorLogger.Error("Can not find username by api token")
+	//	return nil, err
+	//}
+	//handler.CustomLogger.SuccessLogger.Info("Found user with username: " + username.Username)
+	//
+	//userId, err := handler.service.GetIdByUsername(ctx, username.Username)
+	///* sanitizacija unosa */
+	//re, err = regexp.Compile(`[^\w]`) // specijalni karakteri
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//userId.Id = re.ReplaceAllString(userId.Id, " ")
+	//if err != nil {
+	//	handler.CustomLogger.ErrorLogger.Error("Can not find id by username: " + username.Username)
+	//	return nil, err
+	//}
+	//handler.CustomLogger.SuccessLogger.Info("Found user with ID: " + userId.Id)
+	//
+	//post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
+	//if err != nil {
+	//	handler.CustomLogger.ErrorLogger.Error("Post was not mapped")
+	//	return nil, err
+	//}
+	//
+	//post.UserId = userId.Id
+	//success, err := handler.service.Insert(post)
+	//if err != nil {
+	//	handler.CustomLogger.ErrorLogger.Error("Post was not inserted")
+	//	return nil, err
+	//}
+	//response := &pb.InsertResponse{
+	//	Success: success,
+	//}
+	//handler.CustomLogger.SuccessLogger.Info("Job offer post with ID: " + post.Id.Hex() + " created by user with ID: " + userId.Id)
+	//return response, nil
 }
 
 func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {

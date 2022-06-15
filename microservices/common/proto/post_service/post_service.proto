@@ -49,6 +49,7 @@ service PostService{
       body: "insertPost"
     };
   }
+  // TODO: delete
   rpc InsertJobOffer(InsertJobOfferRequest) returns(InsertResponse) {
     option (google.api.http) = {
       post: "/api/post/agents"
@@ -120,6 +121,7 @@ message InsertJobOfferPost {
   JobOffer jobOffer = 3;
   string api_token = 4;
   Company company = 5;
+  string userId = 6;
 }
 
 message JobOffer {
