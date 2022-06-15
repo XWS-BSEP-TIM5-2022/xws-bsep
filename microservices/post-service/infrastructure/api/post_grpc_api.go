@@ -119,7 +119,7 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 	return response, err
 }
 
-// TODO:  prebaciti u servis ?
+// TODO: prebaciti u servis ?
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
 	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
 	if err != nil {

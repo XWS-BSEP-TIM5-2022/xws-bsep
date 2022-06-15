@@ -29,7 +29,6 @@ type PostServiceClient interface {
 	CommentPost(ctx context.Context, in *InsertComment, opts ...grpc.CallOption) (*InsertResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	Insert(ctx context.Context, in *InsertRequest, opts ...grpc.CallOption) (*InsertResponse, error)
-	// TODO: delete
 	InsertJobOffer(ctx context.Context, in *InsertJobOfferRequest, opts ...grpc.CallOption) (*InsertResponse, error)
 	GetAllByUser(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	UpdateCompanyInfo(ctx context.Context, in *UpdateCompanyInfoRequest, opts ...grpc.CallOption) (*InsertResponse, error)
@@ -144,7 +143,6 @@ type PostServiceServer interface {
 	CommentPost(context.Context, *InsertComment) (*InsertResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	Insert(context.Context, *InsertRequest) (*InsertResponse, error)
-	// TODO: delete
 	InsertJobOffer(context.Context, *InsertJobOfferRequest) (*InsertResponse, error)
 	GetAllByUser(context.Context, *GetRequest) (*GetAllResponse, error)
 	UpdateCompanyInfo(context.Context, *UpdateCompanyInfoRequest) (*InsertResponse, error)
