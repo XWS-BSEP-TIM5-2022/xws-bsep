@@ -65,7 +65,7 @@ func setLogrusLogger(filename string) *logrus.Entry {
 	mLog.SetFormatter(&logrus.JSONFormatter{ //TextFormatter  JSONFormatter
 		CallerPrettyfier: caller(),
 		FieldMap: logrus.FieldMap{
-			logrus.FieldKeyFile: "mehtod",
+			logrus.FieldKeyFile: "method",
 		},
 		// ForceColors: true,
 	})
