@@ -74,6 +74,7 @@ func (interceptor *AuthInterceptor) Authorize(ctx context.Context, method string
 }
 
 func (interceptor *AuthInterceptor) verifyToken(accessToken string) (*UserClaims, error) {
+	fmt.Println("\nINTERCEPTOR:\n ", accessToken)
 	token, err := jwt.ParseWithClaims(
 		accessToken,
 		&UserClaims{},

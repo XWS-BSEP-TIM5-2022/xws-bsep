@@ -6,11 +6,13 @@ replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
 
 require (
 	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.1.0
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gorilla/handlers v1.5.1
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
 	github.com/sirupsen/logrus v1.8.1
 	google.golang.org/grpc v1.47.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
+	gopkg.in/square/go-jose.v2 v2.6.0
 )
 
 require (
@@ -22,5 +24,4 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20220505152158-f39f71e6c8f3 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
-	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 )

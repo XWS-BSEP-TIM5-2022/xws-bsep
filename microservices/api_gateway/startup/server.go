@@ -3,11 +3,14 @@ package startup
 import (
 	"context"
 	"fmt"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/api"
-	"github.com/gorilla/handlers"
 	"log"
 	"net/http"
 	"path/filepath"
+	"strings"
+
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/api"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/handlers"
 
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
@@ -112,41 +115,93 @@ func (server *Server) Start() {
 
 func muxMiddleware(server *Server) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		accessiblePermissions := AccessibleEndpoints()
+		accessiblePermission, err := accessiblePermissions[r.URL.Path]
+		if err {
+			authorizationHeader := r.Header.Get("Authorization")
+			tokenString := strings.Split(authorizationHeader, " ")
+
+			Authorize(server, accessiblePermission, tokenString)
+		}
 		log.Println(server.config.AuthHost + ":" + server.config.AuthPort)
 		server.mux.ServeHTTP(w, r)
 	})
 }
 
-// func muxMiddleware(server *Server) http.Handler {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		fmt.Println(server.config.AuthHost + " -> " + server.config.AuthPort)
+func AccessibleEndpoints() map[string]string {
+	const authService = "/api/auth"
+	const userService = "/api/user"
+	const postService = "/api/post"
+	const connectionService = "/api/connection"
 
-// 		fullPath := r.Method + " " + r.URL.Path
-// 		if fullPath == "GET /users/getAllPublic" {
-// 			// endpoints za neregistrovane korisnike
-// 			fmt.Println("Ovaj zahtev nije potrebno validirati ni generisati token")
-// 		} else if fullPath == "POST /user" || fullPath == "GET /login" {
-// 			// sign in i login -> generisati token
+	return map[string]string{
+		authService + "/update":         "UpdateUsername",
+		authService + "/changePassword": "UpdatePassword",
+		authService + "/adminsEndpoint": "AdminsEndpoint",
 
-// 		} else {
-// 			// ostali endpoint-i -> potrebno validirati token
-// 			if r.Header["Authorization"] == nil {
-// 				http.Error(w, "unauthorized", http.StatusUnauthorized)
-// 				return
-// 			}
-// 			authorizationHeader := r.Header.Get("Authorization")
-// 			fmt.Println("Auth header " + authorizationHeader)
+		userService + "":                              "GetAllUsers",
+		userService + "/updateBasicInfo":              "UpdateUserProfile",
+		userService + "/updateExperienceAndEducation": "UpdateUserProfile",
+		userService + "/updateSkillsAndInterests":     "UpdateUserProfile",
+		userService + "/info":                         "GetLoggedInUserInfo",
 
-// 			tokenString := strings.Split(authorizationHeader, " ")[1]
-// 			fmt.Println("Token string " + tokenString)
+		postService + "":         "CreatePost",
+		postService + "/like":    "UpdatePostLikes",
+		postService + "/dislike": "UpdatePostDislikes",
+		postService + "/comment": "UpdatePostComments",
+		postService + "/neutral": "NeutralPost",
 
-// 			// authEmdpoint := fmt.Sprintf("auth_service:8000")
-// 			// userEmdpoint := fmt.Sprintf("user_service:8000")
+		connectionService + "":          "CreateConnection",
+		connectionService + "/register": "RegisterConnection",
+		connectionService + "/reject":   "RejectConnection",
+		connectionService + "/approve":  "ApproveConnection",
+	}
+}
 
-// 			// authHandler := api.NewAuthHandler(authEmdpoint, userEmdpoint)
-// 			// authHandler.Init(muxWithMiddleware.mux)
-// 		}
+func Authorize(server *Server, accessiblePermission string, values []string) {
+	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(server.config.PublicKey))
+	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Failed to parse public key")
+		return
+	}
+	token, err := jwt.ParseWithClaims(
+		values[1],
+		&UserClaims{},
+		func(token *jwt.Token) (interface{}, error) {
+			_, ok := token.Method.(*jwt.SigningMethodRSA)
+			if !ok {
+				server.CustomLogger.ErrorLogger.Error("Unexpected token signing method")
+				return nil, fmt.Errorf("Unexpected token signing method")
+			}
+			return publicKey, nil
+		},
+	)
+	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Invalid token")
+		return
+	}
+	claims, ok := token.Claims.(*UserClaims)
+	if !ok {
+		server.CustomLogger.ErrorLogger.Error("Invalid token claims")
+		return
+	}
 
-// 		server.mux.ServeHTTP(w, r)
-// 	})
-// }
+	foundPermission := false
+	for _, jwtPermission := range claims.Permissions {
+		if accessiblePermission == jwtPermission {
+			foundPermission = true
+		}
+	}
+	if foundPermission == false {
+		server.CustomLogger.ErrorLogger.WithField("user", claims.Username).Error("Unauthorized")
+	} else {
+		server.CustomLogger.SuccessLogger.WithField("user", claims.Username).Info("Authorized")
+	}
+}
+
+type UserClaims struct {
+	Username    string   `json:"username"`
+	Roles       []string `json:"roles"`
+	Permissions []string `json:"permissions"`
+	jwt.StandardClaims
+}
