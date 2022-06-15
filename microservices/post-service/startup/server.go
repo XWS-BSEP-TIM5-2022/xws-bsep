@@ -38,9 +38,7 @@ func (server *Server) Start() {
 	server.CustomLogger.SuccessLogger.Info("MongoDB initialization for post service successful, PORT: ", server.config.PostDBPort, ", HOST: ", server.config.PostDBHost)
 
 	postStore := server.initPostStore(mongoClient)
-	userServiceClient := server.initUserServiceClient()
-	authServiceClient := server.initAuthServiceClient()
-	postService := server.initPostService(postStore, userServiceClient, authServiceClient)
+	postService := server.initPostService(postStore)
 	postHandler := server.initPostHandler(postService)
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for post service")
@@ -70,8 +68,8 @@ func (server *Server) initPostStore(client *mongo.Client) domain.PostStore { // 
 	return store
 }
 
-func (server *Server) initPostService(store domain.PostStore, userServiceClient user.UserServiceClient, authServiceClient auth.AuthServiceClient) *application.PostService {
-	return application.NewPostService(store, userServiceClient, authServiceClient)
+func (server *Server) initPostService(store domain.PostStore) *application.PostService {
+	return application.NewPostService(store)
 }
 
 func (server *Server) initUserServiceClient() user.UserServiceClient {

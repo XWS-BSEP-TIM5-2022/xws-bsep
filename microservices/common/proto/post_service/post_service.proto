@@ -49,7 +49,6 @@ service PostService{
       body: "insertPost"
     };
   }
-  // TODO: delete
   rpc InsertJobOffer(InsertJobOfferRequest) returns(InsertResponse) {
     option (google.api.http) = {
 //      post: "/api/post/agents"
