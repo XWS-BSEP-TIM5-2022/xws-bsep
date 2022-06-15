@@ -4,12 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	"gopkg.in/square/go-jose.v2/jwt"
 	"html"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/services"
@@ -23,15 +26,17 @@ type PostHandler struct {
 	postClientAddress       string
 	connectionClientAddress string
 	userClientAddress       string
+	authClientAddress       string
 	CustomLogger            *CustomLogger
 }
 
-func NewPostHandler(postClientAddress, connectionClientAddress, userClientAddress string) Handler {
+func NewPostHandler(postClientAddress, connectionClientAddress, userClientAddress string, authClientAddress string) Handler {
 	CustomLogger := NewCustomLogger()
 	return &PostHandler{
 		postClientAddress:       postClientAddress,
 		connectionClientAddress: connectionClientAddress,
 		userClientAddress:       userClientAddress,
+		authClientAddress:       authClientAddress,
 		CustomLogger:            CustomLogger,
 	}
 }
@@ -49,6 +54,142 @@ func (handler *PostHandler) Init(mux *runtime.ServeMux) {
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Feed for unregistered user not found")
 		panic(err)
+	}
+
+	err = mux.HandlePath("POST", "/api/post/jobOffer", handler.InsertJobOfferAsPost)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Can not insert Job Offer")
+		panic(err)
+	}
+}
+
+func (handler *PostHandler) InsertJobOfferAsPost(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	jwtToken := r.Header.Get("Authorization")
+	if jwtToken == "" {
+		handler.CustomLogger.ErrorLogger.Error("Access to add job offer denied")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	jwtToken = jwtToken[7:]
+	var claims map[string]interface{}
+	var permissionFound = false
+	token, _ := jwt.ParseSigned(jwtToken)
+	_ = token.UnsafeClaimsWithoutVerification(&claims)
+	permissions := claims["permissions"]
+	splitPermissions := strings.Split(fmt.Sprint(permissions), "]")
+	for _, permission := range splitPermissions {
+		input := "saveJobOffer"
+		if strings.Contains(permission, input) {
+			permissionFound = true
+		}
+	}
+
+	if permissionFound {
+		post1 := &domain.PostAgents{}
+		b, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			handler.CustomLogger.ErrorLogger.Error("Error reading job offer from request")
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		err = json.Unmarshal(b, &post1)
+		if err != nil {
+			handler.CustomLogger.ErrorLogger.Error("Error marshaling job offer")
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		/* sanitizacija unosa */
+		apiToken := post1.ApiToken
+		re, err := regexp.Compile(`[^\w\-\.]`) // specijalni karakteri osim .,-,_ (tacka, minus, donja crta)
+		if err != nil {
+			log.Fatal(err)
+		}
+		apiToken = re.ReplaceAllString(apiToken, "")
+
+		authClient := services.NewAuthClient(handler.authClientAddress)
+		username, err := authClient.GetUsernameByApiToken(context.TODO(), &auth.GetUsernameRequest{ApiToken: apiToken})
+		if err != nil || username.Username == "not found" {
+			handler.CustomLogger.ErrorLogger.Error("Can not find username by api token")
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		/* sanitizacija unosa */
+		re, err = regexp.Compile(`[^\w]`) // specijalni karakteri
+		if err != nil {
+			log.Fatal(err)
+		}
+		username.Username = re.ReplaceAllString(username.Username, " ")
+		handler.CustomLogger.SuccessLogger.Info("Found user with username: " + username.Username)
+
+		userClient := services.NewUserClient(handler.userClientAddress)
+		userId, err := userClient.GetIdByUsername(context.TODO(), &user.GetIdByUsernameRequest{Username: username.Username})
+		if err != nil {
+			handler.CustomLogger.ErrorLogger.Error("Can not find id by username: " + username.Username)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		/* sanitizacija unosa */
+		re, err = regexp.Compile(`[^\w]`) // specijalni karakteri
+		if err != nil {
+			log.Fatal(err)
+		}
+		userId.Id = re.ReplaceAllString(userId.Id, " ")
+		handler.CustomLogger.SuccessLogger.Info("Found user with ID: " + userId.Id)
+
+		// parsiranje plate
+		pay, err := strconv.ParseFloat(post1.JobOffer.Position.Pay, 32)
+		if err != nil {
+			pay = 100
+			log.Fatal(err)
+		}
+
+		p := &post.InsertJobOfferRequest{InsertJobOfferPost: &post.InsertJobOfferPost{
+			Text: "Job Offer",
+			JobOffer: &post.JobOffer{
+				Position: &post.Position{
+					Name: post1.JobOffer.Position.Name,
+					Pay:  pay,
+				},
+				JobDescription:  post1.JobOffer.JobDescription,
+				DailyActivities: post1.JobOffer.DailyActivities,
+				Preconditions:   post1.JobOffer.Preconditions,
+			},
+			ApiToken: post1.ApiToken,
+			Company: &post.Company{
+				Name:        post1.Company.Name,
+				Description: post1.Company.Description,
+				PhoneNumber: post1.Company.PhoneNumber,
+				IsActive:    true,
+			},
+			UserId: userId.Id,
+		},
+		}
+
+		postClient := services.NewPostClient(handler.postClientAddress)
+		_, err = postClient.InsertJobOffer(context.TODO(), p)
+		if err != nil {
+			handler.CustomLogger.ErrorLogger.Error("Job Offer was not inserted")
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		handler.CustomLogger.SuccessLogger.Info("Added job offer (post) by user with ID: " + p.InsertJobOfferPost.UserId)
+
+	} else {
+		handler.CustomLogger.ErrorLogger.Error("Access to add job offer denied")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusForbidden)
+		return
 	}
 }
 

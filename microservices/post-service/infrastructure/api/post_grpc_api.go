@@ -119,48 +119,23 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 	return response, err
 }
 
+// TODO: prebaciti u servis ?
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
-	/* sanitizacija unosa */
-	apiToken := request.InsertJobOfferPost.ApiToken
-	re, err := regexp.Compile(`[^\w\-\.]`) // specijalni karakteri osim .,-,_ (tacka, minus, donja crta)
-	if err != nil {
-		log.Fatal(err)
-	}
-	apiToken = re.ReplaceAllString(apiToken, "")
-
-	username, err := handler.service.GetUsernameByApiToken(ctx, apiToken)
-	/* sanitizacija unosa */
-	re, err = regexp.Compile(`[^\w]`) // specijalni karakteri
-	if err != nil {
-		log.Fatal(err)
-	}
-	username.Username = re.ReplaceAllString(username.Username, " ")
-	if err != nil || username.Username == "not found" {
-		handler.CustomLogger.ErrorLogger.Error("Can not find username by api token")
-		return nil, err
-	}
-	handler.CustomLogger.SuccessLogger.Info("Found user with username: " + username.Username)
-
-	userId, err := handler.service.GetIdByUsername(ctx, username.Username)
-	/* sanitizacija unosa */
-	re, err = regexp.Compile(`[^\w]`) // specijalni karakteri
-	if err != nil {
-		log.Fatal(err)
-	}
-	userId.Id = re.ReplaceAllString(userId.Id, " ")
-	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Can not find id by username: " + username.Username)
-		return nil, err
-	}
-	handler.CustomLogger.SuccessLogger.Info("Found user with ID: " + userId.Id)
-
 	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post was not mapped")
 		return nil, err
 	}
 
-	post.UserId = userId.Id
+	/* sanitizacija unosa */
+	id := request.InsertJobOfferPost.UserId
+	re, err := regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	id = re.ReplaceAllString(id, "")
+	post.UserId = id
+
 	success, err := handler.service.Insert(post)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post was not inserted")
@@ -169,7 +144,7 @@ func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.Inse
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Job offer post with ID: " + post.Id.Hex() + " created by user with ID: " + userId.Id)
+	handler.CustomLogger.SuccessLogger.Info("Job offer post with ID: " + post.Id.Hex() + " created by user with ID: " + id)
 	return response, nil
 }
 

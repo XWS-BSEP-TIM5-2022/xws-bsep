@@ -122,9 +122,33 @@ type Post struct {
 	IsJobOffer  bool
 }
 
+type PostAgents struct {
+	Id          string
+	Text        string
+	Image       string
+	Links       []string
+	DateCreated time.Time
+	Likes       []Like
+	Dislikes    []Dislike
+	Comments    []Comment
+	UserId      string
+	JobOffer    JobOfferAgents
+	Company     Company
+	IsJobOffer  bool
+	ApiToken    string
+}
+
 type JobOffer struct {
 	Id              string
 	Position        Position
+	JobDescription  string
+	DailyActivities string
+	Preconditions   string
+}
+
+type JobOfferAgents struct {
+	Id              string
+	Position        PositionAgents
 	JobDescription  string
 	DailyActivities string
 	Preconditions   string
@@ -134,6 +158,12 @@ type Position struct {
 	Id   string
 	Name string
 	Pay  float64
+}
+
+type PositionAgents struct {
+	Id   string
+	Name string
+	Pay  string
 }
 
 type Company struct {

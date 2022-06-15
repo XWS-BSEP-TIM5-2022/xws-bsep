@@ -51,8 +51,8 @@ service PostService{
   }
   rpc InsertJobOffer(InsertJobOfferRequest) returns(InsertResponse) {
     option (google.api.http) = {
-      post: "/api/post/agents"
-      body: "insertJobOfferPost"
+//      post: "/api/post/agents"
+//      body: "insertJobOfferPost"
     };
   }
   rpc GetAllByUser(GetRequest) returns(GetAllResponse) {
@@ -120,6 +120,7 @@ message InsertJobOfferPost {
   JobOffer jobOffer = 3;
   string api_token = 4;
   Company company = 5;
+  string userId = 6;
 }
 
 message JobOffer {
