@@ -64,6 +64,8 @@ func (handler *PostHandler) Init(mux *runtime.ServeMux) {
 
 func (handler *PostHandler) InsertJobOfferAsPost(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 
+	// TODO: proveriti permisije
+
 	jwtToken := r.Header.Get("Authorization")
 	jwtToken = jwtToken[7:]
 	var claims map[string]interface{}
@@ -103,12 +105,18 @@ func (handler *PostHandler) InsertJobOfferAsPost(w http.ResponseWriter, r *http.
 	}
 	fmt.Println(userId)
 
+	pay, err := strconv.ParseFloat(post1.JobOffer.Position.Pay, 32)
+	if err != nil {
+		pay = 100
+		log.Fatal(err)
+	}
+
 	p := &post.InsertJobOfferRequest{InsertJobOfferPost: &post.InsertJobOfferPost{
 		Text: "Job Offer",
 		JobOffer: &post.JobOffer{
 			Position: &post.Position{
 				Name: post1.JobOffer.Position.Name,
-				Pay:  1234, // TODO: ispraviti
+				Pay:  pay,
 			},
 			JobDescription:  post1.JobOffer.JobDescription,
 			DailyActivities: post1.JobOffer.DailyActivities,

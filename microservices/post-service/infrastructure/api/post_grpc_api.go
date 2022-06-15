@@ -160,7 +160,7 @@ func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.Inse
 		return nil, err
 	}
 
-	// TODO: sanitizacija unosa !
+	// TODO:  sanitizacija unosa !
 	id := request.InsertJobOfferPost.UserId
 	post.UserId = id
 	success, err := handler.service.Insert(post)
