@@ -57,6 +57,7 @@ func (server *Server) Start() {
 	authService := server.initAuthService(authStore, userServiceClient, jwtServiceClient, apiTokenServiceClient)
 	authHandler := server.initAuthHandler(authService)
 
+	server.CustomLogger.SuccessLogger.Info("Starting auth service successfully, PORT: ", config.NewConfig().Port)
 	server.startGrpcServer(authHandler)
 }
 

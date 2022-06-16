@@ -44,6 +44,7 @@ func (server *Server) Start() {
 
 	userHandler := server.initUserHandler(userService)
 
+	server.CustomLogger.SuccessLogger.Info("Starting user service successfully, PORT: ", config.NewConfig().Port)
 	server.startGrpcServer(userHandler)
 }
 

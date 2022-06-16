@@ -1,0 +1,11 @@
+{"level":"info","method":"/infrastructure/api/auth_service.go:225","msg":"User registration with username: sanjaa and email: sanja.drinic776+1@gmail.com","time":"2022-06-16T16:51:11+02:00"}
+{"level":"info","method":"/infrastructure/api/auth_service.go:225","msg":"User registration with username: sanjaa and email: sanja.drinic776+2@gmail.com","time":"2022-06-16T16:52:04+02:00"}
+{"level":"info","method":"/infrastructure/api/auth_service.go:225","msg":"User registration with username: sanja2 and email: sanja.drinic776+2@gmail.com","time":"2022-06-16T16:52:08+02:00"}
+{"level":"info","method":"/infrastructure/api/auth_service.go:225","msg":"User registration with username: sanja2 and email: sanja.princess99@gmail.com","time":"2022-06-16T16:53:47+02:00"}
+{"level":"info","method":"/infrastructure/api/auth_service.go:225","msg":"User registration with username: sanja.princess and email: sanja.princess99@gmail.com","time":"2022-06-16T16:53:55+02:00"}
+{"level":"info","method":"/infrastructure/api/auth_service.go:225","msg":"User registration with username: sanja.princess and email: sanja.princess99@gmail.com","time":"2022-06-16T17:07:24+02:00"}
+{"level":"info","method":"/infrastructure/api/auth_service.go:225","msg":"User registration with username: sanja2 and email: sanja.drinic776+2@gmail.com","time":"2022-06-16T17:08:16+02:00"}
+{"level":"info","method":"/infrastructure/api/auth_service.go:225","msg":"User registration with username: sanjaa and email: sanja.drinic776+b@gmail.com","time":"2022-06-16T17:47:20+02:00"}
+{"level":"info","method":"/infrastructure/api/auth_service.go:846","msg":"Account activation with JWT token","time":"2022-06-16T17:47:38+02:00"}
+{"level":"info","method":"/infrastructure/api/auth_service.go:846","msg":"Account activation with JWT token","time":"2022-06-16T17:47:46+02:00"}
+{"ip_address":"[::1]:52984","level":"info","method":"/infrastructure/api/auth_service.go:508","msg":"Login to application with username: sanjaa","time":"2022-06-16T17:47:54+02:00"}
