@@ -1,0 +1,16 @@
+{"level":"info","method":"/startup/server.go:65","msg":"User service registration successful","time":"2022-06-16T16:50:55+02:00"}
+{"level":"info","method":"/startup/server.go:73","msg":"Auth service registration successful","time":"2022-06-16T16:50:55+02:00"}
+{"level":"info","method":"/startup/server.go:81","msg":"Connection service registration successful","time":"2022-06-16T16:50:55+02:00"}
+{"level":"info","method":"/startup/server.go:89","msg":"Post service registration successful","time":"2022-06-16T16:50:55+02:00"}
+{"level":"info","method":"/startup/server.go:42","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-06-16T16:50:55+02:00"}
+{"level":"info","method":"/startup/server.go:65","msg":"User service registration successful","time":"2022-06-16T17:06:55+02:00"}
+{"level":"info","method":"/startup/server.go:73","msg":"Auth service registration successful","time":"2022-06-16T17:06:55+02:00"}
+{"level":"info","method":"/startup/server.go:81","msg":"Connection service registration successful","time":"2022-06-16T17:06:55+02:00"}
+{"level":"info","method":"/startup/server.go:89","msg":"Post service registration successful","time":"2022-06-16T17:06:55+02:00"}
+{"level":"info","method":"/startup/server.go:42","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-06-16T17:06:55+02:00"}
+{"level":"info","method":"/startup/server.go:65","msg":"User service registration successful","time":"2022-06-16T17:46:26+02:00"}
+{"level":"info","method":"/startup/server.go:73","msg":"Auth service registration successful","time":"2022-06-16T17:46:26+02:00"}
+{"level":"info","method":"/startup/server.go:81","msg":"Connection service registration successful","time":"2022-06-16T17:46:26+02:00"}
+{"level":"info","method":"/startup/server.go:89","msg":"Post service registration successful","time":"2022-06-16T17:46:26+02:00"}
+{"level":"info","method":"/startup/server.go:42","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-06-16T17:46:26+02:00"}
+{"level":"info","method":"/infrastructure/api/post_handler.go:233","msg":"User with ID: 62ab5088a7f223b9025dc736 can access feed","time":"2022-06-16T17:47:54+02:00"}

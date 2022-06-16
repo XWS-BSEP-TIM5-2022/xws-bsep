@@ -1,0 +1,12 @@
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:110","msg":"User inserted successfully","time":"2022-06-16T16:51:11+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:110","msg":"User inserted successfully","time":"2022-06-16T16:52:08+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:110","msg":"User inserted successfully","time":"2022-06-16T16:53:55+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:110","msg":"User inserted successfully","time":"2022-06-16T17:07:24+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:110","msg":"User inserted successfully","time":"2022-06-16T17:08:16+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:66","msg":"Found 0 public users","time":"2022-06-16T17:46:57+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:110","msg":"User inserted successfully","time":"2022-06-16T17:47:20+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:314","msg":"User by ID:62ab4760a4abdc113cdf2b17 received successfully","time":"2022-06-16T17:47:38+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:314","msg":"User by ID:62ab5088a7f223b9025dc736 received successfully","time":"2022-06-16T17:47:46+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:331","msg":"User by id received successfully","time":"2022-06-16T17:47:54+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:173","msg":"User by ID:62ab5088a7f223b9025dc736 received successfully","time":"2022-06-16T17:47:54+02:00"}
+{"level":"info","mehtod":"/infrastructure/api/user_grpc_handler.go:366","msg":"User received successfully","time":"2022-06-16T17:47:54+02:00"}
