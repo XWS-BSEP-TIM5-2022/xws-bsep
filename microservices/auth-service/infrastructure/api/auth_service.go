@@ -491,6 +491,10 @@ func checkUsernameCriteria(username string) error {
 		if unicode.IsSpace(int32(char)) {
 			return errors.New("Username should not contain any spaces")
 		}
+
+		if char == '$' {
+			return errors.New("Username should not contain '$'")
+		}
 	}
 	return nil
 }
