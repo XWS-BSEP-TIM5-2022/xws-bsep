@@ -148,17 +148,3 @@ func mapCompanyInfo(company *pb.CompanyInfoDTO) (*domain.Company, error) {
 
 	return companyPb, nil
 }
-
-//func encodeImage(image primitive.Binary) string {
-//	return base64.StdEncoding.EncodeToString(image.Data)
-//}
-//
-//func decodeImage(path string) (primitive.Binary, error) {
-//
-//	fmt.Println("usao sam")
-//	image, err := base64.StdEncoding.DecodeString(path)
-//	if err != nil {
-//		return primitive.Binary{}, err
-//	}
-//	return primitive.Binary{Data: image}, nil
-// }
