@@ -56,7 +56,7 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 		log.Println("#### #### *************** ID", command.User.Id)
 		reply.Type = events.UserCreated
 		reply.User = command.User
-		fmt.Println("Reply type: User created ", reply.Type)
+		fmt.Println("Reply type: User created ", reply.Type, reply.User)
 
 	case events.ApproveUser:
 		fmt.Println("COMMAND USER ID", command.User.Id)

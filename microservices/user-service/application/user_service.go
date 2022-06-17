@@ -2,7 +2,6 @@ package application
 
 import (
 	"errors"
-	"fmt"
 	"net/mail"
 	"time"
 	"unicode"
@@ -90,15 +89,7 @@ func (service *UserService) GetIdByEmail(email string) (string, error) {
 func (service *UserService) Create(user *domain.User, username, password string) error {
 	user.Status = domain.PendingApproval
 	user.CreatedAt = time.Now()
-	fmt.Println(" #################### stigao")
 
-	// TODO SD: insert usera i izvuci ID
-	// userWithId, err := service.Insert(user)
-	// if err != nil {
-	// 	log.Println("Failed to store personal data in user service - saga")
-	// 	return err
-	// }
-	// fmt.Println(" #################### USER ID: ", userWithId)
 	userDetails := mapNewUser(user, username, password)
 	err := service.orchestrator.Start(userDetails)
 
