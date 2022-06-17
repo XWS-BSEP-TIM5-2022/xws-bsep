@@ -3,3 +3,6 @@
 {"email_host":"smtp.office365.com","email_port":587,"email_sender":"dislinkt.e2@outlook.com","email_sender_password":"JDJhJDEwJG4uQUNjWFQuNFRHd2tnZTF3c01tSXVvWXhjNjZDdkxwQmc5RDRDL3Z6N0RTandWNWRUMXou","level":"error","method":"/infrastructure/api/auth_service.go:420","msg":"Email server did not send the message","time":"2022-06-16T16:52:10+02:00"}
 {"level":"error","method":"/infrastructure/api/auth_service.go:330","msg":"User registration failed because username: sanja2 is not unique","time":"2022-06-16T16:53:47+02:00","username":"sanja2"}
 {"email_host":"smtp.office365.com","email_port":587,"email_sender":"dislinkt.e2@outlook.com","email_sender_password":"JDJhJDEwJFhjOFhzeEJFbExDMVdrQmNvcndUV3UuTTNsMW5sSnQ3QjJzMkRtUHpjcVl6Z3Y5UGpOcU8u","level":"error","method":"/infrastructure/api/auth_service.go:420","msg":"Email server did not send the message","time":"2022-06-16T16:53:57+02:00"}
+{"level":"error","method":"/startup/server.go:160","msg":"Failed to listen: %v\u003cnil\u003e","time":"2022-06-17T17:59:52+02:00"}
+{"level":"error","method":"/startup/server.go:160","msg":"Failed to listen: %v\u003cnil\u003e","time":"2022-06-17T18:00:31+02:00"}
+{"level":"error","method":"/startup/server.go:160","msg":"Failed to listen: %v\u003cnil\u003e","time":"2022-06-17T18:55:54+02:00"}

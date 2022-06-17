@@ -25,7 +25,6 @@ import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/dgrijalva/jwt-go"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/status"
@@ -220,184 +219,184 @@ func (service *AuthService) ConfirmEmailLogin(ctx context.Context, request *pb.C
 	}, nil
 }
 
-func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-	p, _ := peer.FromContext(ctx)
-	service.CustomLogger.InfoLogger.Info("User registration with username: " + request.Username + " and email: " + request.Email)
-	err := checkUsernameCriteria(request.Username)
-	if err != nil {
-		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"email": request.Email,
-		}).Error(err.Error())
-		fmt.Println(err.Error())
-		return nil, err
-	}
+// func (service *AuthService) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+// 	p, _ := peer.FromContext(ctx)
+// 	service.CustomLogger.InfoLogger.Info("User registration with username: " + request.Username + " and email: " + request.Email)
+// 	err := checkUsernameCriteria(request.Username)
+// 	if err != nil {
+// 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+// 			"email": request.Email,
+// 		}).Error(err.Error())
+// 		fmt.Println(err.Error())
+// 		return nil, err
+// 	}
 
-	err = checkEmailCriteria(request.Email)
-	if err != nil {
-		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username": request.Username,
-		}).Error(err.Error())
-		fmt.Println(err.Error())
-		return nil, err
-	}
+// 	err = checkEmailCriteria(request.Email)
+// 	if err != nil {
+// 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+// 			"username": request.Username,
+// 		}).Error(err.Error())
+// 		fmt.Println(err.Error())
+// 		return nil, err
+// 	}
 
-	userRequest := &user.User{
-		Name:         request.Name,
-		LastName:     request.LastName,
-		MobileNumber: request.MobileNumber,
-		Gender:       user.User_GenderEnum(request.Gender),
-		Birthday:     request.Birthday,
-		Username:     request.Username, // TM
-		Email:        request.Email,
-		Biography:    request.Biography,
-		IsPublic:     false,
-		IsActive:     false,
-		Role:         request.Role,
-	}
+// 	userRequest := &user.User{
+// 		Name:         request.Name,
+// 		LastName:     request.LastName,
+// 		MobileNumber: request.MobileNumber,
+// 		Gender:       user.User_GenderEnum(request.Gender),
+// 		Birthday:     request.Birthday,
+// 		Username:     request.Username, // TM
+// 		Email:        request.Email,
+// 		Biography:    request.Biography,
+// 		IsPublic:     false,
+// 		IsActive:     false,
+// 		Role:         request.Role,
+// 	}
 
-	for _, education := range request.Education {
-		ed_id := primitive.NewObjectID().Hex()
-		userRequest.Education = append(userRequest.Education, &user.Education{
-			Id:        ed_id,
-			Name:      education.Name,
-			Level:     user.Education_EducationEnum(education.Level),
-			Place:     education.Place,
-			StartDate: education.StartDate,
-			EndDate:   education.EndDate,
-		})
-	}
+// 	for _, education := range request.Education {
+// 		ed_id := primitive.NewObjectID().Hex()
+// 		userRequest.Education = append(userRequest.Education, &user.Education{
+// 			Id:        ed_id,
+// 			Name:      education.Name,
+// 			Level:     user.Education_EducationEnum(education.Level),
+// 			Place:     education.Place,
+// 			StartDate: education.StartDate,
+// 			EndDate:   education.EndDate,
+// 		})
+// 	}
 
-	for _, experience := range request.Experience {
-		ex_id := primitive.NewObjectID().Hex()
-		userRequest.Experience = append(userRequest.Experience, &user.Experience{
-			Id:        ex_id,
-			Name:      experience.Name,
-			Headline:  experience.Headline,
-			Place:     experience.Place,
-			StartDate: experience.StartDate,
-			EndDate:   experience.EndDate,
-		})
-	}
+// 	for _, experience := range request.Experience {
+// 		ex_id := primitive.NewObjectID().Hex()
+// 		userRequest.Experience = append(userRequest.Experience, &user.Experience{
+// 			Id:        ex_id,
+// 			Name:      experience.Name,
+// 			Headline:  experience.Headline,
+// 			Place:     experience.Place,
+// 			StartDate: experience.StartDate,
+// 			EndDate:   experience.EndDate,
+// 		})
+// 	}
 
-	for _, skill := range request.Skills {
-		s_id := primitive.NewObjectID().Hex()
-		userRequest.Skills = append(userRequest.Skills, &user.Skill{
-			Id:   s_id,
-			Name: skill.Name,
-		})
-	}
+// 	for _, skill := range request.Skills {
+// 		s_id := primitive.NewObjectID().Hex()
+// 		userRequest.Skills = append(userRequest.Skills, &user.Skill{
+// 			Id:   s_id,
+// 			Name: skill.Name,
+// 		})
+// 	}
 
-	for _, interest := range request.Interests {
-		in_id := primitive.NewObjectID().Hex()
-		userRequest.Interests = append(userRequest.Interests, &user.Interest{
-			Id:          in_id,
-			Name:        interest.Name,
-			Description: interest.Description,
-		})
-	}
+// 	for _, interest := range request.Interests {
+// 		in_id := primitive.NewObjectID().Hex()
+// 		userRequest.Interests = append(userRequest.Interests, &user.Interest{
+// 			Id:          in_id,
+// 			Name:        interest.Name,
+// 			Description: interest.Description,
+// 		})
+// 	}
 
-	createUserRequest := &user.InsertRequest{
-		User: userRequest,
-	}
+// 	createUserRequest := &user.InsertRequest{
+// 		User: userRequest,
+// 	}
 
-	err = checkPasswordCriteria(request.Password, request.Username)
-	if err != nil {
-		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"email":    userRequest.Email,
-			"username": userRequest.Username,
-		}).Error(err.Error())
-		fmt.Println(err.Error())
-		return nil, err
-	}
+// 	err = checkPasswordCriteria(request.Password, request.Username)
+// 	if err != nil {
+// 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+// 			"email":    userRequest.Email,
+// 			"username": userRequest.Username,
+// 		}).Error(err.Error())
+// 		fmt.Println(err.Error())
+// 		return nil, err
+// 	}
 
-	var authRoles []domain.Role
-	for _, authRole := range request.Role {
-		roles, err := service.store.FindRoleByName(authRole)
-		if err != nil {
-			service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-				"username": request.Username,
-			}).Error("No role with name: " + authRole + " found")
-			fmt.Println("Error finding role by name")
-			return nil, err
-		}
-		authRoles = append(authRoles, *roles...)
-	}
+// 	var authRoles []domain.Role
+// 	for _, authRole := range request.Role {
+// 		roles, err := service.store.FindRoleByName(authRole)
+// 		if err != nil {
+// 			service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+// 				"username": request.Username,
+// 			}).Error("No role with name: " + authRole + " found")
+// 			fmt.Println("Error finding role by name")
+// 			return nil, err
+// 		}
+// 		authRoles = append(authRoles, *roles...)
+// 	}
 
-	uniqueUsername, err := service.store.IsUsernameUnique(request.Username)
-	if err != nil || uniqueUsername == false {
-		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username": userRequest.Username,
-		}).Error("User registration failed because username: " + request.Username + " is not unique")
-		return nil, err
-	}
+// 	uniqueUsername, err := service.store.IsUsernameUnique(request.Username)
+// 	if err != nil || uniqueUsername == false {
+// 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+// 			"username": userRequest.Username,
+// 		}).Error("User registration failed because username: " + request.Username + " is not unique")
+// 		return nil, err
+// 	}
 
-	service.CustomLogger.DebugLogger.WithFields(logrus.Fields{
-		"username": request.Username,
-		"email":    request.Email,
-	}).Info("Creating user")
-	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
-	if err != nil {
-		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username":   userRequest.Username,
-			"ip_address": p.Addr.String(),
-		}).Error("Registration failed for user with username: " + request.Username)
-		return nil, err
-	}
+// 	service.CustomLogger.DebugLogger.WithFields(logrus.Fields{
+// 		"username": request.Username,
+// 		"email":    request.Email,
+// 	}).Info("Creating user")
+// 	createUserResponse, err := service.userServiceClient.Insert(context.TODO(), createUserRequest)
+// 	if err != nil {
+// 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+// 			"username":   userRequest.Username,
+// 			"ip_address": p.Addr.String(),
+// 		}).Error("Registration failed for user with username: " + request.Username)
+// 		return nil, err
+// 	}
 
-	authCredentials, err := domain.NewAuthCredentials(
-		createUserResponse.Id,
-		request.Username,
-		request.Password,
-		&authRoles,
-	)
-	if err != nil {
-		service.CustomLogger.ErrorLogger.Error("The password is not hashed for user with ID:" + createUserResponse.Id + " are not preserved")
-		return nil, err
-	}
+// 	authCredentials, err := domain.NewAuthCredentials(
+// 		createUserResponse.Id,
+// 		request.Username,
+// 		request.Password,
+// 		&authRoles,
+// 	)
+// 	if err != nil {
+// 		service.CustomLogger.ErrorLogger.Error("The password is not hashed for user with ID:" + createUserResponse.Id + " are not preserved")
+// 		return nil, err
+// 	}
 
-	service.CustomLogger.DebugLogger.WithFields(logrus.Fields{
-		"username": authCredentials.Username,
-		"password": authCredentials.Password,
-	}).Info("Saving user credentials with ID: " + authCredentials.Id)
-	authCredentials, err = service.store.Create(authCredentials)
-	if err != nil {
-		service.CustomLogger.ErrorLogger.Error("Authentication credentials for user with ID:" + createUserResponse.Id + " are not created")
-		return nil, err
-	}
+// 	service.CustomLogger.DebugLogger.WithFields(logrus.Fields{
+// 		"username": authCredentials.Username,
+// 		"password": authCredentials.Password,
+// 	}).Info("Saving user credentials with ID: " + authCredentials.Id)
+// 	authCredentials, err = service.store.Create(authCredentials)
+// 	if err != nil {
+// 		service.CustomLogger.ErrorLogger.Error("Authentication credentials for user with ID:" + createUserResponse.Id + " are not created")
+// 		return nil, err
+// 	}
 
-	token, err := service.jwtService.GenerateToken(authCredentials)
-	if err != nil {
-		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username": userRequest.Username,
-		}).Error("JWT token is not generated to user with ID:" + createUserResponse.Id)
-		return nil, err
-	}
+// 	token, err := service.jwtService.GenerateToken(authCredentials)
+// 	if err != nil {
+// 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+// 			"username": userRequest.Username,
+// 		}).Error("JWT token is not generated to user with ID:" + createUserResponse.Id)
+// 		return nil, err
+// 	}
 
-	service.CustomLogger.DebugLogger.WithFields(logrus.Fields{
-		"username": request.Username,
-		"email":    request.Email,
-	}).Info("Sending verification email to user with ID: " + authCredentials.Id)
+// 	service.CustomLogger.DebugLogger.WithFields(logrus.Fields{
+// 		"username": request.Username,
+// 		"email":    request.Email,
+// 	}).Info("Sending verification email to user with ID: " + authCredentials.Id)
 
-	message, subject := verificationMailMessage(token)
-	errSendingMail := service.sendEmail(request.Email, message, subject)
-	if errSendingMail != nil {
-		fmt.Println("err:  ", errSendingMail)
-		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username": userRequest.Username,
-			"email":    userRequest.Email,
-		}).Error("No email was sent to user with ID:" + createUserResponse.Id)
-		return nil, errSendingMail
-	}
+// 	message, subject := verificationMailMessage(token)
+// 	errSendingMail := service.sendEmail(request.Email, message, subject)
+// 	if errSendingMail != nil {
+// 		fmt.Println("err:  ", errSendingMail)
+// 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+// 			"username": userRequest.Username,
+// 			"email":    userRequest.Email,
+// 		}).Error("No email was sent to user with ID:" + createUserResponse.Id)
+// 		return nil, errSendingMail
+// 	}
 
-	service.CustomLogger.SuccessLogger.WithFields(logrus.Fields{
-		"username": userRequest.Username,
-		"email":    userRequest.Email,
-	}).Info("Account successfully created for user with ID: " + createUserResponse.Id)
-	return &pb.RegisterResponse{
-		StatusCode: "200",
-		Message:    "Success! Check your email to activate your account",
-	}, nil
-}
+// 	service.CustomLogger.SuccessLogger.WithFields(logrus.Fields{
+// 		"username": userRequest.Username,
+// 		"email":    userRequest.Email,
+// 	}).Info("Account successfully created for user with ID: " + createUserResponse.Id)
+// 	return &pb.RegisterResponse{
+// 		StatusCode: "200",
+// 		Message:    "Success! Check your email to activate your account",
+// 	}, nil
+// }
 
 func (service *AuthService) sendEmail(sendTo, body, subject string) error {
 	msg := gomail.NewMessage()
@@ -1202,4 +1201,60 @@ func (service *AuthService) GetUsernameByApiToken(ctx context.Context, request *
 	return &pb.GetUsernameResponse{
 		Username: "not found",
 	}, err
+}
+
+func (service *AuthService) Register(auth domain.Authentication, roleNames []string, email string) error {
+	var authRoles []domain.Role
+	for _, authRole := range roleNames {
+		roles, err := service.store.FindRoleByName(authRole)
+		if err != nil {
+			fmt.Println("Error finding role by name")
+			return err
+		}
+		authRoles = append(authRoles, *roles...)
+	}
+	auth.Roles = &authRoles
+
+	err := checkPasswordCriteria(auth.Password, auth.Username)
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+
+	uniqueUsername, err := service.store.IsUsernameUnique(auth.Username)
+	if err != nil || uniqueUsername == false {
+		return err
+	}
+
+	fmt.Println(auth)
+	authCredentials, err := domain.NewAuthCredentials(
+		auth.Id,
+		auth.Username,
+		auth.Password,
+		&authRoles,
+	)
+	if err != nil {
+		return err
+	}
+	_, err = service.store.Create(authCredentials)
+	if err != nil {
+		return err
+	}
+
+	token, err := service.jwtService.GenerateToken(&auth)
+	if err != nil {
+		return err
+	}
+	message, subject := verificationMailMessage(token)
+	errSendingMail := service.sendEmail(email, message, subject)
+	if errSendingMail != nil {
+		fmt.Println("err:  ", errSendingMail)
+		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+			"username": auth.Username,
+			"email":    email,
+		}).Error("No email was sent to user with ID:" + auth.Id)
+		return errSendingMail
+	}
+
+	return nil
 }

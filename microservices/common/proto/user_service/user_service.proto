@@ -90,6 +90,12 @@ service UserService{
             get: "/api/user/getIdByUsername"
         };
     }
+    rpc Register(RegisterRequest) returns (RegisterResponse) {  // SD: prebaceno iz auth proto -> ostalo auth
+        option (google.api.http) = {
+          post: "/api/auth/register"
+          body: "*"
+        };
+    }
 }
 
 message GetRequest {
@@ -238,4 +244,31 @@ message GetIdByEmailRequest {
 
 message GetIdByUsernameRequest {
     string username = 1;
+}
+
+message RegisterRequest {
+    string name = 1;
+    string lastName = 2;
+    string email = 3;
+    string mobileNumber = 4;
+    enum GenderEnum {
+        Female = 0;
+        Male = 1;
+    }
+    GenderEnum gender = 5;
+    google.protobuf.Timestamp birthday = 6;
+    string username = 7;
+    string biography = 8;
+    string password = 9;
+    //bool isPublic = 10;
+    repeated Education education = 10;
+    repeated Experience experience = 11;
+    repeated Skill skills = 12;
+    repeated Interest interests = 13;
+    repeated string role = 14;
+}
+
+message RegisterResponse {
+    string statusCode = 1;
+    string message = 2;
 }

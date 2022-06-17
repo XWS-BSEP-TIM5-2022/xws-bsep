@@ -1,30 +1,36 @@
 package config
 
 type Config struct {
-	Port               string
-	AuthDBHost         string
-	AuthDBPort         string
-	AuthDBName         string
-	AuthDBUser         string
-	AuthDBPass         string
-	UserServicePort    string
-	UserServiceHost    string
-	PrivateKey         string
-	PublicKey          string
-	PrivateKeyApiToken string
-	PublicKeyApiToken  string
-	EmailPort          int
-	EmailHost          string
-	EmailFrom          string
-	EmailPassword      string
-	FrontendHost       string
-	FrontendPort       string
-	LogsFolder         string
-	InfoLogsFile       string
-	DebugLogsFile      string
-	ErrorLogsFile      string
-	SuccessLogsFile    string
-	WarningLogsFile    string
+	Port                     string
+	AuthDBHost               string
+	AuthDBPort               string
+	AuthDBName               string
+	AuthDBUser               string
+	AuthDBPass               string
+	UserServicePort          string
+	UserServiceHost          string
+	PrivateKey               string
+	PublicKey                string
+	PrivateKeyApiToken       string
+	PublicKeyApiToken        string
+	EmailPort                int
+	EmailHost                string
+	EmailFrom                string
+	EmailPassword            string
+	FrontendHost             string
+	FrontendPort             string
+	LogsFolder               string
+	InfoLogsFile             string
+	DebugLogsFile            string
+	ErrorLogsFile            string
+	SuccessLogsFile          string
+	WarningLogsFile          string
+	NatsHost                 string
+	NatsPort                 string
+	NatsUser                 string
+	NatsPass                 string
+	CreateUserCommandSubject string
+	CreateUserReplySubject   string
 }
 
 func NewConfig() *Config {
@@ -70,5 +76,12 @@ func NewConfig() *Config {
 		ErrorLogsFile:      "/error.log",
 		SuccessLogsFile:    "/success.log",
 		WarningLogsFile:    "/warning.log",
+
+		NatsHost:                 "localhost", // nats
+		NatsPort:                 "4222",
+		NatsUser:                 "ruser",
+		NatsPass:                 "T0pS3cr3t",
+		CreateUserCommandSubject: "user.create.command",
+		CreateUserReplySubject:   "user.create.reply",
 	}
 }
