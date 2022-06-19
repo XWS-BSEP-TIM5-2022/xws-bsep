@@ -58,7 +58,6 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 		if err != nil {
 			fmt.Println("greska registracija saga: ", err)
 			reply.Type = events.AuthNotCreated
-			return
 		} else {
 			reply.Type = events.AuthCreated
 		}

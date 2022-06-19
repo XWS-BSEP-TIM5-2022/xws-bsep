@@ -54,3 +54,8 @@
 {"level":"info","method":"/startup/server.go:81","msg":"Connection service registration successful","time":"2022-06-17T18:57:46+02:00"}
 {"level":"info","method":"/startup/server.go:89","msg":"Post service registration successful","time":"2022-06-17T18:57:46+02:00"}
 {"level":"info","method":"/startup/server.go:42","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-06-17T18:57:46+02:00"}
+{"level":"info","method":"/startup/server.go:65","msg":"User service registration successful","time":"2022-06-18T18:59:27+02:00"}
+{"level":"info","method":"/startup/server.go:73","msg":"Auth service registration successful","time":"2022-06-18T18:59:27+02:00"}
+{"level":"info","method":"/startup/server.go:81","msg":"Connection service registration successful","time":"2022-06-18T18:59:27+02:00"}
+{"level":"info","method":"/startup/server.go:89","msg":"Post service registration successful","time":"2022-06-18T18:59:27+02:00"}
+{"level":"info","method":"/startup/server.go:42","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-06-18T18:59:27+02:00"}

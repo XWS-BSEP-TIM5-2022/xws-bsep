@@ -35,3 +35,7 @@
 {"level":"info","mehtod":"/startup/server.go:57","msg":"Starting user service successfully, PORT: 8081","time":"2022-06-17T21:09:55+02:00"}
 {"level":"info","mehtod":"/startup/server.go:57","msg":"Starting user service successfully, PORT: 8081","time":"2022-06-17T21:12:16+02:00"}
 {"level":"info","mehtod":"/startup/server.go:57","msg":"Starting user service successfully, PORT: 8081","time":"2022-06-17T21:13:37+02:00"}
+{"level":"info","mehtod":"/startup/server.go:57","msg":"Starting user service successfully, PORT: 8081","time":"2022-06-18T18:59:58+02:00"}
+{"level":"info","mehtod":"/startup/server.go:57","msg":"Starting user service successfully, PORT: 8081","time":"2022-06-18T21:28:34+02:00"}
+{"level":"info","mehtod":"/startup/server.go:57","msg":"Starting user service successfully, PORT: 8081","time":"2022-06-18T21:53:01+02:00"}
+{"level":"info","mehtod":"/startup/server.go:57","msg":"Starting user service successfully, PORT: 8081","time":"2022-06-18T21:55:48+02:00"}

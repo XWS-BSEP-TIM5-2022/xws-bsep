@@ -89,7 +89,9 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 		reply.Type = events.UserDeleted
 
 	case events.RollbackUser:
+
 		fmt.Println("TODO SD: ROLLBACK USER")
+		reply.Type = events.UserRolledBack
 
 	default:
 		reply.Type = events.UnknownReply
