@@ -19,3 +19,16 @@
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/startup/server.go:44","msg":"Starting gRPC server for post service","time":"2022-06-17T14:47:36+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 70 posts","time":"2022-06-17T14:47:45+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:118","msg":"Post with ID: 62ac781305833f1b0eeb7ad6 created by user with ID: 62ac77fdc53697c6039352b3","time":"2022-06-17T14:48:19+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/startup/server.go:38","msg":"MongoDB initialization for post service successful, PORT: 27017, HOST: localhost","time":"2022-06-21T21:54:04+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/startup/server.go:44","msg":"Starting gRPC server for post service","time":"2022-06-21T21:54:04+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T21:57:43+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/startup/server.go:38","msg":"MongoDB initialization for post service successful, PORT: 27017, HOST: localhost","time":"2022-06-21T22:21:01+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/startup/server.go:44","msg":"Starting gRPC server for post service","time":"2022-06-21T22:21:01+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T22:21:27+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T22:22:27+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T22:24:29+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T22:24:45+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T22:25:06+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T22:25:22+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T23:05:49+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T23:06:06+02:00"}
