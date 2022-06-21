@@ -2,3 +2,5 @@
 {"level":"error","method":"/infrastructure/api/post_handler.go:421","msg":"Get connections for user with ID: 62ab5088a7f223b9025dc736 unsuccessful","time":"2022-06-16T17:47:54+02:00"}
 {"level":"error","method":"/infrastructure/api/post_handler.go:240","msg":"Get all connections for user with ID: 62ab5088a7f223b9025dc736 unsuccessful","time":"2022-06-16T17:47:54+02:00"}
 {"level":"error","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:294","msg":"Get all public posts unsuccessful","time":"2022-06-17T14:47:45+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:294","msg":"Get all public posts unsuccessful","time":"2022-06-21T21:53:58+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:294","msg":"Get all public posts unsuccessful","time":"2022-06-21T21:54:01+02:00"}

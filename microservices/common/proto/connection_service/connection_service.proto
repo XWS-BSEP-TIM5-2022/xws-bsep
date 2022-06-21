@@ -62,6 +62,13 @@ service ConnectionService{
     };
   }
 
+  rpc BlockUser(BlockUserRequest) returns (ActionResult) {
+    option (google.api.http) = {
+      post: "/connection/block"
+      body:"blockUserDTO"
+    };
+  }
+
 }
 
 message RegisterRequest{
@@ -84,6 +91,10 @@ message AddBlockUserRequest{
   UserAction addBlockUserDTO = 1;
 }
 
+message BlockUserRequest{
+  BlockAction blockUserDTO = 1;
+}
+
 message ActionResult{
   string msg = 2;
 }
@@ -97,7 +108,7 @@ message AddConnectionResult{
 message ConnectedResult{
   bool connected = 1;
   bool request = 2;
-
+  bool blocked = 3;
 }
 
 message GetRequest {
@@ -116,6 +127,11 @@ message UserAction{
 
 
 message AddConnectionAction{
+  string userID = 1;
+  bool isPublic = 2;
+}
+
+message BlockAction{
   string userID = 1;
   bool isPublic = 2;
 }

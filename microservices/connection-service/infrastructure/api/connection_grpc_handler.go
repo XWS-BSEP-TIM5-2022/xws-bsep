@@ -117,6 +117,14 @@ func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb
 	return connection, err
 }
 
+func (handler *ConnectionHandler) BlockUser(ctx context.Context, request *pb.BlockUserRequest) (*pb.ActionResult, error) {
+	fmt.Println("BlockUser")
+	//prosledili smo registrovanog korisnika
+	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	userIDb := request.BlockUserDTO.UserID
+	return handler.service.BlockUser(userIDa, userIDb, request.BlockUserDTO.IsPublic)
+}
+
 func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request *pb.ApproveConnectionRequest) (*pb.ActionResult, error) {
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
