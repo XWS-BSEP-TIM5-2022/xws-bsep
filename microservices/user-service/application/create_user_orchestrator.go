@@ -46,7 +46,7 @@ func (o *CreateUserOrchestrator) nextCommandType(reply events.CreateUserReplyTyp
 		fmt.Println(" #DeleteUser ", events.DeleteUser)
 		return events.DeleteUser
 	case events.UserRolledBack:
-		fmt.Println(" #UserRolledBack ", events.UserRolledBack)
+		fmt.Println(" # --------------------------- UserRolledBack ", events.UserRolledBack)
 		return events.DeleteUser
 	case events.AuthNotCreated:
 		fmt.Println(" ## Rollback ", events.RollbackUser)

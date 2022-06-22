@@ -84,6 +84,9 @@ func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
 }
 
 func (server *Server) initPublisher(subject string) saga.Publisher {
+	log.Println("(((((((((((((((( publisher, subj:", subject)
+	log.Println(server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject)
 	publisher, err := nats.NewNATSPublisher(
 		server.config.NatsHost, server.config.NatsPort,
 		server.config.NatsUser, server.config.NatsPass, subject)

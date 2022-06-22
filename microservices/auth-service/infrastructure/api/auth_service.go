@@ -404,8 +404,13 @@ func (service *AuthService) sendEmail(sendTo, body, subject string) error {
 	msg.SetHeader("To", sendTo)
 	msg.SetHeader("Subject", subject)
 	msg.SetBody("text/html", body)
-	n := gomail.NewDialer(config.NewConfig().EmailHost, config.NewConfig().EmailPort, config.NewConfig().EmailFrom, config.NewConfig().EmailPassword)
-	err := n.DialAndSend(msg)
+	emailPort, err := strconv.Atoi(config.NewConfig().EmailPort)
+	if err != nil {
+		service.CustomLogger.ErrorLogger.Error("Converting email port to integer from env variables, port: " + config.NewConfig().EmailPort)
+		return err
+	}
+	n := gomail.NewDialer(config.NewConfig().EmailHost, emailPort, config.NewConfig().EmailFrom, config.NewConfig().EmailPassword)
+	err = n.DialAndSend(msg)
 	if err != nil {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(config.NewConfig().EmailPassword), bcrypt.DefaultCost)
 		if err != nil {

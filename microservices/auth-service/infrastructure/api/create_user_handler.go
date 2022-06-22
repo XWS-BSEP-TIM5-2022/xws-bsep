@@ -30,7 +30,7 @@ func NewCreateUserCommandHandler(authService *AuthService, publisher saga.Publis
 
 func (handler *CreateUserCommandHandler) handle(command *events.CreateUserCommand) {
 	// TODO SD: logika
-	log.Println(" ---> id u auth: ", command.User.Id)
+	// log.Println(" ---> id u auth: ", command.User.Id)
 	var authRoles []domain.Role
 	// for _, authRole := range command.User.Role {
 	// 	roles, err := handler.authService.store.FindRoleByName(authRole)
@@ -47,11 +47,11 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 		Roles:    &authRoles, // TODO SD: prazna lista rola
 	}
 
-	fmt.Println(" ************* "+command.User.Id+" ************* ", auth)
+	// fmt.Println(" ************* "+command.User.Id+" ************* ", auth)
 
 	reply := events.CreateUserReply{User: command.User}
 
-	fmt.Println(command.Type)
+	// fmt.Println(command.Type)
 	switch command.Type {
 	case events.CreateAuth:
 		err := handler.authService.Register(*auth, command.User.Role, command.User.Email)
@@ -61,13 +61,14 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 		} else {
 			reply.Type = events.AuthCreated
 		}
-	case events.DeleteUser:
-		// TODO SD: ispraviti
-		// err := handler.authService.Cancel(auth)
-		// if err != nil {
-		// 	return
-		// }
-		reply.Type = events.UserDeleted
+	// case events.DeleteUser:
+	// 	// TODO SD: ispraviti
+	// 	// err := handler.authService.Cancel(auth)
+	// 	// if err != nil {
+	// 	// 	return
+	// 	// }
+	// 	reply.Type = events.UserDeleted
+
 	default:
 		reply.Type = events.UnknownReply
 	}

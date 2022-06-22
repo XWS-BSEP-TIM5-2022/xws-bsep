@@ -31,9 +31,9 @@ func NewCreateUserCommandHandler(userService *application.UserService, publisher
 }
 
 func (handler *CreateUserCommandHandler) handle(command *events.CreateUserCommand) {
-	fmt.Println(" @@@@@@@@@@ hendleeer! ID: ", command.User.Id)
+	// fmt.Println(" @@@@@@@@@@ hendleeer! ID: ", command.User.Id)
 	reply := events.CreateUserReply{User: command.User}
-	fmt.Println(command.Type)
+	// fmt.Println(command.Type)
 
 	switch command.Type {
 	case events.CreateUser:
@@ -41,7 +41,6 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 		if err != nil {
 			fmt.Println(err.Error())
 			reply.Type = events.UserNotCreated
-			return
 		}
 
 		user := mapCommandUserToDomainUser(command)
@@ -49,14 +48,13 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 		if err != nil {
 			reply.Type = events.UserNotCreated
 			fmt.Println("GRESKA PRILIKOM INSERTA: ", err)
-			return
 		}
 
 		command.User.Id = newUser.Id.Hex()
-		log.Println("#### #### *************** ID", command.User.Id)
+		// log.Println("#### #### *************** ID", command.User.Id)
 		reply.Type = events.UserCreated
 		reply.User = command.User
-		fmt.Println("Reply type: User created ", reply.Type, reply.User)
+		// fmt.Println("Reply type: User created ", reply.Type, reply.User)
 
 	case events.ApproveUser:
 		fmt.Println("COMMAND USER ID", command.User.Id)
@@ -69,8 +67,8 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 		}
 		err = handler.userService.Approve(User)
 		if err != nil {
-			// reply.Type = events.UserApproved
-			return
+			reply.Type = events.UserNotCreated
+			// return
 		}
 		reply.Type = events.UserApproved
 
@@ -84,12 +82,11 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 		}
 		err = handler.userService.Delete(User)
 		if err != nil {
-			return
+			fmt.Println(" ********* GRESKA PRILIKOM BRISANJA: ", err)
 		}
 		reply.Type = events.UserDeleted
 
 	case events.RollbackUser:
-
 		fmt.Println("TODO SD: ROLLBACK USER")
 		reply.Type = events.UserRolledBack
 

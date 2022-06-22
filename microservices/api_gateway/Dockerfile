@@ -26,6 +26,9 @@ FROM alpine:latest
 
 WORKDIR /root/
 
+COPY ./server.crt ./server.crt
+COPY ./server.key ./server.key
+
 # Copy the Pre-built binary file from the previous stage
 COPY --from=builder /app/main .
 

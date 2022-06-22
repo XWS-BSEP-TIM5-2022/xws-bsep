@@ -363,6 +363,7 @@ func (store *UserMongoDBStore) GetIdByEmail(email string) (string, error) {
 }
 
 func (store *UserMongoDBStore) UpdateStatus(userId string, user *domain.User) error {
+	fmt.Println("USER ID: ", userId, " status: ", user.Status)
 	result, err := store.users.UpdateOne(
 		context.TODO(),
 		bson.M{"_id": userId},

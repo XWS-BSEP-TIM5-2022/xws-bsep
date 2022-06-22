@@ -129,6 +129,10 @@ func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscriber
 }
 
 func (server *Server) initPublisher(subject string) saga.Publisher {
+	log.Println(" *********** nats *************** ")
+	log.Println(server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject)
+	log.Println(" ************************** ")
 	publisher, err := nats.NewNATSPublisher(
 		server.config.NatsHost, server.config.NatsPort,
 		server.config.NatsUser, server.config.NatsPass, subject)
