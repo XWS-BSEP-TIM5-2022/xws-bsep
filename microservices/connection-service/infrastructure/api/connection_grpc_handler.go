@@ -123,7 +123,7 @@ func (handler *ConnectionHandler) BlockUser(ctx context.Context, request *pb.Blo
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	userIDb := request.BlockUserDTO.UserID
-	return handler.service.BlockUser(userIDa, userIDb, request.BlockUserDTO.IsPublic)
+	return handler.service.BlockUser(userIDa, userIDb, request.BlockUserDTO.IsPublic, request.BlockUserDTO.IsPublicLogged)
 }
 
 func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request *pb.ApproveConnectionRequest) (*pb.ActionResult, error) {

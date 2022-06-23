@@ -51,8 +51,8 @@ func (service *ConnectionService) AddConnection(userIDa string, userIDb string, 
 	return service.store.AddConnection(userIDa, userIDb, isPublic, isPublicLogged)
 }
 
-func (service *ConnectionService) BlockUser(userIDa, userIDb string, isPublic bool) (*pb.ActionResult, error) {
-	return service.store.BlockUser(userIDa, userIDb, isPublic)
+func (service *ConnectionService) BlockUser(userIDa, userIDb string, isPublic bool, isPublicLogged bool) (*pb.ActionResult, error) {
+	return service.store.BlockUser(userIDa, userIDb, isPublic, isPublicLogged)
 }
 
 func (service *ConnectionService) ApproveConnection(userIDa, userIDb string) (*pb.ActionResult, error) {

@@ -313,3 +313,16 @@
 {"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:47","msg":"Found 2 public users","time":"2022-06-23T11:51:48+02:00"}
 {"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:195","msg":"User by ID:62b431da7e27eb44bc9bf2db received successfully","time":"2022-06-23T11:51:50+02:00"}
 {"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:47","msg":"Found 2 public users","time":"2022-06-23T11:51:51+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:47","msg":"Found 2 public users","time":"2022-06-23T11:53:31+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:47","msg":"Found 2 public users","time":"2022-06-23T12:01:08+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:195","msg":"User by ID:62b431da7e27eb44bc9bf2db received successfully","time":"2022-06-23T12:01:23+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:47","msg":"Found 2 public users","time":"2022-06-23T12:01:25+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:47","msg":"Found 2 public users","time":"2022-06-23T12:01:48+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:68","msg":"Found 1 public users","time":"2022-06-23T12:02:00+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:68","msg":"Found 1 public users","time":"2022-06-23T12:02:08+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:353","msg":"User by id received successfully","time":"2022-06-23T12:02:22+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:195","msg":"User by ID:62b432207e27eb44bc9bf2dc received successfully","time":"2022-06-23T12:02:22+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:400","msg":"User received successfully","time":"2022-06-23T12:02:22+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:47","msg":"Found 2 public users","time":"2022-06-23T12:02:42+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:195","msg":"User by ID:62b432207e27eb44bc9bf2dc received successfully","time":"2022-06-23T12:02:45+02:00"}
+{"level":"info","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:47","msg":"Found 2 public users","time":"2022-06-23T12:02:46+02:00"}
