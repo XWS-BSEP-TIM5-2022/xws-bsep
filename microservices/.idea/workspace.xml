@@ -6,31 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="a8f3ec4b-cc79-44af-88ba-bcfd2d499761" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/logs/error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api_gateway/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/logs/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/debug.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/error.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/logs/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/info.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/startup/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/startup/data.go" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/startup/data.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/proto/connection_service/connection_service.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/connection_service/connection_service.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/proto/connection_service/connection_service.pb.gw.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/connection_service/connection_service.pb.gw.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common/proto/connection_service/connection_service.proto" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/connection_service/connection_service.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/proto/connection_service/connection_service_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/connection_service/connection_service_grpc.pb.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/connection-service/application/connection_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/application/connection_service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/connection-service/domain/connection_store.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/domain/connection_store.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/connection-service/infrastructure/api/connection_grpc_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/infrastructure/api/connection_grpc_handler.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/connection-service/infrastructure/persistence/connection_neo4j_store.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/infrastructure/persistence/connection_neo4j_store.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connection-service/infrastructure/persistence/transaction.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/infrastructure/persistence/transaction.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connection-service/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/logs/error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/connection-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connection-service/startup/config/accessible_permissions.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/startup/config/accessible_permissions.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connection-service/startup/config/accessible_roles.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/startup/config/accessible_roles.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/logs/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/logs/info.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/startup/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/startup/server.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +81,7 @@
       <recent name="C:\xws-bsep\microservices" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service">
+  <component name="RunManager" selected="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway">
     <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="microservices" />
       <working_directory value="$PROJECT_DIR$/api_gateway" />
@@ -140,11 +124,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service" />
-        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service" />
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service" />
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service" />
       </list>
     </recent_temporary>
   </component>

@@ -115,11 +115,12 @@ func (store *ConnectionDBStore) GetRequests(userID string) ([]domain.UserConn, e
 	return friends.([]domain.UserConn), nil
 }
 
-func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, isPublic bool) (*pb.AddConnectionResult, error) {
+func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, isPublic bool, isPublicLogged bool) (*pb.AddConnectionResult, error) {
 	fmt.Println("Adding new connection")
 	fmt.Println(userIDa)
 	fmt.Println(userIDb)
 	fmt.Println(isPublic)
+	fmt.Println(isPublicLogged)
 
 	if userIDa == userIDb {
 		return &pb.AddConnectionResult{Msg: "userIDa is same as userIDb", Connected: false, Error: false}, nil
@@ -136,7 +137,7 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 		if !checkIfUserExist(userIDa, transaction) {
 			_, err := transaction.Run(
 				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
-				map[string]interface{}{"userID": userIDa, "isPublic": true}) //TODO:ispraviti na isPublic od ulogovanog
+				map[string]interface{}{"userID": userIDa, "isPublic": isPublicLogged})
 
 			if err != nil {
 				actionResult.Msg = "Error while creating new user node with ID:" + userIDa
@@ -446,7 +447,7 @@ func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.Co
 
 }
 
-func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string, isPublic bool) (*pb.ActionResult, error) {
+func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string, isPublic bool, isPublicLogged bool) (*pb.ActionResult, error) {
 	actionResult := &pb.ActionResult{Msg: "msg"}
 	actionResult.Msg = "Blokiranje korisnika"
 
@@ -458,18 +459,13 @@ func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string, isPublic bool
 	defer session.Close()
 
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
-		//TODO: ako su prijatelji obrisati veze - uradjeno?
-		//TODO: ako ne postoje u bazi, dodati ih - uradjeno?
-		//TODO: provjeri ako je vec blokirao useraB - uradjeno?
-		//TODO: u zahtjevu slati i isPublic za oba usera
-		//TODO: dodaj kod kreiranja konekcija provjeru da li su jedan drugog blokirali - uradjeno?
 		actionResult := &pb.ActionResult{Msg: "msg"}
 
 		//ako ne postoji userA, kreira ga
 		if !checkIfUserExist(userIDa, transaction) {
 			_, err := transaction.Run(
 				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
-				map[string]interface{}{"userID": userIDa, "isPublic": true}) //TODO:ispraviti na isPublic od ulogovanog
+				map[string]interface{}{"userID": userIDa, "isPublic": isPublicLogged})
 
 			if err != nil {
 				actionResult.Msg = "Error while creating new user node with ID:" + userIDa
