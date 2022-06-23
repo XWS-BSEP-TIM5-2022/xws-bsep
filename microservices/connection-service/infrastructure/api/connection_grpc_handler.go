@@ -100,6 +100,7 @@ func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	userIDb := request.AddConnectionDTO.UserID
 	isPublic := request.AddConnectionDTO.IsPublic
+	isPublicLogged := request.AddConnectionDTO.IsPublicLogged
 
 	/* log injection prevention */
 	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
@@ -108,7 +109,7 @@ func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb
 	}
 	userIDb = re.ReplaceAllString(userIDb, " ")
 
-	connection, err := handler.service.AddConnection(userIDa, userIDb, isPublic)
+	connection, err := handler.service.AddConnection(userIDa, userIDb, isPublic, isPublicLogged)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Creating connection between user with ID: " + userIDa + " and user with ID: " + userIDb + " failed")
 		return nil, err

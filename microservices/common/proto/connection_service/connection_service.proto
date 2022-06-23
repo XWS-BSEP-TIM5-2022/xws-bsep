@@ -129,6 +129,7 @@ message UserAction{
 message AddConnectionAction{
   string userID = 1;
   bool isPublic = 2;
+  bool isPublicLogged = 3;
 }
 
 message BlockAction{
