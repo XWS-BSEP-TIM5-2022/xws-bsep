@@ -30,6 +30,7 @@ type ConnectionServiceClient interface {
 	ApproveConnection(ctx context.Context, in *ApproveConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	CheckConnection(ctx context.Context, in *CheckConnectionRequest, opts ...grpc.CallOption) (*ConnectedResult, error)
 	BlockUser(ctx context.Context, in *BlockUserRequest, opts ...grpc.CallOption) (*ActionResult, error)
+	GetRecommendation(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error)
 }
 
 type connectionServiceClient struct {
@@ -112,6 +113,15 @@ func (c *connectionServiceClient) BlockUser(ctx context.Context, in *BlockUserRe
 	return out, nil
 }
 
+func (c *connectionServiceClient) GetRecommendation(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error) {
+	out := new(Users)
+	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/GetRecommendation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ConnectionServiceServer is the server API for ConnectionService service.
 // All implementations must embed UnimplementedConnectionServiceServer
 // for forward compatibility
@@ -124,6 +134,7 @@ type ConnectionServiceServer interface {
 	ApproveConnection(context.Context, *ApproveConnectionRequest) (*ActionResult, error)
 	CheckConnection(context.Context, *CheckConnectionRequest) (*ConnectedResult, error)
 	BlockUser(context.Context, *BlockUserRequest) (*ActionResult, error)
+	GetRecommendation(context.Context, *GetRequest) (*Users, error)
 	mustEmbedUnimplementedConnectionServiceServer()
 }
 
@@ -154,6 +165,9 @@ func (UnimplementedConnectionServiceServer) CheckConnection(context.Context, *Ch
 }
 func (UnimplementedConnectionServiceServer) BlockUser(context.Context, *BlockUserRequest) (*ActionResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BlockUser not implemented")
+}
+func (UnimplementedConnectionServiceServer) GetRecommendation(context.Context, *GetRequest) (*Users, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRecommendation not implemented")
 }
 func (UnimplementedConnectionServiceServer) mustEmbedUnimplementedConnectionServiceServer() {}
 
@@ -312,6 +326,24 @@ func _ConnectionService_BlockUser_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConnectionService_GetRecommendation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionServiceServer).GetRecommendation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connection_service.ConnectionService/GetRecommendation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionServiceServer).GetRecommendation(ctx, req.(*GetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ConnectionService_ServiceDesc is the grpc.ServiceDesc for ConnectionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -350,6 +382,10 @@ var ConnectionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BlockUser",
 			Handler:    _ConnectionService_BlockUser_Handler,
+		},
+		{
+			MethodName: "GetRecommendation",
+			Handler:    _ConnectionService_GetRecommendation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

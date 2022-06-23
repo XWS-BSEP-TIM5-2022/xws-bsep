@@ -549,3 +549,31 @@ func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string, isPublic bool
 		return result.(*pb.ActionResult), err
 	}
 }
+
+func (store *ConnectionDBStore) GetRecommendation(userID string) ([]*domain.UserConn, error) {
+	fmt.Println(userID)
+	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	defer session.Close()
+
+	recommendation, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+
+		var recommendation []*domain.UserConn
+
+		friendsOfFriends, err1 := getFriendsOfFriendsButNotBlockedRecommendation(userID, transaction)
+		if err1 != nil {
+			return recommendation, err1
+		}
+
+		for _, recommend := range friendsOfFriends {
+			recommendation = append(recommendation, recommend)
+		}
+
+		return recommendation, err1
+
+	})
+	if err != nil || recommendation == nil {
+		return nil, err
+	}
+
+	return recommendation.([]*domain.UserConn), nil
+}

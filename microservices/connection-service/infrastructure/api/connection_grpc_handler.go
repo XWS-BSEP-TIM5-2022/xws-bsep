@@ -189,3 +189,19 @@ func (handler *ConnectionHandler) CheckConnection(ctx context.Context, request *
 	handler.CustomLogger.SuccessLogger.Info("Checking connection between user with ID: " + userIDa + " and user with ID: " + userIDb)
 	return connection, err
 }
+
+func (handler *ConnectionHandler) GetRecommendation(ctx context.Context, request *pb.GetRequest) (*pb.Users, error) {
+	fmt.Println("GetRecommendation")
+
+	id := request.UserID
+	fmt.Println(id)
+	recommendation, err := handler.service.GetRecommendation(id)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.Users{}
+	for _, user := range recommendation {
+		response.Users = append(response.Users, mapUserConn(user))
+	}
+	return response, nil
+}

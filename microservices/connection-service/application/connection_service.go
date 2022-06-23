@@ -66,3 +66,7 @@ func (service *ConnectionService) RejectConnection(userIDa, userIDb string) (*pb
 func (service *ConnectionService) CheckConnection(userIDa, userIDb string) (*pb.ConnectedResult, error) {
 	return service.store.CheckConnection(userIDa, userIDb)
 }
+
+func (service *ConnectionService) GetRecommendation(userID string) ([]*domain.UserConn, error) {
+	return service.store.GetRecommendation(userID)
+}
