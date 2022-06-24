@@ -293,3 +293,9 @@
 {"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:233","msg":"User with ID: 62b4dccc480f2597c891528d can access feed","time":"2022-06-24T00:11:02+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:244","msg":"Found 0 connections for user with ID: 62b4dccc480f2597c891528d","time":"2022-06-24T00:11:03+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:259","msg":"Found 0 posts for feed","time":"2022-06-24T00:11:03+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:66","msg":"User service registration successful","time":"2022-06-24T01:57:44+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:74","msg":"Auth service registration successful","time":"2022-06-24T01:57:44+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:82","msg":"Connection service registration successful","time":"2022-06-24T01:57:44+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:90","msg":"Connection service registration successful","time":"2022-06-24T01:57:44+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:98","msg":"Post service registration successful","time":"2022-06-24T01:57:44+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:43","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-06-24T01:57:44+02:00"}
