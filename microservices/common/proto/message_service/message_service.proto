@@ -1,0 +1,24 @@
+syntax="proto3";
+
+package message_service;
+
+option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service MessageService{
+  rpc Get(GetRequest) returns(GetResponse) {
+    option (google.api.http) = {
+      get: "/api/message/{id}"
+    };
+  }
+}
+
+message GetRequest {
+  string id = 1;
+}
+
+message GetResponse {
+  string id = 1; //TODO: promeni
+}
