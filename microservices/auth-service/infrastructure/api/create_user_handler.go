@@ -47,7 +47,7 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 		Roles:    &authRoles, // TODO SD: prazna lista rola
 	}
 
-	// fmt.Println(" ************* "+command.User.Id+" ************* ", auth)
+	fmt.Println(" ************* "+command.User.Id+" ************* ", auth)
 
 	reply := events.CreateUserReply{User: command.User}
 
