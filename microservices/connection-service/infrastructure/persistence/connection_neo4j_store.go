@@ -115,11 +115,12 @@ func (store *ConnectionDBStore) GetRequests(userID string) ([]domain.UserConn, e
 	return friends.([]domain.UserConn), nil
 }
 
-func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, isPublic bool) (*pb.AddConnectionResult, error) {
+func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, isPublic bool, isPublicLogged bool) (*pb.AddConnectionResult, error) {
 	fmt.Println("Adding new connection")
 	fmt.Println(userIDa)
 	fmt.Println(userIDb)
 	fmt.Println(isPublic)
+	fmt.Println(isPublicLogged)
 
 	if userIDa == userIDb {
 		return &pb.AddConnectionResult{Msg: "userIDa is same as userIDb", Connected: false, Error: false}, nil
@@ -136,7 +137,7 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 		if !checkIfUserExist(userIDa, transaction) {
 			_, err := transaction.Run(
 				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
-				map[string]interface{}{"userID": userIDa, "isPublic": true}) //TODO:ispraviti na isPublic od ulogovanog
+				map[string]interface{}{"userID": userIDa, "isPublic": isPublicLogged})
 
 			if err != nil {
 				actionResult.Msg = "Error while creating new user node with ID:" + userIDa
@@ -160,6 +161,13 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 		}
 
 		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
+			if checkIfBlockExist(userIDa, userIDb, transaction) || checkIfBlockExist(userIDb, userIDa, transaction) {
+				actionResult.Msg = "Users are already blocked"
+				actionResult.Connected = true //TODO:provjeri ovo
+				actionResult.Error = false
+				return actionResult, nil
+			}
+
 			if checkIfFriendExist(userIDa, userIDb, transaction) || checkIfFriendExist(userIDb, userIDa, transaction) {
 				actionResult.Msg = "Users are already connected"
 				actionResult.Connected = true
@@ -402,16 +410,26 @@ func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.Co
 			if checkIfFriendExist(userIDa, userIDb, transaction) && !checkIfFriendExist(userIDb, userIDa, transaction) {
 				actionResult.Connected = false
 				actionResult.Request = true
+				actionResult.Blocked = false
 				return actionResult, nil
 			}
 			if checkIfFriendExist(userIDb, userIDa, transaction) && !checkIfFriendExist(userIDa, userIDb, transaction) {
 				actionResult.Connected = false
 				actionResult.Request = true
+				actionResult.Blocked = false
+				return actionResult, nil
+			}
+
+			if checkIfBlockExist(userIDb, userIDa, transaction) || checkIfBlockExist(userIDa, userIDb, transaction) {
+				actionResult.Connected = false
+				actionResult.Request = false
+				actionResult.Blocked = true
 				return actionResult, nil
 			}
 
 			actionResult.Connected = false
 			actionResult.Request = false
+			actionResult.Blocked = false
 
 			return actionResult, nil
 
@@ -427,4 +445,135 @@ func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.Co
 		return result.(*pb.ConnectedResult), err
 	}
 
+}
+
+func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string, isPublic bool, isPublicLogged bool) (*pb.ActionResult, error) {
+	actionResult := &pb.ActionResult{Msg: "msg"}
+	actionResult.Msg = "Blokiranje korisnika"
+
+	if userIDa == userIDb {
+		return &pb.ActionResult{Msg: "UserIDa is same as userIDb"}, nil
+	}
+
+	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	defer session.Close()
+
+	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+		actionResult := &pb.ActionResult{Msg: "msg"}
+
+		//ako ne postoji userA, kreira ga
+		if !checkIfUserExist(userIDa, transaction) {
+			_, err := transaction.Run(
+				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
+				map[string]interface{}{"userID": userIDa, "isPublic": isPublicLogged})
+
+			if err != nil {
+				actionResult.Msg = "Error while creating new user node with ID:" + userIDa
+				return actionResult, err
+			}
+		}
+		//ako ne postoji userB, kreira ga
+		if !checkIfUserExist(userIDb, transaction) {
+			_, err := transaction.Run(
+				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic})",
+				map[string]interface{}{"userID": userIDb, "isPublic": isPublic})
+
+			if err != nil {
+				actionResult.Msg = "Error while creating new user node with ID:" + userIDb
+				return actionResult, err
+			}
+		}
+
+		if checkIfUserExist(userIDa, transaction) && checkIfUserExist(userIDb, transaction) {
+
+			//ako je jedan od usera blokirao drugog
+			if checkIfBlockExist(userIDa, userIDb, transaction) || checkIfBlockExist(userIDb, userIDa, transaction) {
+				fmt.Println("BLOCKED!!!!!")
+				actionResult.Msg = "Already blocked" + userIDb
+				return actionResult, nil
+			}
+
+			if checkIfFriendExist(userIDa, userIDb, transaction) {
+				fmt.Println("VEZA 1!!!!!")
+
+				//brise vezu izmedju A i B
+				_, err := transaction.Run(
+					"MATCH (u1:USER{userID:$u2ID})<-[rel:FRIEND]-(u2:USER{userID:$u1ID}) DELETE rel",
+					map[string]interface{}{"u1ID": userIDa, "u2ID": userIDb})
+
+				if err != nil {
+					actionResult.Msg = "Error while deleting relationship between ID:" + userIDa + "and ID" + userIDb
+					return actionResult, err
+				}
+			}
+
+			if checkIfFriendExist(userIDb, userIDa, transaction) {
+				fmt.Println("VEZA 2!!!!!")
+
+				//brise vezu/zahjev izmedju B i A
+				_, err := transaction.Run(
+					"MATCH (u1:USER{userID:$u1ID})<-[rel:FRIEND]-(u2:USER{userID:$u2ID}) DELETE rel",
+					map[string]interface{}{"u1ID": userIDa, "u2ID": userIDb})
+
+				if err != nil {
+					actionResult.Msg = "Error while deleting relationship between ID:" + userIDa + "and ID" + userIDb
+					return actionResult, err
+				}
+			}
+
+			//kreira vezu BLOCK
+			result, err := transaction.Run(
+				"MATCH (u1:USER) WHERE u1.userID=$uIDa "+
+					"MATCH (u2:USER) WHERE u2.userID=$uIDb "+
+					"CREATE (u1)-[r1:BLOCK]->(u2) "+
+					"RETURN r1", map[string]interface{}{"uIDa": userIDa, "uIDb": userIDb})
+
+			if err != nil && result != nil {
+				actionResult.Msg = "Error while blocking request with ID:" + userIDb
+				return actionResult, err
+			}
+
+		} else {
+			actionResult.Msg = "User does not exist"
+			return actionResult, nil
+		}
+
+		actionResult.Msg = "Successfully blocked IDa:" + userIDa + " and IDb:" + userIDb
+
+		return actionResult, nil
+	})
+
+	if result == nil {
+		return &pb.ActionResult{Msg: "error"}, err
+	} else {
+		return result.(*pb.ActionResult), err
+	}
+}
+
+func (store *ConnectionDBStore) GetRecommendation(userID string) ([]*domain.UserConn, error) {
+	fmt.Println(userID)
+	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	defer session.Close()
+
+	recommendation, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
+
+		var recommendation []*domain.UserConn
+
+		friendsOfFriends, err1 := getFriendsOfFriendsButNotBlockedRecommendation(userID, transaction)
+		if err1 != nil {
+			return recommendation, err1
+		}
+
+		for _, recommend := range friendsOfFriends {
+			recommendation = append(recommendation, recommend)
+		}
+
+		return recommendation, err1
+
+	})
+	if err != nil || recommendation == nil {
+		return nil, err
+	}
+
+	return recommendation.([]*domain.UserConn), nil
 }
