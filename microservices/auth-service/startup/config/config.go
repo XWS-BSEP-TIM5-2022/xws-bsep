@@ -101,4 +101,5 @@ func NewConfig() *Config {
 		// CreateUserCommandSubject: "user.create.command",
 		// CreateUserReplySubject:   "user.create.reply",
 	}
+
 }
