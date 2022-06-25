@@ -47,8 +47,12 @@ func (service *ConnectionService) Register(userID string, isPublic bool) (*pb.Ac
 	return service.store.Register(userID, isPublic)
 }
 
-func (service *ConnectionService) AddConnection(userIDa string, userIDb string, isPublic bool) (*pb.AddConnectionResult, error) {
-	return service.store.AddConnection(userIDa, userIDb, isPublic)
+func (service *ConnectionService) AddConnection(userIDa string, userIDb string, isPublic bool, isPublicLogged bool) (*pb.AddConnectionResult, error) {
+	return service.store.AddConnection(userIDa, userIDb, isPublic, isPublicLogged)
+}
+
+func (service *ConnectionService) BlockUser(userIDa, userIDb string, isPublic bool, isPublicLogged bool) (*pb.ActionResult, error) {
+	return service.store.BlockUser(userIDa, userIDb, isPublic, isPublicLogged)
 }
 
 func (service *ConnectionService) ApproveConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
@@ -61,4 +65,8 @@ func (service *ConnectionService) RejectConnection(userIDa, userIDb string) (*pb
 
 func (service *ConnectionService) CheckConnection(userIDa, userIDb string) (*pb.ConnectedResult, error) {
 	return service.store.CheckConnection(userIDa, userIDb)
+}
+
+func (service *ConnectionService) GetRecommendation(userID string) ([]*domain.UserConn, error) {
+	return service.store.GetRecommendation(userID)
 }

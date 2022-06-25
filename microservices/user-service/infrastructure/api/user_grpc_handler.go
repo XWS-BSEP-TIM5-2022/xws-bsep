@@ -5,8 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/mail"
 	"regexp"
 	"strconv"
+	"unicode"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -73,7 +75,7 @@ func (handler *UserHandler) Search(ctx context.Context, request *pb.SearchReques
 		log.Fatal(err)
 	}
 	requestCriteria := re.ReplaceAllString(request.Criteria, " ")
-	criteria := requestCriteria
+	criteria := removeMalicious(requestCriteria)
 	users, err := handler.service.Search(criteria)
 
 	if err != nil {
@@ -93,6 +95,19 @@ func (handler *UserHandler) Search(ctx context.Context, request *pb.SearchReques
 	return response, nil
 }
 func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
+
+	err := checkEmailCriteria(request.User.Email)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("User not inserted. Email invalid")
+		return nil, err
+	}
+
+	err = checkUsernameCriteria(request.User.Username)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("User not inserted. Username invalid")
+		return nil, err
+	}
+
 	re, err := regexp.Compile(`[^\w\.\+\@]`)
 	if err != nil {
 		log.Fatal(err)
@@ -115,6 +130,13 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertReques
 }
 
 func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+
+	err := checkEmailCriteria(request.User.Email)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("User not updated. Email invalid")
+		return nil, err
+	}
+
 	//id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	re, err := regexp.Compile(`[^\w]`)
 	if err != nil {
@@ -148,7 +170,7 @@ func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateReques
 }
 
 func (handler *UserHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
-	id := request.Id
+	id := removeMalicious(request.Id)
 	re, err := regexp.Compile(`[^\w]`)
 	if err != nil {
 		log.Fatal(err)
@@ -267,7 +289,7 @@ func (handler *UserHandler) UpdateSkillsAndInterests(ctx context.Context, reques
 }
 
 func (handler *UserHandler) GetEmail(ctx context.Context, request *pb.GetRequest) (*pb.GetEmailResponse, error) {
-	id := request.Id
+	id := removeMalicious(request.Id)
 	re, err := regexp.Compile(`[^\w]`)
 	if err != nil {
 		log.Fatal(err)
@@ -303,7 +325,7 @@ func (handler *UserHandler) UpdateIsActiveById(ctx context.Context, request *pb.
 	requestId := re.ReplaceAllString(request.Id, " ")
 	handler.CustomLogger.InfoLogger.WithField("id", requestId).Info("Checking active status by user with id: " + requestId)
 
-	err = handler.service.UpdateIsActiveById(request.Id)
+	err = handler.service.UpdateIsActiveById(removeMalicious(request.Id))
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("User with ID:" + request.Id + " not activated")
 
@@ -323,7 +345,7 @@ func (handler *UserHandler) GetIsActive(ctx context.Context, request *pb.GetRequ
 		log.Fatal(err)
 	}
 	requestId := re.ReplaceAllString(request.Id, " ")
-	user, err := handler.service.GetById(request.Id)
+	user, err := handler.service.GetById(removeMalicious(request.Id))
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("User with ID:" + requestId + " not found")
 		return nil, err
@@ -335,6 +357,13 @@ func (handler *UserHandler) GetIsActive(ctx context.Context, request *pb.GetRequ
 }
 
 func (handler *UserHandler) GetIdByEmail(ctx context.Context, request *pb.GetIdByEmailRequest) (*pb.InsertResponse, error) {
+
+	err := checkEmailCriteria(request.Email)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("User not found. Email invalid")
+		return nil, err
+	}
+
 	re, err := regexp.Compile(`[^\w\.\+\@]`)
 	if err != nil {
 		log.Fatal(err)
@@ -352,13 +381,18 @@ func (handler *UserHandler) GetIdByEmail(ctx context.Context, request *pb.GetIdB
 }
 
 func (handler *UserHandler) GetIdByUsername(ctx context.Context, request *pb.GetIdByUsernameRequest) (*pb.InsertResponse, error) {
-	user, err := handler.service.GetByUsername(request.Username)
 
+	err := checkUsernameCriteria(request.Username)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("User not found. Username invalid")
+		return nil, err
+	}
 	re, err := regexp.Compile(`[^\w\.]`)
 	if err != nil {
 		log.Fatal(err)
 	}
 	requestUsername := re.ReplaceAllString(request.Username, " ")
+	user, err := handler.service.GetByUsername(request.Username)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("User with username: " + requestUsername + " not found")
 		return nil, err
@@ -379,4 +413,33 @@ func (handler *UserHandler) Register(ctx context.Context, request *pb.RegisterRe
 		StatusCode: "200",
 		Message:    "OK",
 	}, nil
+}
+
+func checkEmailCriteria(email string) error {
+	if len(email) == 0 {
+		return errors.New("Email should not be empty")
+	}
+	_, err := mail.ParseAddress(email)
+
+	if err != nil {
+		return errors.New("Email is invalid.")
+	}
+	return nil
+}
+
+func checkUsernameCriteria(username string) error {
+	if len(username) == 0 {
+		return errors.New("Username should not be empty")
+	}
+
+	for _, char := range username {
+
+		if unicode.IsSpace(int32(char)) {
+			return errors.New("Username should not contain any spaces")
+		}
+		if char == '$' {
+			return errors.New("Username should not contain '$'")
+		}
+	}
+	return nil
 }

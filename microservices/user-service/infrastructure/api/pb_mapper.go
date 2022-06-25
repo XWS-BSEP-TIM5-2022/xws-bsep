@@ -70,12 +70,12 @@ func mapInsertUser(user *pb.User) *domain.User {
 
 	userPb := &domain.User{
 		Id:           id,
-		Name:         user.Name,
-		LastName:     user.LastName,
-		MobileNumber: user.MobileNumber,
+		Name:         removeMalicious(user.Name),
+		LastName:     removeMalicious(user.LastName),
+		MobileNumber: removeMalicious(user.MobileNumber),
 		Gender:       mapInsertGender(user.Gender),
 		Email:        user.Email,
-		Biography:    user.Biography,
+		Biography:    removeMalicious(user.Biography),
 		IsPublic:     user.IsPublic,
 		IsActive:     user.IsActive,
 		Role:         user.Role,
@@ -92,9 +92,9 @@ func mapInsertUser(user *pb.User) *domain.User {
 
 		userPb.Education = append(userPb.Education, domain.Education{
 			Id:        ed_id,
-			Name:      education.Name,
+			Name:      removeMalicious(education.Name),
 			Level:     mapInsertEducation(education.Level),
-			Place:     education.Place,
+			Place:     removeMalicious(education.Place),
 			StartDate: education.StartDate.AsTime(),
 			EndDate:   education.EndDate.AsTime(),
 		})
@@ -106,9 +106,9 @@ func mapInsertUser(user *pb.User) *domain.User {
 
 		userPb.Experience = append(userPb.Experience, domain.Experience{
 			Id:        ex_id,
-			Name:      experience.Name,
-			Headline:  experience.Headline,
-			Place:     experience.Place,
+			Name:      removeMalicious(experience.Name),
+			Headline:  removeMalicious(experience.Headline),
+			Place:     removeMalicious(experience.Place),
 			StartDate: experience.StartDate.AsTime(),
 			EndDate:   experience.EndDate.AsTime(),
 		})
@@ -120,7 +120,7 @@ func mapInsertUser(user *pb.User) *domain.User {
 
 		userPb.Skills = append(userPb.Skills, domain.Skill{
 			Id:   s_id,
-			Name: skill.Name,
+			Name: removeMalicious(skill.Name),
 		})
 	}
 
@@ -130,8 +130,8 @@ func mapInsertUser(user *pb.User) *domain.User {
 
 		userPb.Interests = append(userPb.Interests, domain.Interest{
 			Id:          in_id,
-			Name:        interest.Name,
-			Description: interest.Description,
+			Name:        removeMalicious(interest.Name),
+			Description: removeMalicious(interest.Description),
 		})
 	}
 
@@ -143,12 +143,12 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 
 	userPb := &domain.User{
 		Id:           id,
-		Name:         newData.Name,
-		LastName:     newData.LastName,
-		MobileNumber: newData.MobileNumber,
+		Name:         removeMalicious(newData.Name),
+		LastName:     removeMalicious(newData.LastName),
+		MobileNumber: removeMalicious(newData.MobileNumber),
 		Gender:       mapInsertGender(newData.Gender),
 		Email:        newData.Email,
-		Biography:    newData.Biography,
+		Biography:    removeMalicious(newData.Biography),
 		IsPublic:     oldData.IsPublic,
 		IsActive:     oldData.IsActive,
 		Role:         oldData.Role,
@@ -183,9 +183,9 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 
 		userPb.Education = append(userPb.Education, domain.Education{
 			Id:        ed_id,
-			Name:      education.Name,
+			Name:      removeMalicious(education.Name),
 			Level:     mapInsertEducation(education.Level),
-			Place:     education.Place,
+			Place:     removeMalicious(education.Place),
 			StartDate: education.StartDate.AsTime(),
 			EndDate:   education.EndDate.AsTime(),
 		})
@@ -199,9 +199,9 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 
 		userPb.Experience = append(userPb.Experience, domain.Experience{
 			Id:        ex_id,
-			Name:      experience.Name,
-			Headline:  experience.Headline,
-			Place:     experience.Place,
+			Name:      removeMalicious(experience.Name),
+			Headline:  removeMalicious(experience.Headline),
+			Place:     removeMalicious(experience.Place),
 			StartDate: experience.StartDate.AsTime(),
 			EndDate:   experience.EndDate.AsTime(),
 		})
@@ -215,7 +215,7 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 
 		userPb.Skills = append(userPb.Skills, domain.Skill{
 			Id:   s_id,
-			Name: skill.Name,
+			Name: removeMalicious(skill.Name),
 		})
 	}
 
@@ -227,8 +227,8 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 
 		userPb.Interests = append(userPb.Interests, domain.Interest{
 			Id:          in_id,
-			Name:        interest.Name,
-			Description: interest.Description,
+			Name:        removeMalicious(interest.Name),
+			Description: removeMalicious(interest.Description),
 		})
 	}
 
@@ -297,12 +297,12 @@ func mapBasicInfo(oldData *pb.User, newData *pb.User) *domain.User {
 
 	userPb := &domain.User{
 		Id:           id,
-		Name:         newData.Name,
-		LastName:     newData.LastName,
-		MobileNumber: newData.MobileNumber,
+		Name:         removeMalicious(newData.Name),
+		LastName:     removeMalicious(newData.LastName),
+		MobileNumber: removeMalicious(newData.MobileNumber),
 		Gender:       mapInsertGender(newData.Gender),
 		Email:        newData.Email,
-		Biography:    newData.Biography,
+		Biography:    removeMalicious(newData.Biography),
 		IsPublic:     oldData.IsPublic,
 		IsActive:     oldData.IsActive,
 		Role:         oldData.Role,
@@ -411,9 +411,9 @@ func mapExperienceAndEducation(oldData *pb.User, newData *pb.User) *domain.User 
 
 		userPb.Education = append(userPb.Education, domain.Education{
 			Id:        ed_id,
-			Name:      education.Name,
+			Name:      removeMalicious(education.Name),
 			Level:     mapInsertEducation(education.Level),
-			Place:     education.Place,
+			Place:     removeMalicious(education.Place),
 			StartDate: education.StartDate.AsTime(),
 			EndDate:   education.EndDate.AsTime(),
 		})
@@ -427,9 +427,9 @@ func mapExperienceAndEducation(oldData *pb.User, newData *pb.User) *domain.User 
 
 		userPb.Experience = append(userPb.Experience, domain.Experience{
 			Id:        ex_id,
-			Name:      experience.Name,
-			Headline:  experience.Headline,
-			Place:     experience.Place,
+			Name:      removeMalicious(experience.Name),
+			Headline:  removeMalicious(experience.Headline),
+			Place:     removeMalicious(experience.Place),
 			StartDate: experience.StartDate.AsTime(),
 			EndDate:   experience.EndDate.AsTime(),
 		})
@@ -521,7 +521,7 @@ func mapSkillsAndInterests(oldData *pb.User, newData *pb.User) *domain.User {
 
 		userPb.Skills = append(userPb.Skills, domain.Skill{
 			Id:   s_id,
-			Name: skill.Name,
+			Name: removeMalicious(skill.Name),
 		})
 	}
 
@@ -533,7 +533,7 @@ func mapSkillsAndInterests(oldData *pb.User, newData *pb.User) *domain.User {
 
 		userPb.Interests = append(userPb.Interests, domain.Interest{
 			Id:          in_id,
-			Name:        interest.Name,
+			Name:        removeMalicious(interest.Name),
 			Description: interest.Description,
 		})
 	}
@@ -658,4 +658,16 @@ func mapCommandUserToDomainUser(command *events.CreateUserCommand) *domain.User 
 		})
 	}
 	return &user
+  
+func removeMalicious(value string) string {
+
+	var lenId = len(value)
+	var checkId = ""
+	for i := 0; i < lenId; i++ {
+		char := string(value[i])
+		if char != "$" {
+			checkId = checkId + char
+		}
+	}
+	return checkId
 }

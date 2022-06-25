@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Snyk test report</title>
-  <meta name="description" content="0 known vulnerabilities found in 0 vulnerable dependency paths.">
+  <meta name="description" content="1 known vulnerabilities found in 1 vulnerable dependency paths.">
   <base target="_blank">
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/snyk/image/upload/v1468845142/favicon/favicon.png"
     sizes="194x194">
@@ -170,6 +170,7 @@
       justify-content: space-between;
       margin: 0 0 1.5em;
       color: #fff;
+      clear: both;
       font-size: 1.1em;
     }
   
@@ -455,7 +456,7 @@
               <div class="header-wrap">
                   <h1 class="project__header__title">Snyk test report</h1>
     
-                <p class="timestamp">June 12th 2022, 3:16:04 pm</p>
+                <p class="timestamp">June 17th 2022, 12:29:32 pm</p>
               </div>
               <div class="source-panel">
                 <span>Scanned the following path:</span>
@@ -465,16 +466,15 @@
               </div>
     
               <div class="meta-counts">
-                <div class="meta-count"><span>0</span> <span>known vulnerabilities</span></div>
-                <div class="meta-count"><span>0 vulnerable dependency paths</span></div>
-                <div class="meta-count"><span>116</span> <span>dependencies</span></div>
+                <div class="meta-count"><span>1</span> <span>known vulnerabilities</span></div>
+                <div class="meta-count"><span>1 vulnerable dependency paths</span></div>
+                <div class="meta-count"><span>123</span> <span>dependencies</span></div>
               </div><!-- .meta-counts -->
             </div><!-- .layout-container--short -->
           </header><!-- .project__header -->
         </div><!-- .layout-stacked__header -->
       <section class="layout-container">
           <table class="metatable">
-            <caption>Report</caption>
               <tbody>
               <tr class="meta-row"><th class="meta-row-label">Project</th> <td class="meta-row-value">github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway</td></tr>
               <tr class="meta-row"><th class="meta-row-label">Path</th> <td class="meta-row-value">C:\XWS-projekat\xws-bsep-beckend\xws-bsep\microservices\api_gateway/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway</td></tr>
@@ -484,7 +484,74 @@
           </table>
       </section>
     <div class="layout-container" style="padding-top: 35px;">
-      No known vulnerabilities detected.
+      <div class="cards--vuln filter--patch filter--ignore">
+        <div class="card card--vuln  disclosure--not-new severity--high" data-snyk-test="high">
+            <h2 class="card__title">Access Restriction Bypass</h2>
+            <div class="card__section">
+        
+                <div class="label label--high">
+                    <span class="label__text">high severity</span>
+                </div>
+        
+                <hr/>
+        
+                <ul class="card__meta">
+                    <li class="card__meta__item">
+                        Package Manager: golang
+                    </li>
+                    <li class="card__meta__item">
+                            Vulnerable module:
+        
+                            github.com/dgrijalva/jwt-go
+                    </li>
+        
+                    <li class="card__meta__item">Introduced through:
+        
+                                github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway@0.0.0 and github.com/dgrijalva/jwt-go@3.2.0
+        
+                    </li>
+                </ul>
+        
+                <hr/>
+        
+        
+                        <h3 class="card__section__title">Detailed paths</h3>
+        
+                    <ul class="card__meta__paths">
+                                <li>
+                                <span class="list-paths__item__introduced"><em>Introduced through</em>:
+                                        github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway@0.0.0
+                                         <span class="list-paths__item__arrow">›</span> 
+                                        github.com/dgrijalva/jwt-go@3.2.0
+                                        
+                                </span>
+        
+                            </li>
+                    </ul><!-- .list-paths -->
+        
+            </div><!-- .card__section -->
+        
+              <hr/>
+              <!-- Overview -->
+              <h2 id="overview">Overview</h2>
+        <p><a href="https://github.com/dgrijalva/jwt-go">github.com/dgrijalva/jwt-go</a> is a go implementation of JSON Web Tokens.</p>
+        <p>Affected versions of this package are vulnerable to Access Restriction Bypass if <code>m[&quot;aud&quot;]</code> happens to be <code>[]string{}</code>, as allowed by the spec, the type assertion fails and the value of <code>aud</code> is <code>&quot;&quot;</code>. This can cause audience verification to succeed even if the audiences being passed are incorrect if <code>required</code> is set to <code>false</code>.</p>
+        <h2 id="remediation">Remediation</h2>
+        <p>Upgrade <code>github.com/dgrijalva/jwt-go</code> to version 4.0.0-preview1 or higher.</p>
+        <h2 id="references">References</h2>
+        <ul>
+        <li><a href="https://github.com/dgrijalva/jwt-go/issues/422">GitHub Issue</a></li>
+        <li><a href="https://github.com/dgrijalva/jwt-go/pull/426">GitHub PR</a></li>
+        </ul>
+        
+              <hr/>
+        
+            <div class="cta card__cta">
+                <p><a href="https://snyk.io/vuln/SNYK-GOLANG-GITHUBCOMDGRIJALVAJWTGO-596515">More about this vulnerability</a></p>
+            </div>
+        
+        </div><!-- .card -->
+      </div><!-- cards -->
     </div>
   </main><!-- .layout-stacked__content -->
 </body>
