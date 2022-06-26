@@ -407,7 +407,10 @@ func (handler *UserHandler) Register(ctx context.Context, request *pb.RegisterRe
 	user := mapInsertUserSagga(request)
 	err := handler.service.Create(user, request.Username, request.Password)
 	if err != nil {
-		return nil, err
+		return &pb.RegisterResponse{
+			StatusCode: "500",
+			Message:    "Something wrong, please try again",
+		}, err
 	}
 	return &pb.RegisterResponse{
 		StatusCode: "200",

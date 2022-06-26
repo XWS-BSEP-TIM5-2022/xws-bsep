@@ -65,7 +65,6 @@ func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService
 
 func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.PasswordlessLoginResponse, error) {
 	service.CustomLogger.InfoLogger.Info("Passwordless login for user with email: " + request.Email)
-	// TODO SD: specijalni karakteri za email
 	re, err := regexp.Compile(`[^\w\.\+\@]`)
 	if err != nil {
 		log.Fatal(err)
@@ -185,7 +184,6 @@ func passwordlessLoginMailMessage(token string) (string, string) {
 		"    <br> <br>\n" +
 		"</body>" +
 		"</html>"
-	// message := []byte(subject + mime + body)
 	return body, subject
 }
 
