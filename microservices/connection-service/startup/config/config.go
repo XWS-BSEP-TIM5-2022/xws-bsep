@@ -15,9 +15,10 @@ type Config struct {
 	ErrorLogsFile    string
 	SuccessLogsFile  string
 	WarningLogsFile  string
-	// Neo4jUri        string
-	// Neo4jUsername   string
-	// Neo4jPassword   string
+	// TODO SD: obrisati
+	// Neo4jUri        string "bolt://localhost:7687",
+	// Neo4jUsername   string  "neo4j",
+	// Neo4jPassword   string  "password",
 }
 
 func NewConfig() *Config {
@@ -49,12 +50,6 @@ func NewConfig() *Config {
 		ErrorLogsFile:    "/error.log",
 		SuccessLogsFile:  "/success.log",
 		WarningLogsFile:  "/warning.log",
-
-		// TODO SD: obrisati
-		// Neo4jUri:         "bolt://localhost:7687",
-		// Neo4jUsername:    "neo4j",
-		// Neo4jPassword:    "password",
-
 	}
 
 }

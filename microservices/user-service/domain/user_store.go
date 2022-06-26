@@ -20,5 +20,5 @@ type UserStore interface {
 	Search(criteria string) ([]*User, error)
 	UpdateIsActiveById(userId string) error
 	GetIdByEmail(email string) (string, error)
-	UpdateStatus(userId string, user *User) error
+	DeleteUser(userId, email string) error
 }

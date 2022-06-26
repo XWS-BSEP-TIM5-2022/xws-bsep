@@ -204,3 +204,17 @@ func (store *AuthPostgresStore) UpdateAPIToken(id, code string) error {
 	}
 	return nil
 }
+
+func (store *AuthPostgresStore) Delete(id string) error {
+	chekr := `SELECT FROM public."authentications" WHERE id=$1`
+	err := store.db.Exec(chekr, id)
+	if err != nil {
+		log.Println("Auth credentials does not exist")
+		return nil
+	}
+	err = store.db.Delete(&domain.Authentication{}, id)
+	if err != nil {
+		return err.Error
+	}
+	return nil
+}

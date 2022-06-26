@@ -1267,3 +1267,11 @@ func (service *AuthService) Register(auth domain.Authentication, roleNames []str
 
 	return nil
 }
+
+func (service *AuthService) Delete(authId string) error {
+	err := service.store.Delete(authId)
+	if err != nil {
+		return err
+	}
+	return nil
+}

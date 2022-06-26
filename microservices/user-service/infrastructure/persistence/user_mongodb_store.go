@@ -6,6 +6,7 @@ import (
 	"errors"
 	_ "errors"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
@@ -362,20 +363,13 @@ func (store *UserMongoDBStore) GetIdByEmail(email string) (string, error) {
 	return user.Id.Hex(), nil
 }
 
-func (store *UserMongoDBStore) UpdateStatus(userId string, user *domain.User) error {
-	fmt.Println("USER ID: ", userId, " status: ", user.Status)
-	result, err := store.users.UpdateOne(
-		context.TODO(),
-		bson.M{"_id": userId},
-		bson.D{
-			{"$set", bson.D{{"status", user.Status}}},
-		},
-	)
+func (store *UserMongoDBStore) DeleteUser(userId, email string) error {
+	filter := bson.M{"email": email}
+	res, err := store.users.DeleteOne(context.TODO(), filter)
 	if err != nil {
+		log.Println("User is not deleted, err: ", err)
 		return err
 	}
-	if result.MatchedCount != 1 {
-		return errors.New("one document should've been updated")
-	}
+	log.Println("Deleted count: ", res.DeletedCount)
 	return nil
 }

@@ -31,70 +31,56 @@ func NewCreateUserCommandHandler(userService *application.UserService, publisher
 }
 
 func (handler *CreateUserCommandHandler) handle(command *events.CreateUserCommand) {
-	// fmt.Println(" @@@@@@@@@@ hendleeer! ID: ", command.User.Id)
 	reply := events.CreateUserReply{User: command.User}
-	// fmt.Println(command.Type)
-
 	switch command.Type {
 	case events.CreateUser:
 		err := handler.userService.CheckEmailCriteria(command.User.Email)
 		if err != nil {
 			fmt.Println(err.Error())
 			reply.Type = events.UserNotCreated
+		} else {
+			user := mapCommandUserToDomainUser(command)
+			newUser, err := handler.userService.Insert(user)
+			if err != nil {
+				reply.Type = events.UserDeleted
+				fmt.Println("User is not saved, err: ", err)
+			} else {
+				command.User.Id = newUser.Id.Hex()
+				reply.Type = events.UserCreated
+				reply.User = command.User
+			}
 		}
-
-		user := mapCommandUserToDomainUser(command)
-		newUser, err := handler.userService.Insert(user)
-		if err != nil {
-			reply.Type = events.UserNotCreated
-			fmt.Println("GRESKA PRILIKOM INSERTA: ", err)
-		}
-
-		command.User.Id = newUser.Id.Hex()
-		// log.Println("#### #### *************** ID", command.User.Id)
-		reply.Type = events.UserCreated
-		reply.User = command.User
-		// fmt.Println("Reply type: User created ", reply.Type, reply.User)
-
 	case events.ApproveUser:
-		fmt.Println("COMMAND USER ID", command.User.Id)
 		objID, err := primitive.ObjectIDFromHex(command.User.Id)
 		if err != nil {
-			panic(err)
+			log.Println("User is not approved, err: ", err)
+		} else {
+			User := &domain.User{
+				Id: objID,
+			}
+			fmt.Println("User is approved! ", User)
+			reply.Type = events.UserApproved
 		}
-		User := &domain.User{
-			Id: objID,
-		}
-		err = handler.userService.Approve(User)
-		if err != nil {
-			reply.Type = events.UserNotCreated
-			// return
-		}
-		reply.Type = events.UserApproved
-
 	case events.DeleteUser:
 		objID, err := primitive.ObjectIDFromHex(command.User.Id)
 		if err != nil {
-			panic(err)
+			log.Println("User is not deleted, err: ", err)
+		} else {
+			User := &domain.User{
+				Id:    objID,
+				Email: command.User.Email,
+			}
+			err = handler.userService.Delete(User)
+			if err != nil {
+				log.Println("User is not deleted by id: ", err)
+			} else {
+				reply.Type = events.UserDeleted
+			}
 		}
-		User := &domain.User{
-			Id: objID,
-		}
-		err = handler.userService.Delete(User)
-		if err != nil {
-			fmt.Println(" ********* GRESKA PRILIKOM BRISANJA: ", err)
-		}
-		reply.Type = events.UserDeleted
-
-	case events.RollbackUser:
-		fmt.Println("TODO SD: ROLLBACK USER")
-		reply.Type = events.UserRolledBack
-
 	default:
 		reply.Type = events.UnknownReply
 	}
 
-	log.Println("ODGOVOR RBR: ", reply.Type)
 	if reply.Type != events.UnknownReply {
 		_ = handler.replyPublisher.Publish(reply)
 	}

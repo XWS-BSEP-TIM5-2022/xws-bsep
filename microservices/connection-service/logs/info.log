@@ -1,2 +1,0 @@
-{"level":"panic","method":"/startup/server.go:54","msg":"Neo4J datase on bolt://localhost:7687","time":"2022-06-25T10:24:14+02:00"}
-{"level":"info","method":"/startup/server.go:54","msg":"Neo4J datase on bolt://localhost:7687","time":"2022-06-25T10:25:30+02:00"}

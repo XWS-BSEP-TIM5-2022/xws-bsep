@@ -23,8 +23,6 @@ type User struct {
 	Interests    []Interest         `bson:"interests"`
 	IsActive     bool               `bson:"is_active"`
 	Role         []string           `bson:"role"`
-	Status       UserStatus         `bson:"status"` // SD: SAGA
-	CreatedAt    time.Time          `bson:"created_at"`
 }
 
 type Education struct {

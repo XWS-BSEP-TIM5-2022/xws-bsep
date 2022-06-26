@@ -3,7 +3,6 @@ package application
 import (
 	"errors"
 	"net/mail"
-	"time"
 	"unicode"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
@@ -87,29 +86,16 @@ func (service *UserService) GetIdByEmail(email string) (string, error) {
 }
 
 func (service *UserService) Create(user *domain.User, username, password string) error {
-	user.Status = domain.PendingApproval
-	user.CreatedAt = time.Now()
-
 	userDetails := mapNewUser(user, username, password)
 	err := service.orchestrator.Start(userDetails)
-
 	if err != nil {
-		user.Status = domain.Cancelled
-		_ = service.store.UpdateStatus(user.Id.Hex(), user)
 		return err
 	}
 	return nil
 }
 
-func (service *UserService) Approve(user *domain.User) error {
-	user.Status = domain.Approved
-	return service.store.UpdateStatus(user.Id.Hex(), user)
-}
-
 func (service *UserService) Delete(user *domain.User) error {
-	user.Status = domain.Cancelled
-	// TODO SD: da li treba uraditi fizicko brisanje kao rollback meh?
-	return service.store.UpdateStatus(user.Id.Hex(), user)
+	return service.store.DeleteUser(user.Id.Hex(), user.Email)
 }
 
 func checkUsernameCriteria(username string) error {

@@ -29,49 +29,34 @@ func NewCreateUserCommandHandler(authService *AuthService, publisher saga.Publis
 }
 
 func (handler *CreateUserCommandHandler) handle(command *events.CreateUserCommand) {
-	// TODO SD: logika
-	// log.Println(" ---> id u auth: ", command.User.Id)
 	var authRoles []domain.Role
-	// for _, authRole := range command.User.Role {
-	// 	roles, err := handler.authService.store.FindRoleByName(authRole)
-	// 	if err != nil {
-	// 		fmt.Println("Error finding role by name")
-	// 		return nil, err
-	// 	}
-	// 	authRoles = append(authRoles, *roles...)
-	// }
 	auth := &domain.Authentication{
 		Id:       command.User.Id,
 		Username: command.User.Username,
 		Password: command.User.Password,
 		Roles:    &authRoles,
 	}
-
 	reply := events.CreateUserReply{User: command.User}
 
-	// fmt.Println(command.Type)
 	switch command.Type {
 	case events.CreateAuth:
 		err := handler.authService.Register(*auth, command.User.Role, command.User.Email)
 		if err != nil {
-			fmt.Println("greska registracija saga: ", err)
+			fmt.Println("Auth credentials are not saved, err:", err)
 			reply.Type = events.AuthNotCreated
 		} else {
 			reply.Type = events.AuthCreated
 		}
-	// case events.DeleteUser:
-	// 	// TODO SD: ispraviti
-	// 	// err := handler.authService.Cancel(auth)
-	// 	// if err != nil {
-	// 	// 	return
-	// 	// }
-	// 	reply.Type = events.UserDeleted
-
+	case events.RollbackAuth:
+		err := handler.authService.Delete(auth.Id)
+		if err != nil {
+			log.Println("Auth credentials are not deleted, err: ", err)
+		} else {
+			reply.Type = events.AuthRolledBack
+		}
 	default:
 		reply.Type = events.UnknownReply
 	}
-
-	log.Println("ODGOVOR RBR auth: ", reply.Type)
 
 	if reply.Type != events.UnknownReply {
 		_ = handler.replyPublisher.Publish(reply)

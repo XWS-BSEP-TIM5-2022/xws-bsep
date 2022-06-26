@@ -1,8 +1,6 @@
 package application
 
 import (
-	"fmt"
-
 	events "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/saga/create_user"
 	saga "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/saga/messaging"
 )
@@ -37,25 +35,18 @@ func (o *CreateUserOrchestrator) handle(reply *events.CreateUserReply) {
 }
 
 func (o *CreateUserOrchestrator) nextCommandType(reply events.CreateUserReplyType) events.CreateUserCommandType {
-	// fmt.Println(" *** Odgovor: ", reply)
 	switch reply {
 	case events.UserCreated:
-		fmt.Println(" #UserCreated ", events.UserCreated)
 		return events.CreateAuth
 	case events.UserNotCreated:
-		fmt.Println(" #DeleteUser ", events.DeleteUser)
-		return events.DeleteUser
-	case events.UserRolledBack:
-		fmt.Println(" # --------------------------- UserRolledBack ", events.UserRolledBack)
 		return events.DeleteUser
 	case events.AuthNotCreated:
-		fmt.Println(" ## Rollback ", events.RollbackUser)
-		return events.RollbackUser
+		return events.RollbackAuth
+	case events.AuthRolledBack:
+		return events.DeleteUser
 	case events.AuthCreated:
-		fmt.Println(" #ApproveUser  ", events.ApproveUser)
 		return events.ApproveUser
 	default:
-		fmt.Println(" # UnknownCommand")
 		return events.UnknownCommand
 	}
 }

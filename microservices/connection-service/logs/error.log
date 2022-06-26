@@ -1,1 +1,0 @@
-{"level":"error","method":"C:/xws-bsep/microservices/connection-service/infrastructure/api/connection_grpc_handler.go:185","msg":"Checking connection between user with ID: 62b222d3a8a4fc06d3f2e1a1 and user with ID: 62b22250a8a4fc06d3f2e1a0 failed","time":"2022-06-21T22:08:21+02:00"}

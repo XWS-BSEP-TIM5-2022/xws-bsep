@@ -29,6 +29,7 @@ const (
 	DeleteUser
 	CreateAuth
 	RollbackUser
+	RollbackAuth
 	ApproveUser
 	UnknownCommand
 )
@@ -48,6 +49,7 @@ const (
 	UserRolledBack
 	UserDeleted
 	UserApproved
+	AuthRolledBack
 	UnknownReply
 )
 
