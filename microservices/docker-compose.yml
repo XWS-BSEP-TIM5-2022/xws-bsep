@@ -1,6 +1,50 @@
 version: "3.8"
 
+networks:
+  network:
+    driver: bridge
+  connection-network:
+    driver: bridge 
 services:
+  agent_application:
+    image: darkelfff/agent-app:latest
+    container_name: agent_application
+    restart: on-failure
+    ports:
+      - ${AGENT_PORT}:${AGENT_PORT}
+    environment:
+      AGENT_DB_HOST: ${AGENT_DB_HOST}
+      AGENT_DB_PORT: ${AGENT_DB_PORT}
+      AGENT_DB_USER: ${AGENT_DB_USER}
+      AGENT_DB_PASS: ${AGENT_DB_PASS}
+      AGENT_DB_NAME: ${AGENT_DB_NAME}
+      AGENT_PORT: ${AGENT_PORT}
+      AGENT_HOST: ${AGENT_HOST}
+    depends_on:
+      - agent_db
+    networks:
+      - network
+
+  agent-frontend:
+    restart: on-failure
+    image: darkelfff/agent-front:latest
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./docker/nginx_agent.conf:/etc/nginx/nginx_agent.conf
+
+  agent_db:
+    image: postgres
+    container_name: agent_db
+    restart: on-failure
+    environment:
+      POSTGRES_USER: ${AGENT_DB_USER}
+      POSTGRES_PASSWORD: ${AGENT_DB_PASS}
+      POSTGRES_DB: ${AGENT_DB_NAME}
+    networks:
+      - network
+
+
   dislinkt-frontend:
     restart: on-failure
     image: darkelfff/dislinkt-frontend:latest
@@ -72,6 +116,7 @@ services:
       FRONTEND_PORT: ${FRONTEND_PORT}
     depends_on:
       - auth_db
+      - nats
     networks:
       - network
 
@@ -87,13 +132,13 @@ services:
     environment:
       # PORT: ${CONNECTION_SERVICE_PORT}
       # HOST: ${CONNECTION_SERVICE_HOST}
+      PUBLIC_KEY: ${PUBLIC_KEY}
       CONNECTION_DB_HOST: ${CONNECTION_DB_HOST}
       CONNECTION_DB_PORT: ${CONNECTION_DB_PORT}
       CONNECTION_DB_USER: ${CONNECTION_DB_USER}
       CONNECTION_DB_PASS: ${CONNECTION_DB_PASS}
       CONNECTION_DB_NAME: ${CONNECTION_DB_NAME}
       CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
-      PUBLIC_KEY: ${PUBLIC_KEY}
     depends_on:
       - connection_db
     networks:
@@ -146,6 +191,7 @@ services:
       POST_DB_PORT: ${POST_DB_PORT}
       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
       PUBLIC_KEY: ${PUBLIC_KEY}
+      CONNECTION_PUBLIC_KEY: ${PUBLIC_KEY}
       USER_SERVICE_HOST: ${USER_SERVICE_HOST}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
       AUTH_SERVICE_HOST: ${AUTH_SERVICE_HOST}
@@ -203,8 +249,4 @@ services:
     networks:
       - network
 
-networks:
-  network:
-    driver: bridge
-  connection-network:
-    driver: bridge
+

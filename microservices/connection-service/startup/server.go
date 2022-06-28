@@ -91,7 +91,7 @@ func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) 
 	}
 	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(server.config.PublicKey))
 	if err != nil {
-		server.CustomLogger.ErrorLogger.Error("Parsing RSA public key in connection service failed")
+		server.CustomLogger.ErrorLogger.Error("Parsing RSA public key in connection service failed, PK:", server.config.PublicKey)
 		log.Fatalf("failed to parse public key: %v", err)
 	}
 
