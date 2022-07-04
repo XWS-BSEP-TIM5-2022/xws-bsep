@@ -5,40 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2cd76f4b-5652-4de1-94c9-743a948593cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/common/proto/job_offer_service/google/api/annotations.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/proto/job_offer_service/google/api/field_behavior.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/proto/job_offer_service/google/api/http.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/proto/job_offer_service/google/api/httpbody.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/proto/job_offer_service/job_offer_service.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/application/job_offer_service.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/domain/job_offer_store.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/domain/model.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/infrastructure/api/job_offer_grps_handler.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/infrastructure/api/logger_handler.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/infrastructure/api/pb_mapper.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/infrastructure/persistence/client.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/infrastructure/persistence/job_offer_neo4j_store.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/infrastructure/persistence/transaction.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/startup/config/accessible_permissions.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/startup/config/accessible_roles.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/startup/config/config.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/startup/data.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/job-offer-service/startup/server.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api_gateway/infrastructure/api/job_offer_handler.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/infrastructure/services/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/infrastructure/services/client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_gateway/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/logs/error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api_gateway/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/logs/success.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_gateway/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/startup/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_gateway/startup/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/startup/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/logs/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/debug.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auth-service/logs/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/info.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auth-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/common/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/common/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connection-service/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/logs/error.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connection-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/connection-service/startup/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/startup/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/logs/warning.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/warning.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post-service/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/logs/error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/post-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/logs/success.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/infrastructure/api/user_grpc_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/infrastructure/api/user_grpc_handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/logs/error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/logs/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/logs/info.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/logs/success.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/startup/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/startup/server.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +66,7 @@
       <recent name="C:\xws-bsep\microservices\common\proto\job_offer_service" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway">
     <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="microservices" />
       <working_directory value="$PROJECT_DIR$/api_gateway" />
@@ -91,9 +75,36 @@
       <directory value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
+    <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="microservices" />
+      <working_directory value="$PROJECT_DIR$/auth-service" />
+      <kind value="PACKAGE" />
+      <package value="github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="microservices" />
+      <working_directory value="$PROJECT_DIR$/post-service" />
+      <kind value="PACKAGE" />
+      <package value="github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="microservices" />
+      <working_directory value="$PROJECT_DIR$/user-service" />
+      <kind value="PACKAGE" />
+      <package value="github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" />
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service" />
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service" />
+        <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service" />
       </list>
     </recent_temporary>
   </component>
@@ -107,5 +118,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/api_gateway/infrastructure/api/job_offer_handler.go</url>
+          <line>91</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

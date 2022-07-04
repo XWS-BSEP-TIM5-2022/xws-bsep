@@ -54,3 +54,12 @@
 {"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:1185","msg":"Finding usernmae by API token","time":"2022-07-04T18:14:52+02:00"}
 {"ip_address":"[::1]:55096","level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:512","msg":"Login to application with username: jelena","time":"2022-07-04T18:15:21+02:00"}
 {"ip_address":"[::1]:55096","level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:512","msg":"Login to application with username: jelena","time":"2022-07-04T18:15:23+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:225","msg":"User registration with username: kristina and email: huawei5242@gmail.com","time":"2022-07-04T22:55:11+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:850","msg":"Account activation with JWT token","time":"2022-07-04T22:55:27+02:00"}
+{"ip_address":"[::1]:55873","level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:512","msg":"Login to application with username: kristina","time":"2022-07-04T22:55:35+02:00"}
+{"ip_address":"[::1]:62921","level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:512","msg":"Login to application with username: kris","time":"2022-07-04T23:11:56+02:00"}
+{"ip_address":"[::1]:62921","level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:512","msg":"Login to application with username: kristina","time":"2022-07-04T23:13:55+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:225","msg":"User registration with username: kristina2 and email: huawei5242+2@gmail.com","time":"2022-07-04T23:29:02+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:225","msg":"User registration with username: kristina2 and email: huawei5242+2@gmail.com","time":"2022-07-04T23:29:57+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:850","msg":"Account activation with JWT token","time":"2022-07-04T23:30:16+02:00"}
+{"ip_address":"[::1]:54089","level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:512","msg":"Login to application with username: kristina2","time":"2022-07-04T23:30:24+02:00"}

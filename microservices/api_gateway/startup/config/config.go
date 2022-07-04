@@ -18,6 +18,8 @@ type Config struct {
 	WarningLogsFile string
 	PrivateKey      string
 	PublicKey       string
+	JobOfferHost    string
+	JobOfferPort    string
 }
 
 func NewConfig() *Config {
@@ -31,6 +33,8 @@ func NewConfig() *Config {
 		PostPort:        "8083",
 		ConnectionHost:  "localhost",
 		ConnectionPort:  "8084",
+		JobOfferHost:    "localhost",
+		JobOfferPort:    "8089",
 		LogsFolder:      "logs",
 		InfoLogsFile:    "/info.log",
 		DebugLogsFile:   "/debug.log",
