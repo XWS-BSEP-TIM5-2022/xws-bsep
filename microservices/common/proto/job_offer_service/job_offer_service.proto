@@ -1,0 +1,30 @@
+syntax="proto3";
+
+package job_offer_service;
+option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer";
+
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service JobOfferService{
+
+  rpc GetConnections(GetRequest) returns(Users) {
+    option (google.api.http) = {
+      get: "/connection/user/{userID}/friends"
+    };
+  }
+}
+
+message GetRequest {
+  string userID = 1;
+}
+
+message User {
+  string userID = 1;
+  bool isPublic = 2;
+}
+
+message Users{
+  repeated User users = 1;
+}

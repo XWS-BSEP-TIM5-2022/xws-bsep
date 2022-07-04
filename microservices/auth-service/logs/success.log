@@ -60,3 +60,14 @@
 {"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:589","msg":"Successful user login with username: kristina","time":"2022-06-23T23:51:01+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:589","msg":"Successful user login with username: kristina","time":"2022-06-23T23:53:18+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:589","msg":"Successful user login with username: kristina3","time":"2022-06-24T00:02:22+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/startup/server.go:60","msg":"Starting auth service successfully, PORT: 8082","time":"2022-07-04T17:49:14+02:00"}
+{"email":"huawei5242@gmail.com","level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:395","msg":"Account successfully created for user with ID: 62c30e65433da7a3c22f40a1","time":"2022-07-04T17:59:36+02:00","username":"kristina"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:892","msg":"Account successfully activated by JWT token","time":"2022-07-04T17:59:55+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:589","msg":"Successful user login with username: kristina","time":"2022-07-04T18:03:35+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:627","msg":"API token successfully generated for user with ID: 62c30e65433da7a3c22f40a1","time":"2022-07-04T18:03:43+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:1198","msg":"Successfully found username: kristina from API token","time":"2022-07-04T18:03:57+02:00"}
+{"email":"huawei5242+1@gmail.com","level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:395","msg":"Account successfully created for user with ID: 62c30ff1433da7a3c22f40a2","time":"2022-07-04T18:06:10+02:00","username":"jelena"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:892","msg":"Account successfully activated by JWT token","time":"2022-07-04T18:07:33+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:589","msg":"Successful user login with username: jelena","time":"2022-07-04T18:08:13+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:1198","msg":"Successfully found username: kristina from API token","time":"2022-07-04T18:14:52+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:589","msg":"Successful user login with username: jelena","time":"2022-07-04T18:15:23+02:00"}

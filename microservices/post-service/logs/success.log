@@ -32,3 +32,17 @@
 {"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T22:25:22+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T23:05:49+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 3 posts","time":"2022-06-21T23:06:06+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/startup/server.go:38","msg":"MongoDB initialization for post service successful, PORT: 27017, HOST: localhost","time":"2022-07-04T17:50:15+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/startup/server.go:44","msg":"Starting gRPC server for post service","time":"2022-07-04T17:50:15+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:147","msg":"Job offer post with ID: 62c30f6e80dcd0aa330cbd07 created by user with ID: 62c30e65433da7a3c22f40a1","time":"2022-07-04T18:03:59+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 1 posts created by user with ID: 62c30e65433da7a3c22f40a1","time":"2022-07-04T18:04:34+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 1 posts created by user with ID: 62c30e65433da7a3c22f40a1","time":"2022-07-04T18:04:34+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 5 posts","time":"2022-07-04T18:05:26+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 0 posts created by user with ID: 62c30ff1433da7a3c22f40a2","time":"2022-07-04T18:08:23+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 5 posts","time":"2022-07-04T18:08:39+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 0 posts created by user with ID: 62c30ff1433da7a3c22f40a2","time":"2022-07-04T18:11:02+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:147","msg":"Job offer post with ID: 62c311fc80dcd0aa330cbd0b created by user with ID: 62c30e65433da7a3c22f40a1","time":"2022-07-04T18:14:52+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:72","msg":"Found 6 posts","time":"2022-07-04T18:15:08+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 2 posts created by user with ID: 62c30e65433da7a3c22f40a1","time":"2022-07-04T18:18:44+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 0 posts created by user with ID: 62c30ff1433da7a3c22f40a2","time":"2022-07-04T18:23:13+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:97","msg":"Found 2 posts created by user with ID: 62c30e65433da7a3c22f40a1","time":"2022-07-04T18:23:15+02:00"}
