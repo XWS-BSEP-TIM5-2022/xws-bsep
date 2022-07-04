@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/services"
+	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"gopkg.in/square/go-jose.v2/jwt"
@@ -87,9 +88,15 @@ func (handler *JobOfferHandler) GetRecommendations(w http.ResponseWriter, r *htt
 	handler.CustomLogger.SuccessLogger.Info("User with ID: " + id + " can access feed")
 
 	user := &domain.User{}
+	posts := &domain.Posts{}
 	err = handler.getUser(user, html.EscapeString(checkId)) /** EscapeString **/
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("User with ID:" + id + " not found")
+		return
+	}
 
-	fmt.Println("cao")
+	err = handler.findJobOffers(user, posts)
+
 }
 
 func (handler *JobOfferHandler) AuthorizeUser(w http.ResponseWriter, r *http.Request, requestId string) string {
@@ -153,6 +160,97 @@ func (handler *JobOfferHandler) getUser(loggedUser *domain.User, userId string) 
 
 	handler.CustomLogger.ErrorLogger.Error("Pronadjen uspjesno")
 	handler.CustomLogger.ErrorLogger.Error(loggedUser)
+
+	return nil
+}
+
+func (handler *JobOfferHandler) findJobOffers(loggedUser *domain.User, posts *domain.Posts) error {
+
+	postClient := services.NewPostClient(handler.postClientAddress)
+	allPosts, err := postClient.GetAll(context.TODO(), &post.GetAllRequest{})
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Get all posts unsuccessful")
+		return err
+	}
+
+	for _, post := range allPosts.Posts {
+		/*
+			Ako je post ponuda za posao i ako je user public, prolazim kroz sve skills na postu i sve skills od usera i ako su jednaki, dodajem post u listu buducih preporuka
+		*/
+		if post.IsJobOffer {
+			userClient := services.NewUserClient(handler.userClientAddress)
+			foundUser, _ := userClient.Get(context.TODO(), &user.GetRequest{Id: loggedUser.Id})
+
+			if foundUser.User.IsPublic {
+				for _, skill := range loggedUser.Skills {
+					if skill.Name == post.JobOffer.Preconditions {
+						newPost := domain.Post{
+							Id:          post.Id,
+							Text:        post.Text,
+							Image:       post.Image,
+							Links:       post.Links,
+							DateCreated: post.DateCreated.AsTime(),
+							UserId:      post.UserId,
+							JobOffer: domain.JobOffer{
+								Id:              post.JobOffer.Id,
+								JobDescription:  post.JobOffer.JobDescription,
+								Preconditions:   post.JobOffer.Preconditions,
+								DailyActivities: post.JobOffer.DailyActivities,
+								Position: domain.Position{
+									Id:   post.JobOffer.Position.Id,
+									Name: post.JobOffer.Position.Name,
+									Pay:  post.JobOffer.Position.Pay,
+								},
+							},
+							IsJobOffer: post.IsJobOffer,
+							Company: domain.Company{
+								Id:          post.Company.Id,
+								Name:        post.Company.Name,
+								Description: post.Company.Description,
+								PhoneNumber: post.Company.PhoneNumber,
+								IsActive:    post.Company.IsActive,
+							},
+						}
+						posts.AllPosts = append(posts.AllPosts, newPost)
+					}
+				}
+
+				for _, exp := range loggedUser.Experience {
+					if exp.Headline == post.JobOffer.Position.Name {
+						newPost := domain.Post{
+							Id:          post.Id,
+							Text:        post.Text,
+							Image:       post.Image,
+							Links:       post.Links,
+							DateCreated: post.DateCreated.AsTime(),
+							UserId:      post.UserId,
+							JobOffer: domain.JobOffer{
+								Id:              post.JobOffer.Id,
+								JobDescription:  post.JobOffer.JobDescription,
+								Preconditions:   post.JobOffer.Preconditions,
+								DailyActivities: post.JobOffer.DailyActivities,
+								Position: domain.Position{
+									Id:   post.JobOffer.Position.Id,
+									Name: post.JobOffer.Position.Name,
+									Pay:  post.JobOffer.Position.Pay,
+								},
+							},
+							IsJobOffer: post.IsJobOffer,
+							Company: domain.Company{
+								Id:          post.Company.Id,
+								Name:        post.Company.Name,
+								Description: post.Company.Description,
+								PhoneNumber: post.Company.PhoneNumber,
+								IsActive:    post.Company.IsActive,
+							},
+						}
+						posts.AllPosts = append(posts.AllPosts, newPost)
+					}
+				}
+			}
+		}
+	}
 
 	return nil
 }

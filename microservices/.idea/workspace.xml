@@ -5,24 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2cd76f4b-5652-4de1-94c9-743a948593cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/api_gateway/infrastructure/api/job_offer_handler.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_gateway/infrastructure/api/job_offer_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/infrastructure/api/job_offer_handler.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api_gateway/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/logs/error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api_gateway/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/startup/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/startup/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/startup/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/startup/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/logs/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/debug.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/error.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/logs/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/info.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/logs/warning.log" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/logs/warning.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/logs/error.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/infrastructure/api/user_grpc_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/infrastructure/api/user_grpc_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/logs/error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/logs/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/logs/info.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/startup/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/startup/server.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,8 +112,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/api_gateway/infrastructure/api/job_offer_handler.go</url>
-          <line>91</line>
-          <option name="timeStamp" value="18" />
+          <line>99</line>
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
