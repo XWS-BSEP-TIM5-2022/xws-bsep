@@ -5,6 +5,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	events "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/saga/create_user"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 )
 
@@ -538,6 +539,125 @@ func mapSkillsAndInterests(oldData *pb.User, newData *pb.User) *domain.User {
 	}
 
 	return userPb
+}
+
+// SD - saga ----------------------------------------------------
+func mapInsertUserSagga(user *pb.RegisterRequest) *domain.User {
+	userPb := &domain.User{
+		// Id:           id,
+		Name:         user.Name,
+		LastName:     user.LastName,
+		MobileNumber: user.MobileNumber,
+		Gender:       domain.GenderEnum(user.Gender),
+		Email:        user.Email,
+		Biography:    user.Biography,
+		IsActive:     false,
+		Role:         user.Role,
+		// IsPublic:     user.IsPublic,
+	}
+
+	if user.Birthday != nil {
+		userPb.Birthday = user.Birthday.AsTime()
+	}
+
+	for _, education := range user.Education {
+		ed_id := primitive.NewObjectID()
+		userPb.Education = append(userPb.Education, domain.Education{
+			Id:        ed_id,
+			Name:      education.Name,
+			Level:     mapInsertEducation(education.Level),
+			Place:     education.Place,
+			StartDate: education.StartDate.AsTime(),
+			EndDate:   education.EndDate.AsTime(),
+		})
+	}
+
+	for _, experience := range user.Experience {
+		ex_id := primitive.NewObjectID()
+		userPb.Experience = append(userPb.Experience, domain.Experience{
+			Id:        ex_id,
+			Name:      experience.Name,
+			Headline:  experience.Headline,
+			Place:     experience.Place,
+			StartDate: experience.StartDate.AsTime(),
+			EndDate:   experience.EndDate.AsTime(),
+		})
+	}
+
+	for _, skill := range user.Skills {
+		s_id := primitive.NewObjectID()
+		userPb.Skills = append(userPb.Skills, domain.Skill{
+			Id:   s_id,
+			Name: skill.Name,
+		})
+	}
+
+	for _, interest := range user.Interests {
+		in_id := primitive.NewObjectID()
+		userPb.Interests = append(userPb.Interests, domain.Interest{
+			Id:          in_id,
+			Name:        interest.Name,
+			Description: interest.Description,
+		})
+	}
+	return userPb
+}
+
+func mapCommandUserToDomainUser(command *events.CreateUserCommand) *domain.User {
+	user := domain.User{
+		// Id: User.Id,
+		Name:         command.User.Name,
+		LastName:     command.User.LastName,
+		MobileNumber: command.User.MobileNumber,
+		Username:     command.User.Username,
+		Gender:       domain.GenderEnum(command.User.Gender),
+		Birthday:     command.User.Birthday,
+		Email:        command.User.Email,
+		Biography:    command.User.Biography,
+		IsPublic:     command.User.IsPublic,
+		IsActive:     false, // nalog nije aktivan
+	}
+	for _, education := range command.User.Education {
+		ed_id := primitive.NewObjectID()
+		user.Education = append(user.Education, domain.Education{
+			Id:        ed_id,
+			Name:      education.Name,
+			Level:     domain.EducationEnum(education.Level),
+			Place:     education.Place,
+			StartDate: education.StartDate,
+			EndDate:   education.EndDate,
+		})
+	}
+
+	for _, experience := range command.User.Experience {
+		ex_id := primitive.NewObjectID()
+		user.Experience = append(user.Experience, domain.Experience{
+			Id:        ex_id,
+			Name:      experience.Name,
+			Headline:  experience.Headline,
+			Place:     experience.Place,
+			StartDate: experience.StartDate,
+			EndDate:   experience.EndDate,
+		})
+	}
+
+	for _, skill := range command.User.Skills {
+		s_id := primitive.NewObjectID()
+		user.Skills = append(user.Skills, domain.Skill{
+			Id:   s_id,
+			Name: skill.Name,
+		})
+	}
+
+	for _, interest := range command.User.Interests {
+		in_id := primitive.NewObjectID()
+		user.Interests = append(user.Interests, domain.Interest{
+			Id:          in_id,
+			Name:        interest.Name,
+			Description: interest.Description,
+		})
+	}
+	return &user
 }
 
 func removeMalicious(value string) string {

@@ -37,7 +37,7 @@ const (
 
 func (server *Server) Start() {
 	neo4jClient := server.initNeo4J()
-	server.CustomLogger.SuccessLogger.Info("Neo4J initialization for connection service successful, PORT: ", server.config.Port, ", HOST: ", server.config.Host)
+	server.CustomLogger.SuccessLogger.Info("Neo4J initialization for connection service successful, PORT: ", server.config.Port)
 
 	connectionStore := server.initConnectionStore(neo4jClient)
 	connectionService := server.initConnectionService(connectionStore)
@@ -49,10 +49,11 @@ func (server *Server) Start() {
 
 func (server *Server) initNeo4J() *neo4j.Driver {
 
-	//uri := "bolt:\\" + server.config.ConnectionDBHost + ":" + server.config.ConnectionDBPort
-	dbUri := "bolt://localhost:7687"
+	dbUri := "bolt://" + server.config.ConnectionDBHost + ":" + server.config.ConnectionDBPort
+	// dbUri := "bolt://localhost:7687"
+	server.CustomLogger.InfoLogger.Info("Neo4J datase on " + dbUri)
 
-	client, err := persistence.GetClient(dbUri, server.config.Neo4jUsername, server.config.Neo4jPassword)
+	client, err := persistence.GetClient(dbUri, server.config.ConnectionDBUser, server.config.ConnectionDBPass)
 	if err != nil {
 		server.CustomLogger.ErrorLogger.Error("Neo4J initialization for connection service failed")
 		log.Fatal(err)
@@ -90,7 +91,7 @@ func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) 
 	}
 	publicKey, err := jwt.ParseRSAPublicKeyFromPEM([]byte(server.config.PublicKey))
 	if err != nil {
-		server.CustomLogger.ErrorLogger.Error("Parsing RSA public key in connection service failed")
+		server.CustomLogger.ErrorLogger.Error("Parsing RSA public key in connection service failed, PK:", server.config.PublicKey)
 		log.Fatalf("failed to parse public key: %v", err)
 	}
 
