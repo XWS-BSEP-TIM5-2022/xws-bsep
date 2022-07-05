@@ -45,13 +45,13 @@ services:
     networks:
       - network
 
-  dislinkt-frontend:
-    restart: on-failure
-    image: darkelfff/dislinkt-frontend:latest
-    ports:
-      - '${FRONTEND_PORT}:${FRONTEND_PORT}'
-    volumes:
-      - ./docker/nginx.conf:/etc/nginx/nginx.conf
+  # dislinkt-frontend:
+  #   restart: on-failure
+  #   image: darkelfff/dislinkt-frontend:latest
+  #   ports:
+  #     - '${FRONTEND_PORT}:${FRONTEND_PORT}'
+  #   volumes:
+  #     - ./docker/nginx.conf:/etc/nginx/nginx.conf
       # - ./front/api_gateway.conf:/etc/nginx/api_gateway.conf
 
   user_service:
