@@ -26,13 +26,13 @@ services:
     networks:
       - network
 
-  agent-frontend:
-    restart: on-failure
-    image: darkelfff/agent-front:latest
-    ports:
-      - '${AGENT_FRONTEND_PORT}:${AGENT_FRONTEND_PORT}'
-    volumes:
-      - ./docker/nginx_angular.conf:/etc/nginx/nginx_angular.conf
+  # agent-frontend:
+  #   restart: on-failure
+  #   image: darkelfff/agent-front:latest
+  #   ports:
+  #     - '${AGENT_FRONTEND_PORT}:${AGENT_FRONTEND_PORT}'
+  #   volumes:
+  #     - ./docker/nginx_angular.conf:/etc/nginx/nginx_angular.conf
 
   agent_db:
     image: postgres
