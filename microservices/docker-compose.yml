@@ -20,6 +20,7 @@ services:
       AGENT_DB_NAME: ${AGENT_DB_NAME}
       AGENT_PORT: ${AGENT_PORT}
       AGENT_HOST: ${AGENT_HOST}
+      AGENT_FRONTEND_PORT: ${AGENT_FRONTEND_PORT}
     depends_on:
       - agent_db
     networks:
@@ -29,9 +30,9 @@ services:
     restart: on-failure
     image: darkelfff/agent-front:latest
     ports:
-      - '3000:3000'
+      - '${AGENT_FRONTEND_PORT}:${AGENT_FRONTEND_PORT}'
     volumes:
-      - ./docker/nginx_agent.conf:/etc/nginx/nginx_agent.conf
+      - ./docker/nginx_angular.conf:/etc/nginx/nginx_angular.conf
 
   agent_db:
     image: postgres
@@ -43,7 +44,6 @@ services:
       POSTGRES_DB: ${AGENT_DB_NAME}
     networks:
       - network
-
 
   dislinkt-frontend:
     restart: on-failure
