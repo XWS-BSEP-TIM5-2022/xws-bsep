@@ -349,7 +349,7 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 		return nil, err
 	}
 
-	authCredentials, err := service.store.FindByUsername(request.Username)
+	authCredentials, err := service.store.FindByUsername(ctx, request.Username)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"username": request.Username,
@@ -418,7 +418,7 @@ func (service *AuthService) CreateNewAPIToken(ctx context.Context, request *pb.A
 	}
 	requestUsername := re.ReplaceAllString(request.Username, " ")
 	service.CustomLogger.InfoLogger.Info("Generating API token for user: " + requestUsername)
-	authCredentials, err := service.store.FindByUsername(request.Username)
+	authCredentials, err := service.store.FindByUsername(ctx, request.Username)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"username": requestUsername,

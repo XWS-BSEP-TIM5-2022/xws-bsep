@@ -1,11 +1,13 @@
 package persistence
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"gorm.io/gorm"
 )
 
@@ -37,7 +39,10 @@ func (store *AuthPostgresStore) Create(auth *domain.Authentication) (*domain.Aut
 	return auth, err.Error
 }
 
-func (store *AuthPostgresStore) FindByUsername(username string) (*domain.Authentication, error) {
+func (store *AuthPostgresStore) FindByUsername(ctx context.Context, username string) (*domain.Authentication, error) {
+	span := tracer.StartSpanFromContext(ctx, "FindByUsername")
+	defer span.Finish()
+
 	var auth domain.Authentication
 	err := store.db.Preload("Roles").First(&auth, "username = ?", username)
 	fmt.Println(auth.Roles)

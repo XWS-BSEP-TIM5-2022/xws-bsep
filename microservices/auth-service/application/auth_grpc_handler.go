@@ -19,10 +19,6 @@ func NewAuthHandler(service *api.AuthService) *AuthHandler {
 	}
 }
 
-// func (handler *AuthHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
-// 	return handler.service.Register(ctx, request)
-// }
-
 func (handler *AuthHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
 	span := tracer.StartSpanFromContext(ctx, "Login")
 	defer span.Finish()
@@ -32,22 +28,42 @@ func (handler *AuthHandler) Login(ctx context.Context, request *pb.LoginRequest)
 }
 
 func (handler *AuthHandler) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.PasswordlessLoginResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "PasswordlessLogin")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.PasswordlessLogin(ctx, request)
 }
 
 func (handler *AuthHandler) ConfirmEmailLogin(ctx context.Context, request *pb.ConfirmEmailLoginRequest) (*pb.ConfirmEmailLoginResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "ConfirmEmailLogin")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.ConfirmEmailLogin(ctx, request)
 }
 
 func (handler *AuthHandler) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAll")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.GetAll(ctx, request)
 }
 
 func (handler *AuthHandler) UpdateUsername(ctx context.Context, request *pb.UpdateUsernameRequest) (*pb.UpdateUsernameResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdateUsername")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.UpdateUsername(ctx, request)
 }
 
 func (handler *AuthHandler) ChangePassword(ctx context.Context, request *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "ChangePassword")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.ChangePassword(ctx, request)
 }
 
@@ -60,29 +76,57 @@ func (handler *AuthHandler) ActivateAccount(ctx context.Context, request *pb.Act
 }
 
 func (handler *AuthHandler) SendRecoveryCode(ctx context.Context, request *pb.SendRecoveryCodeRequest) (*pb.SendRecoveryCodeResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "SendRecoveryCode")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.SendRecoveryCode(ctx, request)
 }
 
 func (handler *AuthHandler) VerifyRecoveryCode(ctx context.Context, request *pb.VerifyRecoveryCodeRequest) (*pb.Response, error) {
+	span := tracer.StartSpanFromContext(ctx, "VerifyRecoveryCode")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.VerifyRecoveryCode(ctx, request)
 }
 
 func (handler *AuthHandler) ResetForgottenPassword(ctx context.Context, request *pb.ResetForgottenPasswordRequest) (*pb.Response, error) {
+	span := tracer.StartSpanFromContext(ctx, "ResetForgottenPassword")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.ResetForgottenPassword(ctx, request)
 }
 
 func (handler *AuthHandler) GetAllPermissionsByRole(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAllPermissionsByRole")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.GetAllPermissionsByRole(ctx, request)
 }
 
 func (handler *AuthHandler) AdminsEndpoint(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
+	span := tracer.StartSpanFromContext(ctx, "AdminsEndpoint")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.AdminsEndpoint(ctx, request)
 }
 
 func (handler *AuthHandler) CreateNewAPIToken(ctx context.Context, request *pb.APITokenRequest) (*pb.NewAPITokenResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "CreateNewAPIToken")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.CreateNewAPIToken(ctx, request)
 }
 
 func (handler *AuthHandler) GetUsernameByApiToken(ctx context.Context, request *pb.GetUsernameRequest) (*pb.GetUsernameResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetUsernameByApiToken")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.GetUsernameByApiToken(ctx, request)
 }
