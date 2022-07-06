@@ -9,21 +9,103 @@ import "google/protobuf/timestamp.proto";
 
 service JobOfferService{
 
-  rpc GetConnections(GetRequest) returns(Users) {
+  rpc GetRecommendations(GetRequest) returns(JobOffers) {
     option (google.api.http) = {
-      get: "/connection/user/{userID}/friends"
+      post: "/api/jobRecommendations"
+      body: "DTO"
     };
   }
 }
 
 message GetRequest {
-  string userID = 1;
+  Recommendation DTO = 1;
+
+}
+
+message Recommendation{
+  User user = 1;
+  JobOffers jobOffers = 2;
 }
 
 message User {
-  string userID = 1;
-  bool isPublic = 2;
+  string id = 1;
+  string name = 2;
+  string lastName = 3;
+  string email = 4;
+  bool isPublic = 5;
+  repeated Experience experience = 6;
+  repeated Skill skills = 7;
 }
+
+message Experience{
+  string id=1;
+  string headline=2;
+}
+
+message Skill{
+  string id=1;
+  string name=2;
+}
+
+message JobOffers{
+  repeated Post jobOffers = 1;
+}
+
+message Post{
+  string id = 1;
+  string text = 2;
+  string image = 3;
+  repeated string links = 4;
+  google.protobuf.Timestamp dateCreated = 5;
+  repeated Like likes = 6;
+  repeated Dislike dislikes = 7;
+  repeated Comment comments = 8;
+  string user_id = 9;
+  JobOffer job_offer = 10;
+  bool is_job_offer = 11;
+  Company company = 12;
+}
+
+message JobOffer {
+  string id = 1;
+  Position position = 2;
+  string jobDescription = 3;
+  string dailyActivities = 4;
+  string preconditions = 5;
+}
+
+
+message Position {
+  string id = 1;
+  string name = 2;
+  double pay = 3;
+}
+
+
+message Company {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string phoneNumber = 4;
+  bool isActive = 5;
+}
+
+message Comment {
+  string id = 1;
+  string user_id = 2;
+  string text = 3;
+}
+
+message Like {
+  string id = 1;
+  string user_id = 2;
+}
+
+message Dislike {
+  string id = 1;
+  string user_id = 2;
+}
+
 
 message Users{
   repeated User users = 1;

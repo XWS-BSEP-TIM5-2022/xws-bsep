@@ -31,54 +31,36 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_JobOfferService_GetConnections_0(ctx context.Context, marshaler runtime.Marshaler, client JobOfferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_JobOfferService_GetRecommendations_0(ctx context.Context, marshaler runtime.Marshaler, client JobOfferServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetRequest
 	var metadata runtime.ServerMetadata
 
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["userID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "userID")
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.DTO); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	protoReq.UserID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "userID", err)
-	}
-
-	msg, err := client.GetConnections(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetRecommendations(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_JobOfferService_GetConnections_0(ctx context.Context, marshaler runtime.Marshaler, server JobOfferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_JobOfferService_GetRecommendations_0(ctx context.Context, marshaler runtime.Marshaler, server JobOfferServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetRequest
 	var metadata runtime.ServerMetadata
 
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["userID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "userID")
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.DTO); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	protoReq.UserID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "userID", err)
-	}
-
-	msg, err := server.GetConnections(ctx, &protoReq)
+	msg, err := server.GetRecommendations(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -89,19 +71,19 @@ func local_request_JobOfferService_GetConnections_0(ctx context.Context, marshal
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterJobOfferServiceHandlerFromEndpoint instead.
 func RegisterJobOfferServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server JobOfferServiceServer) error {
 
-	mux.Handle("GET", pattern_JobOfferService_GetConnections_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_JobOfferService_GetRecommendations_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/job_offer_service.JobOfferService/GetConnections", runtime.WithHTTPPathPattern("/connection/user/{userID}/friends"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/job_offer_service.JobOfferService/GetRecommendations", runtime.WithHTTPPathPattern("/api/jobRecommendations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_JobOfferService_GetConnections_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_JobOfferService_GetRecommendations_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -109,7 +91,7 @@ func RegisterJobOfferServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			return
 		}
 
-		forward_JobOfferService_GetConnections_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_JobOfferService_GetRecommendations_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -154,24 +136,24 @@ func RegisterJobOfferServiceHandler(ctx context.Context, mux *runtime.ServeMux, 
 // "JobOfferServiceClient" to call the correct interceptors.
 func RegisterJobOfferServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client JobOfferServiceClient) error {
 
-	mux.Handle("GET", pattern_JobOfferService_GetConnections_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_JobOfferService_GetRecommendations_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/job_offer_service.JobOfferService/GetConnections", runtime.WithHTTPPathPattern("/connection/user/{userID}/friends"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/job_offer_service.JobOfferService/GetRecommendations", runtime.WithHTTPPathPattern("/api/jobRecommendations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_JobOfferService_GetConnections_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_JobOfferService_GetRecommendations_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_JobOfferService_GetConnections_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_JobOfferService_GetRecommendations_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -179,9 +161,9 @@ func RegisterJobOfferServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 }
 
 var (
-	pattern_JobOfferService_GetConnections_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"connection", "user", "userID", "friends"}, ""))
+	pattern_JobOfferService_GetRecommendations_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "jobRecommendations"}, ""))
 )
 
 var (
-	forward_JobOfferService_GetConnections_0 = runtime.ForwardResponseMessage
+	forward_JobOfferService_GetRecommendations_0 = runtime.ForwardResponseMessage
 )

@@ -13,3 +13,17 @@ func NewJobOfferService(store domain.JobOfferStore) *JobOfferService {
 		store: store,
 	}
 }
+
+func (service *JobOfferService) GetRecommendations(user *domain.User, jobOffers []*domain.Post) ([]*domain.Post, error) {
+
+	var recommendations []*domain.Post
+
+	recommendations, err := service.store.GetRecommendations(user, jobOffers)
+	if err != nil {
+		return nil, nil
+	}
+	//for _, r := range recommendations {
+	//	recommendations = append(recommendations, r)
+	//}
+	return recommendations, nil
+}

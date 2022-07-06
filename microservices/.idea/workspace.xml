@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
+    <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2cd76f4b-5652-4de1-94c9-743a948593cb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api_gateway/infrastructure/api/job_offer_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/infrastructure/api/job_offer_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/logs/error.log" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/logs/error.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/logs/success.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/logs/info.log" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/logs/info.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/logs/success.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/proto/job_offer_service/job_offer_service.proto" beforeDir="false" afterPath="$PROJECT_DIR$/common/proto/job_offer_service/job_offer_service.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/connection-service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/connection-service/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post-service/logs/success.log" beforeDir="false" afterPath="$PROJECT_DIR$/post-service/logs/success.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,8 +23,12 @@
       </list>
     </option>
   </component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../Program Files/Go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="true" />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/common/proto/post_service/post_service.proto" root0="FORCE_HIGHLIGHTING" />
@@ -40,21 +43,36 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectId" id="2BZQHT9g4JTp877IVKu0q4CvFMY" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "last_opened_file_path": "C:/xws-bsep/microservices/common/proto/job_offer_service"
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.format.on.save.advertiser.fired&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xws-bsep/microservices/common/proto/job_offer_service&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xws-bsep\microservices\common\proto\job_offer_service" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway">
+  <component name="RunManager" selected="Go Build.go build main.go">
     <configuration name="go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="microservices" />
       <working_directory value="$PROJECT_DIR$/api_gateway" />
@@ -87,14 +105,27 @@
       <directory value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="microservices" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/connection-service/main.go" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build main.go" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service" />
         <item itemvalue="Go Build.go build github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -107,15 +138,8 @@
       </map>
     </option>
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/api_gateway/infrastructure/api/job_offer_handler.go</url>
-          <line>99</line>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="VgoProject">
+    <integration-enabled>false</integration-enabled>
+    <settings-migrated>true</settings-migrated>
   </component>
 </project>

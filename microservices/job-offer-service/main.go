@@ -1,4 +1,4 @@
-package job_offer_service
+package main
 
 import (
 	"fmt"

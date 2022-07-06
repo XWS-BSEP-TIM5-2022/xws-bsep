@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JobOfferServiceClient interface {
-	GetConnections(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error)
+	GetRecommendations(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*JobOffers, error)
 }
 
 type jobOfferServiceClient struct {
@@ -33,9 +33,9 @@ func NewJobOfferServiceClient(cc grpc.ClientConnInterface) JobOfferServiceClient
 	return &jobOfferServiceClient{cc}
 }
 
-func (c *jobOfferServiceClient) GetConnections(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error) {
-	out := new(Users)
-	err := c.cc.Invoke(ctx, "/job_offer_service.JobOfferService/GetConnections", in, out, opts...)
+func (c *jobOfferServiceClient) GetRecommendations(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*JobOffers, error) {
+	out := new(JobOffers)
+	err := c.cc.Invoke(ctx, "/job_offer_service.JobOfferService/GetRecommendations", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *jobOfferServiceClient) GetConnections(ctx context.Context, in *GetReque
 // All implementations must embed UnimplementedJobOfferServiceServer
 // for forward compatibility
 type JobOfferServiceServer interface {
-	GetConnections(context.Context, *GetRequest) (*Users, error)
+	GetRecommendations(context.Context, *GetRequest) (*JobOffers, error)
 	mustEmbedUnimplementedJobOfferServiceServer()
 }
 
@@ -54,8 +54,8 @@ type JobOfferServiceServer interface {
 type UnimplementedJobOfferServiceServer struct {
 }
 
-func (UnimplementedJobOfferServiceServer) GetConnections(context.Context, *GetRequest) (*Users, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetConnections not implemented")
+func (UnimplementedJobOfferServiceServer) GetRecommendations(context.Context, *GetRequest) (*JobOffers, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRecommendations not implemented")
 }
 func (UnimplementedJobOfferServiceServer) mustEmbedUnimplementedJobOfferServiceServer() {}
 
@@ -70,20 +70,20 @@ func RegisterJobOfferServiceServer(s grpc.ServiceRegistrar, srv JobOfferServiceS
 	s.RegisterService(&JobOfferService_ServiceDesc, srv)
 }
 
-func _JobOfferService_GetConnections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _JobOfferService_GetRecommendations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(JobOfferServiceServer).GetConnections(ctx, in)
+		return srv.(JobOfferServiceServer).GetRecommendations(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/job_offer_service.JobOfferService/GetConnections",
+		FullMethod: "/job_offer_service.JobOfferService/GetRecommendations",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(JobOfferServiceServer).GetConnections(ctx, req.(*GetRequest))
+		return srv.(JobOfferServiceServer).GetRecommendations(ctx, req.(*GetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -96,8 +96,8 @@ var JobOfferService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*JobOfferServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetConnections",
-			Handler:    _JobOfferService_GetConnections_Handler,
+			MethodName: "GetRecommendations",
+			Handler:    _JobOfferService_GetRecommendations_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
