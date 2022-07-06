@@ -6,10 +6,10 @@ import (
 )
 
 type Message struct {
-	Id      primitive.ObjectID `bson:"_id"`
-	Sender  primitive.ObjectID `bson:"senderId"`
-	Content string             `bson:"content"`
-	Time    time.Time          `bson:"time"`
+	Id       primitive.ObjectID `bson:"_id"`
+	Receiver primitive.ObjectID `bson:"receiverId"`
+	Content  string             `bson:"content"`
+	Time     time.Time          `bson:"time"`
 }
 
 type Conversation struct {

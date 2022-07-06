@@ -22,7 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MessageServiceClient interface {
-	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	GetConversationById(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	GetConversation(ctx context.Context, in *GetConversationRequest, opts ...grpc.CallOption) (*GetConversationResponse, error)
+	GetAllConversationsForUser(ctx context.Context, in *GetAllConversationsForUserRequest, opts ...grpc.CallOption) (*GetAllConversationsForUserResponse, error)
+	NewMessage(ctx context.Context, in *NewMessageRequest, opts ...grpc.CallOption) (*NewMessageResponse, error)
 }
 
 type messageServiceClient struct {
@@ -33,9 +36,36 @@ func NewMessageServiceClient(cc grpc.ClientConnInterface) MessageServiceClient {
 	return &messageServiceClient{cc}
 }
 
-func (c *messageServiceClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
+func (c *messageServiceClient) GetConversationById(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
 	out := new(GetResponse)
-	err := c.cc.Invoke(ctx, "/message_service.MessageService/Get", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/message_service.MessageService/GetConversationById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messageServiceClient) GetConversation(ctx context.Context, in *GetConversationRequest, opts ...grpc.CallOption) (*GetConversationResponse, error) {
+	out := new(GetConversationResponse)
+	err := c.cc.Invoke(ctx, "/message_service.MessageService/GetConversation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messageServiceClient) GetAllConversationsForUser(ctx context.Context, in *GetAllConversationsForUserRequest, opts ...grpc.CallOption) (*GetAllConversationsForUserResponse, error) {
+	out := new(GetAllConversationsForUserResponse)
+	err := c.cc.Invoke(ctx, "/message_service.MessageService/GetAllConversationsForUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messageServiceClient) NewMessage(ctx context.Context, in *NewMessageRequest, opts ...grpc.CallOption) (*NewMessageResponse, error) {
+	out := new(NewMessageResponse)
+	err := c.cc.Invoke(ctx, "/message_service.MessageService/NewMessage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +76,10 @@ func (c *messageServiceClient) Get(ctx context.Context, in *GetRequest, opts ...
 // All implementations must embed UnimplementedMessageServiceServer
 // for forward compatibility
 type MessageServiceServer interface {
-	Get(context.Context, *GetRequest) (*GetResponse, error)
+	GetConversationById(context.Context, *GetRequest) (*GetResponse, error)
+	GetConversation(context.Context, *GetConversationRequest) (*GetConversationResponse, error)
+	GetAllConversationsForUser(context.Context, *GetAllConversationsForUserRequest) (*GetAllConversationsForUserResponse, error)
+	NewMessage(context.Context, *NewMessageRequest) (*NewMessageResponse, error)
 	mustEmbedUnimplementedMessageServiceServer()
 }
 
@@ -54,8 +87,17 @@ type MessageServiceServer interface {
 type UnimplementedMessageServiceServer struct {
 }
 
-func (UnimplementedMessageServiceServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+func (UnimplementedMessageServiceServer) GetConversationById(context.Context, *GetRequest) (*GetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetConversationById not implemented")
+}
+func (UnimplementedMessageServiceServer) GetConversation(context.Context, *GetConversationRequest) (*GetConversationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetConversation not implemented")
+}
+func (UnimplementedMessageServiceServer) GetAllConversationsForUser(context.Context, *GetAllConversationsForUserRequest) (*GetAllConversationsForUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllConversationsForUser not implemented")
+}
+func (UnimplementedMessageServiceServer) NewMessage(context.Context, *NewMessageRequest) (*NewMessageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NewMessage not implemented")
 }
 func (UnimplementedMessageServiceServer) mustEmbedUnimplementedMessageServiceServer() {}
 
@@ -70,20 +112,74 @@ func RegisterMessageServiceServer(s grpc.ServiceRegistrar, srv MessageServiceSer
 	s.RegisterService(&MessageService_ServiceDesc, srv)
 }
 
-func _MessageService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _MessageService_GetConversationById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).Get(ctx, in)
+		return srv.(MessageServiceServer).GetConversationById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/message_service.MessageService/Get",
+		FullMethod: "/message_service.MessageService/GetConversationById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).Get(ctx, req.(*GetRequest))
+		return srv.(MessageServiceServer).GetConversationById(ctx, req.(*GetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessageService_GetConversation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetConversationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).GetConversation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/message_service.MessageService/GetConversation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).GetConversation(ctx, req.(*GetConversationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessageService_GetAllConversationsForUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllConversationsForUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).GetAllConversationsForUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/message_service.MessageService/GetAllConversationsForUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).GetAllConversationsForUser(ctx, req.(*GetAllConversationsForUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessageService_NewMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NewMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).NewMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/message_service.MessageService/NewMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).NewMessage(ctx, req.(*NewMessageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -96,8 +192,20 @@ var MessageService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MessageServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Get",
-			Handler:    _MessageService_Get_Handler,
+			MethodName: "GetConversationById",
+			Handler:    _MessageService_GetConversationById_Handler,
+		},
+		{
+			MethodName: "GetConversation",
+			Handler:    _MessageService_GetConversation_Handler,
+		},
+		{
+			MethodName: "GetAllConversationsForUser",
+			Handler:    _MessageService_GetAllConversationsForUser_Handler,
+		},
+		{
+			MethodName: "NewMessage",
+			Handler:    _MessageService_NewMessage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
