@@ -4,6 +4,8 @@ func AccessiblePermissions() map[string]string {
 	const messageService = "/message_service.MessageService/"
 
 	return map[string]string{
-		//messageService + "GetAll": "GetAllUsers",
+		messageService + "GetConversation":            "CreateMessage",
+		messageService + "GetAllConversationsForUser": "CreateMessage",
+		messageService + "NewMessage":                 "CreateMessage",
 	}
 }
