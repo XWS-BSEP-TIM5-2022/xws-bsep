@@ -26,7 +26,6 @@ import (
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/dgrijalva/jwt-go"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/status"
 )
 
@@ -323,16 +322,15 @@ func checkUsernameCriteria(username string) error {
 }
 
 func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
-	p, _ := peer.FromContext(ctx)
 	// log injection
 	re, err := regexp.Compile(`[^\w]`)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	requestUsername := re.ReplaceAllString(request.Username, " ")
-	service.CustomLogger.InfoLogger.WithFields(logrus.Fields{
-		"ip_address": p.Addr.String(),
-	}).Info("Login to application with username: " + requestUsername)
+	// p, _ := peer.FromContext(ctx)
+	service.CustomLogger.InfoLogger.Info("Login to application with username: " + requestUsername)
 	err = checkUsernameCriteria(request.Username)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
@@ -395,8 +393,7 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	ok := authCredentials.CheckPassword(request.Password)
 	if !ok {
 		service.CustomLogger.WarningLogger.WithFields(logrus.Fields{
-			"username":   requestUsername,
-			"ip_address": p.Addr.String(),
+			"username": requestUsername,
 		}).Warn("User with ID: " + authCredentials.Id + " tried to log in with the wrong credentials")
 		return nil, status.Errorf(codes.Unauthenticated, "Invalid username or password")
 	}
@@ -404,8 +401,7 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 	token, err := service.jwtService.GenerateToken(authCredentials)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"username":   requestUsername,
-			"ip_address": p.Addr.String(),
+			"username": requestUsername,
 		}).Error("JWT token is not generated for user with ID: " + authCredentials.Id)
 		return nil, status.Errorf(codes.Internal, "Could not generate JWT token")
 	}
@@ -671,32 +667,26 @@ func verificationMailMessage(token string) (string, string) {
 
 func (service *AuthService) ActivateAccount(ctx context.Context, request *pb.ActivationRequest) (*pb.ActivationResponse, error) {
 	service.CustomLogger.InfoLogger.Info("Account activation with JWT token")
-	p, _ := peer.FromContext(ctx)
+	// p, _ := peer.FromContext(ctx)
 	token, err := jwt.ParseWithClaims(
 		request.Jwt,
 		&interceptor.UserClaims{},
 		func(token *jwt.Token) (interface{}, error) {
 			_, ok := token.Method.(*jwt.SigningMethodRSA)
 			if !ok {
-				service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-					"ip_address": p.Addr.String(),
-				}).Error("Unexpected JWT token signing method")
+				service.CustomLogger.ErrorLogger.Error("Unexpected JWT token signing method")
 				return nil, fmt.Errorf("Unexpected token signing method")
 			}
 			return service.jwtService.publicKey, nil
 		},
 	)
 	if err != nil {
-		service.CustomLogger.WarningLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-		}).Warn("Activation account with invalid token: " + request.Jwt)
+		service.CustomLogger.WarningLogger.Warn("Activation account with invalid token: " + request.Jwt)
 		return nil, fmt.Errorf("Invalid token: %w", err)
 	}
 	claims, ok := token.Claims.(*interceptor.UserClaims)
 	if !ok {
-		service.CustomLogger.WarningLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-		}).Warn("Activation account with invalid token claims")
+		service.CustomLogger.WarningLogger.Warn("Activation account with invalid token claims")
 		return nil, fmt.Errorf("Invalid token claims")
 	}
 
@@ -706,9 +696,7 @@ func (service *AuthService) ActivateAccount(ctx context.Context, request *pb.Act
 	}
 	_, err = service.userServiceClient.UpdateIsActiveById(ctx, req)
 	if err != nil {
-		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-		}).Error("Account is not activated after successfull JWT token parsing")
+		service.CustomLogger.ErrorLogger.Error("Account is not activated after successfull JWT token parsing")
 		return nil, err
 	}
 
@@ -838,7 +826,7 @@ func codeVerificatioMailMessage(verificationCode string) (string, string) {
 }
 
 func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.VerifyRecoveryCodeRequest) (*pb.Response, error) {
-	p, _ := peer.FromContext(ctx)
+	// p, _ := peer.FromContext(ctx)
 	re, err := regexp.Compile(`[^\w\.\+\@]`)
 	if err != nil {
 		log.Fatal(err)
@@ -850,8 +838,7 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 	}
 	requestIdAuth := re.ReplaceAllString(request.IdAuth, " ")
 	service.CustomLogger.InfoLogger.WithFields(logrus.Fields{
-		"ip_address": p.Addr.String(),
-		"email":      requestEmail,
+		"email": requestEmail,
 	}).Info("Verification code for account recovery by user with ID: " + requestIdAuth)
 	auth, err := service.store.FindById(requestIdAuth)
 	if err != nil {
@@ -861,8 +848,7 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 
 	if auth.VerificationCode != request.VerificationCode {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-			"email":      requestEmail,
+			"email": requestEmail,
 		}).Error("Verification code for account recovery by user with ID: " + requestIdAuth + " is invalid")
 		return &pb.Response{
 			StatusCode: "500",
@@ -872,8 +858,7 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 
 	if auth.ExpirationTime < time.Now().Unix() {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-			"email":      requestEmail,
+			"email": requestEmail,
 		}).Error("Verification code for account recovery by user with ID: " + requestIdAuth + " is expired")
 		return &pb.Response{
 			StatusCode: "500",
@@ -884,8 +869,7 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 	updateCodeErr := service.store.UpdateVerifactionCode(request.IdAuth, "")
 	if updateCodeErr != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-			"email":      requestEmail,
+			"email": requestEmail,
 		}).Error("Used verification code for account recovery by user with ID: " + requestIdAuth + " is not deleted")
 		fmt.Println("Updating verification code error")
 		return nil, updateCodeErr
@@ -893,8 +877,7 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 	updateErr := service.store.UpdateExpirationTime(request.IdAuth, 0)
 	if updateErr != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-			"email":      requestEmail,
+			"email": requestEmail,
 		}).Error("Used verification code for account recovery by user with ID: " + requestIdAuth + " - expiration time is not updated")
 		fmt.Println("Updating expiration time error")
 		return nil, updateErr
@@ -908,7 +891,7 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 }
 
 func (service *AuthService) ResetForgottenPassword(ctx context.Context, request *pb.ResetForgottenPasswordRequest) (*pb.Response, error) {
-	p, _ := peer.FromContext(ctx)
+	// p, _ := peer.FromContext(ctx)
 	re, err := regexp.Compile(`[^\w]`)
 	if err != nil {
 		log.Fatal(err)
@@ -917,9 +900,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 	service.CustomLogger.InfoLogger.Info("User with ID: " + requestIdAuth + " recovers the forgotten password")
 	auth, err := service.store.FindById(request.IdAuth)
 	if err != nil {
-		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-		}).Error("No user found with ID: " + requestIdAuth)
+		service.CustomLogger.ErrorLogger.Error("No user found with ID: " + requestIdAuth)
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    "Auth credentials not found",
@@ -927,9 +908,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 	}
 
 	if request.Password != request.ReenteredPassword {
-		service.CustomLogger.WarningLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-		}).Warn("User with ID: " + requestIdAuth + " entered passwords that do not match")
+		service.CustomLogger.WarningLogger.Warn("User with ID: " + requestIdAuth + " entered passwords that do not match")
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    "New passwords do not match",
@@ -938,9 +917,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 
 	err = checkPasswordCriteria(request.Password, auth.Username)
 	if err != nil {
-		service.CustomLogger.WarningLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-		}).Warn("User with ID: " + requestIdAuth + " entered password that do not match with password criteria")
+		service.CustomLogger.WarningLogger.Warn("User with ID: " + requestIdAuth + " entered password that do not match with password criteria")
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    err.Error(),
@@ -949,9 +926,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 
 	hashedPassword, err := auth.HashPassword(request.Password)
 	if err != nil || hashedPassword == "" {
-		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-		}).Error("Password is not successfully hashed for user with ID: " + requestIdAuth)
+		service.CustomLogger.ErrorLogger.Error("Password is not successfully hashed for user with ID: " + requestIdAuth)
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    err.Error(),
@@ -960,9 +935,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 
 	err = service.store.UpdatePassword(request.IdAuth, hashedPassword)
 	if err != nil {
-		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
-			"ip_address": p.Addr.String(),
-		}).Error("Password is not successfully updated for user with ID: " + requestIdAuth)
+		service.CustomLogger.ErrorLogger.Error("Password is not successfully updated for user with ID: " + requestIdAuth)
 		return &pb.Response{
 			StatusCode: "500",
 			Message:    err.Error(),

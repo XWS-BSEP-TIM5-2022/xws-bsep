@@ -5,6 +5,7 @@ import (
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/api"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 )
 
 type AuthHandler struct {
@@ -23,6 +24,10 @@ func NewAuthHandler(service *api.AuthService) *AuthHandler {
 // }
 
 func (handler *AuthHandler) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "Login")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.Login(ctx, request)
 }
 
@@ -47,6 +52,10 @@ func (handler *AuthHandler) ChangePassword(ctx context.Context, request *pb.Chan
 }
 
 func (handler *AuthHandler) ActivateAccount(ctx context.Context, request *pb.ActivationRequest) (*pb.ActivationResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "ActivateAccount")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.ActivateAccount(ctx, request)
 }
 
