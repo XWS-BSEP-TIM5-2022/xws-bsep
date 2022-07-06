@@ -1,10 +1,18 @@
 version: "3.8"
 
+x-logging: &fluent-bit
+  driver: fluentd
+  options:
+    fluentd-address: ${FLUENT_BIT_ADDRESS}:24224
+
 networks:
   network:
     driver: bridge
   connection-network:
     driver: bridge 
+  monitoring:
+    external: true
+
 services:
   agent_application:
     image: darkelfff/agent-app:latest
@@ -23,8 +31,10 @@ services:
       AGENT_FRONTEND_PORT: ${AGENT_FRONTEND_PORT}
     depends_on:
       - agent_db
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
 
   # agent-frontend:
   #   restart: on-failure
@@ -42,8 +52,10 @@ services:
       POSTGRES_USER: ${AGENT_DB_USER}
       POSTGRES_PASSWORD: ${AGENT_DB_PASS}
       POSTGRES_DB: ${AGENT_DB_NAME}
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
 
   # dislinkt-frontend:
   #   restart: on-failure
@@ -76,8 +88,10 @@ services:
       CREATE_USER_REPLY_SUBJECT: ${CREATE_USER_REPLY_SUBJECT}
     depends_on:
       - user_db
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
 
   auth_service:
     image: auth_service
@@ -117,8 +131,10 @@ services:
     depends_on:
       - auth_db
       - nats
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
 
   connection_service:
     image: connection_service
@@ -141,9 +157,11 @@ services:
       CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
     depends_on:
       - connection_db
+    logging: *fluent-bit
     networks:
       - network
       - connection-network
+      - monitoring
 
   api_gateway:
     image: api_gateway
@@ -173,9 +191,11 @@ services:
       NATS_PASS: ${NATS_PASS}
       CREATE_USER_COMMAND_SUBJECT: ${CREATE_USER_COMMAND_SUBJECT}
       CREATE_USER_REPLY_SUBJECT: ${CREATE_USER_REPLY_SUBJECT}
+    logging: *fluent-bit
     networks:
       - network
       - connection-network
+      - monitoring
     
   post_service:
     image: post_service
@@ -198,8 +218,10 @@ services:
       AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
     depends_on:
       - post_db
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
 
   user_db:
     image: mongo
@@ -207,26 +229,32 @@ services:
     restart: on-failure
     ports:
       - 27018:27017
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
 
   auth_db:
     image: postgres
     container_name: auth_db
     restart: on-failure
+    logging: *fluent-bit
     environment:
       POSTGRES_USER: ${AUTH_DB_USER}
       POSTGRES_PASSWORD: ${AUTH_DB_PASS}
       POSTGRES_DB: ${AUTH_DB_NAME}
     networks:
       - network
+      - monitoring
 
   connection_db:
     container_name: connection_db
     restart: on-failure
     image: neo4j:latest
+    logging: *fluent-bit
     networks:
       - connection-network
+      - monitoring
     ports: 
       - "7474:7474"
       - "7687:7687"
@@ -239,14 +267,18 @@ services:
     restart: on-failure
     ports:
       - 27019:27017
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
 
   nats:
     image: nats
     container_name: nats
     restart: on-failure
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
 
 
