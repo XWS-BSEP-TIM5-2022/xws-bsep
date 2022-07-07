@@ -64,12 +64,12 @@ func setLogrusLogger(filename string) *logrus.Entry {
 	mw := io.MultiWriter(os.Stdout, lumberjackLogger)
 	mLog.SetOutput(mw)
 
-	mLog.SetFormatter(&logrus.JSONFormatter{ //TextFormatter //JSONFormatter
+	mLog.SetFormatter(&logrus.TextFormatter{ //TextFormatter //JSONFormatter
 		CallerPrettyfier: caller(),
 		FieldMap: logrus.FieldMap{
 			logrus.FieldKeyFile: "mehtod",
 		},
-		// ForceColors: true,
+		ForceColors: true,
 	})
 	contextLogger := mLog.WithFields(logrus.Fields{})
 	return contextLogger

@@ -1,17 +1,23 @@
 package application
 
 import (
+	"errors"
+	"net/mail"
+	"unicode"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserService struct {
-	store domain.UserStore
+	store        domain.UserStore
+	orchestrator *CreateUserOrchestrator
 }
 
-func NewUserService(store domain.UserStore) *UserService {
+func NewUserService(store domain.UserStore, orchestrator *CreateUserOrchestrator) *UserService {
 	return &UserService{
-		store: store,
+		store:        store,
+		orchestrator: orchestrator,
 	}
 }
 
@@ -77,4 +83,40 @@ func (service *UserService) UpdateIsActiveById(userId string) error {
 
 func (service *UserService) GetIdByEmail(email string) (string, error) {
 	return service.store.GetIdByEmail(email)
+}
+
+func (service *UserService) Create(user *domain.User, username, password string) error {
+	userDetails := mapNewUser(user, username, password)
+	err := service.orchestrator.Start(userDetails)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service *UserService) Delete(user *domain.User) error {
+	return service.store.DeleteUser(user.Id.Hex(), user.Email)
+}
+
+func checkUsernameCriteria(username string) error {
+	if len(username) == 0 {
+		return errors.New("Username should not be empty")
+	}
+	for _, char := range username {
+		if unicode.IsSpace(int32(char)) {
+			return errors.New("Username should not contain any spaces")
+		}
+	}
+	return nil
+}
+
+func (service *UserService) CheckEmailCriteria(email string) error {
+	if len(email) == 0 {
+		return errors.New("Email should not be empty")
+	}
+	_, err := mail.ParseAddress(email)
+	if err != nil {
+		return errors.New("Email is invalid.")
+	}
+	return nil
 }
