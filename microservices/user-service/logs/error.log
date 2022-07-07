@@ -14,3 +14,4 @@
 {"level":"error","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:350","msg":"User with ID:62c5ea5a158b08b3c1c04bfc not found","time":"2022-07-06T22:03:08+02:00"}
 {"level":"error","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:350","msg":"User with ID:62c5ea5a158b08b3c1c04bfc not found","time":"2022-07-06T22:04:33+02:00"}
 {"level":"error","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:350","msg":"User with ID:62c5ea5a158b08b3c1c04bfc not found","time":"2022-07-06T22:04:53+02:00"}
+{"level":"error","mehtod":"C:/xws-bsep/microservices/user-service/startup/server.go:87","msg":"Failed to listen: %v\u003cnil\u003e","time":"2022-07-07T23:31:02+02:00"}

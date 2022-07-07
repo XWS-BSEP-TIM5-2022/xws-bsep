@@ -26,15 +26,11 @@ func (store *JobOfferDBStore) GetRecommendations(user *domain.User, jobOffers []
 
 		//TODO: sredi povratne vrijednosti
 		//TODO: dodaj sva polja kod korisnika
-		//TODO: dodaj jobOffere
-		//TODO: spoj jobOffere sa skilovima
-		//TODO: upit za preporuke
-		//TODO: sve isto za radno iskustvo!!!!!!
 
 		//ako ne postoji korisnik, dodaje ga
 		if !checkIfUserExist(user.Id.Hex(), transaction) {
 			_, err := transaction.Run(
-				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic, name : $Name, lastName: $LastName, email: $Email})",
+				"CREATE (new_user:USER{userID:$userID, isPublic:$isPublic, name : $Name, lastName: $LastName, email: $Email})", //TODO: potencijalno obrisati ime,prz,email
 				map[string]interface{}{"userID": user.Id.Hex(), "Name": user.Name, "LastName": user.LastName, "Email": user.Email, "isPublic": user.IsPublic})
 
 			if err != nil {

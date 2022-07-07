@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/services"
+	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	jobOffer "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -199,15 +200,14 @@ func (handler *JobOfferHandler) findJobOffers(loggedUser *domain.User, posts *do
 
 	for _, post := range allPosts.Posts {
 		/*
-			Ako je post ponuda za posao i ako je user public, prolazim kroz sve skills na postu i sve skills od usera i ako su jednaki, dodajem post u listu buducih preporuka
+			Ako je post ponuda za posao i ako je user koji je objavio public, prolazim kroz sve skills na postu i sve skills od usera i ako su jednaki, dodajem post u listu buducih preporuka
 		*/
 
 		//TODO: nadji poslove od konekcija
-		//TODO: provjera da ne smije da doda iste postove 2 puta, za skill i exp
 		if post.IsJobOffer {
 			userClient := services.NewUserClient(handler.userClientAddress)
-			foundUser, _ := userClient.Get(context.TODO(), &user.GetRequest{Id: loggedUser.Id})
-
+			foundUser, _ := userClient.Get(context.TODO(), &user.GetRequest{Id: post.UserId})
+			//korisnik koji je napravio post
 			if foundUser.User.IsPublic {
 				for _, skill := range loggedUser.Skills {
 					if strings.ToUpper(skill.Name) == strings.ToUpper(post.JobOffer.Preconditions) || strings.Contains(strings.ToUpper(skill.Name), strings.ToUpper(post.JobOffer.Preconditions)) {
@@ -278,6 +278,108 @@ func (handler *JobOfferHandler) findJobOffers(loggedUser *domain.User, posts *do
 		}
 	}
 
+	//pronadjemo konekcije korisnika
+	connections := &domain.Users{}
+	err = handler.getAllConnections(connections, html.EscapeString(loggedUser.Id)) /** EscapeString **/
+
+	for _, conn := range connections.UsersDetails {
+		postsByUser, err := postClient.GetAllByUser(context.TODO(), &post.GetRequest{Id: conn.Id})
+		if err != nil {
+			handler.CustomLogger.ErrorLogger.Error("Get posts by user with ID: " + conn.Id + " unsuccessful")
+			return err
+		}
+
+		for _, post := range postsByUser.Posts {
+			if post.IsJobOffer {
+				for _, skill := range loggedUser.Skills {
+					if strings.ToUpper(skill.Name) == strings.ToUpper(post.JobOffer.Preconditions) || strings.Contains(strings.ToUpper(skill.Name), strings.ToUpper(post.JobOffer.Preconditions)) {
+						newPost := domain.Post{
+							Id:          post.Id,
+							Text:        post.Text,
+							Image:       post.Image,
+							Links:       post.Links,
+							DateCreated: post.DateCreated.AsTime(),
+							UserId:      post.UserId,
+							JobOffer: domain.JobOffer{
+								Id:              post.JobOffer.Id,
+								JobDescription:  post.JobOffer.JobDescription,
+								Preconditions:   post.JobOffer.Preconditions,
+								DailyActivities: post.JobOffer.DailyActivities,
+								Position: domain.Position{
+									Id:   post.JobOffer.Position.Id,
+									Name: post.JobOffer.Position.Name,
+									Pay:  post.JobOffer.Position.Pay,
+								},
+							},
+							IsJobOffer: post.IsJobOffer,
+							Company: domain.Company{
+								Id:          post.Company.Id,
+								Name:        post.Company.Name,
+								Description: post.Company.Description,
+								PhoneNumber: post.Company.PhoneNumber,
+								IsActive:    post.Company.IsActive,
+							},
+						}
+						posts.AllPosts = append(posts.AllPosts, newPost)
+					}
+				}
+
+				for _, exp := range loggedUser.Experience {
+					if strings.ToUpper(exp.Headline) == strings.ToUpper(post.JobOffer.Position.Name) || strings.Contains(strings.ToUpper(exp.Headline), strings.ToUpper(post.JobOffer.Position.Name)) {
+						newPost := domain.Post{
+							Id:          post.Id,
+							Text:        post.Text,
+							Image:       post.Image,
+							Links:       post.Links,
+							DateCreated: post.DateCreated.AsTime(),
+							UserId:      post.UserId,
+							JobOffer: domain.JobOffer{
+								Id:              post.JobOffer.Id,
+								JobDescription:  post.JobOffer.JobDescription,
+								Preconditions:   post.JobOffer.Preconditions,
+								DailyActivities: post.JobOffer.DailyActivities,
+								Position: domain.Position{
+									Id:   post.JobOffer.Position.Id,
+									Name: post.JobOffer.Position.Name,
+									Pay:  post.JobOffer.Position.Pay,
+								},
+							},
+							IsJobOffer: post.IsJobOffer,
+							Company: domain.Company{
+								Id:          post.Company.Id,
+								Name:        post.Company.Name,
+								Description: post.Company.Description,
+								PhoneNumber: post.Company.PhoneNumber,
+								IsActive:    post.Company.IsActive,
+							},
+						}
+						posts.AllPosts = append(posts.AllPosts, newPost)
+					}
+				}
+
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (handler *JobOfferHandler) getAllConnections(users *domain.Users, userId string) error {
+	// sanitizacija userId uradjena pre poziva same fje
+	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
+	connections, err := connectionClient.GetConnections(context.TODO(), &connection.GetRequest{UserID: userId})
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Get connections for user with ID: " + userId + " unsuccessful")
+		return err
+	}
+
+	for _, user := range connections.Users {
+		newUser := domain.User{
+			Id: user.UserID,
+		}
+		users.UsersDetails = append(users.UsersDetails, newUser)
+	}
 	return nil
 }
 
