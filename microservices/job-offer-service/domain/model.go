@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+type PostsID struct {
+	Id string
+}
+
 type Posts struct {
 	AllPosts []Post
 }

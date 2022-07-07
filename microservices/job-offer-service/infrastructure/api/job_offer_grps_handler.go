@@ -42,6 +42,7 @@ func (handler *JobOfferHandler) GetRecommendations(ctx context.Context, request 
 	response := &pb.JobOffers{}
 	for _, rec := range recommendations {
 		//response.JobOffers = append(response.JobOffers, rec)
+
 		fmt.Println(rec)
 	}
 	handler.CustomLogger.SuccessLogger.Info("Found " + strconv.Itoa(len(recommendations)) + " recommendations for user with ID: " + request.DTO.User.Id)

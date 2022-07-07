@@ -80,3 +80,11 @@ func mapJobOffer(post *pb.Post) *domain.Post {
 
 	return postPb
 }
+
+func mapRecommendations(posts *domain.PostsID) *pb.PostID {
+	postPb := &pb.PostID{
+		Id: posts.Id,
+	}
+
+	return postPb
+}

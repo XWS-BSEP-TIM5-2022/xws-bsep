@@ -73,6 +73,35 @@ func (store *JobOfferDBStore) GetRecommendations(user *domain.User, jobOffers []
 			}
 		}
 
+		//ako ne postoji iskustvo, dodaje ga
+		for _, s := range user.Experience {
+			if !checkIfExperienceExist(s.Headline, transaction) {
+				_, err := transaction.Run(
+					"CREATE (new_exp:POSITION{headLine : $headLine}) ",
+					map[string]interface{}{"headLine": s.Headline})
+
+				if err != nil {
+					return nil, err
+				}
+
+			}
+
+			//ako korisnik nije povezan sa vjestinama, dodaje ih
+			if !checkIfExpRelationshipExist(user.Id.String(), s.Headline, transaction) {
+				result, err := transaction.Run(
+					"MATCH (u:USER) WHERE u.userID=$uIDa "+
+						"MATCH (s:POSITION) WHERE s.headLine=$headLine "+
+						"CREATE (u)-[r:WORKED]->(s) "+
+						"RETURN u.userID",
+					map[string]interface{}{"uIDa": user.Id.String(), "headLine": s.Headline})
+				if err != nil {
+					return nil, err
+				}
+
+				fmt.Println(result)
+			}
+		}
+
 		//ako ne postoji job offer, dodaje ga
 		//
 		for _, job := range jobOffers {
@@ -88,7 +117,7 @@ func (store *JobOfferDBStore) GetRecommendations(user *domain.User, jobOffers []
 			}
 
 			//ako jobOffer nije povezan sa vjestinama, povezuje ih
-			if !checkIfJobRelationshipExist(user.Id.String(), job.JobOffer.Preconditions, transaction) {
+			if !checkIfJobRelationshipExist(job.Id.String(), job.JobOffer.Preconditions, transaction) {
 				result, err := transaction.Run(
 					"MATCH (j:JOB) WHERE j.jobID=$jobID "+
 						"MATCH (s:SKILL) WHERE s.name=$name "+
@@ -101,14 +130,44 @@ func (store *JobOfferDBStore) GetRecommendations(user *domain.User, jobOffers []
 
 				fmt.Println(result)
 			}
+
+			//ako jobOffer nije povezan sa pozicijom, povezuje ih
+			if !checkIfJobPositionRelationshipExist(job.Id.String(), job.JobOffer.Position.Name, transaction) {
+				result, err := transaction.Run(
+					"MATCH (j:JOB) WHERE j.jobID=$jobID "+
+						"MATCH (s:POSITION) WHERE s.headLine=$position "+
+						"CREATE (j)-[r:INCLUDES]->(s) "+
+						"RETURN j.jobID",
+					map[string]interface{}{"jobID": job.Id.String(), "position": job.JobOffer.Position.Name})
+				if err != nil {
+					return nil, err
+				}
+
+				fmt.Println(result)
+			}
 		}
 
-		return nil, nil
+		//var recommendation []*domain.PostsID
 
+		//jobsRecommendations, err1 := getJobRecommendations(user.Id.String(), transaction)
+		//if err1 != nil {
+		//	return recommendation, err1
+		//}
+		//
+		//for _, recommend := range jobsRecommendations {
+		//	recommendation = append(recommendation, recommend)
+		//}
+		//
+		//return recommendation, err1
+		return nil, nil
 	})
 
 	fmt.Println(result)
 	fmt.Println(err)
+	//if err != nil || result == nil {
+	//	return nil, err
+	//}
 
+	//return result.([]*domain.PostsID), nil
 	return nil, nil
 }
