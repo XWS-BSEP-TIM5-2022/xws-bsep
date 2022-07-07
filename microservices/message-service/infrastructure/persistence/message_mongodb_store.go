@@ -3,8 +3,8 @@ package persistence
 import (
 	"context"
 	_ "context"
-	"errors"
 	_ "errors"
+	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/message_service/domain"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
@@ -29,16 +29,15 @@ func (store MessageMongoDBStore) GetConversation(sender, receiver string) (*doma
 
 	filter := bson.M{
 		"$or": []bson.M{
-			{"$and": []bson.M{
-				{"user_1": sender},
-				{"user_2": receiver},
-			}},
-			{"$and": []bson.M{
-				{"user_1": receiver},
-				{"user_2": sender},
-			}},
-		},
-	}
+			{
+				"user1": sender,
+				"user2": receiver,
+			},
+			{
+				"user1": receiver,
+				"user2": sender,
+			},
+		}}
 
 	return store.filterOne(filter)
 
@@ -48,8 +47,8 @@ func (store MessageMongoDBStore) GetAllConversationsForUser(user string) ([]*dom
 
 	filter := bson.M{
 		"$or": []bson.M{
-			{"user_1": user},
-			{"user_2": user},
+			{"user1": user},
+			{"user2": user},
 		}}
 
 	return store.filter(filter)
@@ -57,29 +56,31 @@ func (store MessageMongoDBStore) GetAllConversationsForUser(user string) ([]*dom
 
 func (store MessageMongoDBStore) NewMessage(message *domain.Message, sender string) (*domain.Conversation, error) {
 
-	conversation, err := store.GetConversation(sender, message.Receiver.Hex())
-
+	conversation, err := store.GetConversation(sender, message.Receiver)
+	fmt.Println("ovde ce")
+	fmt.Println(conversation)
 	if conversation == nil {
 
-		senderId, _ := primitive.ObjectIDFromHex(sender)
+		//senderId, _ := primitive.ObjectIDFromHex(sender)
 		newConversation := &domain.Conversation{
 			Id:       primitive.NewObjectID(),
-			User1:    senderId,
+			User1:    sender,
 			User2:    message.Receiver,
 			Messages: nil,
 		}
 
-		added, err := store.messages.InsertOne(context.TODO(), newConversation)
+		newConversation.Messages = append(newConversation.Messages, *message)
+		_, err = store.messages.InsertOne(context.TODO(), newConversation)
 
 		if err != nil {
 			return nil, err
 		}
 
-		filter := bson.M{"_id": added.InsertedID.(primitive.ObjectID)}
-		conversation, err = store.filterOne(filter)
+		conversation, err = store.GetConversationById(newConversation.Id)
 
 	} else {
 
+		fmt.Println("usao")
 		messages := append(conversation.Messages, *message)
 
 		oldData := bson.M{"_id": conversation.Id}
@@ -88,21 +89,17 @@ func (store MessageMongoDBStore) NewMessage(message *domain.Message, sender stri
 
 			"messages": messages,
 		}}
-		//bson.D{
-		//	{"$set", bson.D{{"messages", messages}}
 
-		result, err := store.messages.UpdateOne(context.TODO(), oldData, newData)
+		_, err = store.messages.UpdateOne(context.TODO(), oldData, newData)
 
 		if err != nil {
 			return nil, err
 		}
 
-		if result.MatchedCount != 1 {
-			return nil, errors.New("one document should've been updated")
-		}
+		conversation, err = store.GetConversationById(conversation.Id)
+
 	}
 
-	conversation.Messages = append(conversation.Messages, *message)
 	return conversation, err
 }
 
@@ -134,10 +131,15 @@ func decode(cursor *mongo.Cursor) (conversations []*domain.Conversation, err err
 	return
 }
 
-func (store *MessageMongoDBStore) filterOne(filter interface{}) (conversation *domain.Conversation, err error) {
+func (store *MessageMongoDBStore) filterOne(filter interface{}) (messageHistory *domain.Conversation, err error) {
 	result := store.messages.FindOne(context.TODO(), filter)
-	err = result.Decode(&conversation)
+	err = result.Decode(&messageHistory)
 	return
+}
+
+func hexIdToId(hexId string) primitive.ObjectID {
+	ret, _ := primitive.ObjectIDFromHex(hexId)
+	return ret
 }
 
 func NewMessageMongoDBStore(client *mongo.Client) domain.MessageStore {

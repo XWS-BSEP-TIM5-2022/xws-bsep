@@ -57,13 +57,18 @@ func (handler *MessageHandler) GetConversation(ctx context.Context, request *pb.
 	senderId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	conversation, err := handler.service.GetConversation(senderId, request.Receiver)
 
+	handler.CustomLogger.InfoLogger.Info("Get conversation for user with ID: " + senderId + " and user with ID: " + request.Receiver)
 	if err != nil {
+
+		handler.CustomLogger.ErrorLogger.Info("Error getting conversation for user with ID: " + senderId + " and user with ID: " + request.Receiver)
 		return nil, err
 	}
 
 	response := &pb.GetConversationResponse{
 		Conversation: mapConversation(conversation),
 	}
+
+	handler.CustomLogger.SuccessLogger.Info("Get conversation for user with ID: " + senderId + " and user with ID: " + request.Receiver + " success!")
 	return response, nil
 }
 
@@ -72,7 +77,10 @@ func (handler *MessageHandler) GetAllConversationsForUser(ctx context.Context, r
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	conversations, err := handler.service.GetAllConversationsForUser(userId)
 
+	handler.CustomLogger.InfoLogger.Info("Get all conversations for user with ID: " + userId)
+
 	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Error while getting conversations for user: " + userId)
 		return nil, err
 	}
 
@@ -86,6 +94,7 @@ func (handler *MessageHandler) GetAllConversationsForUser(ctx context.Context, r
 		Conversations: finalConversations,
 	}
 
+	handler.CustomLogger.SuccessLogger.Info("Get all conversations for user with ID: " + userId + " successfully done")
 	return response, nil
 }
 
@@ -94,13 +103,18 @@ func (handler *MessageHandler) NewMessage(ctx context.Context, request *pb.NewMe
 	sender := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	conversation, err := handler.service.NewMessage(mapInsertMessage(request.Message), sender)
 
+	handler.CustomLogger.InfoLogger.Info("New message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver)
+
 	if err != nil {
+		handler.CustomLogger.ErrorLogger.Info("Error while sending message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver)
 		return nil, err
 	}
 
 	response := &pb.NewMessageResponse{
 		Conversation: mapConversation(conversation),
 	}
+
+	handler.CustomLogger.SuccessLogger.Info("New message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver + " sent!")
 
 	return response, nil
 
