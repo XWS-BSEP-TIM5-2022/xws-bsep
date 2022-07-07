@@ -11,6 +11,9 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/api"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	muxprom "gitlab.com/msvechla/mux-prometheus/pkg/middleware"
 
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
@@ -99,19 +102,25 @@ func (server *Server) initCustomHandlers() {
 }
 
 func (server *Server) Start() {
-	crtPath, _ := filepath.Abs("server.crt")
-	keyPath, _ := filepath.Abs("server.key")
+	crtPath, _ := filepath.Abs("server.crt") // TODO
+	keyPath, _ := filepath.Abs("server.key") // TODO
 	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), muxMiddleware(server)))
 
 	cors := handlers.CORS(
 		handlers.AllowedOrigins([]string{"https://localhost:4200", "https://localhost:4200/**", "http://localhost:4200", "http://localhost:4200/**", "http://localhost:8080/**",
-			"http://localhost:3000/**", "http://localhost:3000", "https://localhost:3000/**", "https://localhost:3000"}),
+			"http://localhost:3000/**", "http://localhost:3000", "https://localhost:3000/**", "https://localhost:3000",
+			"http://localhost:3001/**", "http://localhost:3001", "https://localhost:3001/**", "https://localhost:3001",
+			"http://localhost:9090"}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
 		handlers.AllowedHeaders([]string{"Accept", "Accept-Language", "Content-Type", "Content-Language", "Origin", "Authorization", "Access-Control-Allow-Origin", "*"}),
 		handlers.AllowCredentials(),
 	)
-	log.Fatal(http.ListenAndServeTLS(fmt.Sprintf(":%s", server.config.Port), crtPath, keyPath, cors(muxMiddleware(server))))
-	//log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", server.config.Port), cors(muxMiddleware(server))))
+	r := mux.NewRouter()
+	instrumentation := muxprom.NewDefaultInstrumentation()
+	r.Use(instrumentation.Middleware)
+	r.Path("/metrics").Handler(promhttp.Handler())
+	r.PathPrefix("/").Handler(cors(muxMiddleware(server)))
+	log.Fatal(http.ListenAndServeTLS(fmt.Sprintf(":%s", server.config.Port), crtPath, keyPath, r))
 }
 
 func muxMiddleware(server *Server) http.Handler {
