@@ -10,6 +10,8 @@ type Config struct {
 	PostPort        string
 	ConnectionPort  string
 	ConnectionHost  string
+	MessageHost     string
+	MessagePort     string
 	LogsFolder      string
 	InfoLogsFile    string
 	DebugLogsFile   string
@@ -51,6 +53,8 @@ func NewConfig() *Config {
 		PostPort:        "8083",
 		ConnectionHost:  "localhost",
 		ConnectionPort:  "8084",
+		MessageHost:     "localhost",
+		MessagePort:     "8085",
 		LogsFolder:      "logs",
 		InfoLogsFile:    "/info.log",
 		DebugLogsFile:   "/debug.log",
