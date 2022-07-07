@@ -49,7 +49,7 @@ func (store *AuthPostgresStore) FindByUsername(ctx context.Context, username str
 	return &auth, err.Error
 }
 
-func (store *AuthPostgresStore) FindAll() (*[]domain.Authentication, error) {
+func (store *AuthPostgresStore) FindAll(ctx context.Context) (*[]domain.Authentication, error) {
 	var auths []domain.Authentication
 	result := store.db.Preload("Roles").Find(&auths)
 	if result.Error != nil {
@@ -77,7 +77,7 @@ func (store *AuthPostgresStore) Insert(auth *domain.Authentication) error {
 	return nil
 }
 
-func (store *AuthPostgresStore) UpdateUsername(id, username string) (*domain.Authentication, error) {
+func (store *AuthPostgresStore) UpdateUsername(ctx context.Context, id, username string) (*domain.Authentication, error) {
 	var auth domain.Authentication
 	err := store.db.First(&auth, "id = ?", id)
 	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("Username", username)
@@ -88,7 +88,7 @@ func (store *AuthPostgresStore) UpdateUsername(id, username string) (*domain.Aut
 	return &auth, nil
 }
 
-func updateUsernameById(tx *gorm.DB, auth *domain.Authentication, username string) error {
+func updateUsernameById(ctx context.Context, tx *gorm.DB, auth *domain.Authentication, username string) error {
 	tx = tx.Model(&domain.Authentication{}).
 		Where("Id = ?", auth.Id).
 		Update("Username", gorm.Expr(username))
@@ -101,19 +101,19 @@ func updateUsernameById(tx *gorm.DB, auth *domain.Authentication, username strin
 	return nil
 }
 
-func (store *AuthPostgresStore) FindById(id string) (*domain.Authentication, error) {
+func (store *AuthPostgresStore) FindById(ctx context.Context, id string) (*domain.Authentication, error) {
 	var auth domain.Authentication
 	err := store.db.Preload("Roles").First(&auth, "id = ?", id)
 	return &auth, err.Error
 }
 
-func (store *AuthPostgresStore) FindByApiToken(apiToken string) (*domain.Authentication, error) {
+func (store *AuthPostgresStore) FindByApiToken(ctx context.Context, apiToken string) (*domain.Authentication, error) {
 	var auth domain.Authentication
 	err := store.db.Preload("Roles").First(&auth, "apiToken = ?", apiToken)
 	return &auth, err.Error
 }
 
-func (store *AuthPostgresStore) UpdatePassword(id, password string) error {
+func (store *AuthPostgresStore) UpdatePassword(ctx context.Context, id, password string) error {
 	var auth domain.Authentication
 	err := store.db.First(&auth, "id = ?", id)
 	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("Password", password)
@@ -123,7 +123,7 @@ func (store *AuthPostgresStore) UpdatePassword(id, password string) error {
 	return nil
 }
 
-func (store *AuthPostgresStore) UpdateVerifactionCode(id, code string) error {
+func (store *AuthPostgresStore) UpdateVerifactionCode(ctx context.Context, id, code string) error {
 	var auth domain.Authentication
 	err := store.db.First(&auth, "id = ?", id)
 	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("VerificationCode", code)
@@ -133,7 +133,7 @@ func (store *AuthPostgresStore) UpdateVerifactionCode(id, code string) error {
 	return nil
 }
 
-func (store *AuthPostgresStore) UpdateExpirationTime(id string, expTime int64) error {
+func (store *AuthPostgresStore) UpdateExpirationTime(ctx context.Context, id string, expTime int64) error {
 	var auth domain.Authentication
 	err := store.db.First(&auth, "id = ?", id)
 	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("ExpirationTime", expTime)
@@ -160,7 +160,7 @@ func (store *AuthPostgresStore) InsertRole(role *domain.Role) error {
 	return nil
 }
 
-func (store *AuthPostgresStore) GetAllPermissionsByRole(roleName string) (*[]domain.Permission, error) {
+func (store *AuthPostgresStore) GetAllPermissionsByRole(ctx context.Context, roleName string) (*[]domain.Permission, error) {
 	var permissions []domain.Permission
 	roles, err := store.FindAllRolesAndPermissions()
 	if err != nil {
@@ -187,8 +187,8 @@ func (store *AuthPostgresStore) FindRoleByName(name string) (*[]domain.Role, err
 	return &roles, err
 }
 
-func (store *AuthPostgresStore) IsUsernameUnique(username string) (bool, error) {
-	auths, err := store.FindAll()
+func (store *AuthPostgresStore) IsUsernameUnique(ctx context.Context, username string) (bool, error) {
+	auths, err := store.FindAll(ctx)
 	if err != nil || auths == nil {
 		return false, nil
 	}
@@ -200,7 +200,7 @@ func (store *AuthPostgresStore) IsUsernameUnique(username string) (bool, error) 
 	return true, nil
 }
 
-func (store *AuthPostgresStore) UpdateAPIToken(id, code string) error {
+func (store *AuthPostgresStore) UpdateAPIToken(ctx context.Context, id, code string) error {
 	var auth domain.Authentication
 	err := store.db.First(&auth, "id = ?", id)
 	store.db.Model(&domain.Authentication{}).Where("Id = ?", id).Update("APIToken", code)
@@ -222,4 +222,13 @@ func (store *AuthPostgresStore) Delete(id string) error {
 		return err.Error
 	}
 	return nil
+}
+
+func (store *AuthPostgresStore) FindAllWithoutCtx() (*[]domain.Authentication, error) {
+	var auths []domain.Authentication
+	result := store.db.Preload("Roles").Find(&auths)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &auths, nil
 }

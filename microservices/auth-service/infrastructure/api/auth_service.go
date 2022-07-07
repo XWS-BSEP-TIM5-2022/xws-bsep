@@ -85,7 +85,7 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 		return nil, errors.New("there is no user with that email or account is not activated")
 	}
 
-	authCredentials, err := service.store.FindById(user.Id)
+	authCredentials, err := service.store.FindById(ctx, user.Id)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.Error("No user found with ID: " + user.Id)
 		return nil, errors.New("user not found")
@@ -434,7 +434,7 @@ func (service *AuthService) CreateNewAPIToken(ctx context.Context, request *pb.A
 		return nil, status.Errorf(codes.Internal, "Could not generate API token")
 	}
 
-	updateCodeErr := service.store.UpdateAPIToken(authCredentials.Id, hashedToken)
+	updateCodeErr := service.store.UpdateAPIToken(ctx, authCredentials.Id, hashedToken)
 	if updateCodeErr != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"username": requestUsername,
@@ -451,7 +451,7 @@ func (service *AuthService) CreateNewAPIToken(ctx context.Context, request *pb.A
 
 func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
 	service.CustomLogger.InfoLogger.Info("Finding all auth credentials")
-	auths, err := service.store.FindAll()
+	auths, err := service.store.FindAll(ctx)
 	if err != nil || *auths == nil {
 		service.CustomLogger.ErrorLogger.Error("Error finding all auth credentials")
 		return nil, err
@@ -470,7 +470,7 @@ func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 		}
 
 		for _, role := range *auth.Roles {
-			rolePermissions, err := service.store.GetAllPermissionsByRole(role.Name)
+			rolePermissions, err := service.store.GetAllPermissionsByRole(ctx, role.Name)
 			if err != nil {
 				service.CustomLogger.ErrorLogger.Error("Error finding all permission by role name: " + role.Name)
 				fmt.Println("Greska GetAll - GetAllPermissionsByRole")
@@ -505,7 +505,7 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 			Message:    "User id not found",
 		}, nil
 	} else {
-		isUniqueUsername, err := service.store.IsUsernameUnique(request.Username)
+		isUniqueUsername, err := service.store.IsUsernameUnique(ctx, request.Username)
 		if err != nil || isUniqueUsername == false {
 			service.CustomLogger.ErrorLogger.Error("User with ID:" + userId + " tried to update a non-unique username")
 			return &pb.UpdateUsernameResponse{
@@ -514,7 +514,7 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 			}, errors.New("Username is not unique")
 		}
 
-		_, err = service.store.UpdateUsername(userId, request.Username)
+		_, err = service.store.UpdateUsername(ctx, userId, request.Username)
 		if err != nil {
 			service.CustomLogger.ErrorLogger.Error("User with ID:" + userId + " did not update username")
 			return &pb.UpdateUsernameResponse{
@@ -547,7 +547,7 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 	authId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	service.CustomLogger.InfoLogger.Info("User with ID:" + authId + " is changing password")
 
-	auth, err := service.store.FindById(authId)
+	auth, err := service.store.FindById(ctx, authId)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.Error("There is no auth credentials with with ID:" + authId)
 		return &pb.ChangePasswordResponse{
@@ -591,7 +591,7 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 		}, err
 	}
 
-	err = service.store.UpdatePassword(authId, hashedPassword)
+	err = service.store.UpdatePassword(ctx, authId, hashedPassword)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.Error("User wiht ID:" + authId + " did not update the password")
 		return &pb.ChangePasswordResponse{
@@ -731,13 +731,13 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 	expDuration := time.Duration(verificationCodeDurationInMinutes) * time.Minute
 	expDate := time.Now().Add(expDuration).Unix()
 
-	updateCodeErr := service.store.UpdateVerifactionCode(response.Id, code)
+	updateCodeErr := service.store.UpdateVerifactionCode(ctx, response.Id, code)
 	if updateCodeErr != nil {
 		service.CustomLogger.ErrorLogger.Error("Verification code for account recovery is not updated for user with email: " + requestEmail)
 		fmt.Println("Updating verification code error")
 		return nil, updateCodeErr
 	}
-	updateErr := service.store.UpdateExpirationTime(response.Id, expDate)
+	updateErr := service.store.UpdateExpirationTime(ctx, response.Id, expDate)
 	if updateErr != nil {
 		service.CustomLogger.ErrorLogger.Error("Expiration date for account recovery is not updated for user with email: " + requestEmail)
 		fmt.Println("Updating expiration time error")
@@ -840,7 +840,7 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 	service.CustomLogger.InfoLogger.WithFields(logrus.Fields{
 		"email": requestEmail,
 	}).Info("Verification code for account recovery by user with ID: " + requestIdAuth)
-	auth, err := service.store.FindById(requestIdAuth)
+	auth, err := service.store.FindById(ctx, requestIdAuth)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.Error("No user found with ID: " + requestIdAuth)
 		return nil, err
@@ -866,7 +866,7 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 		}, errors.New("Verification code has expired")
 	}
 
-	updateCodeErr := service.store.UpdateVerifactionCode(request.IdAuth, "")
+	updateCodeErr := service.store.UpdateVerifactionCode(ctx, request.IdAuth, "")
 	if updateCodeErr != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"email": requestEmail,
@@ -874,7 +874,7 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 		fmt.Println("Updating verification code error")
 		return nil, updateCodeErr
 	}
-	updateErr := service.store.UpdateExpirationTime(request.IdAuth, 0)
+	updateErr := service.store.UpdateExpirationTime(ctx, request.IdAuth, 0)
 	if updateErr != nil {
 		service.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
 			"email": requestEmail,
@@ -898,7 +898,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 	}
 	requestIdAuth := re.ReplaceAllString(request.IdAuth, " ")
 	service.CustomLogger.InfoLogger.Info("User with ID: " + requestIdAuth + " recovers the forgotten password")
-	auth, err := service.store.FindById(request.IdAuth)
+	auth, err := service.store.FindById(ctx, request.IdAuth)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.Error("No user found with ID: " + requestIdAuth)
 		return &pb.Response{
@@ -933,7 +933,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 		}, err
 	}
 
-	err = service.store.UpdatePassword(request.IdAuth, hashedPassword)
+	err = service.store.UpdatePassword(ctx, request.IdAuth, hashedPassword)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.Error("Password is not successfully updated for user with ID: " + requestIdAuth)
 		return &pb.Response{
@@ -951,7 +951,7 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 func (service *AuthService) GetAllPermissionsByRole(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
 	roleName := "Admin"
 	service.CustomLogger.InfoLogger.Info("Finding role permissions by role name: " + roleName)
-	_, err := service.store.GetAllPermissionsByRole(roleName)
+	_, err := service.store.GetAllPermissionsByRole(ctx, roleName)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.Error("No permissions found by role name: " + roleName)
 		return nil, err
@@ -979,7 +979,7 @@ func CheckString(new string, old string) bool {
 
 func (service *AuthService) GetUsernameByApiToken(ctx context.Context, request *pb.GetUsernameRequest) (*pb.GetUsernameResponse, error) {
 	service.CustomLogger.InfoLogger.Info("Finding usernmae by API token")
-	all, err := service.store.FindAll()
+	all, err := service.store.FindAll(ctx)
 	if err != nil {
 		service.CustomLogger.ErrorLogger.Error("No auth credentials found")
 		return nil, err
@@ -1022,7 +1022,7 @@ func (service *AuthService) Register(auth domain.Authentication, roleNames []str
 		return err
 	}
 
-	uniqueUsername, err := service.store.IsUsernameUnique(auth.Username)
+	uniqueUsername, err := service.isUsernameUnique(auth.Username)
 	if err != nil || uniqueUsername == false {
 		return err
 	}
@@ -1066,4 +1066,17 @@ func (service *AuthService) Delete(authId string) error {
 		return err
 	}
 	return nil
+}
+
+func (service *AuthService) isUsernameUnique(username string) (bool, error) {
+	auths, err := service.store.FindAllWithoutCtx()
+	if err != nil || auths == nil {
+		return false, nil
+	}
+	for _, authCredentials := range *auths {
+		if authCredentials.Username == username {
+			return false, errors.New("Username is not unique")
+		}
+	}
+	return true, nil
 }
