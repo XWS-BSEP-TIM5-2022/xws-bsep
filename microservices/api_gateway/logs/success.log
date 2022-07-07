@@ -811,3 +811,8 @@
 {"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/job_offer_handler.go:91","msg":"User with ID: 62c5e484158b08b3c1c04bf8 can access feed","time":"2022-07-07T19:45:54+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/job_offer_handler.go:91","msg":"User with ID: 62c5e484158b08b3c1c04bf8 can access feed","time":"2022-07-07T19:47:18+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/job_offer_handler.go:91","msg":"User with ID: 62c5e484158b08b3c1c04bf8 can access feed","time":"2022-07-07T19:48:00+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/job_offer_handler.go:91","msg":"User with ID: 62c5e484158b08b3c1c04bf8 can access feed","time":"2022-07-07T19:55:32+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/job_offer_handler.go:91","msg":"User with ID: 62c5e484158b08b3c1c04bf8 can access feed","time":"2022-07-07T19:56:01+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/job_offer_handler.go:91","msg":"User with ID: 62c5e484158b08b3c1c04bf8 can access feed","time":"2022-07-07T19:56:32+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/job_offer_handler.go:91","msg":"User with ID: 62c5e484158b08b3c1c04bf8 can access feed","time":"2022-07-07T19:57:23+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/job_offer_handler.go:91","msg":"User with ID: 62c5e484158b08b3c1c04bf8 can access feed","time":"2022-07-07T20:04:43+02:00"}

@@ -111,7 +111,7 @@ func getJobRecommendations(userID string, transaction neo4j.Transaction) ([]*dom
 	result, err := transaction.Run(
 		"MATCH (u1:USER)-[:WORKED]->(u2:POSITION)<-[:INCLUDES]-(u3:JOB) "+
 			"WHERE u1.userID=$uID "+
-			"RETURN distinct u3.jobID"+
+			"RETURN distinct u3.jobID "+
 			"LIMIT 20 ",
 		map[string]interface{}{"uID": userID})
 
