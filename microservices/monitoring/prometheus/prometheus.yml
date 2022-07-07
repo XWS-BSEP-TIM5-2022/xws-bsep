@@ -22,7 +22,7 @@
       tls_config:
         insecure_skip_verify: true
       static_configs:
-        - targets: ['api_gateway:8000']   #api_gateway  #8000
+        - targets: ['api_gateway:8000']
 
     - job_name: 'node_exporter'
       static_configs:
