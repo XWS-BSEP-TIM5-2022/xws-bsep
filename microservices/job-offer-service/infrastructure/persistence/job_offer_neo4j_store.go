@@ -16,7 +16,7 @@ func NewJobOfferDBStore(client *neo4j.Driver) domain.JobOfferStore {
 	}
 }
 
-func (store *JobOfferDBStore) GetRecommendations(user *domain.User, jobOffers []*domain.Post) ([]*domain.Post, error) {
+func (store *JobOfferDBStore) GetRecommendations(user *domain.User, jobOffers []*domain.Post) ([]*domain.PostsID, error) {
 	fmt.Println(user)
 
 	session := (*store.jobOfferDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
@@ -158,8 +158,8 @@ func (store *JobOfferDBStore) GetRecommendations(user *domain.User, jobOffers []
 			recommendation = append(recommendation, recommend)
 		}
 
-		//return recommendation, err1
-		return nil, nil
+		return recommendation, err1
+		//return nil, nil
 	})
 
 	fmt.Println(result)
@@ -168,6 +168,6 @@ func (store *JobOfferDBStore) GetRecommendations(user *domain.User, jobOffers []
 	//	return nil, err
 	//}
 
-	//return result.([]*domain.PostsID), nil
-	return nil, nil
+	return result.([]*domain.PostsID), nil
+	//return nil, nil
 }

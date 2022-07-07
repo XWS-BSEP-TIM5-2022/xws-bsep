@@ -14,9 +14,9 @@ func NewJobOfferService(store domain.JobOfferStore) *JobOfferService {
 	}
 }
 
-func (service *JobOfferService) GetRecommendations(user *domain.User, jobOffers []*domain.Post) ([]*domain.Post, error) {
+func (service *JobOfferService) GetRecommendations(user *domain.User, jobOffers []*domain.Post) ([]*domain.PostsID, error) {
 
-	var recommendations []*domain.Post
+	var recommendations []*domain.PostsID
 
 	recommendations, err := service.store.GetRecommendations(user, jobOffers)
 	if err != nil {

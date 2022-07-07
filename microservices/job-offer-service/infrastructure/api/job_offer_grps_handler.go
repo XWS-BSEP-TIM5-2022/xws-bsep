@@ -23,7 +23,7 @@ func NewJobOfferHandler(service *application.JobOfferService) *JobOfferHandler {
 	}
 }
 
-func (handler *JobOfferHandler) GetRecommendations(ctx context.Context, request *pb.GetRequest) (*pb.JobOffers, error) {
+func (handler *JobOfferHandler) GetRecommendations(ctx context.Context, request *pb.GetRequest) (*pb.Recommendations, error) {
 	handler.CustomLogger.ErrorLogger.Info("usao sam")
 
 	var jobs []*domain.Post
@@ -39,9 +39,9 @@ func (handler *JobOfferHandler) GetRecommendations(ctx context.Context, request 
 		handler.CustomLogger.ErrorLogger.Error("Job recommendations for user with ID: " + request.DTO.User.Id + " not found")
 		return nil, err
 	}
-	response := &pb.JobOffers{}
+	response := &pb.Recommendations{}
 	for _, rec := range recommendations {
-		//response.JobOffers = append(response.JobOffers, rec)
+		response.JobOffers = append(response.JobOffers, mapRecommendations(rec))
 
 		fmt.Println(rec)
 	}

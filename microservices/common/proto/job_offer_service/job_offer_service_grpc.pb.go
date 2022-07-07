@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JobOfferServiceClient interface {
-	GetRecommendations(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*JobOffers, error)
+	GetRecommendations(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Recommendations, error)
 }
 
 type jobOfferServiceClient struct {
@@ -33,8 +33,8 @@ func NewJobOfferServiceClient(cc grpc.ClientConnInterface) JobOfferServiceClient
 	return &jobOfferServiceClient{cc}
 }
 
-func (c *jobOfferServiceClient) GetRecommendations(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*JobOffers, error) {
-	out := new(JobOffers)
+func (c *jobOfferServiceClient) GetRecommendations(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Recommendations, error) {
+	out := new(Recommendations)
 	err := c.cc.Invoke(ctx, "/job_offer_service.JobOfferService/GetRecommendations", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (c *jobOfferServiceClient) GetRecommendations(ctx context.Context, in *GetR
 // All implementations must embed UnimplementedJobOfferServiceServer
 // for forward compatibility
 type JobOfferServiceServer interface {
-	GetRecommendations(context.Context, *GetRequest) (*JobOffers, error)
+	GetRecommendations(context.Context, *GetRequest) (*Recommendations, error)
 	mustEmbedUnimplementedJobOfferServiceServer()
 }
 
@@ -54,7 +54,7 @@ type JobOfferServiceServer interface {
 type UnimplementedJobOfferServiceServer struct {
 }
 
-func (UnimplementedJobOfferServiceServer) GetRecommendations(context.Context, *GetRequest) (*JobOffers, error) {
+func (UnimplementedJobOfferServiceServer) GetRecommendations(context.Context, *GetRequest) (*Recommendations, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRecommendations not implemented")
 }
 func (UnimplementedJobOfferServiceServer) mustEmbedUnimplementedJobOfferServiceServer() {}

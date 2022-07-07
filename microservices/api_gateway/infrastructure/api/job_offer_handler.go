@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/services"
@@ -100,7 +101,19 @@ func (handler *JobOfferHandler) GetRecommendations(w http.ResponseWriter, r *htt
 
 	err = handler.findJobOffers(user, posts)
 
-	err = handler.findRecommendations(user, posts)
+	allJobs := handler.findRecommendations(user, posts)
+
+	response, err := json.Marshal(allJobs)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Marshal posts is unsuccessful")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
+	fmt.Println(allJobs)
 }
 
 func (handler *JobOfferHandler) AuthorizeUser(w http.ResponseWriter, r *http.Request, requestId string) string {
@@ -268,7 +281,7 @@ func (handler *JobOfferHandler) findJobOffers(loggedUser *domain.User, posts *do
 	return nil
 }
 
-func (handler *JobOfferHandler) findRecommendations(loggedUser *domain.User, posts *domain.Posts) error {
+func (handler *JobOfferHandler) findRecommendations(loggedUser *domain.User, posts *domain.Posts) *jobOffer.Recommendations {
 	jobOfferClient := services.NewJobOfferClient(handler.jobOfferAddress)
 
 	user := &jobOffer.User{
@@ -343,5 +356,5 @@ func (handler *JobOfferHandler) findRecommendations(loggedUser *domain.User, pos
 	}
 
 	fmt.Println(allJobs)
-	return nil
+	return allJobs
 }
