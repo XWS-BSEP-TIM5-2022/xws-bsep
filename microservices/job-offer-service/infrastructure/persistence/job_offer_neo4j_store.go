@@ -25,6 +25,13 @@ func (store *JobOfferDBStore) GetRecommendations(user *domain.User, jobOffers []
 
 	result, err := session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 
+		//TODO: sredi povratne vrijednosti
+		//TODO: dodaj sva polja kod korisnika
+		//TODO: dodaj jobOffere
+		//TODO: spoj jobOffere sa skilovima
+		//TODO: upit za preporuke
+		//TODO: sve isto za radno iskustvo!!!!!!
+
 		//ako ne postoji korisnik, dodaje ga
 		if !checkIfUserExist(user.Id.String(), transaction) {
 			_, err := transaction.Run(
@@ -58,6 +65,36 @@ func (store *JobOfferDBStore) GetRecommendations(user *domain.User, jobOffers []
 						"CREATE (u)-[r:KNOWS]->(s) "+
 						"RETURN u.userID",
 					map[string]interface{}{"uIDa": user.Id.String(), "name": s.Name})
+				if err != nil {
+					return nil, err
+				}
+
+				fmt.Println(result)
+			}
+		}
+
+		//ako ne postoji job offer, dodaje ga
+		//
+		for _, job := range jobOffers {
+
+			if !jobOfferExist(job.Id.String(), transaction) {
+				_, err := transaction.Run(
+					"CREATE (new_job:JOB{position:$position, jobID:$jobID, text:$Text, preconditions: $preconditions})",
+					map[string]interface{}{"jobID": job.Id.String(), "Text": job.Text, "preconditions": job.JobOffer.Preconditions, "position": job.JobOffer.Position.Name})
+
+				if err != nil {
+					return nil, err
+				}
+			}
+
+			//ako jobOffer nije povezan sa vjestinama, povezuje ih
+			if !checkIfJobRelationshipExist(user.Id.String(), job.JobOffer.Preconditions, transaction) {
+				result, err := transaction.Run(
+					"MATCH (j:JOB) WHERE j.jobID=$jobID "+
+						"MATCH (s:SKILL) WHERE s.name=$name "+
+						"CREATE (j)-[r:NEEDS]->(s) "+
+						"RETURN j.jobID",
+					map[string]interface{}{"jobID": job.Id.String(), "name": job.JobOffer.Preconditions})
 				if err != nil {
 					return nil, err
 				}

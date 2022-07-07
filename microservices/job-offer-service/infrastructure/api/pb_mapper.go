@@ -54,7 +54,10 @@ func removeMalicious(value string) string {
 }
 
 func mapJobOffer(post *pb.Post) *domain.Post {
+	id, _ := primitive.ObjectIDFromHex(post.Id)
+
 	postPb := &domain.Post{
+		Id:         id,
 		Text:       strings.TrimSpace(post.Text),
 		IsJobOffer: post.IsJobOffer,
 		JobOffer: domain.JobOffer{
@@ -67,7 +70,7 @@ func mapJobOffer(post *pb.Post) *domain.Post {
 			},
 		},
 		Company: domain.Company{
-			Id:          primitive.NewObjectID(),
+			Id:          primitive.NewObjectID(), //TODO:ispravi
 			Name:        strings.TrimSpace(post.Company.Name),
 			Description: strings.TrimSpace(post.Company.Description),
 			PhoneNumber: post.Company.PhoneNumber,
