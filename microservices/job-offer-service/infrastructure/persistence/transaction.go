@@ -109,10 +109,15 @@ func checkIfJobPositionRelationshipExist(jobID, position string, transaction neo
 
 func getJobRecommendations(userID string, transaction neo4j.Transaction) ([]*domain.PostsID, error) {
 	result, err := transaction.Run(
-		"MATCH (u1:USER)-[:WORKED]->(u2:POSITION)<-[:INCLUDES]-(u3:JOB) "+
+		"MATCH  (u1:USER)-[:KNOWS]->(u4:SKILL)<-[:NEEDS]-(u3:JOB) "+
 			"WHERE u1.userID=$uID "+
 			"RETURN distinct u3.jobID "+
-			"LIMIT 20 ",
+			"LIMIT 20 "+
+			"UNION "+
+			"MATCH (u1:USER)-[:WORKED]->(u2:POSITION)<-[:INCLUDES]-(u3:JOB) "+
+			"WHERE u1.userID=$uID "+
+			"RETURN distinct u3.jobID "+
+			" LIMIT 20",
 		map[string]interface{}{"uID": userID})
 
 	if err != nil {

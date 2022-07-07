@@ -82,3 +82,6 @@
 {"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:27","msg":"usao sam","time":"2022-07-07T20:24:54+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:27","msg":"usao sam","time":"2022-07-07T20:29:17+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:27","msg":"usao sam","time":"2022-07-07T20:30:24+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:27","msg":"usao sam","time":"2022-07-07T20:58:18+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:27","msg":"usao sam","time":"2022-07-07T20:59:10+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:27","msg":"usao sam","time":"2022-07-07T20:59:37+02:00"}
