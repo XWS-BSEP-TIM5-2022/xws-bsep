@@ -7,6 +7,7 @@ import (
 	"log"
 
 	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	joboffer "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 
 	"google.golang.org/grpc"
@@ -44,6 +45,13 @@ func NewConnectionClient(address string) connection.ConnectionServiceClient {
 	}
 	return connection.NewConnectionServiceClient(conn)
 }
+
+func NewJobOfferClient(address string) joboffer.JobOfferServiceClient {
+	conn, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Connection service: %v", err)
+	}
+	return joboffer.NewJobOfferServiceClient(conn)
 
 func NewMessageClient(address string) message.MessageServiceClient {
 	conn, err := getConnection(address)

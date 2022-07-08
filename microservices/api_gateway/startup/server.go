@@ -18,6 +18,7 @@ import (
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	jobOfferGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
 	messageGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
 	postGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -99,6 +100,14 @@ func (server *Server) initHandlers() {
 		panic(err)
 	}
 	server.CustomLogger.SuccessLogger.Info("Post service registration successful") // TODO: dodati port i host ?
+
+	jobOfferEndpoint := fmt.Sprintf("%s:%s", server.config.JobOfferHost, server.config.JobOfferPort)
+	err = jobOfferGw.RegisterJobOfferServiceHandlerFromEndpoint(context.TODO(), server.mux, jobOfferEndpoint, opts)
+	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Job offer service registration failed PORT: ", server.config.JobOfferPort, ", HOST: ", server.config.JobOfferHost)
+		panic(err)
+	}
+	server.CustomLogger.SuccessLogger.Info("Job offer service registration successful")
 }
 
 func (server *Server) initCustomHandlers() {
@@ -106,8 +115,11 @@ func (server *Server) initCustomHandlers() {
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
+	jobOfferEndpoint := fmt.Sprintf("%s:%s", server.config.JobOfferHost, server.config.JobOfferPort)
 	postsHandler := api.NewPostHandler(postEndpoint, connectionEndpoint, userEndpoint, authEndpoint)
+	jobOfferHandler := api.NewJobOfferHandler(postEndpoint, connectionEndpoint, userEndpoint, authEndpoint, jobOfferEndpoint)
 	postsHandler.Init(server.mux)
+	jobOfferHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {
@@ -152,6 +164,7 @@ func AccessibleEndpoints() map[string]string {
 	const userService = "/api/user"
 	const postService = "/api/post"
 	const connectionService = "/api/connection"
+	const jobOfferService = "/api/jobOffer"
 	const messageService = "/api/message"
 
 	return map[string]string{

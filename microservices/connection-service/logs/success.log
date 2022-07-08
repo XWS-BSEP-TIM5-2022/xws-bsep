@@ -1,4 +1,0 @@
-{"level":"info","method":"/startup/server.go:40","msg":"Neo4J initialization for connection service successful, PORT: 8084","time":"2022-07-05T15:09:27+02:00"}
-{"level":"info","method":"/startup/server.go:46","msg":"Starting gRPC server for connection service","time":"2022-07-05T15:09:27+02:00"}
-{"level":"info","method":"/startup/server.go:40","msg":"Neo4J initialization for connection service successful, PORT: 8084","time":"2022-07-05T15:11:34+02:00"}
-{"level":"info","method":"/startup/server.go:46","msg":"Starting gRPC server for connection service","time":"2022-07-05T15:11:34+02:00"}
