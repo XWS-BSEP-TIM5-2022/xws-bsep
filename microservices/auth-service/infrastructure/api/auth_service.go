@@ -24,6 +24,7 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/dgrijalva/jwt-go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -63,6 +64,9 @@ func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService
 }
 
 func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.PasswordlessLoginRequest) (*pb.PasswordlessLoginResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "PasswordlessLogin service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	service.CustomLogger.InfoLogger.Info("Passwordless login for user with email: " + request.Email)
 	re, err := regexp.Compile(`[^\w\.\+\@]`)
 	if err != nil {
@@ -187,6 +191,10 @@ func passwordlessLoginMailMessage(token string) (string, string) {
 }
 
 func (service *AuthService) ConfirmEmailLogin(ctx context.Context, request *pb.ConfirmEmailLoginRequest) (*pb.ConfirmEmailLoginResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "ConfirmEmailLogin service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	service.CustomLogger.InfoLogger.Info("Passwordless login confirmation with JWT token")
 	token, err := jwt.ParseWithClaims(
 		request.Token,
@@ -322,7 +330,10 @@ func checkUsernameCriteria(username string) error {
 }
 
 func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
-	// log injection
+	span := tracer.StartSpanFromContext(ctx, "Login service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	re, err := regexp.Compile(`[^\w]`)
 	if err != nil {
 		log.Fatal(err)
@@ -412,6 +423,10 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 }
 
 func (service *AuthService) CreateNewAPIToken(ctx context.Context, request *pb.APITokenRequest) (*pb.NewAPITokenResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "CreateNewAPIToken service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	re, err := regexp.Compile(`[^\w]`)
 	if err != nil {
 		log.Fatal(err)
@@ -450,6 +465,10 @@ func (service *AuthService) CreateNewAPIToken(ctx context.Context, request *pb.A
 }
 
 func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.GetAllResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAll service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	service.CustomLogger.InfoLogger.Info("Finding all auth credentials")
 	auths, err := service.store.FindAll(ctx)
 	if err != nil || *auths == nil {
@@ -497,6 +516,10 @@ func (service *AuthService) GetAll(ctx context.Context, request *pb.Empty) (*pb.
 }
 
 func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.UpdateUsernameRequest) (*pb.UpdateUsernameResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdateUsername service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	service.CustomLogger.InfoLogger.Info("User with ID:" + userId + " is updating username")
 	if userId == "" {
@@ -544,6 +567,10 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 }
 
 func (service *AuthService) ChangePassword(ctx context.Context, request *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "ChangePassword service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	authId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	service.CustomLogger.InfoLogger.Info("User with ID:" + authId + " is changing password")
 
@@ -666,6 +693,10 @@ func verificationMailMessage(token string) (string, string) {
 }
 
 func (service *AuthService) ActivateAccount(ctx context.Context, request *pb.ActivationRequest) (*pb.ActivationResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "ActivateAccount service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	service.CustomLogger.InfoLogger.Info("Account activation with JWT token")
 	// p, _ := peer.FromContext(ctx)
 	token, err := jwt.ParseWithClaims(
@@ -707,6 +738,10 @@ func (service *AuthService) ActivateAccount(ctx context.Context, request *pb.Act
 }
 
 func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.SendRecoveryCodeRequest) (*pb.SendRecoveryCodeResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "SendRecoveryCode service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	re, err := regexp.Compile(`[^\w\.\+\@]`)
 	if err != nil {
 		log.Fatal(err)
@@ -826,7 +861,10 @@ func codeVerificatioMailMessage(verificationCode string) (string, string) {
 }
 
 func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.VerifyRecoveryCodeRequest) (*pb.Response, error) {
-	// p, _ := peer.FromContext(ctx)
+	span := tracer.StartSpanFromContext(ctx, "VerifyRecoveryCode service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	re, err := regexp.Compile(`[^\w\.\+\@]`)
 	if err != nil {
 		log.Fatal(err)
@@ -891,7 +929,10 @@ func (service *AuthService) VerifyRecoveryCode(ctx context.Context, request *pb.
 }
 
 func (service *AuthService) ResetForgottenPassword(ctx context.Context, request *pb.ResetForgottenPasswordRequest) (*pb.Response, error) {
-	// p, _ := peer.FromContext(ctx)
+	span := tracer.StartSpanFromContext(ctx, "ResetForgottenPassword service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	re, err := regexp.Compile(`[^\w]`)
 	if err != nil {
 		log.Fatal(err)
@@ -949,6 +990,10 @@ func (service *AuthService) ResetForgottenPassword(ctx context.Context, request 
 }
 
 func (service *AuthService) GetAllPermissionsByRole(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAllPermissionsByRole service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	roleName := "Admin"
 	service.CustomLogger.InfoLogger.Info("Finding role permissions by role name: " + roleName)
 	_, err := service.store.GetAllPermissionsByRole(ctx, roleName)
@@ -965,6 +1010,10 @@ func (service *AuthService) GetAllPermissionsByRole(ctx context.Context, request
 }
 
 func (service *AuthService) AdminsEndpoint(ctx context.Context, request *pb.Empty) (*pb.Response, error) {
+	span := tracer.StartSpanFromContext(ctx, "AdminsEndpoint service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	service.CustomLogger.InfoLogger.Info("Admin accesses his endpoint")
 	return &pb.Response{
 		StatusCode: "200",
@@ -978,6 +1027,10 @@ func CheckString(new string, old string) bool {
 }
 
 func (service *AuthService) GetUsernameByApiToken(ctx context.Context, request *pb.GetUsernameRequest) (*pb.GetUsernameResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetUsernameByApiToken service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	service.CustomLogger.InfoLogger.Info("Finding usernmae by API token")
 	all, err := service.store.FindAll(ctx)
 	if err != nil {
