@@ -6,6 +6,18 @@ import (
 )
 
 type Notification struct {
-	Id   primitive.ObjectID `bson:"_id"`
-	Time time.Time          `bson:"time"`
+	Id     primitive.ObjectID   `bson:"_id"`
+	Date   time.Time            `bson:"date"`
+	Text   string               `bson:"text"`
+	UserId string               `bson:"user_id"`
+	Type   NotificationTypeEnum `bson:"type"`
+	Read   bool                 `bson:"read"`
 }
+
+type NotificationTypeEnum int8
+
+const (
+	Message NotificationTypeEnum = iota
+	Follow
+	Post
+)

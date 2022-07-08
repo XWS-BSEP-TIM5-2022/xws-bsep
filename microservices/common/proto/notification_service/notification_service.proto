@@ -25,7 +25,16 @@ message GetResponse {
 
 message Notification {
   string id = 1;
-  string time = 2;
+  string date = 2;
+  string text = 3;
+  string userId = 4;
+  enum NotificationTypeEnum {
+    Message = 0;
+    Follow = 1;
+    Post = 2;
+  }
+  NotificationTypeEnum type = 5;
+  bool read = 6;
 }
 
  
