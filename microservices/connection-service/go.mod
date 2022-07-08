@@ -7,7 +7,7 @@ replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
 require (
 	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-20220706111804-ca45c900de83
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/neo4j/neo4j-go-driver/v4 v4.4.2
+	github.com/neo4j/neo4j-go-driver/v4 v4.4.3
 	github.com/sirupsen/logrus v1.8.1
 	google.golang.org/grpc v1.46.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0

@@ -1,10 +1,11 @@
 package services
 
 import (
+	"log"
+
 	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	message "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
-	"log"
 
 	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	joboffer "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
@@ -52,6 +53,7 @@ func NewJobOfferClient(address string) joboffer.JobOfferServiceClient {
 		log.Fatalf("Failed to start gRPC connection to Connection service: %v", err)
 	}
 	return joboffer.NewJobOfferServiceClient(conn)
+}
 
 func NewMessageClient(address string) message.MessageServiceClient {
 	conn, err := getConnection(address)
