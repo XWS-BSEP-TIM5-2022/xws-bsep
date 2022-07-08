@@ -2,9 +2,7 @@ package startup
 
 import (
 	"fmt"
-	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
-	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/sirupsen/logrus"
 	"log"
 	"net"
@@ -70,16 +68,6 @@ func (server *Server) initNotificationStore(client *mongo.Client) domain.Notific
 
 func (server *Server) initNotificationService(store domain.NotificationStore) *application.NotificationService {
 	return application.NewNotificationService(store)
-}
-
-func (server *Server) initUserServiceClient() user.UserServiceClient {
-	address := fmt.Sprintf("%s:%s", server.config.UserServiceHost, server.config.UserServicePort)
-	return persistence.NewUserServiceClient(address)
-}
-
-func (server *Server) initAuthServiceClient() auth.AuthServiceClient {
-	address := fmt.Sprintf("%s:%s", server.config.AuthServiceHost, server.config.AuthServicePort)
-	return persistence.NewAuthServiceClient(address)
 }
 
 func (server *Server) initNotificationHandler(service *application.NotificationService) *api.NotificationHandler {

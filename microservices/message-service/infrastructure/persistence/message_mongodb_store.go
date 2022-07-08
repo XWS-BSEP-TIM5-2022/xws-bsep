@@ -17,7 +17,7 @@ import (
 var validate *validator.Validate
 
 const (
-	DATABASE   = "message"
+	DATABASE   = "message_db"
 	COLLECTION = "message"
 )
 
