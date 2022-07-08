@@ -1,0 +1,68 @@
+[36mINFO[0m[1783]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[1783]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[1783]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[1783]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[1783]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[1783]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c751bb158b08b3c1c04c20  [36mid[0m=62c751bb158b08b3c1c04c20
+[36mINFO[0m[1783]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[1783]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c751bb158b08b3c1c04c20  [36mid[0m=62c751bb158b08b3c1c04c20
+[36mINFO[0m[1783]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[1820]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:326 Checking active status by user with id: 62c8acfce380f34adc176a47  [36mid[0m=62c8acfce380f34adc176a47
+[36mINFO[0m[1834]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8acfce380f34adc176a47  [36mid[0m=62c8acfce380f34adc176a47
+[36mINFO[0m[1842]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8acfce380f34adc176a47  [36mid[0m=62c8acfce380f34adc176a47
+[36mINFO[0m[1854]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8acfce380f34adc176a47  [36mid[0m=62c8acfce380f34adc176a47
+[36mINFO[0m[1860]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[1860]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[1860]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[1860]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[1860]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[1860]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c751bb158b08b3c1c04c20  [36mid[0m=62c751bb158b08b3c1c04c20
+[36mINFO[0m[1860]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c751bb158b08b3c1c04c20  [36mid[0m=62c751bb158b08b3c1c04c20
+[36mINFO[0m[1860]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[1860]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[1904]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:326 Checking active status by user with id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[1912]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[1919]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[1972]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[2038]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[2184]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[2197]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[2504]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[2517]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[2534]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[2534]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[2534]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[2534]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[2534]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[2534]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c751bb158b08b3c1c04c20  [36mid[0m=62c751bb158b08b3c1c04c20
+[36mINFO[0m[2534]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[2534]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c751bb158b08b3c1c04c20  [36mid[0m=62c751bb158b08b3c1c04c20
+[36mINFO[0m[2534]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[2544]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8acfce380f34adc176a47  [36mid[0m=62c8acfce380f34adc176a47
+[36mINFO[0m[2556]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8acfce380f34adc176a47  [36mid[0m=62c8acfce380f34adc176a47
+[36mINFO[0m[2665]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8acfce380f34adc176a47  [36mid[0m=62c8acfce380f34adc176a47
+[36mINFO[0m[2691]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8acfce380f34adc176a47  [36mid[0m=62c8acfce380f34adc176a47
+[36mINFO[0m[2936]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8acfce380f34adc176a47  [36mid[0m=62c8acfce380f34adc176a47
+[36mINFO[0m[3079]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[3079]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[3079]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[3079]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[3079]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[3079]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c751bb158b08b3c1c04c20  [36mid[0m=62c751bb158b08b3c1c04c20
+[36mINFO[0m[3079]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[3079]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c751bb158b08b3c1c04c20  [36mid[0m=62c751bb158b08b3c1c04c20
+[36mINFO[0m[3079]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[3104]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[3108]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[3109]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8acfce380f34adc176a47  [36mid[0m=62c8acfce380f34adc176a47
+[36mINFO[0m[3112]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[3122]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c8ad54e380f34adc176a48  [36mid[0m=62c8ad54e380f34adc176a48
+[36mINFO[0m[4069]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[4069]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[4069]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[4069]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Getting all public accounts                  
+[36mINFO[0m[4069]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[4069]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c751bb158b08b3c1c04c20  [36mid[0m=62c751bb158b08b3c1c04c20
+[36mINFO[0m[4069]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24
+[36mINFO[0m[4069]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c751bb158b08b3c1c04c20  [36mid[0m=62c751bb158b08b3c1c04c20
+[36mINFO[0m[4069]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:180 Getting user by id: 62c75310158b08b3c1c04c24  [36mid[0m=62c75310158b08b3c1c04c24

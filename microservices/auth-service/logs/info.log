@@ -1,0 +1,10 @@
+[36mINFO[0m[1945]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:673 Account activation with JWT token            
+[36mINFO[0m[1959]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristina  [36mip_address[0m="[::1]:57358"
+[36mINFO[0m[2029]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:673 Account activation with JWT token            
+[36mINFO[0m[2037]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: nikolas   [36mip_address[0m="[::1]:57358"
+[36mINFO[0m[2669]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristina  [36mip_address[0m="[::1]:51078"
+[36mINFO[0m[3230]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: nikolas   [36mip_address[0m="[::1]:58695"
+[36mINFO[0m[4202]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristina  [36mip_address[0m="[::1]:62327"
+[36mINFO[0m[4203]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristina  [36mip_address[0m="[::1]:62327"
+[36mINFO[0m[0125]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristina  [36mip_address[0m="[::1]:64828"
+[36mINFO[0m[0126]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristina  [36mip_address[0m="[::1]:64828"

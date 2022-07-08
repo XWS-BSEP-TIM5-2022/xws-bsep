@@ -1,0 +1,5 @@
+[31mERRO[0m[4202]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristina  [31musername[0m=kristina
+[31mERRO[0m[4203]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristina  [31musername[0m=kristina
+[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:164 Failed to listen: %v<nil>                    
+[31mERRO[0m[0125]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristina  [31musername[0m=kristina
+[31mERRO[0m[0126]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristina  [31musername[0m=kristina
