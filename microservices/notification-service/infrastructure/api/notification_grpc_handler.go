@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"regexp"
+	"strconv"
 )
 
 type NotificationHandler struct {
@@ -50,4 +51,41 @@ func (handler *NotificationHandler) GetById(ctx context.Context, request *pb.Get
 	}
 	handler.CustomLogger.SuccessLogger.Info("Notification by ID:" + objectId.Hex() + " received successfully")
 	return response, nil
+}
+
+func (handler *NotificationHandler) GetAll(ctx context.Context, request *pb.GetAllRequest) (*pb.GetAllResponse, error) {
+	posts, err := handler.service.GetAll()
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Get all notifications unsuccessful")
+		return nil, err
+	}
+	response := &pb.GetAllResponse{
+		Notifications: []*pb.Notification{},
+	}
+	for _, post := range posts {
+		current := mapNotification(post)
+		response.Notifications = append(response.Notifications, current)
+	}
+	handler.CustomLogger.SuccessLogger.Info("Found " + strconv.Itoa(len(posts)) + " notification")
+	return response, nil
+}
+
+func (handler *NotificationHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
+	notification, err := mapInsertNotification(request.Notification)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Notification was not mapped")
+		return nil, err
+	}
+
+	notification.Id = primitive.NewObjectID()
+	success, err := handler.service.Insert(notification)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Notification was not inserted")
+		return nil, err
+	}
+	response := &pb.InsertResponse{
+		Success: success,
+	}
+	handler.CustomLogger.SuccessLogger.Info("Notification with ID: " + notification.Id.Hex() + " created")
+	return response, err
 }

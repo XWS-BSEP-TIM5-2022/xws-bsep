@@ -13,6 +13,17 @@ service NotificationService{
       get: "/api/notification/{id}"
     };
   }
+  rpc GetAll(GetAllRequest) returns(GetAllResponse) {
+    option (google.api.http) = {
+      get: "/api/notification"
+    };
+  }
+  rpc Insert(InsertRequest) returns(InsertResponse) {
+    option (google.api.http) = {
+      post: "/api/notification"
+      body: "notification"
+    };
+  }
 }
 
 message GetRequest {
@@ -21,6 +32,21 @@ message GetRequest {
 
 message GetResponse {
   Notification notification = 1;
+}
+
+message GetAllRequest {
+}
+
+message GetAllResponse {
+  repeated Notification notifications = 1;
+}
+
+message InsertRequest {
+  Notification notification = 1;
+}
+
+message InsertResponse {
+  string success = 1;
 }
 
 message Notification {

@@ -1,0 +1,32 @@
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:71","msg":"User service registration successful","time":"2022-07-08T18:58:59+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:79","msg":"Auth service registration successful","time":"2022-07-08T18:58:59+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:87","msg":"Connection service registration successful","time":"2022-07-08T18:58:59+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:95","msg":"Message service registration successful","time":"2022-07-08T18:58:59+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:103","msg":"Notification service registration successful","time":"2022-07-08T18:58:59+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:111","msg":"Post service registration successful","time":"2022-07-08T18:58:59+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:119","msg":"Job offer service registration successful","time":"2022-07-08T18:58:59+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:48","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-07-08T18:58:59+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:71","msg":"User service registration successful","time":"2022-07-08T19:46:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:79","msg":"Auth service registration successful","time":"2022-07-08T19:46:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:87","msg":"Connection service registration successful","time":"2022-07-08T19:46:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:95","msg":"Message service registration successful","time":"2022-07-08T19:46:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:103","msg":"Notification service registration successful","time":"2022-07-08T19:46:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:111","msg":"Post service registration successful","time":"2022-07-08T19:46:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:119","msg":"Job offer service registration successful","time":"2022-07-08T19:46:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:48","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-07-08T19:46:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:71","msg":"User service registration successful","time":"2022-07-08T20:15:39+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:79","msg":"Auth service registration successful","time":"2022-07-08T20:15:39+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:87","msg":"Connection service registration successful","time":"2022-07-08T20:15:39+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:95","msg":"Message service registration successful","time":"2022-07-08T20:15:39+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:103","msg":"Notification service registration successful","time":"2022-07-08T20:15:39+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:111","msg":"Post service registration successful","time":"2022-07-08T20:15:39+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:119","msg":"Job offer service registration successful","time":"2022-07-08T20:15:39+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:48","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-07-08T20:15:39+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:71","msg":"User service registration successful","time":"2022-07-08T20:15:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:79","msg":"Auth service registration successful","time":"2022-07-08T20:15:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:87","msg":"Connection service registration successful","time":"2022-07-08T20:15:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:95","msg":"Message service registration successful","time":"2022-07-08T20:15:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:103","msg":"Notification service registration successful","time":"2022-07-08T20:15:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:111","msg":"Post service registration successful","time":"2022-07-08T20:15:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:119","msg":"Job offer service registration successful","time":"2022-07-08T20:15:50+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:48","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-07-08T20:15:50+02:00"}
