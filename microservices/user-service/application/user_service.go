@@ -1,10 +1,12 @@
 package application
 
 import (
+	"context"
 	"errors"
 	"net/mail"
 	"unicode"
 
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -21,12 +23,18 @@ func NewUserService(store domain.UserStore, orchestrator *CreateUserOrchestrator
 	}
 }
 
-func (service *UserService) GetAll() ([]*domain.User, error) {
-	return service.store.GetAll()
+func (service *UserService) GetAll(ctx context.Context) ([]*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAll service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	return service.store.GetAll(ctx)
 }
 
-func (service *UserService) GetAllPublic() ([]*domain.User, error) {
-	return service.store.GetAllPublic()
+func (service *UserService) GetAllPublic(ctx context.Context) ([]*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAll service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	return service.store.GetAllPublic(ctx)
 }
 
 func (service *UserService) Insert(user *domain.User) (*domain.User, error) {
@@ -37,52 +45,85 @@ func (service *UserService) Insert(user *domain.User) (*domain.User, error) {
 	return user, nil
 }
 
-func (service *UserService) Update(user *domain.User) (string, error) {
-	success, err := service.store.Update(user)
+func (service *UserService) Update(ctx context.Context, user *domain.User) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "Update service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	success, err := service.store.Update(ctx, user)
 	return success, err
 }
 
-func (service *UserService) UpdateBasicInfo(user *domain.User) (string, error) {
-	success, err := service.store.UpdateBasicInfo(user)
+func (service *UserService) UpdateBasicInfo(ctx context.Context, user *domain.User) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdateBasicInfo service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	success, err := service.store.UpdateBasicInfo(ctx, user)
 	return success, err
 }
 
-func (service *UserService) UpdateExperienceAndEducation(user *domain.User) (string, error) {
-	success, err := service.store.UpdateExperienceAndEducation(user)
+func (service *UserService) UpdateExperienceAndEducation(ctx context.Context, user *domain.User) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdateExperienceAndEducation service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	success, err := service.store.UpdateExperienceAndEducation(ctx, user)
 	return success, err
 }
 
-func (service *UserService) UpdateSkillsAndInterests(user *domain.User) (string, error) {
-	success, err := service.store.UpdateSkillsAndInterests(user)
+func (service *UserService) UpdateSkillsAndInterests(ctx context.Context, user *domain.User) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdateSkillsAndInterests service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	success, err := service.store.UpdateSkillsAndInterests(ctx, user)
 	return success, err
 }
 
-func (service *UserService) Get(id primitive.ObjectID) (*domain.User, error) {
-	return service.store.Get(id)
+func (service *UserService) Get(ctx context.Context, id primitive.ObjectID) (*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "Get service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	return service.store.Get(ctx, id)
 }
 
-func (service *UserService) GetByUsername(username string) (*domain.User, error) {
-	return service.store.GetByUsername(username)
+func (service *UserService) GetByUsername(ctx context.Context, username string) (*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetByUsername service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	return service.store.GetByUsername(ctx, username)
 }
 
-func (service *UserService) GetByEmail(email string) (*domain.User, error) {
+func (service *UserService) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetByEmail service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return service.store.GetByEmail(email)
 }
 
-func (service *UserService) GetById(userId string) (*domain.User, error) {
-	return service.store.GetById(userId)
+func (service *UserService) GetById(ctx context.Context, userId string) (*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetById service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	return service.store.GetById(ctx, userId)
 }
 
-func (service *UserService) Search(criteria string) ([]*domain.User, error) {
-	return service.store.Search(criteria)
+func (service *UserService) Search(ctx context.Context, criteria string) ([]*domain.User, error) {
+	span := tracer.StartSpanFromContext(ctx, "Search service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	return service.store.Search(ctx, criteria)
 }
 
-func (service *UserService) UpdateIsActiveById(userId string) error {
-	return service.store.UpdateIsActiveById(userId)
+func (service *UserService) UpdateIsActiveById(ctx context.Context, userId string) error {
+	span := tracer.StartSpanFromContext(ctx, "UpdateIsActiveById service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	return service.store.UpdateIsActiveById(ctx, userId)
 }
 
-func (service *UserService) GetIdByEmail(email string) (string, error) {
-	return service.store.GetIdByEmail(email)
+func (service *UserService) GetIdByEmail(ctx context.Context, email string) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetIdByEmail service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	return service.store.GetIdByEmail(ctx, email)
 }
 
 func (service *UserService) Create(user *domain.User, username, password string) error {
