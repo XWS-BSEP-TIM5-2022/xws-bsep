@@ -46,6 +46,7 @@ func NewConfig() *Config {
 		CreateUserCommandSubject: os.Getenv("CREATE_USER_COMMAND_SUBJECT"),
 		CreateUserReplySubject:   os.Getenv("CREATE_USER_REPLY_SUBJECT"),
 
+
 		// Port:                     "8081",
 		// UserDBHost:               "localhost",
 		// UserDBPort:               "27017",

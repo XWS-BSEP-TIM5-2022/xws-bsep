@@ -12,6 +12,8 @@ type Config struct {
 	PostPort        string
 	ConnectionPort  string
 	ConnectionHost  string
+	MessageHost     string
+	MessagePort     string
 	LogsFolder      string
 	InfoLogsFile    string
 	DebugLogsFile   string

@@ -52,3 +52,4 @@ func NewConfig() *Config {
 		// WarningLogsFile: "/warning.log",
 	}
 }
+
