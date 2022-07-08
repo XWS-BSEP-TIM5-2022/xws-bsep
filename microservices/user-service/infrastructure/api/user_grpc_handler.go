@@ -227,7 +227,7 @@ func (handler *UserHandler) GetLoggedInUserInfo(ctx context.Context, request *pb
 		return nil, err
 	}
 	pbUser := mapUser(user)
-	handler.CustomLogger.SuccessLogger.Info("User received successfully")
+	handler.CustomLogger.SuccessLogger.Info("User received successfully" + pbUser.Email)
 	return pbUser, nil
 }
 

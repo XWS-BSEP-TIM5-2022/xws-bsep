@@ -13,13 +13,16 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	muxprom "gitlab.com/msvechla/mux-prometheus/pkg/middleware"
 
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	jobOfferGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
 	messageGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
+	notificationGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	postGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	traceer "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
@@ -111,7 +114,16 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("Message service registration failed PORT: ", server.config.MessagePort, ", HOST: ", server.config.MessageHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Connection service registration successful")
+
+	server.CustomLogger.SuccessLogger.Info("Message service registration successful") // TODO: dodati port i host ?
+
+	notificationEndPoint := fmt.Sprintf("%s:%s", server.config.NotificationHost, server.config.NotificationPort)
+	err = notificationGw.RegisterNotificationServiceHandlerFromEndpoint(context.TODO(), server.mux, notificationEndPoint, opts)
+	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Notification service registration failed PORT: ", server.config.NotificationPort, ", HOST: ", server.config.NotificationHost)
+		panic(err)
+	}
+	server.CustomLogger.SuccessLogger.Info("Notification service registration successful") // TODO: dodati port i host ?
 
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
@@ -120,6 +132,14 @@ func (server *Server) initHandlers() {
 		panic(err)
 	}
 	server.CustomLogger.SuccessLogger.Info("Post service registration successful")
+
+	jobOfferEndpoint := fmt.Sprintf("%s:%s", server.config.JobOfferHost, server.config.JobOfferPort)
+	err = jobOfferGw.RegisterJobOfferServiceHandlerFromEndpoint(context.TODO(), server.mux, jobOfferEndpoint, opts)
+	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Job offer service registration failed PORT: ", server.config.JobOfferPort, ", HOST: ", server.config.JobOfferHost)
+		panic(err)
+	}
+	server.CustomLogger.SuccessLogger.Info("Job offer service registration successful")
 }
 
 func (server *Server) initCustomHandlers() {
@@ -127,8 +147,11 @@ func (server *Server) initCustomHandlers() {
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
+	jobOfferEndpoint := fmt.Sprintf("%s:%s", server.config.JobOfferHost, server.config.JobOfferPort)
 	postsHandler := api.NewPostHandler(postEndpoint, connectionEndpoint, userEndpoint, authEndpoint)
+	jobOfferHandler := api.NewJobOfferHandler(postEndpoint, connectionEndpoint, userEndpoint, authEndpoint, jobOfferEndpoint)
 	postsHandler.Init(server.mux)
+	jobOfferHandler.Init(server.mux)
 }
 
 func (server *Server) Start() {
@@ -199,7 +222,9 @@ func AccessibleEndpoints() map[string]string {
 	const userService = "/api/user"
 	const postService = "/api/post"
 	const connectionService = "/api/connection"
+	const jobOfferService = "/api/jobOffer"
 	const messageService = "/api/message"
+	const notificationService = "/api/notification"
 
 	return map[string]string{
 		authService + "/update":         "UpdateUsername",

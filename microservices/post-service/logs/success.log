@@ -1,2 +1,0 @@
-{"level":"info","method":"/startup/server.go:38","msg":"MongoDB initialization for post service successful, PORT: 27017, HOST: localhost","time":"2022-07-05T15:12:50+02:00"}
-{"level":"info","method":"/startup/server.go:44","msg":"Starting gRPC server for post service","time":"2022-07-05T15:12:50+02:00"}

@@ -1,0 +1,40 @@
+syntax="proto3";
+
+package notification_service;
+
+option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service NotificationService{
+  rpc GetById(GetRequest) returns(GetResponse) {
+    option (google.api.http) = {
+      get: "/api/notification/{id}"
+    };
+  }
+}
+
+message GetRequest {
+  string id = 1;
+}
+
+message GetResponse {
+  Notification notification = 1;
+}
+
+message Notification {
+  string id = 1;
+  string date = 2;
+  string text = 3;
+  string userId = 4;
+  enum NotificationTypeEnum {
+    Message = 0;
+    Follow = 1;
+    Post = 2;
+  }
+  NotificationTypeEnum type = 5;
+  bool read = 6;
+}
+
+ 

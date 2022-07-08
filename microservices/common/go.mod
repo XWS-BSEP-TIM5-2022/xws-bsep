@@ -21,12 +21,14 @@ require (
 require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/nats-io/nats.go v1.16.0
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	golang.org/x/text v0.3.7 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 // gopkg.in/yaml.v2 v2.4.0 // indirect
 // sigs.k8s.io/yaml v1.3.0 // indirect
 )
