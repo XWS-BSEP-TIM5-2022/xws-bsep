@@ -7,8 +7,12 @@ import (
 
 func mapNotification(notification *domain.Notification) *pb.Notification {
 	notificationPb := &pb.Notification{
-		Id:   notification.Id.Hex(),
-		Time: notification.Time.String(),
+		Id:     notification.Id.Hex(),
+		Date:   notification.Date.String(),
+		Text:   notification.Text,
+		UserId: notification.UserId,
+		Type:   pb.Notification_NotificationTypeEnum(notification.Type), //TODO: proveriti!
+		Read:   notification.Read,
 	}
 
 	return notificationPb
