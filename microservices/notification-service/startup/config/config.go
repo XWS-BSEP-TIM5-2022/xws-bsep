@@ -22,17 +22,17 @@ type Config struct {
 
 func NewConfig() *Config {
 	return &Config{
-		// Port:       os.Getenv("NOTIFICATION_SERVICE_PORT"),
-		// NotificationDBHost: os.Getenv("NOTIFICATION_DB_HOST"),
-		// NotificationDBPort: os.Getenv("NOTIFICATION_DB_PORT"),
-		// PublicKey:  os.Getenv("PUBLIC_KEY"),
-		// LogsFolder: os.Getenv("LOGS_FOLDER"),
-		// LogsFolder:      os.Getenv("LOGS_FOLDER"),
-		// InfoLogsFile:    os.Getenv("INFO_LOGS_FILE"),
-		// DebugLogsFile:   os.Getenv("DEBUG_LOGS_FILE"),
-		// ErrorLogsFile:   os.Getenv("ERROR_LOGS_FILE"),
-		// SuccessLogsFile: os.Getenv("SUCCESS_LOGS_FILE"),
-		// WarningLogsFile: os.Getenv("WARNING_LOGS_FILE"),
+		//Port:               os.Getenv("NOTIFICATION_SERVICE_PORT"),
+		//NotificationDBHost: os.Getenv("NOTIFICATION_DB_HOST"),
+		//NotificationDBPort: os.Getenv("NOTIFICATION_DB_PORT"),
+		//PublicKey:          os.Getenv("PUBLIC_KEY"),
+		//LogsFolder:         os.Getenv("LOGS_FOLDER"),
+		//LogsFolder:         os.Getenv("LOGS_FOLDER"),
+		//InfoLogsFile:       os.Getenv("INFO_LOGS_FILE"),
+		//DebugLogsFile:      os.Getenv("DEBUG_LOGS_FILE"),
+		//ErrorLogsFile:      os.Getenv("ERROR_LOGS_FILE"),
+		//SuccessLogsFile:    os.Getenv("SUCCESS_LOGS_FILE"),
+		//WarningLogsFile:    os.Getenv("WARNING_LOGS_FILE"),
 
 		Port:               "8086",
 		NotificationDBHost: "localhost",

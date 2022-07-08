@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type NotificationServiceClient interface {
 	GetById(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
-	Insert(ctx context.Context, in *InsertRequest, opts ...grpc.CallOption) (*InsertResponse, error)
+	Insert(ctx context.Context, in *InsertNotificationRequest, opts ...grpc.CallOption) (*InsertNotificationResponse, error)
 }
 
 type notificationServiceClient struct {
@@ -53,8 +53,8 @@ func (c *notificationServiceClient) GetAll(ctx context.Context, in *GetAllReques
 	return out, nil
 }
 
-func (c *notificationServiceClient) Insert(ctx context.Context, in *InsertRequest, opts ...grpc.CallOption) (*InsertResponse, error) {
-	out := new(InsertResponse)
+func (c *notificationServiceClient) Insert(ctx context.Context, in *InsertNotificationRequest, opts ...grpc.CallOption) (*InsertNotificationResponse, error) {
+	out := new(InsertNotificationResponse)
 	err := c.cc.Invoke(ctx, "/notification_service.NotificationService/Insert", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (c *notificationServiceClient) Insert(ctx context.Context, in *InsertReques
 type NotificationServiceServer interface {
 	GetById(context.Context, *GetRequest) (*GetResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
-	Insert(context.Context, *InsertRequest) (*InsertResponse, error)
+	Insert(context.Context, *InsertNotificationRequest) (*InsertNotificationResponse, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -82,7 +82,7 @@ func (UnimplementedNotificationServiceServer) GetById(context.Context, *GetReque
 func (UnimplementedNotificationServiceServer) GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
-func (UnimplementedNotificationServiceServer) Insert(context.Context, *InsertRequest) (*InsertResponse, error) {
+func (UnimplementedNotificationServiceServer) Insert(context.Context, *InsertNotificationRequest) (*InsertNotificationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Insert not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
@@ -135,7 +135,7 @@ func _NotificationService_GetAll_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _NotificationService_Insert_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(InsertRequest)
+	in := new(InsertNotificationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func _NotificationService_Insert_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/notification_service.NotificationService/Insert",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NotificationServiceServer).Insert(ctx, req.(*InsertRequest))
+		return srv.(NotificationServiceServer).Insert(ctx, req.(*InsertNotificationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

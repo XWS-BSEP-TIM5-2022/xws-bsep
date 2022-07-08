@@ -102,7 +102,7 @@ func local_request_NotificationService_GetAll_0(ctx context.Context, marshaler r
 }
 
 func request_NotificationService_Insert_0(ctx context.Context, marshaler runtime.Marshaler, client NotificationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq InsertRequest
+	var protoReq InsertNotificationRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -119,7 +119,7 @@ func request_NotificationService_Insert_0(ctx context.Context, marshaler runtime
 }
 
 func local_request_NotificationService_Insert_0(ctx context.Context, marshaler runtime.Marshaler, server NotificationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq InsertRequest
+	var protoReq InsertNotificationRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)

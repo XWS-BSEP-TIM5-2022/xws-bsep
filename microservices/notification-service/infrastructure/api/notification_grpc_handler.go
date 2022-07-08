@@ -70,7 +70,7 @@ func (handler *NotificationHandler) GetAll(ctx context.Context, request *pb.GetA
 	return response, nil
 }
 
-func (handler *NotificationHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
+func (handler *NotificationHandler) Insert(ctx context.Context, request *pb.InsertNotificationRequest) (*pb.InsertNotificationResponse, error) {
 	notification, err := mapInsertNotification(request.Notification)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Notification was not mapped")
@@ -83,7 +83,7 @@ func (handler *NotificationHandler) Insert(ctx context.Context, request *pb.Inse
 		handler.CustomLogger.ErrorLogger.Error("Notification was not inserted")
 		return nil, err
 	}
-	response := &pb.InsertResponse{
+	response := &pb.InsertNotificationResponse{
 		Success: success,
 	}
 	handler.CustomLogger.SuccessLogger.Info("Notification with ID: " + notification.Id.Hex() + " created")

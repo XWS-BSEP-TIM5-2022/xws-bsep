@@ -24,7 +24,7 @@ func mapInsertNotification(notification *pb.Notification) (*domain.Notification,
 		Date:   time.Now(),
 		Text:   notification.Text,
 		UserId: notification.UserId,
-		Read:   notification.Read,
+		Read:   false,
 		Type:   mapInsertNotificationType(notification.Type),
 	}
 
