@@ -131,9 +131,9 @@ func decode(cursor *mongo.Cursor) (conversations []*domain.Conversation, err err
 	return
 }
 
-func (store *MessageMongoDBStore) filterOne(filter interface{}) (messageHistory *domain.Conversation, err error) {
+func (store *MessageMongoDBStore) filterOne(filter interface{}) (conversation *domain.Conversation, err error) {
 	result := store.messages.FindOne(context.TODO(), filter)
-	err = result.Decode(&messageHistory)
+	err = result.Decode(&conversation)
 	return
 }
 
