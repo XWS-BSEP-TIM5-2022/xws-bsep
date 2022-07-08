@@ -22,9 +22,11 @@ import (
 	messageGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
 	postGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
+	traceer "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/opentracing/opentracing-go"
 	otgo "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -41,7 +43,7 @@ const name = "api-gateway"
 
 func NewServer(config *cfg.Config) *Server {
 	CustomLogger := api.NewCustomLogger()
-	tracer, closer := tracer.Init(name)
+	tracer, closer := traceer.Init(name)
 	otgo.SetGlobalTracer(tracer)
 	server := &Server{
 		config: config,
@@ -69,7 +71,14 @@ func customMatcher(key string) (string, bool) {
 }
 
 func (server *Server) initHandlers() {
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())} // TODO SD: obrisati?
+	// opts = []grpc.DialOption{
+	// 	grpc.WithUnaryInterceptor(
+	// 		grpc_opentracing.UnaryClientInterceptor(
+	// 			grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+	// 		),
+	// 	),
+	// }
 
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	err := userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
@@ -144,6 +153,8 @@ func (server *Server) Start() {
 	log.Fatal(http.ListenAndServeTLS(fmt.Sprintf(":%s", server.config.Port), crtPath, keyPath, r))
 }
 
+var grpcGatewayTag = opentracing.Tag{Key: string(ext.Component), Value: "grpc-gateway"}
+
 func muxMiddleware(server *Server) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		accessiblePermissions := AccessibleEndpoints()
@@ -157,8 +168,27 @@ func muxMiddleware(server *Server) http.Handler {
 		log.Println(server.config.AuthHost + ":" + server.config.AuthPort)
 
 		endpointName := r.Method + " " + r.URL.Path
-		span := tracer.StartSpanFromRequest(endpointName, server.tracer, r)
+		log.Println("Context: ", r.Context())
+		log.Println("Endpoint: ", endpointName)
+		span := traceer.StartSpanFromContext(r.Context(), endpointName)
 		defer span.Finish()
+
+		ctx := traceer.ContextWithSpan(r.Context(), span)
+		r = r.WithContext(ctx)
+
+		// parentSpanContext, err := tracer.Extract(
+		// 	opentracing.HTTPHeaders,
+		// 	opentracing.HTTPHeadersCarrier(r.Header))
+		// if err == nil || err == opentracing.ErrSpanContextNotFound {
+		// 	serverSpan := opentracing.GlobalTracer().StartSpan(
+		// 		"ServeHTTP",
+		// 		// this is magical, it attaches the new span to the parent parentSpanContext, and creates an unparented one if empty.
+		// 		ext.RPCServerOption(parentSpanContext),
+		// 		grpcGatewayTag,
+		// 	)
+		// 	r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
+		// 	defer serverSpan.Finish()
+		// }
 
 		server.mux.ServeHTTP(w, r)
 	})
