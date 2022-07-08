@@ -37,7 +37,7 @@ type Server struct {
 	closer       io.Closer
 }
 
-const name = "api_gateway"
+const name = "api-gateway"
 
 func NewServer(config *cfg.Config) *Server {
 	CustomLogger := api.NewCustomLogger()
@@ -102,7 +102,7 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("Message service registration failed PORT: ", server.config.MessagePort, ", HOST: ", server.config.MessageHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Connection service registration successful") // TODO: dodati port i host ?
+	server.CustomLogger.SuccessLogger.Info("Connection service registration successful")
 
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
