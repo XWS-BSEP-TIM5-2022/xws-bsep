@@ -2,8 +2,10 @@ package startup
 
 import (
 	"fmt"
-	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	message "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
+	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/sirupsen/logrus"
 	"log"
@@ -77,9 +79,19 @@ func (server *Server) initUserServiceClient() user.UserServiceClient {
 	return persistence.NewUserServiceClient(address)
 }
 
-func (server *Server) initAuthServiceClient() auth.AuthServiceClient {
-	address := fmt.Sprintf("%s:%s", server.config.AuthServiceHost, server.config.AuthServicePort)
-	return persistence.NewAuthServiceClient(address)
+func (server *Server) initPostServiceClient() post.PostServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.PostServiceHost, server.config.PostServicePort)
+	return persistence.NewPostServiceClient(address)
+}
+
+func (server *Server) initConnectionServiceClient() connection.ConnectionServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.ConnectionServiceHost, server.config.ConnectionServicePort)
+	return persistence.NewConnectionServiceClient(address)
+}
+
+func (server *Server) initMessageServiceClient() message.MessageServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.MessageServiceHost, server.config.MessageServicePort)
+	return persistence.NewMessageServiceClient(address)
 }
 
 func (server *Server) initNotificationHandler(service *application.NotificationService) *api.NotificationHandler {

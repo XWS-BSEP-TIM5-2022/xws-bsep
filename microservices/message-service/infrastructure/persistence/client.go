@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -17,6 +18,14 @@ func GetClient(host, port string) (*mongo.Client, error) {
 	uri := fmt.Sprintf("mongodb://%s:%s/", host, port)
 	options := options.Client().ApplyURI(uri)
 	return mongo.Connect(context.TODO(), options)
+}
+
+func NewConnectionServiceClient(address string) connection.ConnectionServiceClient {
+	con, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to message service: %v", err)
+	}
+	return connection.NewConnectionServiceClient(con)
 }
 
 func NewUserServiceClient(address string) user.UserServiceClient {
