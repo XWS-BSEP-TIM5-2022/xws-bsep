@@ -13,8 +13,3 @@ providers:
     type: file
     options:
       path: /var/lib/grafana/dashboards/mux-exporter
-
-#  - name: 'Health Exporter'
-#      type: file
-#      options:
-#        path: /var/lib/grafana/dashboards/health-exporter
