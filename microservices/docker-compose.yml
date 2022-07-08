@@ -88,6 +88,11 @@ services:
       NATS_PASS: ${NATS_PASS}
       CREATE_USER_COMMAND_SUBJECT: ${CREATE_USER_COMMAND_SUBJECT}
       CREATE_USER_REPLY_SUBJECT: ${CREATE_USER_REPLY_SUBJECT}
+      JAEGER_AGENT_HOST: ${JAEGER_HOST}
+      JAEGER_AGENT_PORT: 6831
+      JAEGER_SAMPLER_MANAGER_HOST_PORT: ${JAEGER_HOST}:5778
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
     depends_on:
       - user_db
     logging: *fluent-bit
@@ -130,6 +135,11 @@ services:
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       FRONTEND_HOST: ${FRONTEND_HOST}
       FRONTEND_PORT: ${FRONTEND_PORT}
+      JAEGER_AGENT_HOST: ${JAEGER_HOST}
+      JAEGER_AGENT_PORT: 6831
+      JAEGER_SAMPLER_MANAGER_HOST_PORT: ${JAEGER_HOST}:5778
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
     depends_on:
       - auth_db
       - nats
@@ -157,6 +167,11 @@ services:
       CONNECTION_DB_PASS: ${CONNECTION_DB_PASS}
       CONNECTION_DB_NAME: ${CONNECTION_DB_NAME}
       CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
+      JAEGER_AGENT_HOST: ${JAEGER_HOST}
+      JAEGER_AGENT_PORT: 6831
+      JAEGER_SAMPLER_MANAGER_HOST_PORT: ${JAEGER_HOST}:5778
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
     depends_on:
       - connection_db
     logging: *fluent-bit
@@ -175,21 +190,21 @@ services:
     # ports:
     #   - 8089:${AUTH_SERVICE_PORT}
     environment:
-      PORT: ${JOB_OFFER_SERVICE_PORT}
-      HOST: ${JOB_OFFER_SERVICE_HOST}
+      JOB_OFFER_SERVICE_PORT: ${JOB_OFFER_SERVICE_PORT}
+      JOB_OFFER_SERVICE_HOST: ${JOB_OFFER_SERVICE_HOST}
       PUBLIC_KEY: ${PUBLIC_KEY}
-      CONNECTION_DB_HOST: ${CONNECTION_DB_HOST}
-      CONNECTION_DB_PORT: ${CONNECTION_DB_PORT}
-      CONNECTION_DB_USER: ${CONNECTION_DB_USER}
-      CONNECTION_DB_PASS: ${CONNECTION_DB_PASS}
-      CONNECTION_DB_NAME: ${JOB_OFFER_DB_NAME}
+      JOB_OFFER_DB_HOST: ${CONNECTION_DB_HOST}
+      JOB_OFFER_DB_PORT: ${CONNECTION_DB_PORT}
+      JOB_OFFER_DB_USER: ${CONNECTION_DB_USER}
+      JOB_OFFER_DB_PASS: ${CONNECTION_DB_PASS}
+      JOB_OFFER_DB_NAME: ${CONNECTION_DB_NAME}
       # CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
     depends_on:
-      - job_offer_db
+      - connection_db
     logging: *fluent-bit
     networks:
       - network
-      - job-offer-network
+      - connection-network
       - monitoring
 
   api_gateway:
@@ -218,17 +233,25 @@ services:
       MESSAGE_SERVICE_PORT: ${MESSAGE_SERVICE_PORT}
       NOTIFICATION_SERVICE_HOST: ${NOTIFICATION_SERVICE_HOST}
       NOTIFICATION_SERVICE_PORT: ${NOTIFICATION_SERVICE_PORT}
+      JOB_OFFER_SERVICE_HOST: ${JOB_OFFER_SERVICE_HOST}
+      JOB_OFFER_SERVICE_PORT: ${JOB_OFFER_SERVICE_PORT}
       NATS_HOST: ${NATS_HOST}
       NATS_PORT: ${NATS_PORT}
       NATS_USER: ${NATS_USER}
       NATS_PASS: ${NATS_PASS}
       CREATE_USER_COMMAND_SUBJECT: ${CREATE_USER_COMMAND_SUBJECT}
       CREATE_USER_REPLY_SUBJECT: ${CREATE_USER_REPLY_SUBJECT}
+      JAEGER_AGENT_HOST: ${JAEGER_HOST}
+      JAEGER_AGENT_PORT: 6831
+      JAEGER_SAMPLER_MANAGER_HOST_PORT: ${JAEGER_HOST}:5778
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
     logging: *fluent-bit
     networks:
       - network
       - connection-network
       - monitoring
+      - job-offer-network
 
   post_service:
     image: post_service
@@ -249,6 +272,11 @@ services:
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
       AUTH_SERVICE_HOST: ${AUTH_SERVICE_HOST}
       AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      JAEGER_AGENT_HOST: ${JAEGER_HOST}
+      JAEGER_AGENT_PORT: 6831
+      JAEGER_SAMPLER_MANAGER_HOST_PORT: ${JAEGER_HOST}:5778
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
     depends_on:
       - post_db
     logging: *fluent-bit
@@ -351,8 +379,8 @@ services:
       - job-offer-network
       - monitoring
     ports:
-      - ${JOB_OFFER_NEO4J_PORT}:${JOB_OFFER_NEO4J_PORT}
-      - ${JOB_OFFER_NEO4J_PORT_2}:${JOB_OFFER_NEO4J_PORT_2}
+      - "7475:7474"
+      - "7686:7687"
     environment:
       -  NEO4J_AUTH=none
 
