@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -32,6 +33,14 @@ func NewAuthServiceClient(address string) auth.AuthServiceClient {
 		log.Fatalf("Failed to start gRPC connection to Auth service: %v", err)
 	}
 	return auth.NewAuthServiceClient(con)
+}
+
+func NewNotificationServiceClient(address string) notification.NotificationServiceClient {
+	con, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to Notification service: %v", err)
+	}
+	return notification.NewNotificationServiceClient(con)
 }
 
 func getConnection(address string) (*grpc.ClientConn, error) {

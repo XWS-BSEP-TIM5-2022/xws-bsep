@@ -3,6 +3,7 @@ package startup
 import (
 	"context"
 	"fmt"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"io"
 	"log"
 	"net/http"

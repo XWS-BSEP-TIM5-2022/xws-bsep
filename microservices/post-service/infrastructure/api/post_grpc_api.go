@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
+	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -17,15 +18,17 @@ import (
 
 type PostHandler struct {
 	pb.UnimplementedPostServiceServer
-	service      *application.PostService
-	CustomLogger *CustomLogger
+	service                   *application.PostService
+	CustomLogger              *CustomLogger
+	notificationServiceClient notification.NotificationServiceClient
 }
 
-func NewPostHandler(service *application.PostService) *PostHandler {
+func NewPostHandler(service *application.PostService, notificationServiceClient notification.NotificationServiceClient) *PostHandler {
 	CustomLogger := NewCustomLogger()
 	return &PostHandler{
-		service:      service,
-		CustomLogger: CustomLogger,
+		service:                   service,
+		CustomLogger:              CustomLogger,
+		notificationServiceClient: notificationServiceClient,
 	}
 }
 
@@ -116,10 +119,15 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 		Success: success,
 	}
 	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + post.Id.Hex() + " created by user with ID: " + post.UserId)
+
+	notificationRequest := &notification.InsertNotificationRequest{}
+	notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(2)
+	notificationRequest.Notification.Text = "User created new post"
+	handler.notificationServiceClient.Insert(ctx, notificationRequest)
+
 	return response, err
 }
 
-// TODO: prebaciti u servis ?
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
 	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
 	if err != nil {

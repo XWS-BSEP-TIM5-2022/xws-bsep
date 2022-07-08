@@ -2,8 +2,7 @@ package startup
 
 import (
 	"fmt"
-	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
-	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	"github.com/sirupsen/logrus"
 	"log"
 	"net"
@@ -37,9 +36,11 @@ func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	server.CustomLogger.SuccessLogger.Info("MongoDB initialization for post service successful, PORT: ", server.config.PostDBPort, ", HOST: ", server.config.PostDBHost)
 
+	notificationServiceClient := server.initNotificationServiceClient()
+
 	postStore := server.initPostStore(mongoClient)
 	postService := server.initPostService(postStore)
-	postHandler := server.initPostHandler(postService)
+	postHandler := server.initPostHandler(postService, notificationServiceClient)
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for post service")
 	server.startGrpcServer(postHandler)
@@ -72,18 +73,13 @@ func (server *Server) initPostService(store domain.PostStore) *application.PostS
 	return application.NewPostService(store)
 }
 
-func (server *Server) initUserServiceClient() user.UserServiceClient {
-	address := fmt.Sprintf("%s:%s", server.config.UserServiceHost, server.config.UserServicePort)
-	return persistence.NewUserServiceClient(address)
+func (server *Server) initNotificationServiceClient() notification.NotificationServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.NotificationServiceHost, server.config.NotificationServicePort)
+	return persistence.NewNotificationServiceClient(address)
 }
 
-func (server *Server) initAuthServiceClient() auth.AuthServiceClient {
-	address := fmt.Sprintf("%s:%s", server.config.AuthServiceHost, server.config.AuthServicePort)
-	return persistence.NewAuthServiceClient(address)
-}
-
-func (server *Server) initPostHandler(service *application.PostService) *api.PostHandler {
-	return api.NewPostHandler(service)
+func (server *Server) initPostHandler(service *application.PostService, notificationServiceClient notification.NotificationServiceClient) *api.PostHandler {
+	return api.NewPostHandler(service, notificationServiceClient)
 }
 
 func (server *Server) startGrpcServer(postHandler *api.PostHandler) {

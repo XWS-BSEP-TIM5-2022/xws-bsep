@@ -4,20 +4,22 @@ package config
 import "os"
 
 type Config struct {
-	Port            string
-	PostDBHost      string
-	PostDBPort      string
-	PublicKey       string
-	UserServicePort string
-	UserServiceHost string
-	AuthServicePort string
-	AuthServiceHost string
-	LogsFolder      string
-	InfoLogsFile    string
-	DebugLogsFile   string
-	ErrorLogsFile   string
-	SuccessLogsFile string
-	WarningLogsFile string
+	Port                    string
+	PostDBHost              string
+	PostDBPort              string
+	PublicKey               string
+	UserServicePort         string
+	UserServiceHost         string
+	AuthServicePort         string
+	AuthServiceHost         string
+	LogsFolder              string
+	InfoLogsFile            string
+	DebugLogsFile           string
+	ErrorLogsFile           string
+	SuccessLogsFile         string
+	WarningLogsFile         string
+	NotificationServicePort string
+	NotificationServiceHost string
 }
 
 func NewConfig() *Config {
@@ -30,6 +32,8 @@ func NewConfig() *Config {
 		UserServicePort: os.Getenv("USER_SERVICE_PORT"),
 		AuthServiceHost: os.Getenv("AUTH_SERVICE_HOST"),
 		AuthServicePort: os.Getenv("AUTH_SERVICE_PORT"),
+    NotificationServiceHost: os.Getenv("NOTIFICATION_SERVICE_HOST"),
+		NotificationServicePort: os.Getenv("NOTIFICATION_SERVICE_PORT"),
 		LogsFolder:      os.Getenv("LOGS_FOLDER"),
 		InfoLogsFile:    os.Getenv("INFO_LOGS_FILE"),
 		DebugLogsFile:   os.Getenv("DEBUG_LOGS_FILE"),
@@ -46,6 +50,8 @@ func NewConfig() *Config {
 		// AuthServiceHost: "localhost",
 		// AuthServicePort: "8082",
 		// LogsFolder:      "logs",
+    //NotificationServiceHost: "localhost",
+		//NotificationServicePort: "8086",
 		// InfoLogsFile:    "/info.log",
 		// DebugLogsFile:   "/debug.log",
 		// ErrorLogsFile:   "/error.log",
