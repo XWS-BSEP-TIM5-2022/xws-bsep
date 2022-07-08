@@ -20,9 +20,9 @@ import (
 	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	jobOfferGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
 	messageGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
+	notificationGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	postGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -91,7 +91,15 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("Message service registration failed PORT: ", server.config.MessagePort, ", HOST: ", server.config.MessageHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Connection service registration successful") // TODO: dodati port i host ?
+	server.CustomLogger.SuccessLogger.Info("Message service registration successful") // TODO: dodati port i host ?
+
+	notificationEndPoint := fmt.Sprintf("%s:%s", server.config.NotificationHost, server.config.NotificationPort)
+	err = notificationGw.RegisterNotificationServiceHandlerFromEndpoint(context.TODO(), server.mux, notificationEndPoint, opts)
+	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Notification service registration failed PORT: ", server.config.NotificationPort, ", HOST: ", server.config.NotificationHost)
+		panic(err)
+	}
+	server.CustomLogger.SuccessLogger.Info("Notification service registration successful") // TODO: dodati port i host ?
 
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
@@ -166,6 +174,7 @@ func AccessibleEndpoints() map[string]string {
 	const connectionService = "/api/connection"
 	const jobOfferService = "/api/jobOffer"
 	const messageService = "/api/message"
+	const notificationService = "/api/notification"
 
 	return map[string]string{
 		authService + "/update":         "UpdateUsername",

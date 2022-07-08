@@ -3,6 +3,7 @@ package services
 import (
 	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	message "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
+	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	"log"
 
@@ -46,12 +47,21 @@ func NewConnectionClient(address string) connection.ConnectionServiceClient {
 	return connection.NewConnectionServiceClient(conn)
 }
 
+func NewNotificationClient(address string) notification.NotificationServiceClient {
+	conn, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to notification service: %v", err)
+	}
+	return notification.NewNotificationServiceClient(conn)
+}
+
 func NewJobOfferClient(address string) joboffer.JobOfferServiceClient {
 	conn, err := getConnection(address)
 	if err != nil {
 		log.Fatalf("Failed to start gRPC connection to Connection service: %v", err)
 	}
 	return joboffer.NewJobOfferServiceClient(conn)
+}
 
 func NewMessageClient(address string) message.MessageServiceClient {
 	conn, err := getConnection(address)
