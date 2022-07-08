@@ -18,6 +18,7 @@ import (
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	messageGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
 	postGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -83,6 +84,14 @@ func (server *Server) initHandlers() {
 	}
 	server.CustomLogger.SuccessLogger.Info("Connection service registration successful") // TODO: dodati port i host ?
 
+	messageEndPoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
+	err = messageGw.RegisterMessageServiceHandlerFromEndpoint(context.TODO(), server.mux, messageEndPoint, opts)
+	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Message service registration failed PORT: ", server.config.MessagePort, ", HOST: ", server.config.MessageHost)
+		panic(err)
+	}
+	server.CustomLogger.SuccessLogger.Info("Connection service registration successful") // TODO: dodati port i host ?
+
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
 	if err != nil {
@@ -143,6 +152,7 @@ func AccessibleEndpoints() map[string]string {
 	const userService = "/api/user"
 	const postService = "/api/post"
 	const connectionService = "/api/connection"
+	const messageService = "/api/message"
 
 	return map[string]string{
 		authService + "/update":         "UpdateUsername",
