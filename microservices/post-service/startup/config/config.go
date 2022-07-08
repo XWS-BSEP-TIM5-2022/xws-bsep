@@ -19,7 +19,7 @@ type Config struct {
 
 func NewConfig() *Config {
 	return &Config{
-		// Port:            os.Getenv("POST_SERVICE_PORT"),
+    // Port:            os.Getenv("POST_SERVICE_PORT"),
 		// PostDBHost:      os.Getenv("POST_DB_HOST"),
 		// PostDBPort:      os.Getenv("POST_DB_PORT"),
 		// PublicKey:       os.Getenv("PUBLIC_KEY"),
@@ -33,6 +33,7 @@ func NewConfig() *Config {
 		// ErrorLogsFile:   os.Getenv("ERROR_LOGS_FILE"),
 		// SuccessLogsFile: os.Getenv("SUCCESS_LOGS_FILE"),
 		// WarningLogsFile: os.Getenv("WARNING_LOGS_FILE"),
+
 
 		Port:            "8083",
 		PostDBHost:      "localhost",
