@@ -32,8 +32,8 @@ func NewConfig() *Config {
 		ErrorLogsFile:         os.Getenv("ERROR_LOGS_FILE"),
 		SuccessLogsFile:       os.Getenv("SUCCESS_LOGS_FILE"),
 		WarningLogsFile:       os.Getenv("WARNING_LOGS_FILE"),
-		ConnectionServiceHost: os.Getenv("NOTIFICATION_DB_HOST"),
-		ConnectionServicePort: os.Getenv("NOTIFICATION_DB_PORT"),
+		ConnectionServiceHost: os.Getenv("CONNECTION_SERVICE_HOST"),
+		ConnectionServicePort: os.Getenv("CONNECTION_SERVICE_PORT"),
 
 		//Port:                  "8085",
 		//MessageDBHost:         "localhost",

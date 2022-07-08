@@ -2,7 +2,11 @@ package startup
 
 import (
 	"fmt"
+	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	message "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
+	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
+	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/sirupsen/logrus"
 	"log"
 	"net"
@@ -68,6 +72,26 @@ func (server *Server) initNotificationStore(client *mongo.Client) domain.Notific
 
 func (server *Server) initNotificationService(store domain.NotificationStore) *application.NotificationService {
 	return application.NewNotificationService(store)
+}
+
+func (server *Server) initUserServiceClient() user.UserServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.UserServiceHost, server.config.UserServicePort)
+	return persistence.NewUserServiceClient(address)
+}
+
+func (server *Server) initPostServiceClient() post.PostServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.PostServiceHost, server.config.PostServicePort)
+	return persistence.NewPostServiceClient(address)
+}
+
+func (server *Server) initConnectionServiceClient() connection.ConnectionServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.ConnectionServiceHost, server.config.ConnectionServicePort)
+	return persistence.NewConnectionServiceClient(address)
+}
+
+func (server *Server) initMessageServiceClient() message.MessageServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.MessageServiceHost, server.config.MessageServicePort)
+	return persistence.NewMessageServiceClient(address)
 }
 
 func (server *Server) initNotificationHandler(service *application.NotificationService) *api.NotificationHandler {
