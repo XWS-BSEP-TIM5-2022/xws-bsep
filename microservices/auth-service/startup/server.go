@@ -92,7 +92,7 @@ func (server *Server) initPostgresClient() *gorm.DB {
 			"auth_db_host":     server.config.AuthDBHost,
 			"auth_db_port":     server.config.AuthDBPort,
 			"auth_db_user":     server.config.AuthDBUser,
-			"auth_db_password": string(hashedPassword), // TODO SD: password kao plain txt/hesirana?
+			"auth_db_password": string(hashedPassword),
 			"auth_db_name":     server.config.AuthDBName,
 		}).Error("Postgres database initialization error")
 		// log.Fatal(err)

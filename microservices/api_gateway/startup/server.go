@@ -3,6 +3,7 @@ package startup
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -17,7 +18,9 @@ import (
 	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	postGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	otgo "github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -26,16 +29,24 @@ type Server struct {
 	config       *cfg.Config
 	mux          *runtime.ServeMux
 	CustomLogger *api.CustomLogger
+	tracer       otgo.Tracer
+	closer       io.Closer
 }
+
+const name = "api_gateway"
 
 func NewServer(config *cfg.Config) *Server {
 	CustomLogger := api.NewCustomLogger()
+	tracer, closer := tracer.Init(name)
+	otgo.SetGlobalTracer(tracer)
 	server := &Server{
 		config: config,
 		mux: runtime.NewServeMux(
 			runtime.WithIncomingHeaderMatcher(customMatcher),
 		),
 		CustomLogger: CustomLogger,
+		tracer:       tracer,
+		closer:       closer,
 	}
 	server.initHandlers()
 	server.initCustomHandlers()
@@ -62,7 +73,8 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("User service registration failed, PORT: ", server.config.UserPort, ", HOST: ", server.config.UserHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("User service registration successful") // TODO: dodati port i host ?
+	server.CustomLogger.SuccessLogger.Info("User service registration successful")
+	log.Println("User service registration successful")
 
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
 	err = authGw.RegisterAuthServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
@@ -70,7 +82,7 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("Auth service registration failed PORT: ", server.config.AuthPort, ", HOST: ", server.config.AuthHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Auth service registration successful") // TODO: dodati port i host ?
+	server.CustomLogger.SuccessLogger.Info("Auth service registration successful")
 
 	connectionEndPoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndPoint, opts)
@@ -78,7 +90,7 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("Connection service registration failed PORT: ", server.config.ConnectionPort, ", HOST: ", server.config.ConnectionHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Connection service registration successful") // TODO: dodati port i host ?
+	server.CustomLogger.SuccessLogger.Info("Connection service registration successful")
 
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
@@ -86,7 +98,7 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("Post service registration failed PORT: ", server.config.PostPort, ", HOST: ", server.config.PostHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Post service registration successful") // TODO: dodati port i host ?
+	server.CustomLogger.SuccessLogger.Info("Post service registration successful")
 }
 
 func (server *Server) initCustomHandlers() {
@@ -125,6 +137,11 @@ func muxMiddleware(server *Server) http.Handler {
 			Authorize(server, accessiblePermission, tokenString)
 		}
 		log.Println(server.config.AuthHost + ":" + server.config.AuthPort)
+
+		endpointName := r.Method + " " + r.URL.Path
+		span := tracer.StartSpanFromRequest(endpointName, server.tracer, r)
+		defer span.Finish()
+
 		server.mux.ServeHTTP(w, r)
 	})
 }
