@@ -175,21 +175,21 @@ services:
     # ports:
     #   - 8089:${AUTH_SERVICE_PORT}
     environment:
-      PORT: ${JOB_OFFER_SERVICE_PORT}
-      HOST: ${JOB_OFFER_SERVICE_HOST}
+      JOB_OFFER_SERVICE_PORT: ${JOB_OFFER_SERVICE_PORT}
+      JOB_OFFER_SERVICE_HOST: ${JOB_OFFER_SERVICE_HOST}
       PUBLIC_KEY: ${PUBLIC_KEY}
-      CONNECTION_DB_HOST: ${CONNECTION_DB_HOST}
-      CONNECTION_DB_PORT: ${CONNECTION_DB_PORT}
-      CONNECTION_DB_USER: ${CONNECTION_DB_USER}
-      CONNECTION_DB_PASS: ${CONNECTION_DB_PASS}
-      CONNECTION_DB_NAME: ${JOB_OFFER_DB_NAME}
+      JOB_OFFER_DB_HOST: ${CONNECTION_DB_HOST}
+      JOB_OFFER_DB_PORT: ${CONNECTION_DB_PORT}
+      JOB_OFFER_DB_USER: ${CONNECTION_DB_USER}
+      JOB_OFFER_DB_PASS: ${CONNECTION_DB_PASS}
+      JOB_OFFER_DB_NAME: ${CONNECTION_DB_NAME}
       # CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
     depends_on:
-      - job_offer_db
+      - connection_db
     logging: *fluent-bit
     networks:
       - network
-      - job-offer-network
+      - connection-network
       - monitoring
 
   api_gateway:
@@ -214,6 +214,8 @@ services:
       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
       CONNECTION_SERVICE_HOST: ${CONNECTION_SERVICE_HOST}
       CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
+      JOB_OFFER_SERVICE_HOST: ${JOB_OFFER_SERVICE_HOST}
+      JOB_OFFER_SERVICE_PORT: ${JOB_OFFER_SERVICE_PORT}
       NATS_HOST: ${NATS_HOST}
       NATS_PORT: ${NATS_PORT}
       NATS_USER: ${NATS_USER}
@@ -225,6 +227,7 @@ services:
       - network
       - connection-network
       - monitoring
+      - job-offer-network
 
   post_service:
     image: post_service
@@ -299,8 +302,8 @@ services:
       - job-offer-network
       - monitoring
     ports:
-      - ${JOB_OFFER_NEO4J_PORT}:${JOB_OFFER_NEO4J_PORT}
-      - ${JOB_OFFER_NEO4J_PORT_2}:${JOB_OFFER_NEO4J_PORT_2}
+      - "7475:7474"
+      - "7686:7687"
     environment:
       -  NEO4J_AUTH=none
 
