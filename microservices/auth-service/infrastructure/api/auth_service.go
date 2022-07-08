@@ -528,13 +528,14 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 			Message:    "User id not found",
 		}, nil
 	} else {
+		messageUsernameIsNotUnique := "Username is not unique"
 		isUniqueUsername, err := service.store.IsUsernameUnique(ctx, request.Username)
 		if err != nil || isUniqueUsername == false {
 			service.CustomLogger.ErrorLogger.Error("User with ID:" + userId + " tried to update a non-unique username")
 			return &pb.UpdateUsernameResponse{
 				StatusCode: "500",
-				Message:    "Username is not unique",
-			}, errors.New("Username is not unique")
+				Message:    messageUsernameIsNotUnique,
+			}, errors.New(messageUsernameIsNotUnique)
 		}
 
 		_, err = service.store.UpdateUsername(ctx, userId, request.Username)
