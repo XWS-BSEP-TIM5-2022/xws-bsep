@@ -21,3 +21,4 @@
 {"level":"error","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:223","msg":"Invalid token","time":"2022-07-08T23:00:24+02:00"}
 {"level":"error","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:223","msg":"Invalid token","time":"2022-07-08T23:01:08+02:00"}
 {"level":"error","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:223","msg":"Invalid token","time":"2022-07-08T23:44:44+02:00"}
+{"level":"error","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:223","msg":"Invalid token","time":"2022-07-08T23:45:43+02:00"}
