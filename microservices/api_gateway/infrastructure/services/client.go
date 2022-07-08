@@ -5,6 +5,7 @@ import (
 
 	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	message "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
+	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 
 	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
@@ -45,6 +46,14 @@ func NewConnectionClient(address string) connection.ConnectionServiceClient {
 		log.Fatalf("Failed to start gRPC connection to Connection service: %v", err)
 	}
 	return connection.NewConnectionServiceClient(conn)
+}
+
+func NewNotificationClient(address string) notification.NotificationServiceClient {
+	conn, err := getConnection(address)
+	if err != nil {
+		log.Fatalf("Failed to start gRPC connection to notification service: %v", err)
+	}
+	return notification.NewNotificationServiceClient(conn)
 }
 
 func NewJobOfferClient(address string) joboffer.JobOfferServiceClient {
