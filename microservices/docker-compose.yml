@@ -10,6 +10,8 @@ networks:
     driver: bridge
   connection-network:
     driver: bridge
+  job-offer-network:
+    driver: bridge
   monitoring:
     external: true
 
@@ -163,6 +165,33 @@ services:
       - connection-network
       - monitoring
 
+  job_offer_service:
+    image: job_offer_service
+    container_name: job_offer_service
+    build:
+      context: .
+      dockerfile: ./job-offer-service/Dockerfile
+    restart: on-failure
+    # ports:
+    #   - 8089:${AUTH_SERVICE_PORT}
+    environment:
+      PORT: ${JOB_OFFER_SERVICE_PORT}
+      HOST: ${JOB_OFFER_SERVICE_HOST}
+      PUBLIC_KEY: ${PUBLIC_KEY}
+      CONNECTION_DB_HOST: ${CONNECTION_DB_HOST}
+      CONNECTION_DB_PORT: ${CONNECTION_DB_PORT}
+      CONNECTION_DB_USER: ${CONNECTION_DB_USER}
+      CONNECTION_DB_PASS: ${CONNECTION_DB_PASS}
+      CONNECTION_DB_NAME: ${JOB_OFFER_DB_NAME}
+      # CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
+    depends_on:
+      - job_offer_db
+    logging: *fluent-bit
+    networks:
+      - network
+      - job-offer-network
+      - monitoring
+
   api_gateway:
     image: api_gateway
     container_name: api_gateway
@@ -258,6 +287,20 @@ services:
     ports:
       - "7474:7474"
       - "7687:7687"
+    environment:
+      -  NEO4J_AUTH=none
+  
+  job_offer_db:
+    container_name: job_offer_db
+    restart: on-failure
+    image: neo4j:latest
+    logging: *fluent-bit
+    networks:
+      - job-offer-network
+      - monitoring
+    ports:
+      - ${JOB_OFFER_NEO4J_PORT}:${JOB_OFFER_NEO4J_PORT}
+      - ${JOB_OFFER_NEO4J_PORT_2}:${JOB_OFFER_NEO4J_PORT_2}
     environment:
       -  NEO4J_AUTH=none
 
