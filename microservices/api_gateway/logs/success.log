@@ -6,3 +6,11 @@
 {"level":"info","method":"/startup/server.go:111","msg":"Post service registration successful","time":"2022-07-08T19:04:08+02:00"}
 {"level":"info","method":"/startup/server.go:119","msg":"Job offer service registration successful","time":"2022-07-08T19:04:08+02:00"}
 {"level":"info","method":"/startup/server.go:48","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-07-08T19:04:08+02:00"}
+{"level":"info","method":"/startup/server.go:91","msg":"User service registration successful","time":"2022-07-08T23:48:21+02:00"}
+{"level":"info","method":"/startup/server.go:100","msg":"Auth service registration successful","time":"2022-07-08T23:48:21+02:00"}
+{"level":"info","method":"/startup/server.go:108","msg":"Connection service registration successful","time":"2022-07-08T23:48:21+02:00"}
+{"level":"info","method":"/startup/server.go:117","msg":"Message service registration successful","time":"2022-07-08T23:48:21+02:00"}
+{"level":"info","method":"/startup/server.go:125","msg":"Notification service registration successful","time":"2022-07-08T23:48:21+02:00"}
+{"level":"info","method":"/startup/server.go:133","msg":"Post service registration successful","time":"2022-07-08T23:48:21+02:00"}
+{"level":"info","method":"/startup/server.go:141","msg":"Job offer service registration successful","time":"2022-07-08T23:48:21+02:00"}
+{"level":"info","method":"/startup/server.go:61","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-07-08T23:48:21+02:00"}

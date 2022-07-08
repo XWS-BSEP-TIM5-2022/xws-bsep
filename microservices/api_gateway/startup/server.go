@@ -26,7 +26,6 @@ import (
 	postGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	traceer "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/opentracing/opentracing-go"
 	otgo "github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
