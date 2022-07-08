@@ -2,9 +2,8 @@ package startup
 
 import (
 	"fmt"
-	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	message "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
-	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/sirupsen/logrus"
 	"log"
 	"net"
@@ -72,18 +71,13 @@ func (server *Server) initMessageService(store domain.MessageStore) *application
 	return application.NewMessageService(store)
 }
 
-func (server *Server) initUserServiceClient() user.UserServiceClient {
-	address := fmt.Sprintf("%s:%s", server.config.UserServiceHost, server.config.UserServicePort)
-	return persistence.NewUserServiceClient(address)
-}
-
-func (server *Server) initAuthServiceClient() auth.AuthServiceClient {
-	address := fmt.Sprintf("%s:%s", server.config.AuthServiceHost, server.config.AuthServicePort)
-	return persistence.NewAuthServiceClient(address)
-}
-
 func (server *Server) initMessageHandler(service *application.MessageService) *api.MessageHandler {
 	return api.NewMessageHandler(service)
+}
+
+func (server *Server) initConnectionServiceClient() connection.ConnectionServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.ConnectionServiceHost, server.config.ConnectionServicePort)
+	return persistence.NewConnectionServiceClient(address)
 }
 
 func (server *Server) startGrpcServer(messageHandler *api.MessageHandler) {

@@ -13,13 +13,21 @@ require (
 	google.golang.org/protobuf v1.28.0
 )
 
-require google.golang.org/grpc v1.46.0
+require (
+	github.com/opentracing/opentracing-go v1.2.0
+	google.golang.org/grpc v1.46.0
+)
 
 require (
+	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/nats-io/nats-server/v2 v2.8.4 // indirect
 	github.com/nats-io/nats.go v1.16.0 // indirect
 	github.com/nats-io/nkeys v0.3.0 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
+	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
+	go.uber.org/atomic v1.9.0 // indirect
 )
 
 require (

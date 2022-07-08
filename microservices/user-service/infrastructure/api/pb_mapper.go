@@ -542,7 +542,7 @@ func mapSkillsAndInterests(oldData *pb.User, newData *pb.User) *domain.User {
 }
 
 // SD - saga ----------------------------------------------------
-func mapInsertUserSagga(user *pb.RegisterRequest) *domain.User {
+func mapInsertUserSaga(user *pb.RegisterRequest) *domain.User {
 	userPb := &domain.User{
 		// Id:           id,
 		Name:         user.Name,

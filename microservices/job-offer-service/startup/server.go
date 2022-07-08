@@ -2,9 +2,10 @@ package startup
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net"
+
+	"github.com/dgrijalva/jwt-go"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	inventory "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
@@ -49,9 +50,10 @@ func (server *Server) Start() {
 func (server *Server) initNeo4J() *neo4j.Driver {
 
 	//uri := "bolt:\\" + server.config.ConnectionDBHost + ":" + server.config.ConnectionDBPort
-	dbUri := "bolt://localhost:7687"
+	// dbUri := "bolt://localhost:7687"
+	dbUri := "bolt://" + server.config.ConnectionDBHost + ":" + server.config.ConnectionDBPort
 
-	client, err := persistence.GetClient(dbUri, server.config.Neo4jUsername, server.config.Neo4jPassword)
+	client, err := persistence.GetClient(dbUri, server.config.ConnectionDBUser, server.config.ConnectionDBPass)
 	if err != nil {
 		server.CustomLogger.ErrorLogger.Error("Neo4J initialization for connection service failed")
 		log.Fatal(err)
