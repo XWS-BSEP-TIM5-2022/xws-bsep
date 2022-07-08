@@ -62,12 +62,12 @@ func setLogrusLogger(filename string) *logrus.Entry {
 	mLog.SetOutput(mw)
 	mLog.SetReportCaller(true)
 
-	mLog.SetFormatter(&logrus.JSONFormatter{ //TextFormatter  JSONFormatter
+	mLog.SetFormatter(&logrus.TextFormatter{ //TextFormatter  JSONFormatter
 		CallerPrettyfier: caller(),
 		FieldMap: logrus.FieldMap{
 			logrus.FieldKeyFile: "method",
 		},
-		// ForceColors: true,
+		ForceColors: true,
 	})
 	contextLogger := mLog.WithFields(logrus.Fields{})
 	return contextLogger

@@ -123,4 +123,8 @@ var userPermissions = []*domain.Permission{
 		ID:   21,
 		Name: "BlockUser",
 	},
+	{
+		ID:   22,
+		Name: "CreateMessage",
+	},
 }

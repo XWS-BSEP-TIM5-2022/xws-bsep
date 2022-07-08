@@ -6,6 +6,9 @@ import (
 	"errors"
 	_ "errors"
 	"fmt"
+	"log"
+	"strings"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,7 +17,6 @@ import (
 	_ "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"strings"
 )
 
 var validate *validator.Validate
@@ -359,4 +361,15 @@ func (store *UserMongoDBStore) GetIdByEmail(email string) (string, error) {
 		return "", errors.New("User is not actived")
 	}
 	return user.Id.Hex(), nil
+}
+
+func (store *UserMongoDBStore) DeleteUser(userId, email string) error {
+	filter := bson.M{"email": email}
+	res, err := store.users.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		log.Println("User is not deleted, err: ", err)
+		return err
+	}
+	log.Println("Deleted count: ", res.DeletedCount)
+	return nil
 }

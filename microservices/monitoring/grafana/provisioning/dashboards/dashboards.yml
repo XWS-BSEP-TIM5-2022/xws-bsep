@@ -1,0 +1,15 @@
+apiVersion: 1
+
+providers:
+  - name: 'Node Exporter'
+    type: file
+    options:
+      path:  /var/lib/grafana/dashboards/node-exporter
+  - name: 'Cadvisor Exporter'
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards/cadvisor-exporter
+  - name: 'Mux Exporter'
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards/mux-exporter

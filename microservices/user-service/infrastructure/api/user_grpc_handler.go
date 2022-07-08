@@ -403,6 +403,21 @@ func (handler *UserHandler) GetIdByUsername(ctx context.Context, request *pb.Get
 	}, nil
 }
 
+func (handler *UserHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+	user := mapInsertUserSagga(request)
+	err := handler.service.Create(user, request.Username, request.Password)
+	if err != nil {
+		return &pb.RegisterResponse{
+			StatusCode: "500",
+			Message:    "Something wrong, please try again",
+		}, err
+	}
+	return &pb.RegisterResponse{
+		StatusCode: "200",
+		Message:    "OK",
+	}, nil
+}
+
 func checkEmailCriteria(email string) error {
 	if len(email) == 0 {
 		return errors.New("Email should not be empty")

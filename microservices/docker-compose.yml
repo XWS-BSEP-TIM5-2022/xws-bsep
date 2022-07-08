@@ -1,6 +1,71 @@
 version: "3.8"
 
+x-logging: &fluent-bit
+  driver: fluentd
+  options:
+    fluentd-address: ${FLUENT_BIT_ADDRESS}:24224
+
+networks:
+  network:
+    driver: bridge
+  connection-network:
+    driver: bridge
+  monitoring:
+    external: true
+
 services:
+  agent_application:
+    image: darkelfff/agent-app:latest
+    container_name: agent_application
+    restart: on-failure
+    ports:
+      - ${AGENT_PORT}:${AGENT_PORT}
+    environment:
+      AGENT_DB_HOST: ${AGENT_DB_HOST}
+      AGENT_DB_PORT: ${AGENT_DB_PORT}
+      AGENT_DB_USER: ${AGENT_DB_USER}
+      AGENT_DB_PASS: ${AGENT_DB_PASS}
+      AGENT_DB_NAME: ${AGENT_DB_NAME}
+      AGENT_PORT: ${AGENT_PORT}
+      AGENT_HOST: ${AGENT_HOST}
+      AGENT_FRONTEND_PORT: ${AGENT_FRONTEND_PORT}
+    depends_on:
+      - agent_db
+    logging: *fluent-bit
+    networks:
+      - network
+      - monitoring
+
+  # agent-frontend:
+  #   restart: on-failure
+  #   image: darkelfff/agent-front:latest
+  #   ports:
+  #     - '${AGENT_FRONTEND_PORT}:${AGENT_FRONTEND_PORT}'
+  #   volumes:
+  #     - ./docker/nginx_angular.conf:/etc/nginx/nginx_angular.conf
+
+  agent_db:
+    image: postgres
+    container_name: agent_db
+    restart: on-failure
+    environment:
+      POSTGRES_USER: ${AGENT_DB_USER}
+      POSTGRES_PASSWORD: ${AGENT_DB_PASS}
+      POSTGRES_DB: ${AGENT_DB_NAME}
+    logging: *fluent-bit
+    networks:
+      - network
+      - monitoring
+
+      # dislinkt-frontend:
+      #   restart: on-failure
+      #   image: darkelfff/dislinkt-frontend:latest
+      #   ports:
+      #     - '${FRONTEND_PORT}:${FRONTEND_PORT}'
+      #   volumes:
+      #     - ./docker/nginx.conf:/etc/nginx/nginx.conf
+      # - ./front/api_gateway.conf:/etc/nginx/api_gateway.conf
+
   user_service:
     image: user_service
     container_name: user_service
@@ -8,15 +73,25 @@ services:
       context: .
       dockerfile: ./user-service/Dockerfile
     restart: on-failure
+    # ports:
+    #   - 8081:${USER_SERVICE_PORT}
     environment:
       USER_DB_HOST: ${USER_DB_HOST}
       USER_DB_PORT: ${USER_DB_PORT}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
       PUBLIC_KEY: ${PUBLIC_KEY}
+      NATS_HOST: ${NATS_HOST}
+      NATS_PORT: ${NATS_PORT}
+      NATS_USER: ${NATS_USER}
+      NATS_PASS: ${NATS_PASS}
+      CREATE_USER_COMMAND_SUBJECT: ${CREATE_USER_COMMAND_SUBJECT}
+      CREATE_USER_REPLY_SUBJECT: ${CREATE_USER_REPLY_SUBJECT}
     depends_on:
       - user_db
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
 
   auth_service:
     image: auth_service
@@ -25,6 +100,8 @@ services:
       context: .
       dockerfile: ./auth-service/Dockerfile
     restart: on-failure
+    # ports:
+    #   - 8082:${AUTH_SERVICE_PORT}
     environment:
       AUTH_DB_HOST: ${AUTH_DB_HOST}
       AUTH_DB_PORT: ${AUTH_DB_PORT}
@@ -37,29 +114,54 @@ services:
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
       PRIVATE_KEY: ${PRIVATE_KEY}
       PUBLIC_KEY: ${PUBLIC_KEY}
+      NATS_HOST: ${NATS_HOST}
+      NATS_PORT: ${NATS_PORT}
+      NATS_USER: ${NATS_USER}
+      NATS_PASS: ${NATS_PASS}
+      CREATE_USER_COMMAND_SUBJECT: ${CREATE_USER_COMMAND_SUBJECT}
+      CREATE_USER_REPLY_SUBJECT: ${CREATE_USER_REPLY_SUBJECT}
+      PRIVATE_KEY_API_TOKEN: ${PRIVATE_KEY_API_TOKEN}
+      PUBLIC_KEY_API_TOKEN: ${PUBLIC_KEY_API_TOKEN}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_FROM: ${EMAIL_FROM}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      FRONTEND_HOST: ${FRONTEND_HOST}
+      FRONTEND_PORT: ${FRONTEND_PORT}
     depends_on:
       - auth_db
+      - nats
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
 
-#  connection_service:
-#    image: connection_service
-#    container_name: connection_service
-#    build:
-#      context: .
-#      dockerfile: ./connection-service/Dockerfile
-#    restart: on-failure
-#    environment:
-#      CONNECTION_DB_HOST: ${CONNECTION_DB_HOST}
-#      CONNECTION_DB_PORT: ${CONNECTION_DB_PORT}
-#      CONNECTION_DB_USER: ${CONNECTION_DB_USER}
-#      CONNECTION_DB_PASS: ${CONNECTION_DB_PASS}
-#      CONNECTION_DB_NAME: ${CONNECTION_DB_NAME}
-#      CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
-#    depends_on:
-#      - connection_db
-#    networks:
-#      - network
+  connection_service:
+    image: connection_service
+    container_name: connection_service
+    build:
+      context: .
+      dockerfile: ./connection-service/Dockerfile
+    restart: on-failure
+    # ports:
+    #   - 8084:${AUTH_SERVICE_PORT}
+    environment:
+      # PORT: ${CONNECTION_SERVICE_PORT}
+      # HOST: ${CONNECTION_SERVICE_HOST}
+      PUBLIC_KEY: ${PUBLIC_KEY}
+      CONNECTION_DB_HOST: ${CONNECTION_DB_HOST}
+      CONNECTION_DB_PORT: ${CONNECTION_DB_PORT}
+      CONNECTION_DB_USER: ${CONNECTION_DB_USER}
+      CONNECTION_DB_PASS: ${CONNECTION_DB_PASS}
+      CONNECTION_DB_NAME: ${CONNECTION_DB_NAME}
+      CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
+    depends_on:
+      - connection_db
+    logging: *fluent-bit
+    networks:
+      - network
+      - connection-network
+      - monitoring
 
   api_gateway:
     image: api_gateway
@@ -68,8 +170,11 @@ services:
       context: .
       dockerfile: ./api_gateway/Dockerfile
     restart: on-failure
+      # volumes:
+      # -  ./api_gateway/server.crt:/
+    # -  ./api_gateway/server.crt:/root
     ports:
-      - ${GATEWAY_PORT}:${GATEWAY_PORT}
+      - 8080:${GATEWAY_PORT}
     environment:
       GATEWAY_PORT: ${GATEWAY_PORT}
       USER_SERVICE_HOST: ${USER_SERVICE_HOST}
@@ -78,28 +183,19 @@ services:
       AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
       POST_SERVICE_HOST: ${POST_SERVICE_HOST}
       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
+      CONNECTION_SERVICE_HOST: ${CONNECTION_SERVICE_HOST}
+      CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
+      NATS_HOST: ${NATS_HOST}
+      NATS_PORT: ${NATS_PORT}
+      NATS_USER: ${NATS_USER}
+      NATS_PASS: ${NATS_PASS}
+      CREATE_USER_COMMAND_SUBJECT: ${CREATE_USER_COMMAND_SUBJECT}
+      CREATE_USER_REPLY_SUBJECT: ${CREATE_USER_REPLY_SUBJECT}
+    logging: *fluent-bit
     networks:
       - network
-
-  user_db:
-    image: mongo
-    container_name: user_db
-    restart: on-failure
-    ports:
-      - 27018:27017
-    networks:
-      - network
-
-  auth_db:
-    image: postgres
-    container_name: auth_db
-    restart: on-failure
-    environment:
-      POSTGRES_USER: ${AUTH_DB_USER}
-      POSTGRES_PASSWORD: ${AUTH_DB_PASS}
-      POSTGRES_DB: ${AUTH_DB_NAME}
-    networks:
-      - network
+      - connection-network
+      - monitoring
 
   post_service:
     image: post_service
@@ -108,15 +204,62 @@ services:
       context: .
       dockerfile: ./post-service/Dockerfile
     restart: on-failure
+    # ports:
+    #   - 8083:${AUTH_SERVICE_PORT}
     environment:
       POST_DB_HOST: ${POST_DB_HOST}
       POST_DB_PORT: ${POST_DB_PORT}
       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
       PUBLIC_KEY: ${PUBLIC_KEY}
+      CONNECTION_PUBLIC_KEY: ${PUBLIC_KEY}
+      USER_SERVICE_HOST: ${USER_SERVICE_HOST}
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      AUTH_SERVICE_HOST: ${AUTH_SERVICE_HOST}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
     depends_on:
       - post_db
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
+
+  user_db:
+    image: mongo
+    container_name: user_db
+    restart: on-failure
+    ports:
+      - 27018:27017
+    logging: *fluent-bit
+    networks:
+      - network
+      - monitoring
+
+  auth_db:
+    image: postgres
+    container_name: auth_db
+    restart: on-failure
+    logging: *fluent-bit
+    environment:
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASS}
+      POSTGRES_DB: ${AUTH_DB_NAME}
+    networks:
+      - network
+      - monitoring
+
+  connection_db:
+    container_name: connection_db
+    restart: on-failure
+    image: neo4j:latest
+    logging: *fluent-bit
+    networks:
+      - connection-network
+      - monitoring
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      -  NEO4J_AUTH=none
 
   post_db:
     image: mongo
@@ -124,25 +267,18 @@ services:
     restart: on-failure
     ports:
       - 27019:27017
+    logging: *fluent-bit
     networks:
       - network
+      - monitoring
 
-#  connection_db:
-#    image: neo4j
-#    container_name: connection_db
-#    restart: on-failure
-#    ports:
-#      - 7688:7687
-#    networks:
-#      - network
+  nats:
+    image: nats
+    container_name: nats
+    restart: on-failure
+    logging: *fluent-bit
+    networks:
+      - network
+      - monitoring
 
-  # nats:
-  #   image: nats
-  #   container_name: nats
-  #   restart: on-failure
-  #   networks:
-  #     - network
 
-networks:
-  network:
-    driver: bridge

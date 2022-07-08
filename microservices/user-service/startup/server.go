@@ -12,6 +12,8 @@ import (
 
 	interceptor "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	inventory "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	saga "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/saga/messaging"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/saga/messaging/nats"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/api"
@@ -40,7 +42,15 @@ func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	userStore := server.initUserStore(mongoClient)
 
-	userService := server.initUserService(userStore)
+	commandPublisher := server.initPublisher(server.config.CreateUserCommandSubject)
+	replySubscriber := server.initSubscriber(server.config.CreateUserReplySubject, QueueGroup)
+	createUserOrchestrator := server.initCreateUserOrchestrator(commandPublisher, replySubscriber)
+
+	userService := server.initUserService(userStore, createUserOrchestrator)
+
+	commandSubscriber := server.initSubscriber(server.config.CreateUserCommandSubject, QueueGroup)
+	replyPublisher := server.initPublisher(server.config.CreateUserReplySubject)
+	server.initCreateUserHandler(userService, replyPublisher, commandSubscriber)
 
 	userHandler := server.initUserHandler(userService)
 
@@ -73,8 +83,46 @@ func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
 	return store
 }
 
-func (server *Server) initUserService(store domain.UserStore) *application.UserService {
-	return application.NewUserService(store)
+func (server *Server) initPublisher(subject string) saga.Publisher {
+	log.Println("(((((((((((((((( publisher, subj:", subject)
+	log.Println(server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject)
+	publisher, err := nats.NewNATSPublisher(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return publisher
+}
+
+func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscriber {
+	subscriber, err := nats.NewNATSSubscriber(
+		server.config.NatsHost, server.config.NatsPort,
+		server.config.NatsUser, server.config.NatsPass, subject, queueGroup)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return subscriber
+}
+
+func (server *Server) initCreateUserOrchestrator(publisher saga.Publisher, subscriber saga.Subscriber) *application.CreateUserOrchestrator {
+	orchestrator, err := application.NewCreateUserOrchestrator(publisher, subscriber)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return orchestrator
+}
+
+func (server *Server) initUserService(store domain.UserStore, orchestrator *application.CreateUserOrchestrator) *application.UserService {
+	return application.NewUserService(store, orchestrator)
+}
+
+func (server *Server) initCreateUserHandler(service *application.UserService, publisher saga.Publisher, subscriber saga.Subscriber) {
+	_, err := api.NewCreateUserCommandHandler(service, publisher, subscriber)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (server *Server) initUserHandler(service *application.UserService) *api.UserHandler {
