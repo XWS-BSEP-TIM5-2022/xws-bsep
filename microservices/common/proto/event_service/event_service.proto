@@ -1,0 +1,33 @@
+syntax="proto3";
+
+package event_service;
+
+option go_package = "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/event";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service EventService{
+
+  rpc GetById(GetRequest) returns(GetResponse) {
+    option (google.api.http) = {
+      get: "/api/event/{id}"
+    };
+  }
+
+}
+
+message GetRequest {
+  string id = 1;
+}
+
+message GetResponse {
+  Event event = 1;
+}
+
+message Event {
+  string id = 1;
+  string date = 2;
+}
+
+ 

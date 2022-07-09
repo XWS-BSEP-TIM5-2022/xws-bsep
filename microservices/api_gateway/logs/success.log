@@ -752,3 +752,12 @@
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:244","msg":"Found 0 connections for user with ID: 62c97eb091068320c0bd56ce","time":"2022-07-09T15:12:49+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:259","msg":"Found 0 posts for feed","time":"2022-07-09T15:12:49+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/startup/server.go:290","msg":"Authorized","time":"2022-07-09T15:13:04+02:00","user":"gorana"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:92","msg":"User service registration successful","time":"2022-07-10T00:36:38+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:101","msg":"Auth service registration successful","time":"2022-07-10T00:36:38+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:109","msg":"Connection service registration successful","time":"2022-07-10T00:36:38+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:118","msg":"Message service registration successful","time":"2022-07-10T00:36:38+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:126","msg":"Notification service registration successful","time":"2022-07-10T00:36:38+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:134","msg":"Event service registration successful","time":"2022-07-10T00:36:38+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:142","msg":"Post service registration successful","time":"2022-07-10T00:36:38+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:150","msg":"Job offer service registration successful","time":"2022-07-10T00:36:38+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/api_gateway/startup/server.go:62","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-07-10T00:36:38+02:00"}

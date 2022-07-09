@@ -20,6 +20,7 @@ import (
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	eventGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/event_service"
 	jobOfferGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
 	messageGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
 	notificationGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
@@ -124,6 +125,14 @@ func (server *Server) initHandlers() {
 	}
 	server.CustomLogger.SuccessLogger.Info("Notification service registration successful") // TODO: dodati port i host ?
 
+	eventEndPoint := fmt.Sprintf("%s:%s", server.config.EventHost, server.config.EventPort)
+	err = eventGw.RegisterEventServiceHandlerFromEndpoint(context.TODO(), server.mux, eventEndPoint, opts)
+	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Event service registration failed PORT: ", server.config.EventPort, ", HOST: ", server.config.EventHost)
+		panic(err)
+	}
+	server.CustomLogger.SuccessLogger.Info("Event service registration successful") // TODO: dodati port i host ?
+
 	postEndpoint := fmt.Sprintf("%s:%s", server.config.PostHost, server.config.PostPort)
 	err = postGw.RegisterPostServiceHandlerFromEndpoint(context.TODO(), server.mux, postEndpoint, opts)
 	if err != nil {
@@ -224,6 +233,7 @@ func AccessibleEndpoints() map[string]string {
 	const jobOfferService = "/api/jobOffer"
 	const messageService = "/api/message"
 	const notificationService = "/api/notification"
+	const eventService = "/api/event"
 
 	return map[string]string{
 		authService + "/update":         "UpdateUsername",
