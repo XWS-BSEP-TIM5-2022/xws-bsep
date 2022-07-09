@@ -105,3 +105,26 @@
 {"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:111","msg":"Post service registration successful","time":"2022-07-09T01:07:25+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:119","msg":"Job offer service registration successful","time":"2022-07-09T01:07:25+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:48","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-07-09T01:07:25+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:71","msg":"User service registration successful","time":"2022-07-09T13:26:36+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:79","msg":"Auth service registration successful","time":"2022-07-09T13:26:36+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:87","msg":"Connection service registration successful","time":"2022-07-09T13:26:36+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:95","msg":"Message service registration successful","time":"2022-07-09T13:26:36+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:103","msg":"Notification service registration successful","time":"2022-07-09T13:26:36+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:111","msg":"Post service registration successful","time":"2022-07-09T13:26:36+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:119","msg":"Job offer service registration successful","time":"2022-07-09T13:26:36+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:48","msg":"Starting api gateway successfully, PORT: 8080","time":"2022-07-09T13:26:36+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:410","msg":"Found 3 public posts","time":"2022-07-09T13:28:48+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:410","msg":"Found 3 public posts","time":"2022-07-09T13:30:12+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:233","msg":"User with ID: 62c966ed6c312fb245423631 can access feed","time":"2022-07-09T13:31:47+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:410","msg":"Found 3 public posts","time":"2022-07-09T13:31:54+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:244","msg":"Found 0 connections for user with ID: 62c966ed6c312fb245423631","time":"2022-07-09T13:32:22+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:259","msg":"Found 0 posts for feed","time":"2022-07-09T13:32:22+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:233","msg":"User with ID: 62c9675e6c312fb245423632 can access feed","time":"2022-07-09T13:33:20+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:241","msg":"Authorized","time":"2022-07-09T13:33:48+02:00","user":"magdalena"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:244","msg":"Found 0 connections for user with ID: 62c9675e6c312fb245423632","time":"2022-07-09T13:34:12+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:259","msg":"Found 0 posts for feed","time":"2022-07-09T13:34:12+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/startup/server.go:241","msg":"Authorized","time":"2022-07-09T13:36:31+02:00","user":"magdalena"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:410","msg":"Found 3 public posts","time":"2022-07-09T13:36:37+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:233","msg":"User with ID: 62c966ed6c312fb245423631 can access feed","time":"2022-07-09T13:36:46+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:244","msg":"Found 0 connections for user with ID: 62c966ed6c312fb245423631","time":"2022-07-09T13:36:46+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:259","msg":"Found 0 posts for feed","time":"2022-07-09T13:36:46+02:00"}
