@@ -4,6 +4,8 @@ import (
 	"fmt"
 	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	message "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
+	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
+	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/sirupsen/logrus"
 	"log"
 	"net"
@@ -36,9 +38,12 @@ func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	server.CustomLogger.SuccessLogger.Info("MongoDB initialization for message service successful, PORT: ", server.config.MessageDBPort, ", HOST: ", server.config.MessageDBHost)
 
+	notificationServiceClient := server.initNotificationServiceClient()
+	userServiceClient := server.initUserServiceClient()
+
 	messageStore := server.initMessageStore(mongoClient)
 	messageService := server.initMessageService(messageStore)
-	messageHandler := server.initMessageHandler(messageService)
+	messageHandler := server.initMessageHandler(messageService, notificationServiceClient, userServiceClient)
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for message service")
 	server.startGrpcServer(messageHandler)
@@ -71,8 +76,19 @@ func (server *Server) initMessageService(store domain.MessageStore) *application
 	return application.NewMessageService(store)
 }
 
-func (server *Server) initMessageHandler(service *application.MessageService) *api.MessageHandler {
-	return api.NewMessageHandler(service)
+func (server *Server) initMessageHandler(service *application.MessageService, notificationServiceClient notification.NotificationServiceClient,
+	userServiceClient user.UserServiceClient) *api.MessageHandler {
+	return api.NewMessageHandler(service, notificationServiceClient, userServiceClient)
+}
+
+func (server *Server) initNotificationServiceClient() notification.NotificationServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.NotificationServiceHost, server.config.NotificationServicePort)
+	return persistence.NewNotificationServiceClient(address)
+}
+
+func (server *Server) initUserServiceClient() user.UserServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.UserServiceHost, server.config.UserServicePort)
+	return persistence.NewUserServiceClient(address)
 }
 
 func (server *Server) initConnectionServiceClient() connection.ConnectionServiceClient {
