@@ -56,6 +56,13 @@ service ConnectionService{
     };
   }
 
+  rpc ChangePrivacy(ChangePrivacyRequest) returns (ActionResult) {
+    option (google.api.http) = {
+      put: "/connection/changePrivacy"
+      body:"changePrivacyDTO"
+    };
+  }
+
   rpc CheckConnection(CheckConnectionRequest) returns(ConnectedResult) {
     option (google.api.http) = {
       get: "/connection/user/{userID}/checkConnection/{userIDb}"
@@ -89,6 +96,10 @@ message ApproveConnectionRequest{
   UserAction approveConnectionDTO = 1;
 }
 
+message ChangePrivacyRequest{
+  ChangePrivacyAction changePrivacyDTO = 1;
+}
+
 message RejectConnectionRequest{
   UserAction rejectConnectionDTO = 1;
 }
@@ -103,6 +114,10 @@ message BlockUserRequest{
 
 message ActionResult{
   string msg = 2;
+}
+
+message ChangePrivacyAction{
+  bool private = 1;
 }
 
 message AddConnectionResult{

@@ -15,5 +15,9 @@
 {"level":"error","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:350","msg":"User with ID:62c5ea5a158b08b3c1c04bfc not found","time":"2022-07-06T22:04:33+02:00"}
 {"level":"error","mehtod":"C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:350","msg":"User with ID:62c5ea5a158b08b3c1c04bfc not found","time":"2022-07-06T22:04:53+02:00"}
 {"level":"error","mehtod":"C:/xws-bsep/microservices/user-service/startup/server.go:87","msg":"Failed to listen: %v\u003cnil\u003e","time":"2022-07-07T23:31:02+02:00"}
-[31mERRO[0m[0013]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:201 ObjectId not created with ID:update          
-[31mERRO[0m[0009]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:201 ObjectId not created with ID:postNotification 
+[31mERRO[0m[0000]C:/xws-bsep/microservices/user-service/startup/server.go:135 Failed to listen: %v<nil>                    
+[31mERRO[0m[0000]C:/xws-bsep/microservices/user-service/startup/server.go:135 Failed to listen: %v<nil>                    
+[31mERRO[0m[0118]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:350 User with ID:62c9a331125f99a7031fc49c not found 
+[31mERRO[0m[0119]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:350 User with ID:62c9a331125f99a7031fc49c not found 
+[31mERRO[0m[0125]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:350 User with ID:62c9a331125f99a7031fc49c not found 
+[31mERRO[0m[0127]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:350 User with ID:62c9a331125f99a7031fc49c not found 

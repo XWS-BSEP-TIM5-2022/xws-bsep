@@ -102,3 +102,5 @@
 {"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:27","msg":"usao sam","time":"2022-07-08T00:30:21+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:27","msg":"usao sam","time":"2022-07-08T00:32:09+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:27","msg":"usao sam","time":"2022-07-08T00:33:06+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/job-offer-service/startup/server.go:89","msg":"Failed to listen in connection service: \u003cnil\u003e","time":"2022-07-09T17:21:16+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/job-offer-service/startup/server.go:89","msg":"Failed to listen in connection service: \u003cnil\u003e","time":"2022-07-09T17:24:23+02:00"}
