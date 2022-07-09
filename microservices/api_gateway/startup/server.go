@@ -13,7 +13,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	muxprom "gitlab.com/msvechla/mux-prometheus/pkg/middleware"
 
@@ -25,10 +26,11 @@ import (
 	notificationGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	postGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
-	traceer "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
-	"github.com/opentracing/opentracing-go"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	otgo "github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
+	"github.com/urfave/negroni"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -45,7 +47,7 @@ const name = "api-gateway"
 
 func NewServer(config *cfg.Config) *Server {
 	CustomLogger := api.NewCustomLogger()
-	tracer, closer := traceer.Init(name)
+	tracer, closer := tracer.Init(name)
 	otgo.SetGlobalTracer(tracer)
 	server := &Server{
 		config: config,
@@ -73,15 +75,14 @@ func customMatcher(key string) (string, bool) {
 }
 
 func (server *Server) initHandlers() {
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())} // TODO SD: obrisati?
-	// opts = []grpc.DialOption{
-	// 	grpc.WithUnaryInterceptor(
-	// 		grpc_opentracing.UnaryClientInterceptor(
-	// 			grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
-	// 		),
-	// 	),
-	// }
-
+	// opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())} // TODO SD: obrisati?
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithUnaryInterceptor(
+			grpc_opentracing.UnaryClientInterceptor(
+				grpc_opentracing.WithTracer(otgo.GlobalTracer()),
+			),
+		)}
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	err := userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
 	if err != nil {
@@ -192,27 +193,24 @@ func muxMiddleware(server *Server) http.Handler {
 		endpointName := r.Method + " " + r.URL.Path
 		log.Println("Context: ", r.Context())
 		log.Println("Endpoint: ", endpointName)
-		span := traceer.StartSpanFromContext(r.Context(), endpointName)
-		defer span.Finish()
 
-		ctx := traceer.ContextWithSpan(r.Context(), span)
-		r = r.WithContext(ctx)
+		parentSpanContext, err2 := opentracing.GlobalTracer().Extract(
+			opentracing.HTTPHeaders,
+			opentracing.HTTPHeadersCarrier(r.Header))
+		if err2 == nil || err2 == opentracing.ErrSpanContextNotFound {
+			serverSpan := opentracing.GlobalTracer().StartSpan(
+				endpointName,
+				ext.RPCServerOption(parentSpanContext),
+				grpcGatewayTag,
+			)
+			r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
+			defer serverSpan.Finish()
+		}
+		lrw := negroni.NewResponseWriter(w)
+		server.mux.ServeHTTP(lrw, r)
 
-		// parentSpanContext, err := tracer.Extract(
-		// 	opentracing.HTTPHeaders,
-		// 	opentracing.HTTPHeadersCarrier(r.Header))
-		// if err == nil || err == opentracing.ErrSpanContextNotFound {
-		// 	serverSpan := opentracing.GlobalTracer().StartSpan(
-		// 		"ServeHTTP",
-		// 		// this is magical, it attaches the new span to the parent parentSpanContext, and creates an unparented one if empty.
-		// 		ext.RPCServerOption(parentSpanContext),
-		// 		grpcGatewayTag,
-		// 	)
-		// 	r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
-		// 	defer serverSpan.Finish()
-		// }
-
-		server.mux.ServeHTTP(w, r)
+		statusCode := lrw.Status()
+		log.Println("<-- ", statusCode)
 	})
 }
 

@@ -4,20 +4,22 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"html"
+	"log"
+	"net/http"
+	"regexp"
+	"strings"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/services"
 	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	jobOffer "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gopkg.in/square/go-jose.v2/jwt"
-	"html"
-	"log"
-	"net/http"
-	"regexp"
-	"strings"
 )
 
 type JobOfferHandler struct {
@@ -92,17 +94,23 @@ func (handler *JobOfferHandler) GetRecommendations(w http.ResponseWriter, r *htt
 
 	handler.CustomLogger.SuccessLogger.Info("User with ID: " + id + " can access feed")
 
+	// SD: Tracing job offers
+	endpointName := "GET /api/jobOfferRecommendations/" + id
+	span := tracer.StartSpanFromContext(r.Context(), endpointName)
+	defer span.Finish()
+	ctx := tracer.ContextWithSpan(r.Context(), span)
+
 	user := &domain.User{}
 	posts := &domain.Posts{}
-	err = handler.getUser(user, html.EscapeString(checkId)) /** EscapeString **/
+	err = handler.getUser(ctx, user, html.EscapeString(checkId)) /** EscapeString **/
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("User with ID:" + id + " not found")
 		return
 	}
 
-	err = handler.findJobOffers(user, posts)
+	err = handler.findJobOffers(ctx, user, posts)
 
-	allJobs := handler.findRecommendations(user, posts)
+	allJobs := handler.findRecommendations(ctx, user, posts)
 
 	response, err := json.Marshal(allJobs)
 	if err != nil {
@@ -142,9 +150,9 @@ func (handler *JobOfferHandler) AuthorizeUser(w http.ResponseWriter, r *http.Req
 	return "success"
 }
 
-func (handler *JobOfferHandler) getUser(loggedUser *domain.User, userId string) error {
+func (handler *JobOfferHandler) getUser(ctx context.Context, loggedUser *domain.User, userId string) error {
 	userClient := services.NewUserClient(handler.userClientAddress)
-	foundUser, err := userClient.Get(context.TODO(), &user.GetRequest{Id: userId})
+	foundUser, err := userClient.Get(ctx, &user.GetRequest{Id: userId})
 	fmt.Println(err)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get user with ID: " + userId + " unsuccessful")
@@ -188,10 +196,10 @@ func (handler *JobOfferHandler) getUser(loggedUser *domain.User, userId string) 
 	return nil
 }
 
-func (handler *JobOfferHandler) findJobOffers(loggedUser *domain.User, posts *domain.Posts) error {
+func (handler *JobOfferHandler) findJobOffers(ctx context.Context, loggedUser *domain.User, posts *domain.Posts) error {
 
 	postClient := services.NewPostClient(handler.postClientAddress)
-	allPosts, err := postClient.GetAll(context.TODO(), &post.GetAllRequest{})
+	allPosts, err := postClient.GetAll(ctx, &post.GetAllRequest{})
 
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get all posts unsuccessful")
@@ -206,7 +214,7 @@ func (handler *JobOfferHandler) findJobOffers(loggedUser *domain.User, posts *do
 		//TODO: nadji poslove od konekcija
 		if post.IsJobOffer {
 			userClient := services.NewUserClient(handler.userClientAddress)
-			foundUser, _ := userClient.Get(context.TODO(), &user.GetRequest{Id: post.UserId})
+			foundUser, _ := userClient.Get(ctx, &user.GetRequest{Id: post.UserId})
 			//korisnik koji je napravio post
 			if foundUser.User.IsPublic {
 				for _, skill := range loggedUser.Skills {
@@ -280,10 +288,10 @@ func (handler *JobOfferHandler) findJobOffers(loggedUser *domain.User, posts *do
 
 	//pronadjemo konekcije korisnika
 	connections := &domain.Users{}
-	err = handler.getAllConnections(connections, html.EscapeString(loggedUser.Id)) /** EscapeString **/
+	err = handler.getAllConnections(ctx, connections, html.EscapeString(loggedUser.Id)) /** EscapeString **/
 
 	for _, conn := range connections.UsersDetails {
-		postsByUser, err := postClient.GetAllByUser(context.TODO(), &post.GetRequest{Id: conn.Id})
+		postsByUser, err := postClient.GetAllByUser(ctx, &post.GetRequest{Id: conn.Id})
 		if err != nil {
 			handler.CustomLogger.ErrorLogger.Error("Get posts by user with ID: " + conn.Id + " unsuccessful")
 			return err
@@ -365,10 +373,10 @@ func (handler *JobOfferHandler) findJobOffers(loggedUser *domain.User, posts *do
 	return nil
 }
 
-func (handler *JobOfferHandler) getAllConnections(users *domain.Users, userId string) error {
+func (handler *JobOfferHandler) getAllConnections(ctx context.Context, users *domain.Users, userId string) error {
 	// sanitizacija userId uradjena pre poziva same fje
 	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
-	connections, err := connectionClient.GetConnections(context.TODO(), &connection.GetRequest{UserID: userId})
+	connections, err := connectionClient.GetConnections(ctx, &connection.GetRequest{UserID: userId})
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get connections for user with ID: " + userId + " unsuccessful")
 		return err
@@ -383,7 +391,7 @@ func (handler *JobOfferHandler) getAllConnections(users *domain.Users, userId st
 	return nil
 }
 
-func (handler *JobOfferHandler) findRecommendations(loggedUser *domain.User, posts *domain.Posts) *jobOffer.Recommendations {
+func (handler *JobOfferHandler) findRecommendations(ctx context.Context, loggedUser *domain.User, posts *domain.Posts) *jobOffer.Recommendations {
 	jobOfferClient := services.NewJobOfferClient(handler.jobOfferAddress)
 
 	user := &jobOffer.User{
@@ -450,7 +458,7 @@ func (handler *JobOfferHandler) findRecommendations(loggedUser *domain.User, pos
 			JobOffers: response,
 		},
 	}
-	allJobs, err := jobOfferClient.GetRecommendations(context.TODO(), req)
+	allJobs, err := jobOfferClient.GetRecommendations(ctx, req)
 
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Error while finding job recommendations")

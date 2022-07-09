@@ -41,10 +41,12 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 	switch command.Type {
 	case events.CreateAuth:
 		err := handler.authService.Register(*auth, command.User.Role, command.User.Email)
+		fmt.Println(err)
 		if err != nil {
 			fmt.Println("Auth credentials are not saved, err:", err)
 			reply.Type = events.AuthNotCreated
 		} else {
+			fmt.Println("Sve ok")
 			reply.Type = events.AuthCreated
 		}
 	case events.RollbackAuth:
