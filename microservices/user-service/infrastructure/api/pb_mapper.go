@@ -68,7 +68,7 @@ func mapUser(user *domain.User) *pb.User {
 
 func mapInsertUser(user *pb.User) *domain.User {
 	id, _ := primitive.ObjectIDFromHex(user.Id)
-
+  
 	userPb := &domain.User{
 		Id:               id,
 		Name:             removeMalicious(user.Name),
