@@ -102,6 +102,13 @@ service UserService{
             body: "user"
         };
     }
+
+    rpc UpdatePrivacy(UpdateRequest) returns (UpdateResponse) {
+        option (google.api.http) = {
+            put: "/api/user/updatePrivacy"
+            body: "user"
+        };
+    }
 }
 
 message PostNotificationResponse{}

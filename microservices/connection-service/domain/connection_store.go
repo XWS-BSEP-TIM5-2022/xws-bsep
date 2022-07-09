@@ -12,4 +12,5 @@ type ConnectionStore interface {
 	CheckConnection(userIDa, userIDb string) (*pb.ConnectedResult, error)
 	GetRequests(id string) ([]UserConn, error)
 	GetRecommendation(userID string) ([]*UserConn, error)
+	ChangePrivacy(userIDa string, isPrivate bool) (*pb.ActionResult, error)
 }

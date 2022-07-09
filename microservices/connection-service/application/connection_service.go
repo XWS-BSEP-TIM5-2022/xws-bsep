@@ -70,3 +70,7 @@ func (service *ConnectionService) CheckConnection(userIDa, userIDb string) (*pb.
 func (service *ConnectionService) GetRecommendation(userID string) ([]*domain.UserConn, error) {
 	return service.store.GetRecommendation(userID)
 }
+
+func (service *ConnectionService) ChangePrivacy(userIDa string, isPrivate bool) (*pb.ActionResult, error) {
+	return service.store.ChangePrivacy(userIDa, isPrivate)
+}

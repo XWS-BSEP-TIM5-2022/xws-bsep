@@ -316,6 +316,48 @@ func (store *UserMongoDBStore) UpdateBasicInfo(ctx context.Context, user *domain
 
 }
 
+func (store *UserMongoDBStore) UpdatePrivacy(ctx context.Context, user *domain.User) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdatePrivacyInfo database store")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	oldData := bson.M{"_id": user.Id}
+	oldUser, _ := store.filterOne(oldData)
+
+	newData := bson.M{"$set": bson.M{
+		"name":          oldUser.Name,
+		"last_name":     oldUser.LastName,
+		"mobile_number": oldUser.MobileNumber,
+		"gender":        oldUser.Gender,
+		"birthday":      oldUser.Birthday,
+		"email":         oldUser.Email,
+		"biography":     oldUser.Biography,
+		"is_public":     user.IsPublic,
+	}}
+
+	if oldUser != nil && user.Email != "" && user.Email != oldUser.Email {
+
+		checkEmail, _ := store.GetByEmail(user.Email)
+
+		if checkEmail != nil {
+			return "email already exists", errors.New("email already exists")
+		}
+	}
+
+	opts := options.Update().SetUpsert(true)
+
+	result, err := store.users.UpdateOne(context.TODO(), oldData, newData, opts)
+
+	if err != nil {
+		return "error", err
+	}
+	if result.MatchedCount != 1 {
+		return "one document should've been updated", errors.New("one document should've been updated")
+	}
+	return "success", nil
+
+}
+
 func (store *UserMongoDBStore) UpdateExperienceAndEducation(ctx context.Context, user *domain.User) (string, error) {
 	span := tracer.StartSpanFromContext(ctx, "UpdateExperienceAndEducation database store")
 	defer span.Finish()

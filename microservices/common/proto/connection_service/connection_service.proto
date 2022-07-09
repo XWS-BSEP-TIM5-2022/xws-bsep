@@ -75,7 +75,23 @@ service ConnectionService{
     };
   }
 
+  rpc ChangePrivacy(ChangePrivacyRequest) returns (ActionResult) {
+    option (google.api.http) = {
+      put: "/connection/changePrivacy"
+      body:"changePrivacyDTO"
+    };
+  }
+
 }
+
+message ChangePrivacyRequest{
+  ChangePrivacyAction changePrivacyDTO = 1;
+}
+
+message ChangePrivacyAction{
+  bool private = 1;
+}
+
 
 message RegisterRequest{
   User user = 1;

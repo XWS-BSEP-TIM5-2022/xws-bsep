@@ -16,6 +16,7 @@ type UserStore interface {
 	DeleteAll()
 	Update(ctx context.Context, user *User) (string, error)
 	UpdateBasicInfo(ctx context.Context, user *User) (string, error)
+	UpdatePrivacy(ctx context.Context, user *User) (string, error)
 	UpdateExperienceAndEducation(ctx context.Context, user *User) (string, error)
 	UpdateSkillsAndInterests(ctx context.Context, user *User) (string, error)
 	GetById(ctx context.Context, userId string) (*User, error)

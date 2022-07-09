@@ -251,3 +251,6 @@
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:128","msg":"Post with ID: 62c97c507cb2aeb81cb6afee created by user with ID: 62c9712531e86c49628632e2","time":"2022-07-09T15:02:08+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:107","msg":"Found 2 posts created by user with ID: 62c97b0031e86c49628632e3","time":"2022-07-09T15:02:09+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:82","msg":"Found 5 posts","time":"2022-07-09T15:11:54+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/startup/server.go:39","msg":"MongoDB initialization for post service successful, PORT: 27017, HOST: localhost","time":"2022-07-09T21:59:57+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/startup/server.go:49","msg":"Starting gRPC server for post service","time":"2022-07-09T21:59:57+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:82","msg":"Found 3 posts","time":"2022-07-09T22:06:15+02:00"}
