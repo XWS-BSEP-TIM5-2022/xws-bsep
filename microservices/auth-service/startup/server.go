@@ -35,13 +35,9 @@ const name = "auth-service"
 
 func NewServer(config *config.Config) *Server {
 	CustomLogger := api.NewCustomLogger()
-	tracer, closer := tracer.Init(name)
-	otgo.SetGlobalTracer(tracer)
 	return &Server{
 		config:       config,
 		CustomLogger: CustomLogger,
-		tracer:       tracer,
-		closer:       closer,
 	}
 }
 
@@ -50,6 +46,9 @@ const (
 )
 
 func (server *Server) Start() {
+	tracer, _ := tracer.Init(name)
+	otgo.SetGlobalTracer(tracer)
+
 	postgresClient := server.initPostgresClient()
 	authStore := server.initAuthStore(postgresClient)
 

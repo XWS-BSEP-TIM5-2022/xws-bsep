@@ -60,11 +60,16 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 			}
 			fmt.Println("User is approved! ", User)
 			reply.Type = events.UserApproved
+			return
 		}
 	case events.DeleteUser:
+		if command.User.Id == "" {
+			log.Println("Ende saga ")
+			return
+		}
 		objID, err := primitive.ObjectIDFromHex(command.User.Id)
 		if err != nil {
-			log.Println("User is not deleted, err: ", err)
+			log.Println("User is not deleted $$$$, err: ", err)
 		} else {
 			User := &domain.User{
 				Id:    objID,
@@ -75,6 +80,7 @@ func (handler *CreateUserCommandHandler) handle(command *events.CreateUserComman
 				log.Println("User is not deleted by id: ", err)
 			} else {
 				reply.Type = events.UserDeleted
+				return
 			}
 		}
 	default:

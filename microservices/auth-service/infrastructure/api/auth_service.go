@@ -248,7 +248,9 @@ func (service *AuthService) sendEmail(sendTo, body, subject string) error {
 			"email_sender":          config.NewConfig().EmailFrom,
 			"email_sender_password": hashedPassword,
 		}).Error("Email server did not send the message")
-		return err
+		fmt.Println("Greska")
+		fmt.Println(err)
+		return errors.New("Email server did not send the message")
 	}
 	return nil
 }
