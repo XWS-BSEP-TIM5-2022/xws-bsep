@@ -3,37 +3,45 @@ package config
 import "os"
 
 type Config struct {
-	Port                  string
-	MessageDBHost         string
-	MessageDBPort         string
-	MessageDBName         string
-	MessageDBMessage      string
-	MessageDBPass         string
-	PublicKey             string
-	LogsFolder            string
-	InfoLogsFile          string
-	DebugLogsFile         string
-	ErrorLogsFile         string
-	SuccessLogsFile       string
-	WarningLogsFile       string
-	ConnectionServicePort string
-	ConnectionServiceHost string
+	Port                    string
+	MessageDBHost           string
+	MessageDBPort           string
+	MessageDBName           string
+	MessageDBMessage        string
+	MessageDBPass           string
+	PublicKey               string
+	LogsFolder              string
+	InfoLogsFile            string
+	DebugLogsFile           string
+	ErrorLogsFile           string
+	SuccessLogsFile         string
+	WarningLogsFile         string
+	ConnectionServicePort   string
+	ConnectionServiceHost   string
+	NotificationServicePort string
+	NotificationServiceHost string
+	UserServicePort         string
+	UserServiceHost         string
 }
 
 func NewConfig() *Config {
 	return &Config{
-		Port:                  os.Getenv("MESSAGE_SERVICE_PORT"),
-		MessageDBHost:         os.Getenv("MESSAGE_DB_HOST"),
-		MessageDBPort:         os.Getenv("MESSAGE_DB_PORT"),
-		PublicKey:             os.Getenv("PUBLIC_KEY"),
-		LogsFolder:            os.Getenv("LOGS_FOLDER"),
-		InfoLogsFile:          os.Getenv("INFO_LOGS_FILE"),
-		DebugLogsFile:         os.Getenv("DEBUG_LOGS_FILE"),
-		ErrorLogsFile:         os.Getenv("ERROR_LOGS_FILE"),
-		SuccessLogsFile:       os.Getenv("SUCCESS_LOGS_FILE"),
-		WarningLogsFile:       os.Getenv("WARNING_LOGS_FILE"),
-		ConnectionServiceHost: os.Getenv("CONNECTION_SERVICE_HOST"),
-		ConnectionServicePort: os.Getenv("CONNECTION_SERVICE_PORT"),
+		Port:                    os.Getenv("MESSAGE_SERVICE_PORT"),
+		MessageDBHost:           os.Getenv("MESSAGE_DB_HOST"),
+		MessageDBPort:           os.Getenv("MESSAGE_DB_PORT"),
+		PublicKey:               os.Getenv("PUBLIC_KEY"),
+		LogsFolder:              os.Getenv("LOGS_FOLDER"),
+		InfoLogsFile:            os.Getenv("INFO_LOGS_FILE"),
+		DebugLogsFile:           os.Getenv("DEBUG_LOGS_FILE"),
+		ErrorLogsFile:           os.Getenv("ERROR_LOGS_FILE"),
+		SuccessLogsFile:         os.Getenv("SUCCESS_LOGS_FILE"),
+		WarningLogsFile:         os.Getenv("WARNING_LOGS_FILE"),
+		ConnectionServiceHost:   os.Getenv("CONNECTION_SERVICE_HOST"),
+		ConnectionServicePort:   os.Getenv("CONNECTION_SERVICE_PORT"),
+		NotificationServiceHost: os.Getenv("NOTIFICATION_SERVICE_HOST"),
+		NotificationServicePort: os.Getenv("NOTIFICATION_SERVICE_PORT"),
+		UserServiceHost:         os.Getenv("USER_SERVICE_HOST"),
+		UserServicePort:         os.Getenv("USER_SERVICE_PORT"),
 
 		//Port:                  "8085",
 		//MessageDBHost:         "localhost",
@@ -47,5 +55,9 @@ func NewConfig() *Config {
 		//WarningLogsFile:       "/warning.log",
 		//ConnectionServiceHost: "localhost",
 		//ConnectionServicePort: "8084",
+		//NotificationServiceHost: "localhost",
+		//NotificationServicePort: "8086",
+		//UserServiceHost:         "localhost",
+		//UserServicePort:         "8081",
 	}
 }

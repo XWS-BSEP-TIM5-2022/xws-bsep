@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
+	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
+	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/message_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
@@ -14,13 +16,18 @@ type MessageHandler struct {
 	service      *application.MessageService
 	CustomLogger *CustomLogger
 	pb.UnimplementedMessageServiceServer
+	notificationServiceClient notification.NotificationServiceClient
+	userServiceClient         user.UserServiceClient
 }
 
-func NewMessageHandler(service *application.MessageService) *MessageHandler {
+func NewMessageHandler(service *application.MessageService, notificationServiceClient notification.NotificationServiceClient,
+	userServiceClient user.UserServiceClient) *MessageHandler {
 	CustomLogger := NewCustomLogger()
 	return &MessageHandler{
-		service:      service,
-		CustomLogger: CustomLogger,
+		service:                   service,
+		CustomLogger:              CustomLogger,
+		notificationServiceClient: notificationServiceClient,
+		userServiceClient:         userServiceClient,
 	}
 }
 
@@ -115,6 +122,17 @@ func (handler *MessageHandler) NewMessage(ctx context.Context, request *pb.NewMe
 	}
 
 	handler.CustomLogger.SuccessLogger.Info("New message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver + " sent!")
+
+	// slanje notifikacija
+	current_user, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: sender})
+	if current_user.User.PostNotification == true {
+		notificationRequest := &notification.InsertNotificationRequest{}
+		notificationRequest.Notification = &notification.Notification{}
+		notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(0)
+		notificationRequest.Notification.Text = "User " + current_user.User.Name + " " + current_user.User.LastName + " messaged you"
+		notificationRequest.Notification.UserId = request.Message.Receiver
+		handler.notificationServiceClient.Insert(ctx, notificationRequest)
+	}
 
 	return response, nil
 
