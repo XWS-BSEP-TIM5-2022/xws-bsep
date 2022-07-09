@@ -4,10 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
-	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
-	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
-	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
@@ -20,22 +17,15 @@ import (
 
 type PostHandler struct {
 	pb.UnimplementedPostServiceServer
-	service                   *application.PostService
-	CustomLogger              *CustomLogger
-	notificationServiceClient notification.NotificationServiceClient
-	connectionServiceClient   connection.ConnectionServiceClient
-	userServiceClient         user.UserServiceClient
+	service      *application.PostService
+	CustomLogger *CustomLogger
 }
 
-func NewPostHandler(service *application.PostService, notificationServiceClient notification.NotificationServiceClient,
-	connectionServiceClient connection.ConnectionServiceClient, userServiceClient user.UserServiceClient) *PostHandler {
+func NewPostHandler(service *application.PostService) *PostHandler {
 	CustomLogger := NewCustomLogger()
 	return &PostHandler{
-		service:                   service,
-		CustomLogger:              CustomLogger,
-		notificationServiceClient: notificationServiceClient,
-		connectionServiceClient:   connectionServiceClient,
-		userServiceClient:         userServiceClient,
+		service:      service,
+		CustomLogger: CustomLogger,
 	}
 }
 
@@ -126,29 +116,10 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 		Success: success,
 	}
 	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + post.Id.Hex() + " created by user with ID: " + post.UserId)
-
-	// slanje notifikacija
-	connections, err := handler.connectionServiceClient.GetConnections(ctx, &connection.GetRequest{UserID: userId})
-	if err != nil {
-		return nil, err
-	}
-
-	sender, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: userId})
-	for _, user_in_list := range connections.Users {
-		current_user, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: user_in_list.UserID})
-		if current_user.User.PostNotification == true {
-			notificationRequest := &notification.InsertNotificationRequest{}
-			notificationRequest.Notification = &notification.Notification{}
-			notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(2)
-			notificationRequest.Notification.Text = "User " + sender.User.Name + " " + sender.User.LastName + " created new post"
-			notificationRequest.Notification.UserId = user_in_list.UserID
-			handler.notificationServiceClient.Insert(ctx, notificationRequest)
-		}
-	}
-
 	return response, err
 }
 
+// TODO: prebaciti u servis ?
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
 	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
 	if err != nil {

@@ -18,16 +18,3 @@ func NewNotificationService(store domain.NotificationStore) *NotificationService
 func (service *NotificationService) GetById(id primitive.ObjectID) (*domain.Notification, error) {
 	return service.store.GetById(id)
 }
-
-func (service *NotificationService) GetAll() ([]*domain.Notification, error) {
-	return service.store.GetAll()
-}
-
-func (service *NotificationService) Insert(notification *domain.Notification) (string, error) {
-	success, err := service.store.Insert(notification)
-	return success, err
-}
-
-func (service *NotificationService) GetAllByUser(id string) ([]*domain.Notification, error) {
-	return service.store.GetAllByUser(id)
-}

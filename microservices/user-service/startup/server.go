@@ -2,7 +2,6 @@ package startup
 
 import (
 	"fmt"
-	"io"
 	"log"
 	"net"
 
@@ -15,33 +14,23 @@ import (
 	inventory "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	saga "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/saga/messaging"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/saga/messaging/nats"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/infrastructure/api"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/startup/config"
-	otgo "github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
 )
 
 type Server struct {
 	config       *config.Config
 	CustomLogger *api.CustomLogger
-	tracer       otgo.Tracer
-	closer       io.Closer
 }
-
-const name = "user-service"
 
 func NewServer(config *config.Config) *Server {
 	CustomLogger := api.NewCustomLogger()
-	tracer, closer := tracer.Init(name)
-	otgo.SetGlobalTracer(tracer)
 	return &Server{
 		config:       config,
 		CustomLogger: CustomLogger,
-		tracer:       tracer,
-		closer:       closer,
 	}
 }
 
@@ -95,6 +84,7 @@ func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
 }
 
 func (server *Server) initPublisher(subject string) saga.Publisher {
+	log.Println("(((((((((((((((( publisher, subj:", subject)
 	log.Println(server.config.NatsHost, server.config.NatsPort,
 		server.config.NatsUser, server.config.NatsPass, subject)
 	publisher, err := nats.NewNATSPublisher(

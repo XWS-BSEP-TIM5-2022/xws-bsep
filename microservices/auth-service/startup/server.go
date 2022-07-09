@@ -2,7 +2,6 @@ package startup
 
 import (
 	"fmt"
-	"io"
 	"log"
 	"net"
 
@@ -10,16 +9,15 @@ import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/api"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/persistence"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/startup/config"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	auth_service_proto "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	saga "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/saga/messaging"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/saga/messaging/nats"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
-	"github.com/dgrijalva/jwt-go"
-	otgo "github.com/opentracing/opentracing-go"
-	"github.com/sirupsen/logrus"
-	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
@@ -27,21 +25,13 @@ import (
 type Server struct {
 	config       *config.Config
 	CustomLogger *api.CustomLogger
-	tracer       otgo.Tracer
-	closer       io.Closer
 }
-
-const name = "auth-service"
 
 func NewServer(config *config.Config) *Server {
 	CustomLogger := api.NewCustomLogger()
-	tracer, closer := tracer.Init(name)
-	otgo.SetGlobalTracer(tracer)
 	return &Server{
 		config:       config,
 		CustomLogger: CustomLogger,
-		tracer:       tracer,
-		closer:       closer,
 	}
 }
 
@@ -92,7 +82,7 @@ func (server *Server) initPostgresClient() *gorm.DB {
 			"auth_db_host":     server.config.AuthDBHost,
 			"auth_db_port":     server.config.AuthDBPort,
 			"auth_db_user":     server.config.AuthDBUser,
-			"auth_db_password": string(hashedPassword),
+			"auth_db_password": string(hashedPassword), // TODO SD: password kao plain txt/hesirana?
 			"auth_db_name":     server.config.AuthDBName,
 		}).Error("Postgres database initialization error")
 		// log.Fatal(err)

@@ -2,8 +2,7 @@ package startup
 
 import (
 	"fmt"
-	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
-	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
+	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/sirupsen/logrus"
 	"log"
@@ -38,13 +37,9 @@ func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	server.CustomLogger.SuccessLogger.Info("MongoDB initialization for post service successful, PORT: ", server.config.PostDBPort, ", HOST: ", server.config.PostDBHost)
 
-	notificationServiceClient := server.initNotificationServiceClient()
-	connectionServiceClient := server.initConnectionServiceClient()
-	userServiceClient := server.initUserServiceClient()
-
 	postStore := server.initPostStore(mongoClient)
 	postService := server.initPostService(postStore)
-	postHandler := server.initPostHandler(postService, notificationServiceClient, connectionServiceClient, userServiceClient)
+	postHandler := server.initPostHandler(postService)
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for post service")
 	server.startGrpcServer(postHandler)
@@ -77,24 +72,18 @@ func (server *Server) initPostService(store domain.PostStore) *application.PostS
 	return application.NewPostService(store)
 }
 
-func (server *Server) initNotificationServiceClient() notification.NotificationServiceClient {
-	address := fmt.Sprintf("%s:%s", server.config.NotificationServiceHost, server.config.NotificationServicePort)
-	return persistence.NewNotificationServiceClient(address)
-}
-
-func (server *Server) initConnectionServiceClient() connection.ConnectionServiceClient {
-	address := fmt.Sprintf("%s:%s", server.config.ConnectionServiceHost, server.config.ConnectionServicePort)
-	return persistence.NewConnectionServiceClient(address)
-}
-
 func (server *Server) initUserServiceClient() user.UserServiceClient {
 	address := fmt.Sprintf("%s:%s", server.config.UserServiceHost, server.config.UserServicePort)
 	return persistence.NewUserServiceClient(address)
 }
 
-func (server *Server) initPostHandler(service *application.PostService, notificationServiceClient notification.NotificationServiceClient,
-	connectionServiceClient connection.ConnectionServiceClient, userServiceClient user.UserServiceClient) *api.PostHandler {
-	return api.NewPostHandler(service, notificationServiceClient, connectionServiceClient, userServiceClient)
+func (server *Server) initAuthServiceClient() auth.AuthServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.AuthServiceHost, server.config.AuthServicePort)
+	return persistence.NewAuthServiceClient(address)
+}
+
+func (server *Server) initPostHandler(service *application.PostService) *api.PostHandler {
+	return api.NewPostHandler(service)
 }
 
 func (server *Server) startGrpcServer(postHandler *api.PostHandler) {

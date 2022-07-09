@@ -3,8 +3,7 @@ package persistence
 import (
 	"context"
 	"fmt"
-	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
-	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
+	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -27,20 +26,12 @@ func NewUserServiceClient(address string) user.UserServiceClient {
 	return user.NewUserServiceClient(con)
 }
 
-func NewConnectionServiceClient(address string) connection.ConnectionServiceClient {
+func NewAuthServiceClient(address string) auth.AuthServiceClient {
 	con, err := getConnection(address)
 	if err != nil {
-		log.Fatalf("Failed to start gRPC connection to Connection service: %v", err)
+		log.Fatalf("Failed to start gRPC connection to Auth service: %v", err)
 	}
-	return connection.NewConnectionServiceClient(con)
-}
-
-func NewNotificationServiceClient(address string) notification.NotificationServiceClient {
-	con, err := getConnection(address)
-	if err != nil {
-		log.Fatalf("Failed to start gRPC connection to Notification service: %v", err)
-	}
-	return notification.NewNotificationServiceClient(con)
+	return auth.NewAuthServiceClient(con)
 }
 
 func getConnection(address string) (*grpc.ClientConn, error) {

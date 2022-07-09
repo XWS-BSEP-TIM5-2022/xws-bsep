@@ -16,31 +16,12 @@ import (
 var validate *validator.Validate
 
 const (
-	DATABASE   = "notification_db"
+	DATABASE   = "notification"
 	COLLECTION = "notification"
 )
 
 type NotificationMongoDBStore struct {
 	notifications *mongo.Collection
-}
-
-func (store *NotificationMongoDBStore) GetAllByUser(id string) ([]*domain.Notification, error) {
-	filter := bson.M{"user_id": id}
-	return store.filter(filter)
-}
-
-func (store NotificationMongoDBStore) GetAll() ([]*domain.Notification, error) {
-	filter := bson.D{{}}
-	return store.filter(filter)
-}
-
-func (store NotificationMongoDBStore) Insert(post *domain.Notification) (string, error) {
-	result, err := store.notifications.InsertOne(context.TODO(), post)
-	if err != nil {
-		return "error", err
-	}
-	post.Id = result.InsertedID.(primitive.ObjectID)
-	return "success", nil
 }
 
 func (store NotificationMongoDBStore) GetById(id primitive.ObjectID) (*domain.Notification, error) {
