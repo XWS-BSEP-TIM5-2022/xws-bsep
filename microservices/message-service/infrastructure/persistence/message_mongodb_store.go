@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "context"
 	_ "errors"
-	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/message_service/domain"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
@@ -17,7 +16,7 @@ import (
 var validate *validator.Validate
 
 const (
-	DATABASE   = "message"
+	DATABASE   = "message_db"
 	COLLECTION = "message"
 )
 
@@ -57,8 +56,6 @@ func (store MessageMongoDBStore) GetAllConversationsForUser(user string) ([]*dom
 func (store MessageMongoDBStore) NewMessage(message *domain.Message, sender string) (*domain.Conversation, error) {
 
 	conversation, err := store.GetConversation(sender, message.Receiver)
-	fmt.Println("ovde ce")
-	fmt.Println(conversation)
 	if conversation == nil {
 
 		//senderId, _ := primitive.ObjectIDFromHex(sender)
@@ -80,7 +77,6 @@ func (store MessageMongoDBStore) NewMessage(message *domain.Message, sender stri
 
 	} else {
 
-		fmt.Println("usao")
 		messages := append(conversation.Messages, *message)
 
 		oldData := bson.M{"_id": conversation.Id}

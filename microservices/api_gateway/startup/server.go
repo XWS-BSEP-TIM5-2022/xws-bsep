@@ -3,6 +3,7 @@ package startup
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -24,6 +25,10 @@ import (
 	notificationGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	postGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	traceer "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
+	"github.com/opentracing/opentracing-go"
+	otgo "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -32,16 +37,24 @@ type Server struct {
 	config       *cfg.Config
 	mux          *runtime.ServeMux
 	CustomLogger *api.CustomLogger
+	tracer       otgo.Tracer
+	closer       io.Closer
 }
+
+const name = "api-gateway"
 
 func NewServer(config *cfg.Config) *Server {
 	CustomLogger := api.NewCustomLogger()
+	tracer, closer := traceer.Init(name)
+	otgo.SetGlobalTracer(tracer)
 	server := &Server{
 		config: config,
 		mux: runtime.NewServeMux(
 			runtime.WithIncomingHeaderMatcher(customMatcher),
 		),
 		CustomLogger: CustomLogger,
+		tracer:       tracer,
+		closer:       closer,
 	}
 	server.initHandlers()
 	server.initCustomHandlers()
@@ -60,7 +73,14 @@ func customMatcher(key string) (string, bool) {
 }
 
 func (server *Server) initHandlers() {
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())} // TODO SD: obrisati?
+	// opts = []grpc.DialOption{
+	// 	grpc.WithUnaryInterceptor(
+	// 		grpc_opentracing.UnaryClientInterceptor(
+	// 			grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+	// 		),
+	// 	),
+	// }
 
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	err := userGw.RegisterUserServiceHandlerFromEndpoint(context.TODO(), server.mux, userEndpoint, opts)
@@ -68,7 +88,8 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("User service registration failed, PORT: ", server.config.UserPort, ", HOST: ", server.config.UserHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("User service registration successful") // TODO: dodati port i host ?
+	server.CustomLogger.SuccessLogger.Info("User service registration successful")
+	log.Println("User service registration successful")
 
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
 	err = authGw.RegisterAuthServiceHandlerFromEndpoint(context.TODO(), server.mux, authEndpoint, opts)
@@ -76,7 +97,7 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("Auth service registration failed PORT: ", server.config.AuthPort, ", HOST: ", server.config.AuthHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Auth service registration successful") // TODO: dodati port i host ?
+	server.CustomLogger.SuccessLogger.Info("Auth service registration successful")
 
 	connectionEndPoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	err = connectionGw.RegisterConnectionServiceHandlerFromEndpoint(context.TODO(), server.mux, connectionEndPoint, opts)
@@ -84,7 +105,7 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("Connection service registration failed PORT: ", server.config.ConnectionPort, ", HOST: ", server.config.ConnectionHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Connection service registration successful") // TODO: dodati port i host ?
+	server.CustomLogger.SuccessLogger.Info("Connection service registration successful")
 
 	messageEndPoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
 	err = messageGw.RegisterMessageServiceHandlerFromEndpoint(context.TODO(), server.mux, messageEndPoint, opts)
@@ -92,6 +113,7 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("Message service registration failed PORT: ", server.config.MessagePort, ", HOST: ", server.config.MessageHost)
 		panic(err)
 	}
+
 	server.CustomLogger.SuccessLogger.Info("Message service registration successful") // TODO: dodati port i host ?
 
 	notificationEndPoint := fmt.Sprintf("%s:%s", server.config.NotificationHost, server.config.NotificationPort)
@@ -108,7 +130,7 @@ func (server *Server) initHandlers() {
 		server.CustomLogger.ErrorLogger.Error("Post service registration failed PORT: ", server.config.PostPort, ", HOST: ", server.config.PostHost)
 		panic(err)
 	}
-	server.CustomLogger.SuccessLogger.Info("Post service registration successful") // TODO: dodati port i host ?
+	server.CustomLogger.SuccessLogger.Info("Post service registration successful")
 
 	jobOfferEndpoint := fmt.Sprintf("%s:%s", server.config.JobOfferHost, server.config.JobOfferPort)
 	err = jobOfferGw.RegisterJobOfferServiceHandlerFromEndpoint(context.TODO(), server.mux, jobOfferEndpoint, opts)
@@ -153,6 +175,8 @@ func (server *Server) Start() {
 	log.Fatal(http.ListenAndServeTLS(fmt.Sprintf(":%s", server.config.Port), crtPath, keyPath, r))
 }
 
+var grpcGatewayTag = opentracing.Tag{Key: string(ext.Component), Value: "grpc-gateway"}
+
 func muxMiddleware(server *Server) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		accessiblePermissions := AccessibleEndpoints()
@@ -164,6 +188,30 @@ func muxMiddleware(server *Server) http.Handler {
 			Authorize(server, accessiblePermission, tokenString)
 		}
 		log.Println(server.config.AuthHost + ":" + server.config.AuthPort)
+
+		endpointName := r.Method + " " + r.URL.Path
+		log.Println("Context: ", r.Context())
+		log.Println("Endpoint: ", endpointName)
+		span := traceer.StartSpanFromContext(r.Context(), endpointName)
+		defer span.Finish()
+
+		ctx := traceer.ContextWithSpan(r.Context(), span)
+		r = r.WithContext(ctx)
+
+		// parentSpanContext, err := tracer.Extract(
+		// 	opentracing.HTTPHeaders,
+		// 	opentracing.HTTPHeadersCarrier(r.Header))
+		// if err == nil || err == opentracing.ErrSpanContextNotFound {
+		// 	serverSpan := opentracing.GlobalTracer().StartSpan(
+		// 		"ServeHTTP",
+		// 		// this is magical, it attaches the new span to the parent parentSpanContext, and creates an unparented one if empty.
+		// 		ext.RPCServerOption(parentSpanContext),
+		// 		grpcGatewayTag,
+		// 	)
+		// 	r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
+		// 	defer serverSpan.Finish()
+		// }
+
 		server.mux.ServeHTTP(w, r)
 	})
 }
@@ -187,6 +235,7 @@ func AccessibleEndpoints() map[string]string {
 		userService + "/updateExperienceAndEducation": "UpdateUserProfile",
 		userService + "/updateSkillsAndInterests":     "UpdateUserProfile",
 		userService + "/info":                         "GetLoggedInUserInfo",
+		userService + "/postNotification":             "UpdateUserProfile",
 
 		postService + "":         "CreatePost",
 		postService + "/like":    "UpdatePostLikes",

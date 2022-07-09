@@ -3,6 +3,7 @@ package api
 import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/notification_service/domain"
+	"time"
 )
 
 func mapNotification(notification *domain.Notification) *pb.Notification {
@@ -16,6 +17,30 @@ func mapNotification(notification *domain.Notification) *pb.Notification {
 	}
 
 	return notificationPb
+}
+
+func mapInsertNotification(notification *pb.Notification) (*domain.Notification, error) {
+	postPb := &domain.Notification{
+		Date:   time.Now(),
+		Text:   notification.Text,
+		UserId: notification.UserId,
+		Read:   false,
+		Type:   mapInsertNotificationType(notification.Type),
+	}
+
+	return postPb, nil
+}
+
+func mapInsertNotificationType(notif_type pb.Notification_NotificationTypeEnum) domain.NotificationTypeEnum {
+	switch notif_type {
+	case pb.Notification_Follow:
+		return domain.Follow
+	case pb.Notification_Message:
+		return domain.Message
+	case pb.Notification_Post:
+		return domain.Post
+	}
+	return -1
 }
 
 func removeMalicious(value string) string {
