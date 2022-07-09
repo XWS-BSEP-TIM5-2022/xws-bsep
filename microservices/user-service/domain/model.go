@@ -7,22 +7,23 @@ import (
 )
 
 type User struct {
-	Id           primitive.ObjectID `bson:"_id"`
-	Name         string             `bson:"name" validate:"required"`
-	LastName     string             `bson:"last_name" validate:"required"`
-	MobileNumber string             `bson:"mobile_number"`
-	Username     string             `bson:"username"`
-	Gender       GenderEnum         `bson:"gender"`
-	Birthday     time.Time          `bson:"birthday" validate:"required"`
-	Email        string             `bson:"email" validate:"required"`
-	Biography    string             `bson:"biography"`
-	IsPublic     bool               `bson:"is_public"`
-	Education    []Education        `bson:"education"`
-	Experience   []Experience       `bson:"experience"`
-	Skills       []Skill            `bson:"skills"`
-	Interests    []Interest         `bson:"interests"`
-	IsActive     bool               `bson:"is_active"`
-	Role         []string           `bson:"role"`
+	Id               primitive.ObjectID `bson:"_id"`
+	Name             string             `bson:"name" validate:"required"`
+	LastName         string             `bson:"last_name" validate:"required"`
+	MobileNumber     string             `bson:"mobile_number"`
+	Username         string             `bson:"username"`
+	Gender           GenderEnum         `bson:"gender"`
+	Birthday         time.Time          `bson:"birthday" validate:"required"`
+	Email            string             `bson:"email" validate:"required"`
+	Biography        string             `bson:"biography"`
+	IsPublic         bool               `bson:"is_public"`
+	Education        []Education        `bson:"education"`
+	Experience       []Experience       `bson:"experience"`
+	Skills           []Skill            `bson:"skills"`
+	Interests        []Interest         `bson:"interests"`
+	IsActive         bool               `bson:"is_active"`
+	Role             []string           `bson:"role"`
+	PostNotification bool               `bson:"post_notification"`
 }
 
 type Education struct {

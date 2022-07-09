@@ -3,23 +3,24 @@ package create_user
 import "time"
 
 type UserDetails struct {
-	Id           string
-	Name         string
-	LastName     string
-	Email        string
-	MobileNumber string
-	Gender       GenderEnum
-	Birthday     time.Time
-	Username     string
-	Biography    string
-	IsPublic     bool
-	Education    []Education
-	Experience   []Experience
-	Skills       []Skill
-	Interests    []Interest
-	Role         []string
-	IsActive     bool
-	Password     string
+	Id               string
+	Name             string
+	LastName         string
+	Email            string
+	MobileNumber     string
+	Gender           GenderEnum
+	Birthday         time.Time
+	Username         string
+	Biography        string
+	IsPublic         bool
+	Education        []Education
+	Experience       []Experience
+	Skills           []Skill
+	Interests        []Interest
+	Role             []string
+	IsActive         bool
+	Password         string
+	PostNotification bool // TODO: TM
 }
 
 type CreateUserCommandType int8

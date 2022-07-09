@@ -11,18 +11,19 @@ import (
 
 func mapUser(user *domain.User) *pb.User {
 	userPb := &pb.User{
-		Id:           user.Id.Hex(),
-		Name:         user.Name,
-		LastName:     user.LastName,
-		MobileNumber: user.MobileNumber,
-		Gender:       mapGender(user.Gender),
-		Birthday:     timestamppb.New(user.Birthday),
-		Email:        user.Email,
-		Biography:    user.Biography,
-		IsPublic:     user.IsPublic,
-		IsActive:     user.IsActive,
-		Role:         user.Role,
-		Username:     user.Username,
+		Id:               user.Id.Hex(),
+		Name:             user.Name,
+		LastName:         user.LastName,
+		MobileNumber:     user.MobileNumber,
+		Gender:           mapGender(user.Gender),
+		Birthday:         timestamppb.New(user.Birthday),
+		Email:            user.Email,
+		Biography:        user.Biography,
+		IsPublic:         user.IsPublic,
+		IsActive:         user.IsActive,
+		Role:             user.Role,
+		Username:         user.Username,
+		PostNotification: user.PostNotification,
 	}
 
 	for _, education := range user.Education {
@@ -69,17 +70,18 @@ func mapInsertUser(user *pb.User) *domain.User {
 	id, _ := primitive.ObjectIDFromHex(user.Id)
 
 	userPb := &domain.User{
-		Id:           id,
-		Name:         removeMalicious(user.Name),
-		LastName:     removeMalicious(user.LastName),
-		MobileNumber: removeMalicious(user.MobileNumber),
-		Gender:       mapInsertGender(user.Gender),
-		Email:        user.Email,
-		Biography:    removeMalicious(user.Biography),
-		IsPublic:     user.IsPublic,
-		IsActive:     user.IsActive,
-		Role:         user.Role,
-		Username:     user.Username,
+		Id:               id,
+		Name:             removeMalicious(user.Name),
+		LastName:         removeMalicious(user.LastName),
+		MobileNumber:     removeMalicious(user.MobileNumber),
+		Gender:           mapInsertGender(user.Gender),
+		Email:            user.Email,
+		Biography:        removeMalicious(user.Biography),
+		IsPublic:         user.IsPublic,
+		IsActive:         user.IsActive,
+		Role:             user.Role,
+		Username:         user.Username,
+		PostNotification: true,
 	}
 
 	if user.Birthday != nil {
@@ -142,17 +144,18 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 	id, _ := primitive.ObjectIDFromHex(oldData.Id)
 
 	userPb := &domain.User{
-		Id:           id,
-		Name:         removeMalicious(newData.Name),
-		LastName:     removeMalicious(newData.LastName),
-		MobileNumber: removeMalicious(newData.MobileNumber),
-		Gender:       mapInsertGender(newData.Gender),
-		Email:        newData.Email,
-		Biography:    removeMalicious(newData.Biography),
-		IsPublic:     oldData.IsPublic,
-		IsActive:     oldData.IsActive,
-		Role:         oldData.Role,
-		Username:     newData.Username,
+		Id:               id,
+		Name:             removeMalicious(newData.Name),
+		LastName:         removeMalicious(newData.LastName),
+		MobileNumber:     removeMalicious(newData.MobileNumber),
+		Gender:           mapInsertGender(newData.Gender),
+		Email:            newData.Email,
+		Biography:        removeMalicious(newData.Biography),
+		IsPublic:         oldData.IsPublic,
+		IsActive:         oldData.IsActive,
+		Role:             oldData.Role,
+		Username:         newData.Username,
+		PostNotification: oldData.PostNotification,
 	}
 
 	if mapInsertGender(newData.Gender) == -1 {
@@ -235,6 +238,96 @@ func mapUpdateUser(oldData *pb.User, newData *pb.User) *domain.User {
 	return userPb
 }
 
+func mapUpdateNotificationUser(oldData *pb.User, newData *pb.User) *domain.User {
+	id, _ := primitive.ObjectIDFromHex(oldData.Id)
+
+	userPb := &domain.User{
+		Id:               id,
+		Name:             removeMalicious(oldData.Name),
+		LastName:         removeMalicious(oldData.LastName),
+		MobileNumber:     removeMalicious(oldData.MobileNumber),
+		Gender:           mapInsertGender(oldData.Gender),
+		Email:            oldData.Email,
+		Biography:        removeMalicious(oldData.Biography),
+		IsPublic:         oldData.IsPublic,
+		IsActive:         oldData.IsActive,
+		Role:             oldData.Role,
+		Username:         oldData.Username,
+		PostNotification: newData.PostNotification,
+	}
+
+	if newData.Username == "" {
+		userPb.Username = oldData.Username
+	}
+
+	if newData.Name == "" {
+		userPb.Name = oldData.Name
+	}
+
+	if newData.LastName == "" {
+		userPb.LastName = oldData.LastName
+	}
+
+	educations := oldData.Education
+
+	for _, education := range educations {
+
+		ed_id, _ := primitive.ObjectIDFromHex(education.Id)
+
+		userPb.Education = append(userPb.Education, domain.Education{
+			Id:        ed_id,
+			Name:      education.Name,
+			Level:     mapInsertEducation(education.Level),
+			Place:     education.Place,
+			StartDate: education.StartDate.AsTime(),
+			EndDate:   education.EndDate.AsTime(),
+		})
+	}
+
+	experiences := oldData.Experience
+
+	for _, experience := range experiences {
+
+		ex_id, _ := primitive.ObjectIDFromHex(experience.Id)
+
+		userPb.Experience = append(userPb.Experience, domain.Experience{
+			Id:        ex_id,
+			Name:      experience.Name,
+			Headline:  experience.Headline,
+			Place:     experience.Place,
+			StartDate: experience.StartDate.AsTime(),
+			EndDate:   experience.EndDate.AsTime(),
+		})
+	}
+
+	skills := oldData.Skills
+
+	for _, skill := range skills {
+
+		s_id, _ := primitive.ObjectIDFromHex(skill.Id)
+
+		userPb.Skills = append(userPb.Skills, domain.Skill{
+			Id:   s_id,
+			Name: skill.Name,
+		})
+	}
+
+	interests := oldData.Interests
+
+	for _, interest := range interests {
+
+		in_id, _ := primitive.ObjectIDFromHex(interest.Id)
+
+		userPb.Interests = append(userPb.Interests, domain.Interest{
+			Id:          in_id,
+			Name:        interest.Name,
+			Description: interest.Description,
+		})
+	}
+
+	return userPb
+}
+
 func mapInsertGender(gender pb.User_GenderEnum) domain.GenderEnum {
 	switch gender {
 	case pb.User_Female:
@@ -296,17 +389,18 @@ func mapBasicInfo(oldData *pb.User, newData *pb.User) *domain.User {
 	id, _ := primitive.ObjectIDFromHex(oldData.Id)
 
 	userPb := &domain.User{
-		Id:           id,
-		Name:         removeMalicious(newData.Name),
-		LastName:     removeMalicious(newData.LastName),
-		MobileNumber: removeMalicious(newData.MobileNumber),
-		Gender:       mapInsertGender(newData.Gender),
-		Email:        newData.Email,
-		Biography:    removeMalicious(newData.Biography),
-		IsPublic:     oldData.IsPublic,
-		IsActive:     oldData.IsActive,
-		Role:         oldData.Role,
-		Username:     newData.Username,
+		Id:               id,
+		Name:             removeMalicious(newData.Name),
+		LastName:         removeMalicious(newData.LastName),
+		MobileNumber:     removeMalicious(newData.MobileNumber),
+		Gender:           mapInsertGender(newData.Gender),
+		Email:            newData.Email,
+		Biography:        removeMalicious(newData.Biography),
+		IsPublic:         oldData.IsPublic,
+		IsActive:         oldData.IsActive,
+		Role:             oldData.Role,
+		Username:         newData.Username,
+		PostNotification: oldData.PostNotification,
 	}
 
 	if mapInsertGender(newData.Gender) == -1 {
@@ -389,18 +483,19 @@ func mapExperienceAndEducation(oldData *pb.User, newData *pb.User) *domain.User 
 	id, _ := primitive.ObjectIDFromHex(oldData.Id)
 
 	userPb := &domain.User{
-		Id:           id,
-		Name:         oldData.Name,
-		LastName:     oldData.LastName,
-		MobileNumber: oldData.MobileNumber,
-		Gender:       mapInsertGender(oldData.Gender),
-		Birthday:     oldData.Birthday.AsTime(),
-		Email:        oldData.Email,
-		Biography:    oldData.Biography,
-		IsPublic:     oldData.IsPublic,
-		IsActive:     oldData.IsActive,
-		Role:         oldData.Role,
-		Username:     oldData.Username,
+		Id:               id,
+		Name:             oldData.Name,
+		LastName:         oldData.LastName,
+		MobileNumber:     oldData.MobileNumber,
+		Gender:           mapInsertGender(oldData.Gender),
+		Birthday:         oldData.Birthday.AsTime(),
+		Email:            oldData.Email,
+		Biography:        oldData.Biography,
+		IsPublic:         oldData.IsPublic,
+		IsActive:         oldData.IsActive,
+		Role:             oldData.Role,
+		Username:         oldData.Username,
+		PostNotification: oldData.PostNotification,
 	}
 
 	educations := newData.Education
@@ -467,18 +562,19 @@ func mapSkillsAndInterests(oldData *pb.User, newData *pb.User) *domain.User {
 	id, _ := primitive.ObjectIDFromHex(oldData.Id)
 
 	userPb := &domain.User{
-		Id:           id,
-		Name:         oldData.Name,
-		LastName:     oldData.LastName,
-		MobileNumber: oldData.MobileNumber,
-		Gender:       mapInsertGender(oldData.Gender),
-		Birthday:     oldData.Birthday.AsTime(),
-		Email:        oldData.Email,
-		Biography:    oldData.Biography,
-		IsPublic:     oldData.IsPublic,
-		IsActive:     oldData.IsActive,
-		Role:         oldData.Role,
-		Username:     oldData.Username,
+		Id:               id,
+		Name:             oldData.Name,
+		LastName:         oldData.LastName,
+		MobileNumber:     oldData.MobileNumber,
+		Gender:           mapInsertGender(oldData.Gender),
+		Birthday:         oldData.Birthday.AsTime(),
+		Email:            oldData.Email,
+		Biography:        oldData.Biography,
+		IsPublic:         oldData.IsPublic,
+		IsActive:         oldData.IsActive,
+		Role:             oldData.Role,
+		Username:         oldData.Username,
+		PostNotification: oldData.PostNotification,
 	}
 
 	educations := oldData.Education
@@ -554,6 +650,7 @@ func mapInsertUserSaga(user *pb.RegisterRequest) *domain.User {
 		IsActive:     false,
 		Role:         user.Role,
 		// IsPublic:     user.IsPublic,
+		PostNotification: true,
 	}
 
 	if user.Birthday != nil {
@@ -606,16 +703,17 @@ func mapInsertUserSaga(user *pb.RegisterRequest) *domain.User {
 func mapCommandUserToDomainUser(command *events.CreateUserCommand) *domain.User {
 	user := domain.User{
 		// Id: User.Id,
-		Name:         command.User.Name,
-		LastName:     command.User.LastName,
-		MobileNumber: command.User.MobileNumber,
-		Username:     command.User.Username,
-		Gender:       domain.GenderEnum(command.User.Gender),
-		Birthday:     command.User.Birthday,
-		Email:        command.User.Email,
-		Biography:    command.User.Biography,
-		IsPublic:     command.User.IsPublic,
-		IsActive:     false, // nalog nije aktivan
+		Name:             command.User.Name,
+		LastName:         command.User.LastName,
+		MobileNumber:     command.User.MobileNumber,
+		Username:         command.User.Username,
+		Gender:           domain.GenderEnum(command.User.Gender),
+		Birthday:         command.User.Birthday,
+		Email:            command.User.Email,
+		Biography:        command.User.Biography,
+		IsPublic:         command.User.IsPublic,
+		IsActive:         false, // nalog nije aktivan
+		PostNotification: true,
 	}
 	for _, education := range command.User.Education {
 		ed_id := primitive.NewObjectID()
