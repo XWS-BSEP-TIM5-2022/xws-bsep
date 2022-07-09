@@ -121,6 +121,7 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + post.Id.Hex() + " created by user with ID: " + post.UserId)
 
 	notificationRequest := &notification.InsertNotificationRequest{}
+	notificationRequest.Notification = &notification.Notification{}
 	notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(2)
 	notificationRequest.Notification.Text = "User created new post"
 	handler.notificationServiceClient.Insert(ctx, notificationRequest)

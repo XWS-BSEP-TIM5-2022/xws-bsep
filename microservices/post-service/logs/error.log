@@ -43,3 +43,4 @@
 {"level":"error","method":"C:/xws-bsep/microservices/post-service/startup/server.go:92","msg":"Failed to listen in post service: \u003cnil\u003e","time":"2022-07-04T22:52:26+02:00"}
 {"level":"error","method":"C:/xws-bsep/microservices/post-service/startup/server.go:92","msg":"Failed to listen in post service: \u003cnil\u003e","time":"2022-07-07T23:30:55+02:00"}
 {"level":"error","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:112","msg":"Post was not inserted","time":"2022-07-08T22:03:46+02:00"}
+{"level":"error","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/post-service/infrastructure/api/post_grpc_api.go:115","msg":"Post was not inserted","time":"2022-07-09T03:56:05+02:00"}

@@ -2,3 +2,5 @@
 {"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/message-service/startup/server.go:44","msg":"Starting gRPC server for message service","time":"2022-06-24T02:02:16+02:00"}
 {"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/message-service/startup/server.go:38","msg":"MongoDB initialization for message service successful, PORT: 27017, HOST: localhost","time":"2022-07-06T04:09:56+02:00"}
 {"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/message-service/startup/server.go:44","msg":"Starting gRPC server for message service","time":"2022-07-06T04:09:56+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/message-service/startup/server.go:37","msg":"MongoDB initialization for message service successful, PORT: 27017, HOST: localhost","time":"2022-07-09T11:25:20+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/message-service/startup/server.go:43","msg":"Starting gRPC server for message service","time":"2022-07-09T11:25:20+02:00"}
