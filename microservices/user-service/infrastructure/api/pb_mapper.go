@@ -303,7 +303,7 @@ func mapBasicInfo(oldData *pb.User, newData *pb.User) *domain.User {
 		Gender:       mapInsertGender(newData.Gender),
 		Email:        newData.Email,
 		Biography:    removeMalicious(newData.Biography),
-		IsPublic:     oldData.IsPublic,
+		IsPublic:     newData.IsPublic,
 		IsActive:     oldData.IsActive,
 		Role:         oldData.Role,
 		Username:     newData.Username,

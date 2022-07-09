@@ -21,4 +21,5 @@ type UserStore interface {
 	UpdateIsActiveById(userId string) error
 	GetIdByEmail(email string) (string, error)
 	DeleteUser(userId, email string) error
+	UpdatePrivacy(user *User) (string, error)
 }

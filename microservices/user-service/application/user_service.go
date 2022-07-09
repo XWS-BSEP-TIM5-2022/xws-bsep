@@ -120,3 +120,8 @@ func (service *UserService) CheckEmailCriteria(email string) error {
 	}
 	return nil
 }
+
+func (service *UserService) UpdatePrivacy(user *domain.User) (string, error) {
+	success, err := service.store.UpdatePrivacy(user)
+	return success, err
+}
