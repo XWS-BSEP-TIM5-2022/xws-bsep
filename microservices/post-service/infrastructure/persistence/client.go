@@ -3,7 +3,7 @@ package persistence
 import (
 	"context"
 	"fmt"
-	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -27,12 +27,12 @@ func NewUserServiceClient(address string) user.UserServiceClient {
 	return user.NewUserServiceClient(con)
 }
 
-func NewAuthServiceClient(address string) auth.AuthServiceClient {
+func NewConnectionServiceClient(address string) connection.ConnectionServiceClient {
 	con, err := getConnection(address)
 	if err != nil {
-		log.Fatalf("Failed to start gRPC connection to Auth service: %v", err)
+		log.Fatalf("Failed to start gRPC connection to Connection service: %v", err)
 	}
-	return auth.NewAuthServiceClient(con)
+	return connection.NewConnectionServiceClient(con)
 }
 
 func NewNotificationServiceClient(address string) notification.NotificationServiceClient {

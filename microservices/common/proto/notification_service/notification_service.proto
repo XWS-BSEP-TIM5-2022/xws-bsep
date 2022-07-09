@@ -24,6 +24,11 @@ service NotificationService{
       body: "notification"
     };
   }
+  rpc GetNotificationsByUserId(GetRequest) returns(GetAllResponse) {
+    option (google.api.http) = {
+      get: "/api/notification/user/{id}"
+    };
+  }
 }
 
 message GetRequest {

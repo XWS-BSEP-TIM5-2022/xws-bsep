@@ -96,7 +96,15 @@ service UserService{
           body: "*"
         };
     }
+    rpc UpdatePostNotification(UpdateRequest) returns (UpdateResponse) {
+        option (google.api.http) = {
+            put: "/api/user/postNotification"
+            body: "user"
+        };
+    }
 }
+
+message PostNotificationResponse{}
 
 message GetRequest {
     string id = 1;
@@ -187,6 +195,7 @@ message User {
     bool isActive  = 14;
     repeated string role = 15;
     string username = 16;
+    bool postNotification = 17; //TODO
 }
 
 message Education{

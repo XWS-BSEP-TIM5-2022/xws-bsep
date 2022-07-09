@@ -24,6 +24,11 @@ type NotificationMongoDBStore struct {
 	notifications *mongo.Collection
 }
 
+func (store *NotificationMongoDBStore) GetAllByUser(id string) ([]*domain.Notification, error) {
+	filter := bson.M{"user_id": id}
+	return store.filter(filter)
+}
+
 func (store NotificationMongoDBStore) GetAll() ([]*domain.Notification, error) {
 	filter := bson.D{{}}
 	return store.filter(filter)
