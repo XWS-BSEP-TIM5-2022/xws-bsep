@@ -12,6 +12,5 @@ func AccessibleRoles() map[string][]string {
 		connectionService + "ApproveConnection": {"User"},
 		connectionService + "CheckConnection":   {"User"},
 		connectionService + "BlockUser":         {"User"},
-		connectionService + "ChangePrivacy":     {"User"},
 	}
 }

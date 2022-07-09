@@ -1,16 +1,6 @@
-[31mERRO[0m[4202]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristina  [31musername[0m=kristina
-[31mERRO[0m[4203]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristina  [31musername[0m=kristina
-[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:164 Failed to listen: %v<nil>                    
-[31mERRO[0m[0125]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristina  [31musername[0m=kristina
-[31mERRO[0m[0126]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristina  [31musername[0m=kristina
-[31mERRO[0m[0316]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: dejan  [31musername[0m=dejan
-[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:164 Failed to listen: %v<nil>                    
-[31mERRO[0m[9394]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristinasss  [31musername[0m=kristinasss
-[31mERRO[0m[10132]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristina  [31musername[0m=kristina
-[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:164 Failed to listen: %v<nil>                    
-[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:164 Failed to listen: %v<nil>                    
-[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:164 Failed to listen: %v<nil>                    
-[31mERRO[0m[0128]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:385 Not found user with ID: 62c9a331125f99a7031fc49c  [31musername[0m=kristinasssss
-[31mERRO[0m[0130]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:385 Not found user with ID: 62c9a331125f99a7031fc49c  [31musername[0m=kristinasssss
-[31mERRO[0m[0135]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:385 Not found user with ID: 62c9a331125f99a7031fc49c  [31musername[0m=kristinasssss
-[31mERRO[0m[0137]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:385 Not found user with ID: 62c9a331125f99a7031fc49c  [31musername[0m=kristinasssss
+[31mERRO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:87 Postgres database initialization error        [31mauth_db_host[0m=localhost [31mauth_db_name[0m=auth [31mauth_db_password[0m="$2a$10$o/wQlS5SJszp/2IjXC8c9..K0kjT1psxgDMPYsB54iQS7WGuzgj3m" [31mauth_db_port[0m=5432 [31mauth_db_user[0m=postgres
+[31mERRO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:96 Auth store initialization error              
+[31mERRO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:97 Postgres database initialization error        [31mauth_db_host[0m=localhost [31mauth_db_name[0m=auth [31mauth_db_password[0m="$2a$10$jzfwnYuHBXCgjsFdhBegROD7BvhxF/oCWYLKuwrpvhrGBQr1h4M6q" [31mauth_db_port[0m=5432 [31mauth_db_user[0m=postgres
+[31mERRO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:106 Auth store initialization error              
+[31mERRO[0m[0111]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:367 No auth credentials found with username: teodora123  [31musername[0m=teodora123
+[31mERRO[0m[0112]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:367 No auth credentials found with username: teodora123  [31musername[0m=teodora123

@@ -1,25 +1,26 @@
 package domain
 
 import (
+	"context"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserStore interface {
-	Get(id primitive.ObjectID) (*User, error)
-	GetByUsername(Username string) (*User, error)
+	Get(ctx context.Context, id primitive.ObjectID) (*User, error)
+	GetByUsername(ctx context.Context, Username string) (*User, error)
 	GetByEmail(Email string) (*User, error)
 	Insert(user *User) (*User, error)
-	GetAll() ([]*User, error)
-	GetAllPublic() ([]*User, error)
+	GetAll(ctx context.Context) ([]*User, error)
+	GetAllPublic(ctx context.Context) ([]*User, error)
 	DeleteAll()
-	Update(user *User) (string, error)
-	UpdateBasicInfo(user *User) (string, error)
-	UpdateExperienceAndEducation(user *User) (string, error)
-	UpdateSkillsAndInterests(user *User) (string, error)
-	GetById(userId string) (*User, error)
-	Search(criteria string) ([]*User, error)
-	UpdateIsActiveById(userId string) error
-	GetIdByEmail(email string) (string, error)
+	Update(ctx context.Context, user *User) (string, error)
+	UpdateBasicInfo(ctx context.Context, user *User) (string, error)
+	UpdateExperienceAndEducation(ctx context.Context, user *User) (string, error)
+	UpdateSkillsAndInterests(ctx context.Context, user *User) (string, error)
+	GetById(ctx context.Context, userId string) (*User, error)
+	Search(ctx context.Context, criteria string) ([]*User, error)
+	UpdateIsActiveById(ctx context.Context, userId string) error
+	GetIdByEmail(ctx context.Context, email string) (string, error)
 	DeleteUser(userId, email string) error
-	UpdatePrivacy(user *User) (string, error)
 }

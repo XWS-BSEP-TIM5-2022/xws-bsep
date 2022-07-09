@@ -28,7 +28,6 @@ type ConnectionServiceClient interface {
 	AddConnection(ctx context.Context, in *AddConnectionRequest, opts ...grpc.CallOption) (*AddConnectionResult, error)
 	RejectConnection(ctx context.Context, in *RejectConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	ApproveConnection(ctx context.Context, in *ApproveConnectionRequest, opts ...grpc.CallOption) (*ActionResult, error)
-	ChangePrivacy(ctx context.Context, in *ChangePrivacyRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	CheckConnection(ctx context.Context, in *CheckConnectionRequest, opts ...grpc.CallOption) (*ConnectedResult, error)
 	BlockUser(ctx context.Context, in *BlockUserRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	GetRecommendation(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error)
@@ -96,15 +95,6 @@ func (c *connectionServiceClient) ApproveConnection(ctx context.Context, in *App
 	return out, nil
 }
 
-func (c *connectionServiceClient) ChangePrivacy(ctx context.Context, in *ChangePrivacyRequest, opts ...grpc.CallOption) (*ActionResult, error) {
-	out := new(ActionResult)
-	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/ChangePrivacy", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *connectionServiceClient) CheckConnection(ctx context.Context, in *CheckConnectionRequest, opts ...grpc.CallOption) (*ConnectedResult, error) {
 	out := new(ConnectedResult)
 	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/CheckConnection", in, out, opts...)
@@ -142,7 +132,6 @@ type ConnectionServiceServer interface {
 	AddConnection(context.Context, *AddConnectionRequest) (*AddConnectionResult, error)
 	RejectConnection(context.Context, *RejectConnectionRequest) (*ActionResult, error)
 	ApproveConnection(context.Context, *ApproveConnectionRequest) (*ActionResult, error)
-	ChangePrivacy(context.Context, *ChangePrivacyRequest) (*ActionResult, error)
 	CheckConnection(context.Context, *CheckConnectionRequest) (*ConnectedResult, error)
 	BlockUser(context.Context, *BlockUserRequest) (*ActionResult, error)
 	GetRecommendation(context.Context, *GetRequest) (*Users, error)
@@ -170,9 +159,6 @@ func (UnimplementedConnectionServiceServer) RejectConnection(context.Context, *R
 }
 func (UnimplementedConnectionServiceServer) ApproveConnection(context.Context, *ApproveConnectionRequest) (*ActionResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApproveConnection not implemented")
-}
-func (UnimplementedConnectionServiceServer) ChangePrivacy(context.Context, *ChangePrivacyRequest) (*ActionResult, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChangePrivacy not implemented")
 }
 func (UnimplementedConnectionServiceServer) CheckConnection(context.Context, *CheckConnectionRequest) (*ConnectedResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckConnection not implemented")
@@ -304,24 +290,6 @@ func _ConnectionService_ApproveConnection_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ConnectionService_ChangePrivacy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChangePrivacyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConnectionServiceServer).ChangePrivacy(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/connection_service.ConnectionService/ChangePrivacy",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConnectionServiceServer).ChangePrivacy(ctx, req.(*ChangePrivacyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _ConnectionService_CheckConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CheckConnectionRequest)
 	if err := dec(in); err != nil {
@@ -406,10 +374,6 @@ var ConnectionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ApproveConnection",
 			Handler:    _ConnectionService_ApproveConnection_Handler,
-		},
-		{
-			MethodName: "ChangePrivacy",
-			Handler:    _ConnectionService_ChangePrivacy_Handler,
 		},
 		{
 			MethodName: "CheckConnection",

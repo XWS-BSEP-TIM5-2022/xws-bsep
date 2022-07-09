@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.20.1
-// source: common/proto/user_service/user_service.proto
+// source: user_service.proto
 
 package user
 
@@ -29,7 +29,6 @@ type UserServiceClient interface {
 	Insert(ctx context.Context, in *InsertRequest, opts ...grpc.CallOption) (*InsertResponse, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	UpdateBasicInfo(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
-	UpdatePrivacy(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	UpdateExperienceAndEducation(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	UpdateSkillsAndInterests(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	GetLoggedInUserInfo(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*User, error)
@@ -39,6 +38,7 @@ type UserServiceClient interface {
 	GetIdByEmail(ctx context.Context, in *GetIdByEmailRequest, opts ...grpc.CallOption) (*InsertResponse, error)
 	GetIdByUsername(ctx context.Context, in *GetIdByUsernameRequest, opts ...grpc.CallOption) (*InsertResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+	UpdatePostNotification(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 }
 
 type userServiceClient struct {
@@ -106,15 +106,6 @@ func (c *userServiceClient) Update(ctx context.Context, in *UpdateRequest, opts 
 func (c *userServiceClient) UpdateBasicInfo(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
 	out := new(UpdateResponse)
 	err := c.cc.Invoke(ctx, "/user_service.UserService/UpdateBasicInfo", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userServiceClient) UpdatePrivacy(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
-	out := new(UpdateResponse)
-	err := c.cc.Invoke(ctx, "/user_service.UserService/UpdatePrivacy", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -202,6 +193,15 @@ func (c *userServiceClient) Register(ctx context.Context, in *RegisterRequest, o
 	return out, nil
 }
 
+func (c *userServiceClient) UpdatePostNotification(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
+	out := new(UpdateResponse)
+	err := c.cc.Invoke(ctx, "/user_service.UserService/UpdatePostNotification", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -213,7 +213,6 @@ type UserServiceServer interface {
 	Insert(context.Context, *InsertRequest) (*InsertResponse, error)
 	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	UpdateBasicInfo(context.Context, *UpdateRequest) (*UpdateResponse, error)
-	UpdatePrivacy(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	UpdateExperienceAndEducation(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	UpdateSkillsAndInterests(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	GetLoggedInUserInfo(context.Context, *GetAllRequest) (*User, error)
@@ -223,6 +222,7 @@ type UserServiceServer interface {
 	GetIdByEmail(context.Context, *GetIdByEmailRequest) (*InsertResponse, error)
 	GetIdByUsername(context.Context, *GetIdByUsernameRequest) (*InsertResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	UpdatePostNotification(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -251,9 +251,6 @@ func (UnimplementedUserServiceServer) Update(context.Context, *UpdateRequest) (*
 func (UnimplementedUserServiceServer) UpdateBasicInfo(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateBasicInfo not implemented")
 }
-func (UnimplementedUserServiceServer) UpdatePrivacy(context.Context, *UpdateRequest) (*UpdateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdatePrivacy not implemented")
-}
 func (UnimplementedUserServiceServer) UpdateExperienceAndEducation(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateExperienceAndEducation not implemented")
 }
@@ -280,6 +277,9 @@ func (UnimplementedUserServiceServer) GetIdByUsername(context.Context, *GetIdByU
 }
 func (UnimplementedUserServiceServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
+func (UnimplementedUserServiceServer) UpdatePostNotification(context.Context, *UpdateRequest) (*UpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePostNotification not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -416,24 +416,6 @@ func _UserService_UpdateBasicInfo_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).UpdateBasicInfo(ctx, req.(*UpdateRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserService_UpdatePrivacy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServiceServer).UpdatePrivacy(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user_service.UserService/UpdatePrivacy",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).UpdatePrivacy(ctx, req.(*UpdateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -600,6 +582,24 @@ func _UserService_Register_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_UpdatePostNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdatePostNotification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_service.UserService/UpdatePostNotification",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdatePostNotification(ctx, req.(*UpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -634,10 +634,6 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateBasicInfo",
 			Handler:    _UserService_UpdateBasicInfo_Handler,
-		},
-		{
-			MethodName: "UpdatePrivacy",
-			Handler:    _UserService_UpdatePrivacy_Handler,
 		},
 		{
 			MethodName: "UpdateExperienceAndEducation",
@@ -675,7 +671,11 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "Register",
 			Handler:    _UserService_Register_Handler,
 		},
+		{
+			MethodName: "UpdatePostNotification",
+			Handler:    _UserService_UpdatePostNotification_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "common/proto/user_service/user_service.proto",
+	Metadata: "user_service.proto",
 }

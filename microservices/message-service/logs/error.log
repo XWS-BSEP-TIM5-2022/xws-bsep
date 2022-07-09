@@ -1,2 +1,0 @@
-{"level":"error","method":"C:/xws-bsep/microservices/message-service/startup/server.go:92","msg":"Failed to listen in message service: \u003cnil\u003e","time":"2022-07-09T17:21:45+02:00"}
-{"level":"error","method":"C:/xws-bsep/microservices/message-service/startup/server.go:92","msg":"Failed to listen in message service: \u003cnil\u003e","time":"2022-07-09T17:24:16+02:00"}

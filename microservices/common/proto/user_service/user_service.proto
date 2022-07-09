@@ -48,14 +48,6 @@ service UserService{
             body: "user"
         };
     }
-
-    rpc UpdatePrivacy(UpdateRequest) returns(UpdateResponse) {  // auth
-        option (google.api.http) = {
-            put: "/api/user/updatePrivacy"
-            body: "user"
-        };
-    }
-
     rpc UpdateExperienceAndEducation(UpdateRequest) returns(UpdateResponse) {  // auth
         option (google.api.http) = {
             put: "/api/user/updateExperienceAndEducation"
