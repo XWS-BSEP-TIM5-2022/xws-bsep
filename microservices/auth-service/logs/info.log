@@ -8,3 +8,27 @@
 [36mINFO[0m[4203]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristina  [36mip_address[0m="[::1]:62327"
 [36mINFO[0m[0125]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristina  [36mip_address[0m="[::1]:64828"
 [36mINFO[0m[0126]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristina  [36mip_address[0m="[::1]:64828"
+[36mINFO[0m[0285]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:673 Account activation with JWT token            
+[36mINFO[0m[0297]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristinasss  [36mip_address[0m="[::1]:51282"
+[36mINFO[0m[0316]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: dejan     [36mip_address[0m="[::1]:51282"
+[36mINFO[0m[0380]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:673 Account activation with JWT token            
+[36mINFO[0m[0392]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: magdalena  [36mip_address[0m="[::1]:51282"
+[36mINFO[0m[0597]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristinasss  [36mip_address[0m="[::1]:51282"
+[36mINFO[0m[1519]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristinasss  [36mip_address[0m="[::1]:51282"
+[36mINFO[0m[4322]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristinasss  [36mip_address[0m="[::1]:51282"
+[36mINFO[0m[6762]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: magdalena  [36mip_address[0m="[::1]:51282"
+[36mINFO[0m[6903]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristinasss  [36mip_address[0m="[::1]:51282"
+[36mINFO[0m[9394]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristinasss  [36mip_address[0m="[::1]:56141"
+[36mINFO[0m[9439]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:673 Account activation with JWT token            
+[36mINFO[0m[9445]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: jelena    [36mip_address[0m="[::1]:56141"
+[36mINFO[0m[9510]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: jelena    [36mip_address[0m="[::1]:56141"
+[36mINFO[0m[9678]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: jelena    [36mip_address[0m="[::1]:56141"
+[36mINFO[0m[9751]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: jelena    [36mip_address[0m="[::1]:56141"
+[36mINFO[0m[10132]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristina  [36mip_address[0m="[::1]:56141"
+[36mINFO[0m[10138]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: jelena    [36mip_address[0m="[::1]:56141"
+[36mINFO[0m[10148]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: jelena    [36mip_address[0m="[::1]:56141"
+[36mINFO[0m[0122]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:673 Account activation with JWT token            
+[36mINFO[0m[0128]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristinasssss  [36mip_address[0m="[::1]:50545"
+[36mINFO[0m[0130]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristinasssss  [36mip_address[0m="[::1]:50545"
+[36mINFO[0m[0135]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristinasssss  [36mip_address[0m="[::1]:50545"
+[36mINFO[0m[0137]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:335 Login to application with username: kristinasssss  [36mip_address[0m="[::1]:50545"

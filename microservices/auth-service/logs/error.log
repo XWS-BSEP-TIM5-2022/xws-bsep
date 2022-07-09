@@ -7,3 +7,10 @@
 [31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:164 Failed to listen: %v<nil>                    
 [31mERRO[0m[9394]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristinasss  [31musername[0m=kristinasss
 [31mERRO[0m[10132]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:358 No auth credentials found with username: kristina  [31musername[0m=kristina
+[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:164 Failed to listen: %v<nil>                    
+[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:164 Failed to listen: %v<nil>                    
+[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:164 Failed to listen: %v<nil>                    
+[31mERRO[0m[0128]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:385 Not found user with ID: 62c9a331125f99a7031fc49c  [31musername[0m=kristinasssss
+[31mERRO[0m[0130]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:385 Not found user with ID: 62c9a331125f99a7031fc49c  [31musername[0m=kristinasssss
+[31mERRO[0m[0135]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:385 Not found user with ID: 62c9a331125f99a7031fc49c  [31musername[0m=kristinasssss
+[31mERRO[0m[0137]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:385 Not found user with ID: 62c9a331125f99a7031fc49c  [31musername[0m=kristinasssss

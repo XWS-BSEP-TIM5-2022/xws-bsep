@@ -42,3 +42,4 @@
 {"level":"error","method":"C:/xws-bsep/microservices/post-service/startup/server.go:92","msg":"Failed to listen in post service: \u003cnil\u003e","time":"2022-07-04T22:50:02+02:00"}
 {"level":"error","method":"C:/xws-bsep/microservices/post-service/startup/server.go:92","msg":"Failed to listen in post service: \u003cnil\u003e","time":"2022-07-04T22:52:26+02:00"}
 {"level":"error","method":"C:/xws-bsep/microservices/post-service/startup/server.go:92","msg":"Failed to listen in post service: \u003cnil\u003e","time":"2022-07-07T23:30:55+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/post-service/startup/server.go:92","msg":"Failed to listen in post service: \u003cnil\u003e","time":"2022-07-09T17:22:21+02:00"}
