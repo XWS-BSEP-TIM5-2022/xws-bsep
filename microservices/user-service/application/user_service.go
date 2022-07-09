@@ -169,4 +169,3 @@ func (service *UserService) CheckEmailCriteria(email string) error {
 	}
 	return nil
 }
-Footer
