@@ -267,6 +267,8 @@ services:
       POST_DB_PORT: ${POST_DB_PORT}
       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
       PUBLIC_KEY: ${PUBLIC_KEY}
+      NOTIFICATION_SERVICE_HOST: ${NOTIFICATION_SERVICE_HOST}
+      NOTIFICATION_SERVICE_PORT: ${NOTIFICATION_SERVICE_PORT}
       CONNECTION_PUBLIC_KEY: ${PUBLIC_KEY}
       USER_SERVICE_HOST: ${USER_SERVICE_HOST}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
@@ -310,7 +312,7 @@ services:
     container_name: notification_service
     build:
       context: .
-      dockerfile: ./message-service/Dockerfile
+      dockerfile: ./notification-service/Dockerfile
     restart: on-failure
     environment:
       NOTIFICATION_DB_HOST: ${NOTIFICATION_DB_HOST}

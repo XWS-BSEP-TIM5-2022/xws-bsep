@@ -1,4 +1,3 @@
-
 package config
 
 import "os"
@@ -24,22 +23,22 @@ type Config struct {
 
 func NewConfig() *Config {
 	return &Config{
-		Port:            os.Getenv("POST_SERVICE_PORT"),
-		PostDBHost:      os.Getenv("POST_DB_HOST"),
-		PostDBPort:      os.Getenv("POST_DB_PORT"),
-		PublicKey:       os.Getenv("PUBLIC_KEY"),
-		UserServiceHost: os.Getenv("USER_SERVICE_HOST"),
-		UserServicePort: os.Getenv("USER_SERVICE_PORT"),
-		AuthServiceHost: os.Getenv("AUTH_SERVICE_HOST"),
-		AuthServicePort: os.Getenv("AUTH_SERVICE_PORT"),
-    NotificationServiceHost: os.Getenv("NOTIFICATION_SERVICE_HOST"),
+		Port:                    os.Getenv("POST_SERVICE_PORT"),
+		PostDBHost:              os.Getenv("POST_DB_HOST"),
+		PostDBPort:              os.Getenv("POST_DB_PORT"),
+		PublicKey:               os.Getenv("PUBLIC_KEY"),
+		UserServiceHost:         os.Getenv("USER_SERVICE_HOST"),
+		UserServicePort:         os.Getenv("USER_SERVICE_PORT"),
+		AuthServiceHost:         os.Getenv("AUTH_SERVICE_HOST"),
+		AuthServicePort:         os.Getenv("AUTH_SERVICE_PORT"),
+		NotificationServiceHost: os.Getenv("NOTIFICATION_SERVICE_HOST"),
 		NotificationServicePort: os.Getenv("NOTIFICATION_SERVICE_PORT"),
-		LogsFolder:      os.Getenv("LOGS_FOLDER"),
-		InfoLogsFile:    os.Getenv("INFO_LOGS_FILE"),
-		DebugLogsFile:   os.Getenv("DEBUG_LOGS_FILE"),
-		ErrorLogsFile:   os.Getenv("ERROR_LOGS_FILE"),
-		SuccessLogsFile: os.Getenv("SUCCESS_LOGS_FILE"),
-		WarningLogsFile: os.Getenv("WARNING_LOGS_FILE"),
+		LogsFolder:              os.Getenv("LOGS_FOLDER"),
+		InfoLogsFile:            os.Getenv("INFO_LOGS_FILE"),
+		DebugLogsFile:           os.Getenv("DEBUG_LOGS_FILE"),
+		ErrorLogsFile:           os.Getenv("ERROR_LOGS_FILE"),
+		SuccessLogsFile:         os.Getenv("SUCCESS_LOGS_FILE"),
+		WarningLogsFile:         os.Getenv("WARNING_LOGS_FILE"),
 
 		// Port:            "8083",
 		// PostDBHost:      "localhost",
@@ -50,7 +49,7 @@ func NewConfig() *Config {
 		// AuthServiceHost: "localhost",
 		// AuthServicePort: "8082",
 		// LogsFolder:      "logs",
-    //NotificationServiceHost: "localhost",
+		//NotificationServiceHost: "localhost",
 		//NotificationServicePort: "8086",
 		// InfoLogsFile:    "/info.log",
 		// DebugLogsFile:   "/debug.log",
