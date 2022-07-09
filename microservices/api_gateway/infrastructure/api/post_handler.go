@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
-	"gopkg.in/square/go-jose.v2/jwt"
 	"html"
 	"io/ioutil"
 	"log"
@@ -13,6 +11,10 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	auth "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
+	"gopkg.in/square/go-jose.v2/jwt"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/services"
@@ -112,8 +114,13 @@ func (handler *PostHandler) InsertJobOfferAsPost(w http.ResponseWriter, r *http.
 		}
 		apiToken = re.ReplaceAllString(apiToken, "")
 
+		endpointName := "GetPosts"
+		span := tracer.StartSpanFromContext(r.Context(), endpointName)
+		defer span.Finish()
+		ctx := tracer.ContextWithSpan(r.Context(), span)
+
 		authClient := services.NewAuthClient(handler.authClientAddress)
-		username, err := authClient.GetUsernameByApiToken(context.TODO(), &auth.GetUsernameRequest{ApiToken: apiToken})
+		username, err := authClient.GetUsernameByApiToken(ctx, &auth.GetUsernameRequest{ApiToken: apiToken})
 		if err != nil || username.Username == "not found" {
 			handler.CustomLogger.ErrorLogger.Error("Can not find username by api token")
 			w.Header().Set("Content-Type", "application/json")
@@ -130,7 +137,7 @@ func (handler *PostHandler) InsertJobOfferAsPost(w http.ResponseWriter, r *http.
 		handler.CustomLogger.SuccessLogger.Info("Found user with username: " + username.Username)
 
 		userClient := services.NewUserClient(handler.userClientAddress)
-		userId, err := userClient.GetIdByUsername(context.TODO(), &user.GetIdByUsernameRequest{Username: username.Username})
+		userId, err := userClient.GetIdByUsername(ctx, &user.GetIdByUsernameRequest{Username: username.Username})
 		if err != nil {
 			handler.CustomLogger.ErrorLogger.Error("Can not find id by username: " + username.Username)
 			w.Header().Set("Content-Type", "application/json")
@@ -176,7 +183,7 @@ func (handler *PostHandler) InsertJobOfferAsPost(w http.ResponseWriter, r *http.
 		}
 
 		postClient := services.NewPostClient(handler.postClientAddress)
-		_, err = postClient.InsertJobOffer(context.TODO(), p)
+		_, err = postClient.InsertJobOffer(ctx, p)
 		if err != nil {
 			handler.CustomLogger.ErrorLogger.Error("Job Offer was not inserted")
 			w.Header().Set("Content-Type", "application/json")
@@ -223,7 +230,12 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 		}
 	}
 
-	result := handler.AuthorizeUser(w, r, id)
+	endpointName := "GetPosts"
+	span := tracer.StartSpanFromContext(r.Context(), endpointName)
+	defer span.Finish()
+	ctx := tracer.ContextWithSpan(r.Context(), span)
+
+	result := handler.AuthorizeUser(ctx, w, r, id)
 	if result == "error" {
 		handler.CustomLogger.ErrorLogger.Error("Access to feed denied")
 		w.Header().Set("Content-Type", "application/json")
@@ -235,7 +247,7 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 	posts := &domain.Posts{}
 	users := &domain.Users{}
 
-	err = handler.getAllConnections(users, html.EscapeString(checkId)) /** EscapeString **/
+	err = handler.getAllConnections(ctx, users, html.EscapeString(checkId)) /** EscapeString **/
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get all connections for user with ID: " + id + " unsuccessful")
 		w.WriteHeader(http.StatusNotFound)
@@ -243,7 +255,7 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 	}
 	handler.CustomLogger.SuccessLogger.Info("Found " + strconv.Itoa(len(users.UsersDetails)) + " connections for user with ID: " + id)
 
-	err = handler.addPosts(posts, users)
+	err = handler.addPosts(ctx, posts, users)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get feed for user with ID: " + id + " unsuccessful")
 		w.WriteHeader(http.StatusNotFound)
@@ -262,7 +274,7 @@ func (handler *PostHandler) GetPosts(w http.ResponseWriter, r *http.Request, pat
 	w.Write(response)
 }
 
-func (handler *PostHandler) AuthorizeUser(w http.ResponseWriter, r *http.Request, requestId string) string {
+func (handler *PostHandler) AuthorizeUser(ctx context.Context, w http.ResponseWriter, r *http.Request, requestId string) string {
 	jwtToken := r.Header.Get("Authorization")
 	jwtToken = jwtToken[7:]
 	var claims map[string]interface{}
@@ -271,7 +283,7 @@ func (handler *PostHandler) AuthorizeUser(w http.ResponseWriter, r *http.Request
 	username := claims["username"]
 
 	userClient := services.NewUserClient(handler.userClientAddress)
-	idByUsername, err := userClient.GetIdByUsername(context.TODO(), &user.GetIdByUsernameRequest{Username: fmt.Sprint(username)})
+	idByUsername, err := userClient.GetIdByUsername(ctx, &user.GetIdByUsernameRequest{Username: fmt.Sprint(username)})
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Can not find ID of user with name: " + fmt.Sprint(username))
 		w.Header().Set("Content-Type", "application/json")
@@ -288,8 +300,12 @@ func (handler *PostHandler) AuthorizeUser(w http.ResponseWriter, r *http.Request
 }
 
 func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	span := tracer.StartSpanFromContext(r.Context(), "GetPublicPosts")
+	defer span.Finish()
+	ctx := tracer.ContextWithSpan(r.Context(), span)
+
 	postClient := services.NewPostClient(handler.postClientAddress)
-	posts, err := postClient.GetAll(context.TODO(), &post.GetAllRequest{})
+	posts, err := postClient.GetAll(ctx, &post.GetAllRequest{})
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get all public posts unsuccessful")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -298,7 +314,7 @@ func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Reques
 
 	allPosts := &domain.Posts{}
 	for _, post := range posts.Posts {
-		isPublic, err := handler.isUserPublic(post.UserId)
+		isPublic, err := handler.isUserPublic(ctx, post.UserId)
 		if err != nil {
 			handler.CustomLogger.ErrorLogger.Error("Is user public unsuccessful")
 			w.WriteHeader(http.StatusInternalServerError)
@@ -413,10 +429,10 @@ func (handler *PostHandler) GetPublicPosts(w http.ResponseWriter, r *http.Reques
 	w.Write(response)
 }
 
-func (handler *PostHandler) getAllConnections(users *domain.Users, userId string) error {
+func (handler *PostHandler) getAllConnections(ctx context.Context, users *domain.Users, userId string) error {
 	// sanitizacija userId uradjena pre poziva same fje
 	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
-	connections, err := connectionClient.GetConnections(context.TODO(), &connection.GetRequest{UserID: userId})
+	connections, err := connectionClient.GetConnections(ctx, &connection.GetRequest{UserID: userId})
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get connections for user with ID: " + userId + " unsuccessful")
 		return err
@@ -431,11 +447,11 @@ func (handler *PostHandler) getAllConnections(users *domain.Users, userId string
 	return nil
 }
 
-func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) error {
+func (handler *PostHandler) addPosts(ctx context.Context, posts *domain.Posts, users *domain.Users) error {
 	postClient := services.NewPostClient(handler.postClientAddress)
 
 	for _, user := range users.UsersDetails {
-		postsByUser, err := postClient.GetAllByUser(context.TODO(), &post.GetRequest{Id: user.Id})
+		postsByUser, err := postClient.GetAllByUser(ctx, &post.GetRequest{Id: user.Id})
 		if err != nil {
 			handler.CustomLogger.ErrorLogger.Error("Get posts by user with ID: " + user.Id + " unsuccessful")
 			return err
@@ -539,9 +555,9 @@ func (handler *PostHandler) addPosts(posts *domain.Posts, users *domain.Users) e
 	return nil
 }
 
-func (handler *PostHandler) isUserPublic(id string) (bool, error) {
+func (handler *PostHandler) isUserPublic(ctx context.Context, id string) (bool, error) {
 	userClient := services.NewUserClient(handler.userClientAddress)
-	users, err := userClient.GetAllPublic(context.TODO(), &user.GetAllPublicRequest{})
+	users, err := userClient.GetAllPublic(ctx, &user.GetAllPublicRequest{})
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get all public users unsuccessful")
 		return false, err

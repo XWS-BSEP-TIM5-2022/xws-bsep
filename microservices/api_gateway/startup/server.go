@@ -80,7 +80,7 @@ func (server *Server) initHandlers() {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithUnaryInterceptor(
 			grpc_opentracing.UnaryClientInterceptor(
-				grpc_opentracing.WithTracer(server.tracer),
+				grpc_opentracing.WithTracer(otgo.GlobalTracer()),
 			),
 		)}
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
@@ -198,7 +198,6 @@ func muxMiddleware(server *Server) http.Handler {
 			opentracing.HTTPHeaders,
 			opentracing.HTTPHeadersCarrier(r.Header))
 		if err2 == nil || err2 == opentracing.ErrSpanContextNotFound {
-			log.Println(" /////////////// ovde ////// ")
 			serverSpan := opentracing.GlobalTracer().StartSpan(
 				endpointName,
 				ext.RPCServerOption(parentSpanContext),
@@ -207,7 +206,6 @@ func muxMiddleware(server *Server) http.Handler {
 			r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
 			defer serverSpan.Finish()
 		}
-
 		lrw := negroni.NewResponseWriter(w)
 		server.mux.ServeHTTP(lrw, r)
 
