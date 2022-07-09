@@ -89,3 +89,36 @@ func (handler *NotificationHandler) Insert(ctx context.Context, request *pb.Inse
 	handler.CustomLogger.SuccessLogger.Info("Notification with ID: " + notification.Id.Hex() + " created")
 	return response, err
 }
+
+func (handler *NotificationHandler) GetNotificationsByUserId(ctx context.Context, request *pb.GetRequest) (*pb.GetAllResponse, error) {
+
+	id := removeMalicious(request.Id)
+	re, err := regexp.Compile(`[^\w]`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	requestId := re.ReplaceAllString(request.Id, " ")
+	handler.CustomLogger.InfoLogger.WithField("id", requestId).Info("Getting notification by id: " + requestId)
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
+		return nil, err
+	}
+	notifications, err := handler.service.GetAllByUser(id)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Notification with ID:" + objectId.Hex() + " not found")
+		return nil, err
+	}
+
+	response := &pb.GetAllResponse{
+		Notifications: []*pb.Notification{},
+	}
+	for _, not := range notifications {
+		current := mapNotification(not)
+		response.Notifications = append(response.Notifications, current)
+	}
+
+	handler.CustomLogger.SuccessLogger.Info("Notification by user received successfully")
+	return response, nil
+}

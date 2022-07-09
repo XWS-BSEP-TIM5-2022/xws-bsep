@@ -53,6 +53,14 @@ func (service *UserService) Update(ctx context.Context, user *domain.User) (stri
 	return success, err
 }
 
+func (service *UserService) UpdatePostNotification(ctx context.Context, user *domain.User) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "Update service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	success, err := service.store.Update(ctx, user)
+	return success, err
+}
+
 func (service *UserService) UpdateBasicInfo(ctx context.Context, user *domain.User) (string, error) {
 	span := tracer.StartSpanFromContext(ctx, "UpdateBasicInfo service")
 	defer span.Finish()

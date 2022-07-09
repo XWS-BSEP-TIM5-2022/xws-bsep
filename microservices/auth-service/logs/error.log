@@ -2,3 +2,5 @@
 [31mERRO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:96 Auth store initialization error              
 [31mERRO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:97 Postgres database initialization error        [31mauth_db_host[0m=localhost [31mauth_db_name[0m=auth [31mauth_db_password[0m="$2a$10$jzfwnYuHBXCgjsFdhBegROD7BvhxF/oCWYLKuwrpvhrGBQr1h4M6q" [31mauth_db_port[0m=5432 [31mauth_db_user[0m=postgres
 [31mERRO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:106 Auth store initialization error              
+[31mERRO[0m[0111]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:367 No auth credentials found with username: teodora123  [31musername[0m=teodora123
+[31mERRO[0m[0112]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:367 No auth credentials found with username: teodora123  [31musername[0m=teodora123

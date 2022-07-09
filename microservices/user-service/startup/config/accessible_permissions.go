@@ -7,6 +7,7 @@ func AccessiblePermissions() map[string]string {
 		//userService + "Get":                          "GetUserById",	// TODO: TM
 		userService + "GetAll": "GetAllUsers",
 		//userService + "Update":                       "UpdateUserProfile",
+		userService + "UpdatePostNotification":       "UpdateUserProfile",
 		userService + "UpdateBasicInfo":              "UpdateUserProfile",
 		userService + "UpdateExperienceAndEducation": "UpdateUserProfile",
 		userService + "UpdateSkillsAndInterests":     "UpdateUserProfile",
