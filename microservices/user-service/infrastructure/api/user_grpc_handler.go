@@ -527,3 +527,34 @@ func (handler *UserHandler) UpdatePostNotification(ctx context.Context, request 
 	handler.CustomLogger.SuccessLogger.Info("User with ID: " + user.Id.Hex() + "updated successfully")
 	return response, err
 }
+
+func (handler *UserHandler) UpdatePrivacy(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+	//span := tracer.StartSpanFromContext(ctx, "UpdatePrivacy")
+	//defer span.Finish()
+	//
+	//ctx = tracer.ContextWithSpan(context.Background(), span)
+	id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+	handler.CustomLogger.InfoLogger.WithField("id", id).Info("Updating privacy info by user with ID: " + id)
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
+		return nil, err
+	}
+	oldUser, err := handler.service.Get(ctx, objectId)
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("User with ID:" + objectId.Hex() + " not found")
+		return &pb.UpdateResponse{
+			Success: "error",
+		}, err
+	}
+
+	user := mapPrivacyInfo(mapUser(oldUser), request.User)
+
+	success, err := handler.service.UpdatePrivacy(ctx, user)
+	response := &pb.UpdateResponse{
+		Success: success,
+	}
+	handler.CustomLogger.SuccessLogger.Info("Basic info updated successfully")
+	return response, err
+}

@@ -95,3 +95,16 @@
 [36mINFO[0m[3530]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:701 Account activation with JWT token            
 [36mINFO[0m[3536]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:701 Account activation with JWT token            
 [36mINFO[0m[3541]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: gorana   
+[36mINFO[0m[0709]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:701 Account activation with JWT token            
+[36mINFO[0m[0731]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:701 Account activation with JWT token            
+[36mINFO[0m[0737]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: teodora  
+[36mINFO[0m[1213]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: teodora  
+[36mINFO[0m[1214]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: teodora  
+[36mINFO[0m[0231]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:701 Account activation with JWT token            
+[36mINFO[0m[0239]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: klara    
+[36mINFO[0m[0470]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: klara    
+[36mINFO[0m[0472]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: klara    
+[36mINFO[0m[0516]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: klara    
+[36mINFO[0m[1424]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:701 Account activation with JWT token            
+[36mINFO[0m[1430]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: marko    
+[36mINFO[0m[1473]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: klara    

@@ -37,13 +37,13 @@ const (
 
 func (server *Server) Start() {
 	neo4jClient := server.initNeo4J()
-	server.CustomLogger.SuccessLogger.Info("Neo4J initialization for connection service successful, PORT: ", server.config.Port, ", HOST: ", server.config.Host)
+	server.CustomLogger.SuccessLogger.Info("Neo4J initialization for job offer service successful, PORT: ", server.config.Port, ", HOST: ", server.config.Host)
 
 	connectionStore := server.initJobOfferStore(neo4jClient)
 	connectionService := server.initJobOfferService(connectionStore)
 	connectionHandler := server.initJobOfferHandler(connectionService)
 
-	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for connection service")
+	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for job offer service")
 	server.startGrpcServer(connectionHandler)
 }
 
@@ -55,7 +55,7 @@ func (server *Server) initNeo4J() *neo4j.Driver {
 
 	client, err := persistence.GetClient(dbUri, server.config.ConnectionDBUser, server.config.ConnectionDBPass)
 	if err != nil {
-		server.CustomLogger.ErrorLogger.Error("Neo4J initialization for connection service failed")
+		server.CustomLogger.ErrorLogger.Error("Neo4J initialization for job offer service failed")
 		log.Fatal(err)
 	}
 	return client

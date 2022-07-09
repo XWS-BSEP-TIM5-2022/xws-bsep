@@ -69,6 +69,14 @@ func (service *UserService) UpdateBasicInfo(ctx context.Context, user *domain.Us
 	return success, err
 }
 
+func (service *UserService) UpdatePrivacy(ctx context.Context, user *domain.User) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdatePrivacyInfo service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	success, err := service.store.UpdatePrivacy(ctx, user)
+	return success, err
+}
+
 func (service *UserService) UpdateExperienceAndEducation(ctx context.Context, user *domain.User) (string, error) {
 	span := tracer.StartSpanFromContext(ctx, "UpdateExperienceAndEducation service")
 	defer span.Finish()

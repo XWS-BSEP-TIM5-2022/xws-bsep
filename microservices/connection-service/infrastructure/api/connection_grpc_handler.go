@@ -205,3 +205,16 @@ func (handler *ConnectionHandler) GetRecommendation(ctx context.Context, request
 	}
 	return response, nil
 }
+
+func (handler *ConnectionHandler) ChangePrivacy(ctx context.Context, request *pb.ChangePrivacyRequest) (*pb.ActionResult, error) {
+	//prosledili smo registrovanog korisnika
+	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+
+	connection, err := handler.service.ChangePrivacy(userIDa, request.ChangePrivacyDTO.Private)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Privacy of user with ID: " + userIDa + " successfully changed!")
+		return nil, err
+	}
+	handler.CustomLogger.SuccessLogger.Info("Error while changing privacy of user with ID: " + userIDa)
+	return connection, err
+}
