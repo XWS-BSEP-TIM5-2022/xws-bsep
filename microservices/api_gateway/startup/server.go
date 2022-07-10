@@ -234,6 +234,8 @@ func AccessibleEndpoints() map[string]string {
 		userService + "/updateSkillsAndInterests":     "UpdateUserProfile",
 		userService + "/info":                         "GetLoggedInUserInfo",
 		userService + "/postNotification":             "UpdateUserProfile",
+		userService + "/messageNotification":          "UpdateUserProfile",
+		userService + "/followNotification":           "UpdateUserProfile",
 
 		postService + "":         "CreatePost",
 		postService + "/like":    "UpdatePostLikes",

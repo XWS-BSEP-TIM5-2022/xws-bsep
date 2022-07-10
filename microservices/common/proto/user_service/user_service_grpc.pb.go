@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.20.1
-// source: common/proto/user_service/user_service.proto
+// source: user_service.proto
 
 package user
 
@@ -39,6 +39,8 @@ type UserServiceClient interface {
 	GetIdByUsername(ctx context.Context, in *GetIdByUsernameRequest, opts ...grpc.CallOption) (*InsertResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	UpdatePostNotification(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
+	UpdateMessageNotification(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
+	UpdateFollowNotification(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	UpdatePrivacy(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 }
 
@@ -203,6 +205,24 @@ func (c *userServiceClient) UpdatePostNotification(ctx context.Context, in *Upda
 	return out, nil
 }
 
+func (c *userServiceClient) UpdateMessageNotification(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
+	out := new(UpdateResponse)
+	err := c.cc.Invoke(ctx, "/user_service.UserService/UpdateMessageNotification", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UpdateFollowNotification(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
+	out := new(UpdateResponse)
+	err := c.cc.Invoke(ctx, "/user_service.UserService/UpdateFollowNotification", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) UpdatePrivacy(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
 	out := new(UpdateResponse)
 	err := c.cc.Invoke(ctx, "/user_service.UserService/UpdatePrivacy", in, out, opts...)
@@ -233,6 +253,8 @@ type UserServiceServer interface {
 	GetIdByUsername(context.Context, *GetIdByUsernameRequest) (*InsertResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	UpdatePostNotification(context.Context, *UpdateRequest) (*UpdateResponse, error)
+	UpdateMessageNotification(context.Context, *UpdateRequest) (*UpdateResponse, error)
+	UpdateFollowNotification(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	UpdatePrivacy(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
@@ -291,6 +313,12 @@ func (UnimplementedUserServiceServer) Register(context.Context, *RegisterRequest
 }
 func (UnimplementedUserServiceServer) UpdatePostNotification(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePostNotification not implemented")
+}
+func (UnimplementedUserServiceServer) UpdateMessageNotification(context.Context, *UpdateRequest) (*UpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMessageNotification not implemented")
+}
+func (UnimplementedUserServiceServer) UpdateFollowNotification(context.Context, *UpdateRequest) (*UpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateFollowNotification not implemented")
 }
 func (UnimplementedUserServiceServer) UpdatePrivacy(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePrivacy not implemented")
@@ -614,6 +642,42 @@ func _UserService_UpdatePostNotification_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_UpdateMessageNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdateMessageNotification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_service.UserService/UpdateMessageNotification",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdateMessageNotification(ctx, req.(*UpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UpdateFollowNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdateFollowNotification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_service.UserService/UpdateFollowNotification",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdateFollowNotification(ctx, req.(*UpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_UpdatePrivacy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateRequest)
 	if err := dec(in); err != nil {
@@ -708,10 +772,18 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_UpdatePostNotification_Handler,
 		},
 		{
+			MethodName: "UpdateMessageNotification",
+			Handler:    _UserService_UpdateMessageNotification_Handler,
+		},
+		{
+			MethodName: "UpdateFollowNotification",
+			Handler:    _UserService_UpdateFollowNotification_Handler,
+		},
+		{
 			MethodName: "UpdatePrivacy",
 			Handler:    _UserService_UpdatePrivacy_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "common/proto/user_service/user_service.proto",
+	Metadata: "user_service.proto",
 }

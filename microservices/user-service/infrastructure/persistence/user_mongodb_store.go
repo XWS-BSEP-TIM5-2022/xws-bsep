@@ -136,20 +136,22 @@ func (store *UserMongoDBStore) Update(ctx context.Context, user *domain.User) (s
 	oldData := bson.M{"_id": user.Id}
 
 	newData := bson.M{"$set": bson.M{
-		"name":              user.Name,
-		"last_name":         user.LastName,
-		"mobile_number":     user.MobileNumber,
-		"gender":            user.Gender,
-		"birthday":          user.Birthday,
-		"email":             user.Email,
-		"biography":         user.Biography,
-		"is_public":         user.IsPublic,
-		"education":         user.Education,
-		"experience":        user.Experience,
-		"skills":            user.Skills,
-		"interests":         user.Interests,
-		"username":          user.Username,
-		"post_notification": user.PostNotification,
+		"name":                 user.Name,
+		"last_name":            user.LastName,
+		"mobile_number":        user.MobileNumber,
+		"gender":               user.Gender,
+		"birthday":             user.Birthday,
+		"email":                user.Email,
+		"biography":            user.Biography,
+		"is_public":            user.IsPublic,
+		"education":            user.Education,
+		"experience":           user.Experience,
+		"skills":               user.Skills,
+		"interests":            user.Interests,
+		"username":             user.Username,
+		"post_notification":    user.PostNotification,
+		"message_notification": user.MessageNotification,
+		"follow_notification":  user.FollowNotification,
 	}}
 
 	oldUser, _ := store.filterOne(oldData)
