@@ -26,6 +26,7 @@ type MessageServiceClient interface {
 	GetConversation(ctx context.Context, in *GetConversationRequest, opts ...grpc.CallOption) (*GetConversationResponse, error)
 	GetAllConversationsForUser(ctx context.Context, in *GetAllConversationsForUserRequest, opts ...grpc.CallOption) (*GetAllConversationsForUserResponse, error)
 	NewMessage(ctx context.Context, in *NewMessageRequest, opts ...grpc.CallOption) (*NewMessageResponse, error)
+	GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error)
 }
 
 type messageServiceClient struct {
@@ -72,6 +73,15 @@ func (c *messageServiceClient) NewMessage(ctx context.Context, in *NewMessageReq
 	return out, nil
 }
 
+func (c *messageServiceClient) GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error) {
+	out := new(GetAllEventsResponse)
+	err := c.cc.Invoke(ctx, "/message_service.MessageService/GetAllEvents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MessageServiceServer is the server API for MessageService service.
 // All implementations must embed UnimplementedMessageServiceServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type MessageServiceServer interface {
 	GetConversation(context.Context, *GetConversationRequest) (*GetConversationResponse, error)
 	GetAllConversationsForUser(context.Context, *GetAllConversationsForUserRequest) (*GetAllConversationsForUserResponse, error)
 	NewMessage(context.Context, *NewMessageRequest) (*NewMessageResponse, error)
+	GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error)
 	mustEmbedUnimplementedMessageServiceServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedMessageServiceServer) GetAllConversationsForUser(context.Cont
 }
 func (UnimplementedMessageServiceServer) NewMessage(context.Context, *NewMessageRequest) (*NewMessageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NewMessage not implemented")
+}
+func (UnimplementedMessageServiceServer) GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllEvents not implemented")
 }
 func (UnimplementedMessageServiceServer) mustEmbedUnimplementedMessageServiceServer() {}
 
@@ -184,6 +198,24 @@ func _MessageService_NewMessage_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MessageService_GetAllEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllEventsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).GetAllEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/message_service.MessageService/GetAllEvents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).GetAllEvents(ctx, req.(*GetAllEventsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MessageService_ServiceDesc is the grpc.ServiceDesc for MessageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var MessageService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NewMessage",
 			Handler:    _MessageService_NewMessage_Handler,
+		},
+		{
+			MethodName: "GetAllEvents",
+			Handler:    _MessageService_GetAllEvents_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

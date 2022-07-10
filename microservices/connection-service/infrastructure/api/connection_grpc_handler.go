@@ -9,9 +9,12 @@ import (
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/application"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/domain"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 type ConnectionHandler struct {
@@ -142,7 +145,17 @@ func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb
 		handler.CustomLogger.ErrorLogger.Error("Creating connection between user with ID: " + userIDa + " and user with ID: " + userIDb + " failed")
 		return nil, err
 	}
-	handler.CustomLogger.SuccessLogger.Info("Creating connection between user with ID: " + userIDa + " and user with ID: " + userIDb + " successful")
+	successLogText := "Creating connection between user with ID: " + userIDa + " and user with ID: " + userIDb + " successful"
+
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: userIDa,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
 
 	// slanje notifikacija
 	sender, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: userIDa})
@@ -176,6 +189,7 @@ func (handler *ConnectionHandler) BlockUser(ctx context.Context, request *pb.Blo
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	userIDb := request.BlockUserDTO.UserID
+
 	return handler.service.BlockUser(ctx, userIDa, userIDb, request.BlockUserDTO.IsPublic, request.BlockUserDTO.IsPublicLogged)
 }
 
@@ -201,7 +215,17 @@ func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request
 		handler.CustomLogger.ErrorLogger.Error("Connection between user with ID: " + userIDa + " and user with ID: " + userIDb + " not approved")
 		return nil, err
 	}
-	handler.CustomLogger.SuccessLogger.Info("Approved connection between user with ID: " + userIDa + " and user with ID: " + userIDb)
+	successLogText := "Approved connection between user with ID: " + userIDa + " and user with ID: " + userIDb
+
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: userIDa,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
 
 	// slanje notifikacija
 	sender, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: userIDa})
@@ -214,6 +238,7 @@ func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request
 		notificationRequest.Notification.UserId = userIDb
 		handler.notificationServiceClient.Insert(ctx, notificationRequest)
 	}
+
 
 	return connection, err
 }
@@ -240,7 +265,19 @@ func (handler *ConnectionHandler) RejectConnection(ctx context.Context, request 
 		handler.CustomLogger.ErrorLogger.Error("Connection between user with ID: " + userIDa + " and user with ID: " + userIDb + " not rejected")
 		return nil, err
 	}
-	handler.CustomLogger.SuccessLogger.Info("Rejected connection between user with ID: " + userIDa + " and user with ID: " + userIDb)
+
+	successLogText := "Rejected connection between user with ID: " + userIDa + " and user with ID: " + userIDb
+
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: userIDa,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return connection, err
 }
 
@@ -289,6 +326,7 @@ func (handler *ConnectionHandler) GetRecommendation(ctx context.Context, request
 	for _, user := range recommendation {
 		response.Users = append(response.Users, mapUserConn(user))
 	}
+
 	return response, nil
 }
 
@@ -306,6 +344,43 @@ func (handler *ConnectionHandler) ChangePrivacy(ctx context.Context, request *pb
 		handler.CustomLogger.ErrorLogger.Error("Privacy of user with ID: " + userIDa + " successfully changed!")
 		return nil, err
 	}
-	handler.CustomLogger.SuccessLogger.Info("Error while changing privacy of user with ID: " + userIDa)
+	successLogText := "Successfully changing privacy of user with ID: " + userIDa
+
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: userIDa,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return connection, err
+}
+
+func (handler *ConnectionHandler) GetAllEvents(ctx context.Context, request *pb.GetAllEventsRequest) (*pb.GetAllEventsResponse, error) {
+
+	events, err := handler.service.GetAllEvents()
+
+	handler.CustomLogger.InfoLogger.Info("Get all events for admin.")
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Error while getting events for admin")
+		return nil, err
+	}
+
+	var finalEvents []*pb.Event
+
+	for _, event := range events {
+		finalEvents = append(finalEvents, mapEvent(event))
+	}
+
+	response := &pb.GetAllEventsResponse{
+		Events: finalEvents,
+	}
+
+	handler.CustomLogger.SuccessLogger.Info("Get all events for admin successfully done")
+	return response, nil
+
 }

@@ -53,11 +53,14 @@ func (server *Server) Start() {
 	notificationServiceClient := server.initNotificationServiceClient()
 	userServiceClient := server.initUserServiceClient()
 
+	eventStore := server.initEventStore(mongoClient)
+
 	messageStore := server.initMessageStore(mongoClient)
-	messageService := server.initMessageService(messageStore)
+	messageService := server.initMessageService(messageStore, eventStore)
 	messageHandler := server.initMessageHandler(messageService, notificationServiceClient, userServiceClient)
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for message service")
+
 	server.startGrpcServer(messageHandler)
 }
 
@@ -84,8 +87,20 @@ func (server *Server) initMessageStore(client *mongo.Client) domain.MessageStore
 	return store
 }
 
-func (server *Server) initMessageService(store domain.MessageStore) *application.MessageService {
-	return application.NewMessageService(store)
+func (server *Server) initEventStore(client *mongo.Client) domain.EventStore {
+	store := persistence.NewEventMongoDBStore(client)
+	//store.DeleteAll()
+	//for _, message := range messages {
+	//	_, err := store.Insert(message)
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}
+	return store
+}
+
+func (server *Server) initMessageService(store domain.MessageStore, eventStore domain.EventStore) *application.MessageService {
+	return application.NewMessageService(store, eventStore)
 }
 
 func (server *Server) initMessageHandler(service *application.MessageService, notificationServiceClient notification.NotificationServiceClient,

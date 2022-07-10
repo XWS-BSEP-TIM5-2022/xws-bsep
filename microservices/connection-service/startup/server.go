@@ -2,9 +2,13 @@ package startup
 
 import (
 	"fmt"
+
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/mongo"
 	"io"
+
 	"log"
 	"net"
 
@@ -55,13 +59,27 @@ func (server *Server) Start() {
 
 	notificationServiceClient := server.initNotificationServiceClient()
 	userServiceClient := server.initUserServiceClient()
+	mongoClient := server.initMongoClient()
+	server.CustomLogger.SuccessLogger.Info("MongoDB initialization for connection service successful, PORT: ", server.config.EventDBPort, ", HOST: ", server.config.EventDBHost)
 
+	eventStore := server.initEventStore(mongoClient)
 	connectionStore := server.initConnectionStore(neo4jClient)
-	connectionService := server.initConnectionService(connectionStore)
+	connectionService := server.initConnectionService(connectionStore, eventStore)
 	connectionHandler := server.initConnectionHandler(connectionService, notificationServiceClient, userServiceClient)
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for connection service")
 	server.startGrpcServer(connectionHandler)
+}
+
+func (server *Server) initMongoClient() *mongo.Client {
+	client, err := persistence.GetMongoClient(server.config.EventDBHost, server.config.EventDBPort)
+	if err != nil {
+		server.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+			"event_db_host": server.config.EventDBHost,
+			"event_db_port": server.config.EventDBPort,
+		}).Error("MongoDB initialization for connection service failed")
+	}
+	return client
 }
 
 func (server *Server) initNeo4J() *neo4j.Driver {
@@ -92,8 +110,20 @@ func (server *Server) initConnectionStore(client *neo4j.Driver) domain.Connectio
 	return store
 }
 
-func (server *Server) initConnectionService(store domain.ConnectionStore) *application.ConnectionService {
-	return application.NewConnectionService(store)
+func (server *Server) initEventStore(client *mongo.Client) domain.EventStore {
+	store := persistence.NewEventMongoDBStore(client)
+	//store.DeleteAll()
+	//for _, message := range messages {
+	//	_, err := store.Insert(message)
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}
+	return store
+}
+
+func (server *Server) initConnectionService(store domain.ConnectionStore, eventStore domain.EventStore) *application.ConnectionService {
+	return application.NewConnectionService(store, eventStore)
 }
 
 func (server *Server) initConnectionHandler(service *application.ConnectionService, notificationServiceClient notification.NotificationServiceClient,

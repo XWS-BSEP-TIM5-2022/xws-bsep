@@ -2,6 +2,9 @@ package startup
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/mongo"
+
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	otgo "github.com/opentracing/opentracing-go"
 	"io"
@@ -49,13 +52,27 @@ const (
 func (server *Server) Start() {
 	neo4jClient := server.initNeo4J()
 	server.CustomLogger.SuccessLogger.Info("Neo4J initialization for job offer service successful, PORT: ", server.config.Port, ", HOST: ", server.config.Host)
+	mongoClient := server.initMongoClient()
+	server.CustomLogger.SuccessLogger.Info("MongoDB initialization for connection service successful, PORT: ", server.config.EventDBPort, ", HOST: ", server.config.EventDBHost)
 
+	eventStore := server.initEventStore(mongoClient)
 	connectionStore := server.initJobOfferStore(neo4jClient)
-	connectionService := server.initJobOfferService(connectionStore)
+	connectionService := server.initJobOfferService(connectionStore, eventStore)
 	connectionHandler := server.initJobOfferHandler(connectionService)
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for job offer service")
 	server.startGrpcServer(connectionHandler)
+}
+
+func (server *Server) initMongoClient() *mongo.Client {
+	client, err := persistence.GetMongoClient(server.config.EventDBHost, server.config.EventDBPort)
+	if err != nil {
+		server.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+			"event_db_host": server.config.EventDBHost,
+			"event_db_port": server.config.EventDBPort,
+		}).Error("MongoDB initialization for connection service failed")
+	}
+	return client
 }
 
 func (server *Server) initNeo4J() *neo4j.Driver {
@@ -86,8 +103,20 @@ func (server *Server) initJobOfferStore(client *neo4j.Driver) domain.JobOfferSto
 	return store
 }
 
-func (server *Server) initJobOfferService(store domain.JobOfferStore) *application.JobOfferService {
-	return application.NewJobOfferService(store)
+func (server *Server) initEventStore(client *mongo.Client) domain.EventStore {
+	store := persistence.NewEventMongoDBStore(client)
+	//store.DeleteAll()
+	//for _, message := range messages {
+	//	_, err := store.Insert(message)
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}
+	return store
+}
+
+func (server *Server) initJobOfferService(store domain.JobOfferStore, eventStore domain.EventStore) *application.JobOfferService {
+	return application.NewJobOfferService(store, eventStore)
 }
 
 func (server *Server) initJobOfferHandler(service *application.JobOfferService) *api.JobOfferHandler {

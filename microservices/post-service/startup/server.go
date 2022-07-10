@@ -54,8 +54,9 @@ func (server *Server) Start() {
 	connectionServiceClient := server.initConnectionServiceClient()
 	userServiceClient := server.initUserServiceClient()
 
+	eventStore := server.initEventStore(mongoClient)
 	postStore := server.initPostStore(mongoClient)
-	postService := server.initPostService(postStore)
+	postService := server.initPostService(postStore, eventStore)
 	postHandler := server.initPostHandler(postService, notificationServiceClient, connectionServiceClient, userServiceClient)
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for post service")
@@ -85,8 +86,20 @@ func (server *Server) initPostStore(client *mongo.Client) domain.PostStore { // 
 	return store
 }
 
-func (server *Server) initPostService(store domain.PostStore) *application.PostService {
-	return application.NewPostService(store)
+func (server *Server) initEventStore(client *mongo.Client) domain.EventStore {
+	store := persistence.NewEventMongoDBStore(client)
+	//store.DeleteAll()
+	//for _, message := range messages {
+	//	_, err := store.Insert(message)
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}
+	return store
+}
+
+func (server *Server) initPostService(store domain.PostStore, eventStore domain.EventStore) *application.PostService {
+	return application.NewPostService(store, eventStore)
 }
 
 func (server *Server) initNotificationServiceClient() notification.NotificationServiceClient {

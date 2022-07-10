@@ -162,7 +162,7 @@ func (server *Server) initHandlers() {
 		panic(err)
 	}
 	server.CustomLogger.SuccessLogger.Info("Post service registration successful")
-
+	
 	jobOfferEndpoint := fmt.Sprintf("%s:%s", server.config.JobOfferHost, server.config.JobOfferPort)
 	err = jobOfferGw.RegisterJobOfferServiceHandlerFromEndpoint(context.TODO(), server.mux, jobOfferEndpoint, opts)
 	if err != nil {
@@ -177,11 +177,16 @@ func (server *Server) initCustomHandlers() {
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
+	messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
+	notificationEndpoint := fmt.Sprintf("%s:%s", server.config.NotificationHost, server.config.NotificationPort)
 	jobOfferEndpoint := fmt.Sprintf("%s:%s", server.config.JobOfferHost, server.config.JobOfferPort)
 	postsHandler := api.NewPostHandler(postEndpoint, connectionEndpoint, userEndpoint, authEndpoint)
 	jobOfferHandler := api.NewJobOfferHandler(postEndpoint, connectionEndpoint, userEndpoint, authEndpoint, jobOfferEndpoint)
+	eventHandler := api.NewEventHandler(authEndpoint, userEndpoint, postEndpoint, connectionEndpoint, messageEndpoint, notificationEndpoint, jobOfferEndpoint)
 	postsHandler.Init(server.mux)
 	jobOfferHandler.Init(server.mux)
+	eventHandler.Init(server.mux)
+
 }
 
 func (server *Server) Start() {

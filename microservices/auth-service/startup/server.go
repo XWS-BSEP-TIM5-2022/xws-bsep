@@ -2,6 +2,8 @@ package startup
 
 import (
 	"fmt"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
+	"go.mongodb.org/mongo-driver/mongo"
 	"io"
 	"log"
 	"net"
@@ -52,7 +54,10 @@ func (server *Server) Start() {
 
 	postgresClient := server.initPostgresClient()
 	authStore := server.initAuthStore(postgresClient)
+	mongoClient := server.initMongoClient()
+	server.CustomLogger.SuccessLogger.Info("MongoDB initialization for connection service successful, PORT: ", server.config.EventDBPort, ", HOST: ", server.config.EventDBHost)
 
+	eventStore := server.initEventStore(mongoClient)
 	jwtServiceClient, err := server.initJWTManager(server.config.PrivateKey, server.config.PublicKey)
 	if err != nil {
 		server.CustomLogger.ErrorLogger.Error("Initialization JWT service error")
@@ -66,7 +71,7 @@ func (server *Server) Start() {
 		log.Fatal(err)
 	}
 
-	authService := server.initAuthService(authStore, userServiceClient, jwtServiceClient, apiTokenServiceClient)
+	authService := server.initAuthService(authStore, userServiceClient, jwtServiceClient, apiTokenServiceClient, eventStore)
 
 	commandSubscriber := server.initSubscriber(server.config.CreateUserCommandSubject, QueueGroup)
 	replyPublisher := server.initPublisher(server.config.CreateUserReplySubject)
@@ -76,6 +81,29 @@ func (server *Server) Start() {
 
 	server.CustomLogger.SuccessLogger.Info("Starting auth service successfully, PORT: ", config.NewConfig().Port)
 	server.startGrpcServer(authHandler)
+}
+
+func (server *Server) initMongoClient() *mongo.Client {
+	client, err := persistence.GetMongoClient(server.config.EventDBHost, server.config.EventDBPort)
+	if err != nil {
+		server.CustomLogger.ErrorLogger.WithFields(logrus.Fields{
+			"event_db_host": server.config.EventDBHost,
+			"event_db_port": server.config.EventDBPort,
+		}).Error("MongoDB initialization for connection service failed")
+	}
+	return client
+}
+
+func (server *Server) initEventStore(client *mongo.Client) domain.EventStore {
+	store := persistence.NewEventMongoDBStore(client)
+	//store.DeleteAll()
+	//for _, message := range messages {
+	//	_, err := store.Insert(message)
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}
+	return store
 }
 
 func (server *Server) initPostgresClient() *gorm.DB {
@@ -124,8 +152,8 @@ func (server *Server) initAuthStore(client *gorm.DB) *persistence.AuthPostgresSt
 	return store
 }
 
-func (server *Server) initAuthService(store *persistence.AuthPostgresStore, userServiceClient user.UserServiceClient, jwtService *api.JWTService, apiTokenService *api.APITokenService) *api.AuthService {
-	return api.NewAuthService(store, jwtService, userServiceClient, apiTokenService)
+func (server *Server) initAuthService(store *persistence.AuthPostgresStore, userServiceClient user.UserServiceClient, jwtService *api.JWTService, apiTokenService *api.APITokenService, eventStore domain.EventStore) *api.AuthService {
+	return api.NewAuthService(store, jwtService, userServiceClient, apiTokenService, eventStore)
 }
 
 func (server *Server) initSubscriber(subject, queueGroup string) saga.Subscriber {

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.20.1
-// source: user_service.proto
+// source: common/proto/user_service/user_service.proto
 
 package user
 
@@ -42,6 +42,7 @@ type UserServiceClient interface {
 	UpdateMessageNotification(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	UpdateFollowNotification(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	UpdatePrivacy(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
+	GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error)
 }
 
 type userServiceClient struct {
@@ -232,6 +233,15 @@ func (c *userServiceClient) UpdatePrivacy(ctx context.Context, in *UpdateRequest
 	return out, nil
 }
 
+func (c *userServiceClient) GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error) {
+	out := new(GetAllEventsResponse)
+	err := c.cc.Invoke(ctx, "/user_service.UserService/GetAllEvents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -256,6 +266,7 @@ type UserServiceServer interface {
 	UpdateMessageNotification(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	UpdateFollowNotification(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	UpdatePrivacy(context.Context, *UpdateRequest) (*UpdateResponse, error)
+	GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -322,6 +333,9 @@ func (UnimplementedUserServiceServer) UpdateFollowNotification(context.Context, 
 }
 func (UnimplementedUserServiceServer) UpdatePrivacy(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePrivacy not implemented")
+}
+func (UnimplementedUserServiceServer) GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllEvents not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -696,6 +710,24 @@ func _UserService_UpdatePrivacy_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetAllEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllEventsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetAllEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user_service.UserService/GetAllEvents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetAllEvents(ctx, req.(*GetAllEventsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -783,7 +815,11 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "UpdatePrivacy",
 			Handler:    _UserService_UpdatePrivacy_Handler,
 		},
+		{
+			MethodName: "GetAllEvents",
+			Handler:    _UserService_GetAllEvents_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "user_service.proto",
+	Metadata: "common/proto/user_service/user_service.proto",
 }

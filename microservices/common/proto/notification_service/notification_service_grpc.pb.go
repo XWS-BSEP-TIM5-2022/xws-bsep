@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.20.1
-// source: notification_service.proto
+// source: common/proto/notification_service/notification_service.proto
 
 package notification
 
@@ -26,6 +26,7 @@ type NotificationServiceClient interface {
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	Insert(ctx context.Context, in *InsertNotificationRequest, opts ...grpc.CallOption) (*InsertNotificationResponse, error)
 	GetNotificationsByUserId(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
+	GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error)
 }
 
 type notificationServiceClient struct {
@@ -72,6 +73,15 @@ func (c *notificationServiceClient) GetNotificationsByUserId(ctx context.Context
 	return out, nil
 }
 
+func (c *notificationServiceClient) GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error) {
+	out := new(GetAllEventsResponse)
+	err := c.cc.Invoke(ctx, "/notification_service.NotificationService/GetAllEvents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotificationServiceServer is the server API for NotificationService service.
 // All implementations must embed UnimplementedNotificationServiceServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type NotificationServiceServer interface {
 	GetAll(context.Context, *GetAllRequest) (*GetAllResponse, error)
 	Insert(context.Context, *InsertNotificationRequest) (*InsertNotificationResponse, error)
 	GetNotificationsByUserId(context.Context, *GetRequest) (*GetAllResponse, error)
+	GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedNotificationServiceServer) Insert(context.Context, *InsertNot
 }
 func (UnimplementedNotificationServiceServer) GetNotificationsByUserId(context.Context, *GetRequest) (*GetAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNotificationsByUserId not implemented")
+}
+func (UnimplementedNotificationServiceServer) GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllEvents not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
 
@@ -184,6 +198,24 @@ func _NotificationService_GetNotificationsByUserId_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotificationService_GetAllEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllEventsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).GetAllEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/notification_service.NotificationService/GetAllEvents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).GetAllEvents(ctx, req.(*GetAllEventsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotificationService_ServiceDesc is the grpc.ServiceDesc for NotificationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -207,7 +239,11 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetNotificationsByUserId",
 			Handler:    _NotificationService_GetNotificationsByUserId_Handler,
 		},
+		{
+			MethodName: "GetAllEvents",
+			Handler:    _NotificationService_GetAllEvents_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "notification_service.proto",
+	Metadata: "common/proto/notification_service/notification_service.proto",
 }

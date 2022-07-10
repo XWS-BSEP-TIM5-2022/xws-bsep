@@ -26,19 +26,15 @@ func mapConversation(conversation *domain.Conversation) *pb.Conversation {
 	return conversationPb
 }
 
-func mapInsertConversation(conversation *pb.Conversation) *domain.Conversation {
-	id, _ := primitive.ObjectIDFromHex(conversation.Id)
-	//user1, _ := primitive.ObjectIDFromHex(conversation.User1)
-	//user2, _ := primitive.ObjectIDFromHex(conversation.User2)
-
-	conversationPb := &domain.Conversation{
-		Id:       id,
-		User1:    conversation.User1,
-		User2:    conversation.User2,
-		Messages: nil,
+func mapEvent(event *domain.Event) *pb.Event {
+	eventPb := &pb.Event{
+		Id:     event.Id.Hex(),
+		UserId: event.UserId,
+		Text:   event.Text,
+		Date:   event.Date.String(),
 	}
 
-	return conversationPb
+	return eventPb
 }
 
 func mapMessage(message *domain.Message) *pb.Message {

@@ -29,6 +29,13 @@ service NotificationService{
       get: "/api/notification/user/{id}"
     };
   }
+
+
+  rpc GetAllEvents(GetAllEventsRequest)returns(GetAllEventsResponse){
+    option(google.api.http) = {
+      get: "/api/notification/events",
+    };
+  }
 }
 
 message GetRequest {
@@ -68,4 +75,17 @@ message Notification {
   bool read = 6;
 }
 
+message GetAllEventsRequest {
+}
+
+message GetAllEventsResponse {
+  repeated Event events = 1;
+}
+
+message Event {
+  string id = 1;
+  string userId = 2;
+  string text = 3;
+  string date = 4;
+}
  

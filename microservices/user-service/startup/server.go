@@ -52,12 +52,12 @@ const (
 func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	userStore := server.initUserStore(mongoClient)
-
+	eventStore := server.initEventStore(mongoClient)
 	commandPublisher := server.initPublisher(server.config.CreateUserCommandSubject)
 	replySubscriber := server.initSubscriber(server.config.CreateUserReplySubject, QueueGroup)
 	createUserOrchestrator := server.initCreateUserOrchestrator(commandPublisher, replySubscriber)
 
-	userService := server.initUserService(userStore, createUserOrchestrator)
+	userService := server.initUserService(userStore, createUserOrchestrator, eventStore)
 
 	commandSubscriber := server.initSubscriber(server.config.CreateUserCommandSubject, QueueGroup)
 	replyPublisher := server.initPublisher(server.config.CreateUserReplySubject)
@@ -83,7 +83,7 @@ func (server *Server) initMongoClient() *mongo.Client {
 
 func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
 	store := persistence.NewUserMongoDBStore(client)
-	//store.DeleteAll()
+	store.DeleteAll()
 	for _, user := range users {
 		_, err := store.Insert(user)
 		if err != nil {
@@ -91,6 +91,18 @@ func (server *Server) initUserStore(client *mongo.Client) domain.UserStore {
 			// log.Fatal(err)
 		}
 	}
+	return store
+}
+
+func (server *Server) initEventStore(client *mongo.Client) domain.EventStore {
+	store := persistence.NewEventMongoDBStore(client)
+	//store.DeleteAll()
+	//for _, message := range messages {
+	//	_, err := store.Insert(message)
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}
 	return store
 }
 
@@ -124,8 +136,8 @@ func (server *Server) initCreateUserOrchestrator(publisher saga.Publisher, subsc
 	return orchestrator
 }
 
-func (server *Server) initUserService(store domain.UserStore, orchestrator *application.CreateUserOrchestrator) *application.UserService {
-	return application.NewUserService(store, orchestrator)
+func (server *Server) initUserService(store domain.UserStore, orchestrator *application.CreateUserOrchestrator, eventStore domain.EventStore) *application.UserService {
+	return application.NewUserService(store, orchestrator, eventStore)
 }
 
 func (server *Server) initCreateUserHandler(service *application.UserService, publisher saga.Publisher, subscriber saga.Subscriber) {

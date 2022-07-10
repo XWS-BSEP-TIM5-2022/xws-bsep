@@ -40,6 +40,10 @@ var adminPermissions = []*domain.Permission{
 		ID:   15,
 		Name: "AdminsEndpoint",
 	},
+	{
+		ID:   30,
+		Name: "GetAllEvents",
+	},
 }
 
 var userPermissions = []*domain.Permission{

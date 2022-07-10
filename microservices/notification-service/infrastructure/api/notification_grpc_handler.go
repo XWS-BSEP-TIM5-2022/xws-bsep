@@ -5,10 +5,12 @@ import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/notification_service/application"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/notification_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 type NotificationHandler struct {
@@ -101,7 +103,18 @@ func (handler *NotificationHandler) Insert(ctx context.Context, request *pb.Inse
 	response := &pb.InsertNotificationResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Notification with ID: " + notification.Id.Hex() + " created")
+
+	successLogText := "Notification with ID: " + notification.Id.Hex() + " created"
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: "",
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return response, err
 }
 
@@ -140,4 +153,30 @@ func (handler *NotificationHandler) GetNotificationsByUserId(ctx context.Context
 
 	handler.CustomLogger.SuccessLogger.Info("Notification by user received successfully")
 	return response, nil
+}
+
+func (handler *NotificationHandler) GetAllEvents(ctx context.Context, request *pb.GetAllEventsRequest) (*pb.GetAllEventsResponse, error) {
+
+	events, err := handler.service.GetAllEvents()
+
+	handler.CustomLogger.InfoLogger.Info("Get all events for admin.")
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Error while getting events for admin")
+		return nil, err
+	}
+
+	var finalEvents []*pb.Event
+
+	for _, event := range events {
+		finalEvents = append(finalEvents, mapEvent(event))
+	}
+
+	response := &pb.GetAllEventsResponse{
+		Events: finalEvents,
+	}
+
+	handler.CustomLogger.SuccessLogger.Info("Get all events for admin successfully done")
+	return response, nil
+
 }

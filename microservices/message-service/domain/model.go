@@ -18,3 +18,10 @@ type Conversation struct {
 	User2    string             `bson:"user2"`
 	Messages []Message          `bson:"messages"`
 }
+
+type Event struct {
+	Id     primitive.ObjectID `bson:"_id"`
+	UserId string             `bson:"user_id"`
+	Text   string             `bson:"action"`
+	Date   time.Time          `bson:"date"`
+}

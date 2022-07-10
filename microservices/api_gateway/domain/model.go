@@ -177,3 +177,10 @@ type Company struct {
 type Posts struct {
 	AllPosts []Post
 }
+
+type Event struct {
+	Id     string
+	UserId string
+	Text   string
+	Date   string
+}

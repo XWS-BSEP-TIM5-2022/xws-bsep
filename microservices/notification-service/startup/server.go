@@ -51,8 +51,9 @@ func (server *Server) Start() {
 	mongoClient := server.initMongoClient()
 	server.CustomLogger.SuccessLogger.Info("MongoDB initialization for notification service successful, PORT: ", server.config.NotificationDBPort, ", HOST: ", server.config.NotificationDBHost)
 
+	eventStore := server.initEventStore(mongoClient)
 	notificationStore := server.initNotificationStore(mongoClient)
-	notificationService := server.initNotificationService(notificationStore)
+	notificationService := server.initNotificationService(notificationStore, eventStore)
 	notificationHandler := server.initNotificationHandler(notificationService)
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for notification service")
@@ -82,8 +83,20 @@ func (server *Server) initNotificationStore(client *mongo.Client) domain.Notific
 	return store
 }
 
-func (server *Server) initNotificationService(store domain.NotificationStore) *application.NotificationService {
-	return application.NewNotificationService(store)
+func (server *Server) initEventStore(client *mongo.Client) domain.EventStore {
+	store := persistence.NewEventMongoDBStore(client)
+	//store.DeleteAll()
+	//for _, message := range messages {
+	//	_, err := store.Insert(message)
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}
+	return store
+}
+
+func (server *Server) initNotificationService(store domain.NotificationStore, eventStore domain.EventStore) *application.NotificationService {
+	return application.NewNotificationService(store, eventStore)
 }
 
 func (server *Server) initUserServiceClient() user.UserServiceClient {

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.20.1
-// source: post_service.proto
+// source: common/proto/post_service/post_service.proto
 
 package post
 
@@ -32,6 +32,7 @@ type PostServiceClient interface {
 	InsertJobOffer(ctx context.Context, in *InsertJobOfferRequest, opts ...grpc.CallOption) (*InsertResponse, error)
 	GetAllByUser(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
 	UpdateCompanyInfo(ctx context.Context, in *UpdateCompanyInfoRequest, opts ...grpc.CallOption) (*InsertResponse, error)
+	GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error)
 }
 
 type postServiceClient struct {
@@ -132,6 +133,15 @@ func (c *postServiceClient) UpdateCompanyInfo(ctx context.Context, in *UpdateCom
 	return out, nil
 }
 
+func (c *postServiceClient) GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error) {
+	out := new(GetAllEventsResponse)
+	err := c.cc.Invoke(ctx, "/post_service.PostService/GetAllEvents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostServiceServer is the server API for PostService service.
 // All implementations must embed UnimplementedPostServiceServer
 // for forward compatibility
@@ -146,6 +156,7 @@ type PostServiceServer interface {
 	InsertJobOffer(context.Context, *InsertJobOfferRequest) (*InsertResponse, error)
 	GetAllByUser(context.Context, *GetRequest) (*GetAllResponse, error)
 	UpdateCompanyInfo(context.Context, *UpdateCompanyInfoRequest) (*InsertResponse, error)
+	GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error)
 	mustEmbedUnimplementedPostServiceServer()
 }
 
@@ -182,6 +193,9 @@ func (UnimplementedPostServiceServer) GetAllByUser(context.Context, *GetRequest)
 }
 func (UnimplementedPostServiceServer) UpdateCompanyInfo(context.Context, *UpdateCompanyInfoRequest) (*InsertResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCompanyInfo not implemented")
+}
+func (UnimplementedPostServiceServer) GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllEvents not implemented")
 }
 func (UnimplementedPostServiceServer) mustEmbedUnimplementedPostServiceServer() {}
 
@@ -376,6 +390,24 @@ func _PostService_UpdateCompanyInfo_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostService_GetAllEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllEventsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostServiceServer).GetAllEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/post_service.PostService/GetAllEvents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostServiceServer).GetAllEvents(ctx, req.(*GetAllEventsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostService_ServiceDesc is the grpc.ServiceDesc for PostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -423,7 +455,11 @@ var PostService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "UpdateCompanyInfo",
 			Handler:    _PostService_UpdateCompanyInfo_Handler,
 		},
+		{
+			MethodName: "GetAllEvents",
+			Handler:    _PostService_GetAllEvents_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "post_service.proto",
+	Metadata: "common/proto/post_service/post_service.proto",
 }

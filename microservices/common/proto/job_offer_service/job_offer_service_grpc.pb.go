@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JobOfferServiceClient interface {
 	GetRecommendations(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Recommendations, error)
+	GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error)
 }
 
 type jobOfferServiceClient struct {
@@ -42,11 +43,21 @@ func (c *jobOfferServiceClient) GetRecommendations(ctx context.Context, in *GetR
 	return out, nil
 }
 
+func (c *jobOfferServiceClient) GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error) {
+	out := new(GetAllEventsResponse)
+	err := c.cc.Invoke(ctx, "/job_offer_service.JobOfferService/GetAllEvents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JobOfferServiceServer is the server API for JobOfferService service.
 // All implementations must embed UnimplementedJobOfferServiceServer
 // for forward compatibility
 type JobOfferServiceServer interface {
 	GetRecommendations(context.Context, *GetRequest) (*Recommendations, error)
+	GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error)
 	mustEmbedUnimplementedJobOfferServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedJobOfferServiceServer struct {
 
 func (UnimplementedJobOfferServiceServer) GetRecommendations(context.Context, *GetRequest) (*Recommendations, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRecommendations not implemented")
+}
+func (UnimplementedJobOfferServiceServer) GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllEvents not implemented")
 }
 func (UnimplementedJobOfferServiceServer) mustEmbedUnimplementedJobOfferServiceServer() {}
 
@@ -88,6 +102,24 @@ func _JobOfferService_GetRecommendations_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JobOfferService_GetAllEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllEventsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobOfferServiceServer).GetAllEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/job_offer_service.JobOfferService/GetAllEvents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobOfferServiceServer).GetAllEvents(ctx, req.(*GetAllEventsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // JobOfferService_ServiceDesc is the grpc.ServiceDesc for JobOfferService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var JobOfferService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRecommendations",
 			Handler:    _JobOfferService_GetRecommendations_Handler,
+		},
+		{
+			MethodName: "GetAllEvents",
+			Handler:    _JobOfferService_GetAllEvents_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -7,5 +7,6 @@ func AccessibleRoles() map[string][]string {
 		messageService + "GetConversation":            {"User"},
 		messageService + "GetAllConversationsForUser": {"User"},
 		messageService + "NewMessage":                 {"User"},
+		//messageService + "GetAllEvents":               {"Admin"},
 	}
 }
