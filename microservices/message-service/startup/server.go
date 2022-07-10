@@ -57,9 +57,8 @@ func (server *Server) Start() {
 	eventStore := server.initEventStore(mongoClient)
 
 	messageStore := server.initMessageStore(mongoClient)
-	messageService := server.initMessageService(messageStore)
+	messageService := server.initMessageService(messageStore, eventStore)
 	messageHandler := server.initMessageHandler(messageService, notificationServiceClient, connectionServiceClient, userServiceClient)
-
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for message service")
 
