@@ -828,3 +828,129 @@
 [36mINFO[0m[0415]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:433 User by id received successfully             
 [36mINFO[0m[0415]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:651 Get all events for admin successfully done   
 [36mINFO[0m[0456]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0000]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/startup/server.go:68 Starting user service successfully, PORT: 8081 
+[36mINFO[0m[0130]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:503 User with email: jelenahrnjak99+42@gmail.com registered successfully 
+[36mINFO[0m[0160]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:401 User by ID:62cb01cb44d3de8d7ec44a14 received successfully 
+[36mINFO[0m[0200]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:433 User by id received successfully             
+[36mINFO[0m[0201]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb01cb44d3de8d7ec44a14 received successfully 
+[36mINFO[0m[0201]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:486 User received successfully                   
+[36mINFO[0m[0265]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:503 User with email: jelenahrnjak99+aa2@gmail.com registered successfully 
+[36mINFO[0m[0289]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:401 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0296]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:433 User by id received successfully             
+[36mINFO[0m[0296]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0296]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:486 User received successfully                   
+[36mINFO[0m[0300]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Found 2 public users                         
+[36mINFO[0m[0302]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0319]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:52 Found 2 public users                         
+[36mINFO[0m[0327]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0327]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:486 User received successfully                   
+[36mINFO[0m[0329]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0335]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:196 User with ID: 62cb025244d3de8d7ec44a21updated successfully 
+[36mINFO[0m[0338]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0338]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:486 User received successfully                   
+[36mINFO[0m[0339]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0345]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0345]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:486 User received successfully                   
+[36mINFO[0m[0346]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0349]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0350]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0350]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0353]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0353]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0403]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0411]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0411]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0411]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0411]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0411]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0411]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0411]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0411]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0411]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0411]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0411]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0414]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0414]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0414]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0414]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0414]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0414]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0414]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0414]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0414]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0414]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0414]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0436]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:575 User with ID: 62cb025244d3de8d7ec44a21 changed post notification settings successfully 
+[36mINFO[0m[0445]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0445]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0445]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0445]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0445]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0445]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0445]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0445]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0445]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0445]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0445]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0449]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0449]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:486 User received successfully                   
+[36mINFO[0m[0496]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:486 User received successfully                   
+[36mINFO[0m[0585]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0585]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0585]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0585]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0585]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0585]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0585]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0585]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0585]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0585]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0585]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0591]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:433 User by id received successfully             
+[36mINFO[0m[0591]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb01cb44d3de8d7ec44a14 received successfully 
+[36mINFO[0m[0591]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:486 User received successfully                   
+[36mINFO[0m[0594]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb01cb44d3de8d7ec44a14 received successfully 
+[36mINFO[0m[0594]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0601]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb01cb44d3de8d7ec44a14 received successfully 
+[36mINFO[0m[0603]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0603]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0603]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0603]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0603]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0603]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0603]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0603]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0603]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0603]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0603]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0609]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0613]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb01cb44d3de8d7ec44a14 received successfully 
+[36mINFO[0m[0614]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0614]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0617]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb01cb44d3de8d7ec44a14 received successfully 
+[36mINFO[0m[0617]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0617]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:236 User by ID:62cb025244d3de8d7ec44a21 received successfully 
+[36mINFO[0m[0620]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0620]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0620]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0620]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0620]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0620]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0620]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0620]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0620]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0620]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0620]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:74 Found 0 public users                         
+[36mINFO[0m[0634]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:503 User with email: jelenahrnjak99+sa2@gmail.com registered successfully 
+[36mINFO[0m[0643]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:401 User by ID:62cb03c444d3de8d7ec44a3b received successfully 
+[36mINFO[0m[0650]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:433 User by id received successfully             
+[36mINFO[0m[0650]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:651 Get all events for admin successfully done   
+[36mINFO[0m[0769]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:651 Get all events for admin successfully done   
+[36mINFO[0m[0885]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:651 Get all events for admin successfully done   
+[36mINFO[0m[0947]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:651 Get all events for admin successfully done   
+[36mINFO[0m[1261]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:651 Get all events for admin successfully done   
+[36mINFO[0m[0000]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/startup/server.go:68 Starting user service successfully, PORT: 8081 
+[36mINFO[0m[0079]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:503 User with email: jelenahrnjak99+sa2@gmail.com registered successfully 
+[36mINFO[0m[0092]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:401 User by ID:62cb072174bca55e0cdd2b3c received successfully 
+[36mINFO[0m[0106]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:433 User by id received successfully             
+[36mINFO[0m[0107]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:651 Get all events for admin successfully done   

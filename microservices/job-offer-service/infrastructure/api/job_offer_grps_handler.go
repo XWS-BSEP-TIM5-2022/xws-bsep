@@ -48,3 +48,29 @@ func (handler *JobOfferHandler) GetRecommendations(ctx context.Context, request 
 	handler.CustomLogger.SuccessLogger.Info("Found " + strconv.Itoa(len(recommendations)) + " recommendations for user with ID: " + request.DTO.User.Id)
 	return response, nil
 }
+
+func (handler *JobOfferHandler) GetAllEvents(ctx context.Context, request *pb.GetAllEventsRequest) (*pb.GetAllEventsResponse, error) {
+
+	events, err := handler.service.GetAllEvents()
+
+	handler.CustomLogger.InfoLogger.Info("Get all events for admin.")
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Error while getting events for admin")
+		return nil, err
+	}
+
+	var finalEvents []*pb.Event
+
+	for _, event := range events {
+		finalEvents = append(finalEvents, mapEvent(event))
+	}
+
+	response := &pb.GetAllEventsResponse{
+		Events: finalEvents,
+	}
+
+	handler.CustomLogger.SuccessLogger.Info("Get all events for admin successfully done")
+	return response, nil
+
+}

@@ -108,7 +108,7 @@ func (handler *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request
 		})
 	}
 
-	postEvents, err := postClient.GetAllEvents(context.TODO(), &postGw.GetAllEventsRequest{})
+	postEvents, err := postClient.GetAllEvents(context.Background(), &postGw.GetAllEventsRequest{})
 
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Error getting all events for post service")

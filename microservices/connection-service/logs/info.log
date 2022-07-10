@@ -19,3 +19,11 @@
 {"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/connection-service/infrastructure/api/connection_grpc_handler.go:277","msg":"Get all events for admin.","time":"2022-07-10T17:41:31+02:00"}
 {"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/connection-service/infrastructure/api/connection_grpc_handler.go:277","msg":"Get all events for admin.","time":"2022-07-10T17:43:55+02:00"}
 {"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/connection-service/infrastructure/api/connection_grpc_handler.go:277","msg":"Get all events for admin.","time":"2022-07-10T17:46:22+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/connection-service/startup/server.go:71","msg":"Neo4J datase on bolt://localhost:7687","time":"2022-07-10T18:39:50+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/connection-service/infrastructure/api/connection_grpc_handler.go:277","msg":"Get all events for admin.","time":"2022-07-10T18:52:35+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/connection-service/infrastructure/api/connection_grpc_handler.go:277","msg":"Get all events for admin.","time":"2022-07-10T18:54:34+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/connection-service/infrastructure/api/connection_grpc_handler.go:277","msg":"Get all events for admin.","time":"2022-07-10T18:56:30+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/connection-service/infrastructure/api/connection_grpc_handler.go:277","msg":"Get all events for admin.","time":"2022-07-10T18:57:32+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/connection-service/infrastructure/api/connection_grpc_handler.go:277","msg":"Get all events for admin.","time":"2022-07-10T19:02:46+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/connection-service/startup/server.go:71","msg":"Neo4J datase on bolt://localhost:7687","time":"2022-07-10T19:05:22+02:00"}
+{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/connection-service/infrastructure/api/connection_grpc_handler.go:277","msg":"Get all events for admin.","time":"2022-07-10T19:07:09+02:00"}
