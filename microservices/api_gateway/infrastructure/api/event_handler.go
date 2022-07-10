@@ -11,6 +11,7 @@ import (
 
 	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	messageGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
+	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 )
 
 type EventHandler struct {
@@ -55,6 +56,7 @@ func (handler *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request
 
 	messageClient := services.NewMessageClient(handler.messageClientAddress)
 	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
+	userClient := services.NewUserClient(handler.userClientAddress)
 
 	var finalEvents []*domain.Event
 
@@ -86,6 +88,24 @@ func (handler *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request
 	}
 
 	for _, event := range connectionEvents.Events {
+		finalEvents = append(finalEvents, &domain.Event{
+			Id:     event.Id,
+			UserId: event.UserId,
+			Text:   event.Text,
+			Date:   event.Date,
+		})
+	}
+
+	userEvents, err := userClient.GetAllEvents(ctx, &userGw.GetAllEventsRequest{})
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Error getting all events for user service")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	for _, event := range userEvents.Events {
 		finalEvents = append(finalEvents, &domain.Event{
 			Id:     event.Id,
 			UserId: event.UserId,

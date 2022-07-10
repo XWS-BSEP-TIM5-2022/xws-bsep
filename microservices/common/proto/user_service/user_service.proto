@@ -109,6 +109,12 @@ service UserService{
             body: "user"
         };
     }
+
+    rpc GetAllEvents(GetAllEventsRequest)returns(GetAllEventsResponse){
+        option(google.api.http) = {
+            get: "/api/user/events",
+        };
+    }
 }
 
 message PostNotificationResponse{}
@@ -287,4 +293,18 @@ message RegisterRequest {
 message RegisterResponse {
     string statusCode = 1;
     string message = 2;
+}
+
+message GetAllEventsRequest {
+}
+
+message GetAllEventsResponse {
+    repeated Event events = 1;
+}
+
+message Event {
+    string id = 1;
+    string userId = 2;
+    string text = 3;
+    string date = 4;
 }
