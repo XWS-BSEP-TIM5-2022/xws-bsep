@@ -3,10 +3,12 @@ package api
 import (
 	"context"
 	"errors"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
 	"log"
 	"net/mail"
 	"regexp"
 	"strconv"
+	"time"
 	"unicode"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
@@ -134,6 +136,17 @@ func (handler *UserHandler) Insert(ctx context.Context, request *pb.InsertReques
 		return nil, err
 	} else {
 		handler.CustomLogger.SuccessLogger.Info("User inserted successfully")
+
+		successLogText := "User with email: " + user.Email + "inserted successfully"
+
+		event := domain.Event{
+			Id:     primitive.NewObjectID(),
+			UserId: user.Id.Hex(),
+			Text:   successLogText,
+			Date:   time.Now(),
+		}
+		handler.service.NewEvent(&event)
+
 		return &pb.InsertResponse{
 			Id: user.Id.Hex(),
 		}, nil
@@ -179,7 +192,17 @@ func (handler *UserHandler) Update(ctx context.Context, request *pb.UpdateReques
 	response := &pb.UpdateResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("User with ID: " + user.Id.Hex() + "updated successfully")
+	successLogText := "User with ID: " + user.Id.Hex() + "updated successfully"
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: user.Id.Hex(),
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return response, err
 }
 
@@ -376,6 +399,17 @@ func (handler *UserHandler) UpdateIsActiveById(ctx context.Context, request *pb.
 		}, err
 	}
 	handler.CustomLogger.SuccessLogger.Info("User by ID:" + request.Id + " received successfully")
+
+	successLogText := "User with email: " + request.Id + " activated account successfully"
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: request.Id,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return &pb.ActivateAccountResponse{
 		Success: "Success",
 	}, nil
@@ -464,6 +498,18 @@ func (handler *UserHandler) Register(ctx context.Context, request *pb.RegisterRe
 			Message:    "Something wrong, please try again",
 		}, err
 	}
+
+	successLogText := "User with email: " + user.Email + " registered successfully"
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: "",
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return &pb.RegisterResponse{
 		StatusCode: "200",
 		Message:    "OK",
@@ -582,7 +628,18 @@ func (handler *UserHandler) UpdateFollowNotification(ctx context.Context, reques
 	response := &pb.UpdateResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("User with ID: " + user.Id.Hex() + "updated successfully")
+
+	successLogText := "User with ID: " + user.Id.Hex() + " changed post notification settings successfully"
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: user.Id.Hex(),
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return response, err
 }
 
@@ -613,6 +670,43 @@ func (handler *UserHandler) UpdatePrivacy(ctx context.Context, request *pb.Updat
 	response := &pb.UpdateResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Basic info updated successfully")
+
+	successLogText := "Basic info updated successfully for user with id: " + id
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: id,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return response, err
+}
+
+func (handler *UserHandler) GetAllEvents(ctx context.Context, request *pb.GetAllEventsRequest) (*pb.GetAllEventsResponse, error) {
+
+	events, err := handler.service.GetAllEvents()
+
+	handler.CustomLogger.InfoLogger.Info("Get all events for admin.")
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Error while getting events for admin")
+		return nil, err
+	}
+
+	var finalEvents []*pb.Event
+
+	for _, event := range events {
+		finalEvents = append(finalEvents, mapEvent(event))
+	}
+
+	response := &pb.GetAllEventsResponse{
+		Events: finalEvents,
+	}
+
+	handler.CustomLogger.SuccessLogger.Info("Get all events for admin successfully done")
+	return response, nil
+
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"math/rand"
 	"net/mail"
@@ -45,6 +46,7 @@ type AuthService struct {
 	apiTokenService   *APITokenService
 	userServiceClient user.UserServiceClient
 	CustomLogger      *CustomLogger
+	eventStore        domain.EventStore
 }
 
 type LoginData struct {
@@ -52,7 +54,7 @@ type LoginData struct {
 	password string `validate:"required"`
 }
 
-func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService, userServiceClient user.UserServiceClient, apiTokenService *APITokenService) *AuthService {
+func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService, userServiceClient user.UserServiceClient, apiTokenService *APITokenService, eventStore domain.EventStore) *AuthService {
 	CustomLogger := NewCustomLogger()
 	return &AuthService{
 		store:             store,
@@ -60,6 +62,7 @@ func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService
 		userServiceClient: userServiceClient,
 		apiTokenService:   apiTokenService,
 		CustomLogger:      CustomLogger,
+		eventStore:        eventStore,
 	}
 }
 
@@ -124,7 +127,17 @@ func (service *AuthService) PasswordlessLogin(ctx context.Context, request *pb.P
 		return nil, errors.New("error while sending mail")
 	}
 
-	service.CustomLogger.SuccessLogger.Info("Passwordless login email successfully sent to user with ID: " + user.Id)
+	successLogText := "Passwordless login email successfully sent to user with ID: " + user.Id
+	service.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: user.Id,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	service.NewEvent(&event)
+
 	return &pb.PasswordlessLoginResponse{
 		Success: "Email sent successfully! Check your email.",
 	}, nil
@@ -218,7 +231,17 @@ func (service *AuthService) ConfirmEmailLogin(ctx context.Context, request *pb.C
 		return nil, fmt.Errorf("Invalid token claims")
 	}
 
-	service.CustomLogger.SuccessLogger.Info("Passwordless login sucessfully confirmed for user with username: " + user.Username)
+	successLogText := "Passwordless login sucessfully confirmed for user with username: " + user.Username
+	service.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: "",
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	service.NewEvent(&event)
+
 	return &pb.ConfirmEmailLoginResponse{
 		Token: request.Token,
 	}, nil
@@ -418,7 +441,18 @@ func (service *AuthService) Login(ctx context.Context, request *pb.LoginRequest)
 		}).Error("JWT token is not generated for user with ID: " + authCredentials.Id)
 		return nil, status.Errorf(codes.Internal, "Could not generate JWT token")
 	}
-	service.CustomLogger.SuccessLogger.Info("Successful user login with username: " + authCredentials.Username)
+
+	successLogText := "Successful user login with username: " + authCredentials.Username
+	service.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: "",
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	service.NewEvent(&event)
+
 	return &pb.LoginResponse{
 		Token: token,
 	}, nil
@@ -460,7 +494,17 @@ func (service *AuthService) CreateNewAPIToken(ctx context.Context, request *pb.A
 		return nil, updateCodeErr
 	}
 
-	service.CustomLogger.SuccessLogger.Info("API token successfully generated for user with ID: " + authCredentials.Id)
+	successLogText := "API token successfully generated for user with ID: " + authCredentials.Id
+	service.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: authCredentials.Id,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	service.NewEvent(&event)
+
 	return &pb.NewAPITokenResponse{
 		Token: token,
 	}, nil
@@ -561,7 +605,17 @@ func (service *AuthService) UpdateUsername(ctx context.Context, request *pb.Upda
 			return nil, err
 		}
 
-		service.CustomLogger.SuccessLogger.Info("User with ID:" + userId + " has successfully updated the username")
+		successLogText := "User with ID:" + userId + " has successfully updated the username"
+		service.CustomLogger.SuccessLogger.Info(successLogText)
+
+		event := domain.Event{
+			Id:     primitive.NewObjectID(),
+			UserId: userId,
+			Text:   successLogText,
+			Date:   time.Now(),
+		}
+		service.NewEvent(&event)
+
 		return &pb.UpdateUsernameResponse{
 			StatusCode: "200",
 			Message:    "Username updated",
@@ -629,7 +683,18 @@ func (service *AuthService) ChangePassword(ctx context.Context, request *pb.Chan
 			Message:    err.Error(),
 		}, err
 	}
-	service.CustomLogger.SuccessLogger.Info("User wiht ID:" + authId + " successfully updated the password")
+
+	successLogText := "User wiht ID:" + authId + " successfully updated the password"
+	service.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: authId,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	service.NewEvent(&event)
+
 	return &pb.ChangePasswordResponse{
 		StatusCode: "200",
 		Message:    "New password updated",
@@ -734,7 +799,6 @@ func (service *AuthService) ActivateAccount(ctx context.Context, request *pb.Act
 		return nil, err
 	}
 
-	service.CustomLogger.SuccessLogger.Info("Account successfully activated by JWT token")
 	return &pb.ActivationResponse{
 		Token: request.Jwt,
 	}, nil
@@ -789,7 +853,17 @@ func (service *AuthService) SendRecoveryCode(ctx context.Context, request *pb.Se
 		return nil, sendingMailErr
 	}
 
-	service.CustomLogger.SuccessLogger.Info("Email for account recovery is successfully sent to user with email:" + requestEmail)
+	successLogText := "Email for account recovery is successfully sent to user with email:" + requestEmail
+	service.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: "",
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	service.NewEvent(&event)
+
 	return &pb.SendRecoveryCodeResponse{
 		IdAuth: response.Id,
 	}, nil
@@ -1135,4 +1209,16 @@ func (service *AuthService) isUsernameUnique(username string) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+func (service *AuthService) NewEvent(event *domain.Event) (*domain.Event, error) {
+	_, err := service.eventStore.NewEvent(event)
+	if err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+func (service *AuthService) GetAllEvents() ([]*domain.Event, error) {
+	return service.eventStore.GetAllEvents()
 }

@@ -2,6 +2,7 @@ package application
 
 import (
 	"context"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/domain"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/auth-service/infrastructure/api"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
@@ -129,4 +130,37 @@ func (handler *AuthHandler) GetUsernameByApiToken(ctx context.Context, request *
 
 	ctx = tracer.ContextWithSpan(context.Background(), span)
 	return handler.service.GetUsernameByApiToken(ctx, request)
+}
+
+func (handler *AuthHandler) GetAllEvents(ctx context.Context, request *pb.GetAllEventsRequest) (*pb.GetAllEventsResponse, error) {
+
+	events, err := handler.service.GetAllEvents()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var finalEvents []*pb.Event
+
+	for _, event := range events {
+		finalEvents = append(finalEvents, mapEvent(event))
+	}
+
+	response := &pb.GetAllEventsResponse{
+		Events: finalEvents,
+	}
+
+	return response, nil
+
+}
+
+func mapEvent(event *domain.Event) *pb.Event {
+	eventPb := &pb.Event{
+		Id:     event.Id.Hex(),
+		UserId: event.UserId,
+		Text:   event.Text,
+		Date:   event.Date.String(),
+	}
+
+	return eventPb
 }

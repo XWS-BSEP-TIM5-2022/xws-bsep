@@ -1,6 +1,9 @@
 package persistence
 
 import (
+	"context"  
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"fmt"
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -20,6 +23,12 @@ func GetClient(uri, username, password string) (*neo4j.Driver, error) {
 	return &driver, nil
 }
 
+func GetMongoClient(host, port string) (*mongo.Client, error) {
+
+	uri := fmt.Sprintf("mongodb://%s:%s/", host, port)
+	options := options.Client().ApplyURI(uri)
+	return mongo.Connect(context.TODO(), options)
+}
 func NewNotificationServiceClient(address string) notification.NotificationServiceClient {
 	con, err := getConnection(address)
 	if err != nil {
@@ -38,4 +47,5 @@ func NewUserServiceClient(address string) user.UserServiceClient {
 
 func getConnection(address string) (*grpc.ClientConn, error) {
 	return grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+
 }

@@ -1,6 +1,7 @@
 package config
 
 type Config struct {
+
 	Port                    string
 	Host                    string
 	ConnectionDBHost        string
@@ -19,6 +20,8 @@ type Config struct {
 	NotificationServiceHost string
 	UserServicePort         string
 	UserServiceHost         string
+  EventDBHost      string
+	EventDBPort      string
 	// TODO SD: obrisati
 	// Neo4jUri        string "bolt://localhost:7687",
 	// Neo4jUsername   string  "neo4j",
@@ -27,6 +30,7 @@ type Config struct {
 
 func NewConfig() *Config {
 	return &Config{
+
 		//Port:                    os.Getenv("CONNECTION_SERVICE_PORT"),
 		//Host:                    os.Getenv("CONNECTION_SERVICE_HOST"),
 		//ConnectionDBHost:        os.Getenv("CONNECTION_DB_HOST"),
@@ -44,6 +48,8 @@ func NewConfig() *Config {
 		//NotificationServicePort: os.Getenv("NOTIFICATION_SERVICE_PORT"),
 		//UserServiceHost:         os.Getenv("USER_SERVICE_HOST"),
 		//UserServicePort:         os.Getenv("USER_SERVICE_PORT"),
+    		//EventDBHost:        os.Getenv("EVENT_DB_HOST"),
+		//EventDBPort:          os.Getenv("EVENT_DB_PORT"),
 
 		Port:                    "8084",
 		Host:                    "localhost",
@@ -62,6 +68,8 @@ func NewConfig() *Config {
 		NotificationServicePort: "8086",
 		UserServiceHost:         "localhost",
 		UserServicePort:         "8081",
+		EventDBHost:      "localhost",
+		EventDBPort:      "27017",
 	}
 
 }

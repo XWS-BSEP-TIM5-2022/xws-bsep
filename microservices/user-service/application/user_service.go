@@ -14,12 +14,14 @@ import (
 type UserService struct {
 	store        domain.UserStore
 	orchestrator *CreateUserOrchestrator
+	eventStore   domain.EventStore
 }
 
-func NewUserService(store domain.UserStore, orchestrator *CreateUserOrchestrator) *UserService {
+func NewUserService(store domain.UserStore, orchestrator *CreateUserOrchestrator, eventStore domain.EventStore) *UserService {
 	return &UserService{
 		store:        store,
 		orchestrator: orchestrator,
+		eventStore:   eventStore,
 	}
 }
 
@@ -192,4 +194,16 @@ func (service *UserService) CheckEmailCriteria(email string) error {
 		return errors.New("Email is invalid.")
 	}
 	return nil
+}
+
+func (service *UserService) NewEvent(event *domain.Event) (*domain.Event, error) {
+	_, err := service.eventStore.NewEvent(event)
+	if err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+func (service *UserService) GetAllEvents() ([]*domain.Event, error) {
+	return service.eventStore.GetAllEvents()
 }

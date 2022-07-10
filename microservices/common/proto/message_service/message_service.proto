@@ -33,6 +33,12 @@ service MessageService{
       body: "message"
     };
   }
+
+  rpc GetAllEvents(GetAllEventsRequest)returns(GetAllEventsResponse){
+    option(google.api.http) = {
+      get: "/api/message/events",
+    };
+  }
 }
 
 message GetRequest {
@@ -78,4 +84,18 @@ message Conversation {
   string user2 = 3;
   repeated Message messages = 4;
 }
- 
+
+message GetAllEventsRequest {
+}
+
+message GetAllEventsResponse {
+  repeated Event events = 1;
+}
+
+message Event {
+  string id = 1;
+  string userId = 2;
+  string text = 3;
+  string date = 4;
+}
+

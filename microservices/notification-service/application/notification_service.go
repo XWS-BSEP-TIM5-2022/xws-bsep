@@ -8,12 +8,14 @@ import (
 )
 
 type NotificationService struct {
-	store domain.NotificationStore
+	store      domain.NotificationStore
+	eventStore domain.EventStore
 }
 
-func NewNotificationService(store domain.NotificationStore) *NotificationService {
+func NewNotificationService(store domain.NotificationStore, eventStore domain.EventStore) *NotificationService {
 	return &NotificationService{
-		store: store,
+		store:      store,
+		eventStore: eventStore,
 	}
 }
 
@@ -48,4 +50,16 @@ func (service *NotificationService) GetAllByUser(ctx context.Context, id string)
 	ctx = tracer.ContextWithSpan(context.Background(), span)
 
 	return service.store.GetAllByUser(ctx, id)
+}
+
+func (service *NotificationService) NewEvent(event *domain.Event) (*domain.Event, error) {
+	_, err := service.eventStore.NewEvent(event)
+	if err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+func (service *NotificationService) GetAllEvents() ([]*domain.Event, error) {
+	return service.eventStore.GetAllEvents()
 }

@@ -55,18 +55,14 @@ var (
 		Name: "dislinkt_not_found_req",
 		Help: "The total number of 404 requests with endpoint",
 	}, []string{"code", "method"})
-	ipReq = promauto.NewCounterVec(prometheus.CounterOpts{
-		Name: "dislinkt_ip_req",
-		Help: "IP address from request",
-	}, []string{"ip"})
-	browserReq = promauto.NewCounterVec(prometheus.CounterOpts{
-		Name: "dislinkt_browser_req",
-		Help: "Browser(user agent) from request",
-	}, []string{"browser"})
-	timestampReq = promauto.NewCounterVec(prometheus.CounterOpts{
-		Name: "dislinkt_timestamp_req",
-		Help: "Request timestamp",
-	}, []string{"timestamp"})
+	visitor = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "dislinkt_visitor_req",
+		Help: "Visitor from request",
+	}, []string{"ip", "browser", "timestamp"})
+	dataFlowFromReq = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "dislinkt_data_flow_req",
+		Help: "Data flow from request",
+	})
 )
 
 type Server struct {
@@ -166,7 +162,7 @@ func (server *Server) initHandlers() {
 		panic(err)
 	}
 	server.CustomLogger.SuccessLogger.Info("Post service registration successful")
-
+	
 	jobOfferEndpoint := fmt.Sprintf("%s:%s", server.config.JobOfferHost, server.config.JobOfferPort)
 	err = jobOfferGw.RegisterJobOfferServiceHandlerFromEndpoint(context.TODO(), server.mux, jobOfferEndpoint, opts)
 	if err != nil {
@@ -181,11 +177,16 @@ func (server *Server) initCustomHandlers() {
 	connectionEndpoint := fmt.Sprintf("%s:%s", server.config.ConnectionHost, server.config.ConnectionPort)
 	userEndpoint := fmt.Sprintf("%s:%s", server.config.UserHost, server.config.UserPort)
 	authEndpoint := fmt.Sprintf("%s:%s", server.config.AuthHost, server.config.AuthPort)
+	messageEndpoint := fmt.Sprintf("%s:%s", server.config.MessageHost, server.config.MessagePort)
+	notificationEndpoint := fmt.Sprintf("%s:%s", server.config.NotificationHost, server.config.NotificationPort)
 	jobOfferEndpoint := fmt.Sprintf("%s:%s", server.config.JobOfferHost, server.config.JobOfferPort)
 	postsHandler := api.NewPostHandler(postEndpoint, connectionEndpoint, userEndpoint, authEndpoint)
 	jobOfferHandler := api.NewJobOfferHandler(postEndpoint, connectionEndpoint, userEndpoint, authEndpoint, jobOfferEndpoint)
+	eventHandler := api.NewEventHandler(authEndpoint, userEndpoint, postEndpoint, connectionEndpoint, messageEndpoint, notificationEndpoint, jobOfferEndpoint)
 	postsHandler.Init(server.mux)
 	jobOfferHandler.Init(server.mux)
+	eventHandler.Init(server.mux)
+
 }
 
 func (server *Server) Start() {
@@ -242,28 +243,24 @@ func muxMiddleware(server *Server) http.Handler {
 		server.mux.ServeHTTP(lrw, r)
 
 		statusCode := lrw.Status()
-		log.Println(" *#* ", statusCode)
-
 		ipAddr := r.RemoteAddr
 		fmt.Println("IP ADDRESA:", ipAddr)
-		ipLabel := prometheus.Labels{
-			"ip": ipAddr,
-		}
-		ipReq.With(ipLabel).Inc()
-
 		browser := r.UserAgent()
 		fmt.Println("BROWSER:", browser)
-		browserLabel := prometheus.Labels{
-			"browser": browser,
-		}
-		browserReq.With(browserLabel).Inc()
-
 		t := time.Now()
 		fmt.Println("TIMESTAMP:", t.Format("2006-01-02 15:04:00"))
-		timestampLabel := prometheus.Labels{
-			"timestamp": t.Format("2006-01-02 15:04:00"),
+
+		visitorLabel := prometheus.Labels{
+			"ip":        ipAddr,
+			"browser":   browser,
+			"timestamp": t.Format("2006-01-02 15:04:05"),
 		}
-		timestampReq.With(timestampLabel).Inc()
+		visitor.With(visitorLabel).Inc()
+
+		gb := r.ContentLength
+		fmt.Println(gb)
+		dataFlowFromReq.Add(float64(gb))
+		fmt.Println(dataFlowFromReq)
 
 		totalReq.Inc()
 		if statusCode >= 200 && statusCode <= 399 {
@@ -276,7 +273,7 @@ func muxMiddleware(server *Server) http.Handler {
 				}
 				notFoundReq.With(labels).Inc()
 			}
-			failedReq.Inc()
+			failedReq.Add(3)
 		}
 	})
 }

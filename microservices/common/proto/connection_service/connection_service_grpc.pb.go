@@ -32,6 +32,7 @@ type ConnectionServiceClient interface {
 	BlockUser(ctx context.Context, in *BlockUserRequest, opts ...grpc.CallOption) (*ActionResult, error)
 	GetRecommendation(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Users, error)
 	ChangePrivacy(ctx context.Context, in *ChangePrivacyRequest, opts ...grpc.CallOption) (*ActionResult, error)
+	GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error)
 }
 
 type connectionServiceClient struct {
@@ -132,6 +133,15 @@ func (c *connectionServiceClient) ChangePrivacy(ctx context.Context, in *ChangeP
 	return out, nil
 }
 
+func (c *connectionServiceClient) GetAllEvents(ctx context.Context, in *GetAllEventsRequest, opts ...grpc.CallOption) (*GetAllEventsResponse, error) {
+	out := new(GetAllEventsResponse)
+	err := c.cc.Invoke(ctx, "/connection_service.ConnectionService/GetAllEvents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ConnectionServiceServer is the server API for ConnectionService service.
 // All implementations must embed UnimplementedConnectionServiceServer
 // for forward compatibility
@@ -146,6 +156,7 @@ type ConnectionServiceServer interface {
 	BlockUser(context.Context, *BlockUserRequest) (*ActionResult, error)
 	GetRecommendation(context.Context, *GetRequest) (*Users, error)
 	ChangePrivacy(context.Context, *ChangePrivacyRequest) (*ActionResult, error)
+	GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error)
 	mustEmbedUnimplementedConnectionServiceServer()
 }
 
@@ -182,6 +193,9 @@ func (UnimplementedConnectionServiceServer) GetRecommendation(context.Context, *
 }
 func (UnimplementedConnectionServiceServer) ChangePrivacy(context.Context, *ChangePrivacyRequest) (*ActionResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangePrivacy not implemented")
+}
+func (UnimplementedConnectionServiceServer) GetAllEvents(context.Context, *GetAllEventsRequest) (*GetAllEventsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllEvents not implemented")
 }
 func (UnimplementedConnectionServiceServer) mustEmbedUnimplementedConnectionServiceServer() {}
 
@@ -376,6 +390,24 @@ func _ConnectionService_ChangePrivacy_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConnectionService_GetAllEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllEventsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectionServiceServer).GetAllEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connection_service.ConnectionService/GetAllEvents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectionServiceServer).GetAllEvents(ctx, req.(*GetAllEventsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ConnectionService_ServiceDesc is the grpc.ServiceDesc for ConnectionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -422,6 +454,10 @@ var ConnectionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChangePrivacy",
 			Handler:    _ConnectionService_ChangePrivacy_Handler,
+		},
+		{
+			MethodName: "GetAllEvents",
+			Handler:    _ConnectionService_GetAllEvents_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -16,5 +16,6 @@ func AccessibleRoles() map[string][]string {
 		userService + "UpdateSkillsAndInterests":     {"User"},
 		userService + "GetLoggedInUserInfo":          {"User"},
 		userService + "UpdatePrivacy":                {"User"},
+		//userService + "GetAllEvents":                 {"Admin"},
 	}
 }

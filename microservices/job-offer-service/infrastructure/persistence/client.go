@@ -1,8 +1,11 @@
 package persistence
 
 import (
+	"context"
 	"fmt"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func GetClient(uri, username, password string) (*neo4j.Driver, error) {
@@ -13,4 +16,11 @@ func GetClient(uri, username, password string) (*neo4j.Driver, error) {
 		return nil, err
 	}
 	return &driver, nil
+}
+
+func GetMongoClient(host, port string) (*mongo.Client, error) {
+
+	uri := fmt.Sprintf("mongodb://%s:%s/", host, port)
+	options := options.Client().ApplyURI(uri)
+	return mongo.Connect(context.TODO(), options)
 }

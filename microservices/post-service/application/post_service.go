@@ -8,12 +8,14 @@ import (
 )
 
 type PostService struct {
-	store domain.PostStore
+	store      domain.PostStore
+	eventStore domain.EventStore
 }
 
-func NewPostService(store domain.PostStore) *PostService {
+func NewPostService(store domain.PostStore, eventStore domain.EventStore) *PostService {
 	return &PostService{
-		store: store,
+		store:      store,
+		eventStore: eventStore,
 	}
 }
 
@@ -89,4 +91,16 @@ func (service *PostService) UpdateCompanyInfo(ctx context.Context, company *doma
 	ctx = tracer.ContextWithSpan(context.Background(), span)
 
 	return service.store.UpdateCompanyInfo(ctx, company, oldName)
+}
+
+func (service *PostService) NewEvent(event *domain.Event) (*domain.Event, error) {
+	_, err := service.eventStore.NewEvent(event)
+	if err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+func (service *PostService) GetAllEvents() ([]*domain.Event, error) {
+	return service.eventStore.GetAllEvents()
 }
