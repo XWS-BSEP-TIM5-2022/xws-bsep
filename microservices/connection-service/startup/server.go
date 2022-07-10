@@ -3,10 +3,10 @@ package startup
 import (
 	"fmt"
 
-	"github.com/sirupsen/logrus"
-	"go.mongodb.org/mongo-driver/mongo"
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/mongo"
 	"io"
 
 	"log"
@@ -64,9 +64,8 @@ func (server *Server) Start() {
 
 	eventStore := server.initEventStore(mongoClient)
 	connectionStore := server.initConnectionStore(neo4jClient)
-	connectionService := server.initConnectionService(connectionStore)
+	connectionService := server.initConnectionService(connectionStore, eventStore)
 	connectionHandler := server.initConnectionHandler(connectionService, notificationServiceClient, userServiceClient)
-
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for connection service")
 	server.startGrpcServer(connectionHandler)

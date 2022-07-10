@@ -5,10 +5,12 @@ import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/notification_service/application"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/notification_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 type NotificationHandler struct {
@@ -101,7 +103,18 @@ func (handler *NotificationHandler) Insert(ctx context.Context, request *pb.Inse
 	response := &pb.InsertNotificationResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Notification with ID: " + notification.Id.Hex() + " created")
+
+	successLogText := "Notification with ID: " + notification.Id.Hex() + " created"
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: "",
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return response, err
 }
 
