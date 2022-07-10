@@ -9,11 +9,13 @@ import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // implementacije gRPC servera koji smo definisali u okviru common paketa
@@ -125,7 +127,17 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + post.Id.Hex() + " created by user with ID: " + post.UserId)
+
+	successLogText := "Post with ID: " + post.Id.Hex() + " created by user with ID: " + post.UserId
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: post.UserId,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
 
 	// slanje notifikacija
 	connections, err := handler.connectionServiceClient.GetConnections(ctx, &connection.GetRequest{UserID: userId})
@@ -173,7 +185,18 @@ func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.Inse
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Job offer post with ID: " + post.Id.Hex() + " created by user with ID: " + id)
+
+	successLogText := "Job offer post with ID: " + post.Id.Hex() + " created by user with ID: " + id
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: id,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return response, nil
 }
 
@@ -236,7 +259,18 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + post.Id.Hex() + " liked by user with ID: " + post.UserId)
+
+	successLogText := "Post with ID: " + post.Id.Hex() + " liked by user with ID: " + post.UserId
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: post.UserId,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return response, err
 }
 
@@ -300,7 +334,18 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + post.Id.Hex() + " disliked by user with ID: " + post.UserId)
+
+	successLogText := "Post with ID: " + post.Id.Hex() + " disliked by user with ID: " + post.UserId
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: post.UserId,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return response, err
 }
 
@@ -331,7 +376,18 @@ func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertC
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Post with ID: " + post.Id.Hex() + " was commented by user with ID: " + userId)
+
+	successLogText := "Post with ID: " + post.Id.Hex() + " commented by user with ID: " + userId
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: userId,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return response, err
 }
 
@@ -404,7 +460,18 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Neutral reaction on post with ID: " + post.Id.Hex() + " by user with ID: " + userId)
+
+	successLogText := "Neutral reaction on post with ID: " + post.Id.Hex() + " by user with ID: " + userId
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: userId,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return response, err
 }
 
@@ -431,6 +498,17 @@ func (handler *PostHandler) UpdateCompanyInfo(ctx context.Context, request *pb.U
 	response := &pb.InsertResponse{
 		Success: success,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Company with name: " + "'" + oldName + "'" + " updated")
+
+	successLogText := "Company with name: " + "'" + oldName + "'" + " updated"
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: "",
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
+
 	return response, err
 }
