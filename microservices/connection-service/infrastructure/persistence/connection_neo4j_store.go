@@ -1,8 +1,10 @@
 package persistence
 
 import (
+	"context"
 	"fmt"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/domain"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 	"time"
@@ -18,7 +20,10 @@ func NewConnectionDBStore(client *neo4j.Driver) domain.ConnectionStore {
 	}
 }
 
-func (store *ConnectionDBStore) Register(userID string, isPublic bool) (*pb.ActionResult, error) {
+func (store *ConnectionDBStore) Register(ctx context.Context, userID string, isPublic bool) (*pb.ActionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "Register database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 
 	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close()
@@ -49,7 +54,10 @@ func (store *ConnectionDBStore) Register(userID string, isPublic bool) (*pb.Acti
 	return result.(*pb.ActionResult), err
 }
 
-func (store *ConnectionDBStore) GetConnections(userID string) ([]domain.UserConn, error) {
+func (store *ConnectionDBStore) GetConnections(ctx context.Context, userID string) ([]domain.UserConn, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetConnections database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 
 	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close()
@@ -84,7 +92,10 @@ func (store *ConnectionDBStore) GetConnections(userID string) ([]domain.UserConn
 	return friends.([]domain.UserConn), nil
 }
 
-func (store *ConnectionDBStore) GetRequests(userID string) ([]domain.UserConn, error) {
+func (store *ConnectionDBStore) GetRequests(ctx context.Context, userID string) ([]domain.UserConn, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetRequests database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 
 	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close()
@@ -115,7 +126,11 @@ func (store *ConnectionDBStore) GetRequests(userID string) ([]domain.UserConn, e
 	return friends.([]domain.UserConn), nil
 }
 
-func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, isPublic bool, isPublicLogged bool) (*pb.AddConnectionResult, error) {
+func (store *ConnectionDBStore) AddConnection(ctx context.Context, userIDa string, userIDb string, isPublic bool, isPublicLogged bool) (*pb.AddConnectionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "AddConnection database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	fmt.Println("Adding new connection")
 	fmt.Println(userIDa)
 	fmt.Println(userIDb)
@@ -237,7 +252,11 @@ func (store *ConnectionDBStore) AddConnection(userIDa string, userIDb string, is
 	}
 }
 
-func (store *ConnectionDBStore) ApproveConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
+func (store *ConnectionDBStore) ApproveConnection(ctx context.Context, userIDa, userIDb string) (*pb.ActionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "ApproveConnection database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	actionResult := &pb.ActionResult{Msg: "msg"}
 	actionResult.Msg = "Odobravanje konekcije"
 
@@ -293,7 +312,11 @@ func (store *ConnectionDBStore) ApproveConnection(userIDa, userIDb string) (*pb.
 	}
 }
 
-func (store *ConnectionDBStore) RejectConnection(userIDa, userIDb string) (*pb.ActionResult, error) {
+func (store *ConnectionDBStore) RejectConnection(ctx context.Context, userIDa, userIDb string) (*pb.ActionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "RejectConnection database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	actionResult := &pb.ActionResult{Msg: "msg"}
 	actionResult.Msg = "Odbijanje konekcije"
 
@@ -383,7 +406,11 @@ func (store *ConnectionDBStore) RejectConnection(userIDa, userIDb string) (*pb.A
 
 }
 
-func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.ConnectedResult, error) {
+func (store *ConnectionDBStore) CheckConnection(ctx context.Context, userIDa, userIDb string) (*pb.ConnectedResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "CheckConnection database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	fmt.Println(userIDa)
 	fmt.Println(userIDb)
 
@@ -447,7 +474,11 @@ func (store *ConnectionDBStore) CheckConnection(userIDa, userIDb string) (*pb.Co
 
 }
 
-func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string, isPublic bool, isPublicLogged bool) (*pb.ActionResult, error) {
+func (store *ConnectionDBStore) BlockUser(ctx context.Context, userIDa, userIDb string, isPublic bool, isPublicLogged bool) (*pb.ActionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "BlockUser database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	actionResult := &pb.ActionResult{Msg: "msg"}
 	actionResult.Msg = "Blokiranje korisnika"
 
@@ -550,7 +581,11 @@ func (store *ConnectionDBStore) BlockUser(userIDa, userIDb string, isPublic bool
 	}
 }
 
-func (store *ConnectionDBStore) GetRecommendation(userID string) ([]*domain.UserConn, error) {
+func (store *ConnectionDBStore) GetRecommendation(ctx context.Context, userID string) ([]*domain.UserConn, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetRecommendation database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	fmt.Println(userID)
 	session := (*store.connectionDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close()
@@ -578,7 +613,11 @@ func (store *ConnectionDBStore) GetRecommendation(userID string) ([]*domain.User
 	return recommendation.([]*domain.UserConn), nil
 }
 
-func (store *ConnectionDBStore) ChangePrivacy(userIDa string, isPrivate bool) (*pb.ActionResult, error) {
+func (store *ConnectionDBStore) ChangePrivacy(ctx context.Context, userIDa string, isPrivate bool) (*pb.ActionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "ChangePrivacy database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	actionResult := &pb.ActionResult{Msg: "msg"}
 	actionResult.Msg = "Izmjena privatnosti"
 
