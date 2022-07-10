@@ -125,7 +125,8 @@ func (handler *MessageHandler) NewMessage(ctx context.Context, request *pb.NewMe
 
 	// slanje notifikacija
 	current_user, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: sender})
-	if current_user.User.PostNotification == true {
+	reciever, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: request.Message.Receiver})
+	if reciever.User.MessageNotification == true {
 		notificationRequest := &notification.InsertNotificationRequest{}
 		notificationRequest.Notification = &notification.Notification{}
 		notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(0)

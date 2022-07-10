@@ -147,14 +147,14 @@ func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb
 	// slanje notifikacija
 	sender, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: userIDa})
 	reciever, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: userIDb})
-	if sender.User.PostNotification == true && reciever.User.IsPublic == false {
+	if reciever.User.FollowNotification == true && reciever.User.IsPublic == false {
 		notificationRequest := &notification.InsertNotificationRequest{}
 		notificationRequest.Notification = &notification.Notification{}
 		notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(1)
 		notificationRequest.Notification.Text = "User " + sender.User.Name + " " + sender.User.LastName + " requested to follow you"
 		notificationRequest.Notification.UserId = userIDb
 		handler.notificationServiceClient.Insert(ctx, notificationRequest)
-	} else if sender.User.PostNotification == true && reciever.User.IsPublic == true {
+	} else if reciever.User.FollowNotification == true && reciever.User.IsPublic == true {
 		notificationRequest := &notification.InsertNotificationRequest{}
 		notificationRequest.Notification = &notification.Notification{}
 		notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(1)
@@ -205,7 +205,8 @@ func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request
 
 	// slanje notifikacija
 	sender, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: userIDa})
-	if sender.User.PostNotification == true {
+	reciever, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: userIDb})
+	if reciever.User.FollowNotification == true {
 		notificationRequest := &notification.InsertNotificationRequest{}
 		notificationRequest.Notification = &notification.Notification{}
 		notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(1)

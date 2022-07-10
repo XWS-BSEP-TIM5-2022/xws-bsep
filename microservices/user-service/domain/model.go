@@ -24,8 +24,8 @@ type User struct {
 	IsActive            bool               `bson:"is_active"`
 	Role                []string           `bson:"role"`
 	PostNotification    bool               `bson:"post_notification"`
-	MessageNotification bool               `bson:"post_notification"`
-	FollowNotification  bool               `bson:"post_notification"`
+	MessageNotification bool               `bson:"message_notification"`
+	FollowNotification  bool               `bson:"follow_notification"`
 }
 
 type Education struct {

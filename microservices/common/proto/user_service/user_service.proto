@@ -102,7 +102,17 @@ service UserService{
             body: "user"
         };
     }
-
+    rpc UpdateMessageNotification(UpdateRequest) returns (UpdateResponse) {
+        option (google.api.http) = {
+            put: "/api/user/messageNotification"
+            body: "user"
+        };
+    }rpc UpdateFollowNotification(UpdateRequest) returns (UpdateResponse) {
+        option (google.api.http) = {
+            put: "/api/user/followNotification"
+            body: "user"
+        };
+    }
     rpc UpdatePrivacy(UpdateRequest) returns (UpdateResponse) {
         option (google.api.http) = {
             put: "/api/user/updatePrivacy"

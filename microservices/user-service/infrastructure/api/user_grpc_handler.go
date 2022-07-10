@@ -518,7 +518,65 @@ func (handler *UserHandler) UpdatePostNotification(ctx context.Context, request 
 		}, err
 	}
 
-	user := mapUpdateNotificationUser(mapUser(oldUser), request.User)
+	user := mapUpdatePostNotificationUser(mapUser(oldUser), request.User)
+
+	success, err := handler.service.Update(ctx, user)
+	response := &pb.UpdateResponse{
+		Success: success,
+	}
+	handler.CustomLogger.SuccessLogger.Info("User with ID: " + user.Id.Hex() + "updated successfully")
+	return response, err
+}
+
+func (handler *UserHandler) UpdateMessageNotification(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdateMessageNotification")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	objectId, err := primitive.ObjectIDFromHex(request.User.Id)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("ObjectId not created")
+		return nil, err
+	}
+	oldUser, err := handler.service.Get(ctx, objectId)
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("User with ID:" + objectId.Hex() + " not found")
+		return &pb.UpdateResponse{
+			Success: "error",
+		}, err
+	}
+
+	user := mapUpdateMessageNotificationUser(mapUser(oldUser), request.User)
+
+	success, err := handler.service.Update(ctx, user)
+	response := &pb.UpdateResponse{
+		Success: success,
+	}
+	handler.CustomLogger.SuccessLogger.Info("User with ID: " + user.Id.Hex() + "updated successfully")
+	return response, err
+}
+
+func (handler *UserHandler) UpdateFollowNotification(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdateFollowNotification")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	objectId, err := primitive.ObjectIDFromHex(request.User.Id)
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("ObjectId not created")
+		return nil, err
+	}
+	oldUser, err := handler.service.Get(ctx, objectId)
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("User with ID:" + objectId.Hex() + " not found")
+		return &pb.UpdateResponse{
+			Success: "error",
+		}, err
+	}
+
+	user := mapUpdateFollowNotificationUser(mapUser(oldUser), request.User)
 
 	success, err := handler.service.Update(ctx, user)
 	response := &pb.UpdateResponse{
