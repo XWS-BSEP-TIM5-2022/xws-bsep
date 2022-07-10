@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/application"
 	"log"
 	"regexp"
@@ -26,6 +27,11 @@ func NewConnectionHandler(service *application.ConnectionService) *ConnectionHan
 }
 
 func (handler *ConnectionHandler) GetConnections(ctx context.Context, request *pb.GetRequest) (*pb.Users, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetConnections")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	/* log injection prevention */
 	id := request.UserID
 	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
@@ -36,7 +42,7 @@ func (handler *ConnectionHandler) GetConnections(ctx context.Context, request *p
 
 	//prosledili smo registrovanog korisnika
 	//id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	friends, err := handler.service.GetConnections(id)
+	friends, err := handler.service.GetConnections(ctx, id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Connections for user with ID: " + id + " not found")
 		return nil, err
@@ -51,6 +57,11 @@ func (handler *ConnectionHandler) GetConnections(ctx context.Context, request *p
 }
 
 func (handler *ConnectionHandler) GetRequests(ctx context.Context, request *pb.GetRequest) (*pb.Users, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetRequests")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	/* log injection prevention */
 	id := request.UserID
 	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
@@ -61,7 +72,7 @@ func (handler *ConnectionHandler) GetRequests(ctx context.Context, request *pb.G
 
 	//prosledili smo registrovanog korisnika
 	//id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	friends, err := handler.service.GetRequests(id)
+	friends, err := handler.service.GetRequests(ctx, id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Requests for user with ID: " + id + " not found")
 		return nil, err
@@ -76,6 +87,11 @@ func (handler *ConnectionHandler) GetRequests(ctx context.Context, request *pb.G
 }
 
 func (handler *ConnectionHandler) Register(ctx context.Context, request *pb.RegisterRequest) (*pb.ActionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "Register")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	userID := request.User.UserID
 	isPublic := request.User.IsPublic
 
@@ -86,7 +102,7 @@ func (handler *ConnectionHandler) Register(ctx context.Context, request *pb.Regi
 	}
 	userID = re.ReplaceAllString(userID, " ")
 
-	register, err := handler.service.Register(userID, isPublic)
+	register, err := handler.service.Register(ctx, userID, isPublic)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Registration for user with ID: " + userID + " failed")
 		return nil, err
@@ -96,6 +112,11 @@ func (handler *ConnectionHandler) Register(ctx context.Context, request *pb.Regi
 }
 
 func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb.AddConnectionRequest) (*pb.AddConnectionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "AddConnection")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	userIDb := request.AddConnectionDTO.UserID
@@ -109,7 +130,7 @@ func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb
 	}
 	userIDb = re.ReplaceAllString(userIDb, " ")
 
-	connection, err := handler.service.AddConnection(userIDa, userIDb, isPublic, isPublicLogged)
+	connection, err := handler.service.AddConnection(ctx, userIDa, userIDb, isPublic, isPublicLogged)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Creating connection between user with ID: " + userIDa + " and user with ID: " + userIDb + " failed")
 		return nil, err
@@ -119,14 +140,24 @@ func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb
 }
 
 func (handler *ConnectionHandler) BlockUser(ctx context.Context, request *pb.BlockUserRequest) (*pb.ActionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "BlockUser")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	fmt.Println("BlockUser")
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	userIDb := request.BlockUserDTO.UserID
-	return handler.service.BlockUser(userIDa, userIDb, request.BlockUserDTO.IsPublic, request.BlockUserDTO.IsPublicLogged)
+	return handler.service.BlockUser(ctx, userIDa, userIDb, request.BlockUserDTO.IsPublic, request.BlockUserDTO.IsPublicLogged)
 }
 
 func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request *pb.ApproveConnectionRequest) (*pb.ActionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "ApproveConnection")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	userIDb := request.ApproveConnectionDTO.UserID
@@ -138,7 +169,7 @@ func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request
 	}
 	userIDb = re.ReplaceAllString(userIDb, " ")
 
-	connection, err := handler.service.ApproveConnection(userIDa, userIDb)
+	connection, err := handler.service.ApproveConnection(ctx, userIDa, userIDb)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Connection between user with ID: " + userIDa + " and user with ID: " + userIDb + " not approved")
 		return nil, err
@@ -148,6 +179,11 @@ func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request
 }
 
 func (handler *ConnectionHandler) RejectConnection(ctx context.Context, request *pb.RejectConnectionRequest) (*pb.ActionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "RejectConnection")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	userIDb := request.RejectConnectionDTO.UserID
@@ -159,7 +195,7 @@ func (handler *ConnectionHandler) RejectConnection(ctx context.Context, request 
 	}
 	userIDb = re.ReplaceAllString(userIDb, " ")
 
-	connection, err := handler.service.RejectConnection(userIDa, userIDb)
+	connection, err := handler.service.RejectConnection(ctx, userIDa, userIDb)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Connection between user with ID: " + userIDa + " and user with ID: " + userIDb + " not rejected")
 		return nil, err
@@ -169,6 +205,11 @@ func (handler *ConnectionHandler) RejectConnection(ctx context.Context, request 
 }
 
 func (handler *ConnectionHandler) CheckConnection(ctx context.Context, request *pb.CheckConnectionRequest) (*pb.ConnectedResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "CheckConnection")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	//prosledili smo registrovanog korisnika
 	userIDa := request.UserID
 	userIDb := request.UserIDb
@@ -181,7 +222,7 @@ func (handler *ConnectionHandler) CheckConnection(ctx context.Context, request *
 	userIDa = re.ReplaceAllString(userIDa, " ")
 	userIDb = re.ReplaceAllString(userIDb, " ")
 
-	connection, err := handler.service.CheckConnection(userIDa, userIDb)
+	connection, err := handler.service.CheckConnection(ctx, userIDa, userIDb)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Checking connection between user with ID: " + userIDa + " and user with ID: " + userIDb + " failed")
 		return nil, err
@@ -191,11 +232,16 @@ func (handler *ConnectionHandler) CheckConnection(ctx context.Context, request *
 }
 
 func (handler *ConnectionHandler) GetRecommendation(ctx context.Context, request *pb.GetRequest) (*pb.Users, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetRecommendation")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	fmt.Println("GetRecommendation")
 
 	id := request.UserID
 	fmt.Println(id)
-	recommendation, err := handler.service.GetRecommendation(id)
+	recommendation, err := handler.service.GetRecommendation(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -207,10 +253,15 @@ func (handler *ConnectionHandler) GetRecommendation(ctx context.Context, request
 }
 
 func (handler *ConnectionHandler) ChangePrivacy(ctx context.Context, request *pb.ChangePrivacyRequest) (*pb.ActionResult, error) {
+	span := tracer.StartSpanFromContext(ctx, "ChangePrivacy")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	//prosledili smo registrovanog korisnika
 	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
-	connection, err := handler.service.ChangePrivacy(userIDa, request.ChangePrivacyDTO.Private)
+	connection, err := handler.service.ChangePrivacy(ctx, userIDa, request.ChangePrivacyDTO.Private)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Privacy of user with ID: " + userIDa + " successfully changed!")
 		return nil, err

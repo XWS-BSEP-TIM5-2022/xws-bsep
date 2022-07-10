@@ -108,3 +108,10 @@
 [36mINFO[0m[1424]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:701 Account activation with JWT token            
 [36mINFO[0m[1430]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: marko    
 [36mINFO[0m[1473]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:344 Login to application with username: klara    
+[36mINFO[0m[0178]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:703 Account activation with JWT token            
+[36mINFO[0m[0188]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: brena    
+[36mINFO[0m[0172]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:703 Account activation with JWT token            
+[36mINFO[0m[0180]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: sanja    
+[36mINFO[0m[2463]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:703 Account activation with JWT token            
+[36mINFO[0m[2472]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: milica   
+[36mINFO[0m[2503]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: sanja    

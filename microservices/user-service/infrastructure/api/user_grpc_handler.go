@@ -529,10 +529,10 @@ func (handler *UserHandler) UpdatePostNotification(ctx context.Context, request 
 }
 
 func (handler *UserHandler) UpdatePrivacy(ctx context.Context, request *pb.UpdateRequest) (*pb.UpdateResponse, error) {
-	//span := tracer.StartSpanFromContext(ctx, "UpdatePrivacy")
-	//defer span.Finish()
-	//
-	//ctx = tracer.ContextWithSpan(context.Background(), span)
+	span := tracer.StartSpanFromContext(ctx, "UpdatePrivacy")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
 	id := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	handler.CustomLogger.InfoLogger.WithField("id", id).Info("Updating privacy info by user with ID: " + id)
 	objectId, err := primitive.ObjectIDFromHex(id)

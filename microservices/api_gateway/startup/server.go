@@ -245,6 +245,7 @@ func AccessibleEndpoints() map[string]string {
 		connectionService + "/register": "RegisterConnection",
 		connectionService + "/reject":   "RejectConnection",
 		connectionService + "/approve":  "ApproveConnection",
+		connectionService + "/block":    "BlockUser",
 	}
 }
 

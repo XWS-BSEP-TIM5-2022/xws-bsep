@@ -36,3 +36,7 @@
 [36mINFO[0m[0516]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:371 Getting all roles for user with ID:62c9e31e1f685ced5eee73c6 
 [36mINFO[0m[1430]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:371 Getting all roles for user with ID:62c9e7cedd323d37ce66fca5 
 [36mINFO[0m[1473]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:371 Getting all roles for user with ID:62c9e31e1f685ced5eee73c6 
+[36mINFO[0m[0188]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:373 Getting all roles for user with ID:62ca07614bc378965fa6d985 
+[36mINFO[0m[0180]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:373 Getting all roles for user with ID:62ca986d89ef3f9dda112e78 
+[36mINFO[0m[2472]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:373 Getting all roles for user with ID:62caa16889ef3f9dda112e79 
+[36mINFO[0m[2503]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:373 Getting all roles for user with ID:62ca986d89ef3f9dda112e78 
