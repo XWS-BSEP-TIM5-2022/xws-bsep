@@ -81,3 +81,7 @@
 [36mINFO[0m[1137]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:373 Getting all roles for user with ID:62cac59dac23e3454ac27e72 
 [36mINFO[0m[1157]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:373 Getting all roles for user with ID:62cac566ac23e3454ac27e71 
 [36mINFO[0m[1168]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:373 Getting all roles for user with ID:62cac59dac23e3454ac27e72 
+[36mINFO[0m[0402]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:373 Getting all roles for user with ID:62cad1134272b3bee6899ffd 
+[36mINFO[0m[0438]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:373 Getting all roles for user with ID:62cad1374272b3bee6899ffe 
+[36mINFO[0m[0449]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:373 Getting all roles for user with ID:62cad1134272b3bee6899ffd 
+[36mINFO[0m[0566]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:373 Getting all roles for user with ID:62cad1374272b3bee6899ffe 

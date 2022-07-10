@@ -28,3 +28,5 @@
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/connection-service/startup/server.go:71","msg":"Neo4J datase on bolt://localhost:7687","time":"2022-07-10T14:19:46+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/connection-service/startup/server.go:71","msg":"Neo4J datase on bolt://localhost:7687","time":"2022-07-10T14:28:32+02:00"}
 {"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/connection-service/startup/server.go:71","msg":"Neo4J datase on bolt://localhost:7687","time":"2022-07-10T14:34:18+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/connection-service/startup/server.go:71","msg":"Neo4J datase on bolt://localhost:7687","time":"2022-07-10T15:09:53+02:00"}
+{"level":"info","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/connection-service/startup/server.go:71","msg":"Neo4J datase on bolt://localhost:7687","time":"2022-07-10T15:12:12+02:00"}

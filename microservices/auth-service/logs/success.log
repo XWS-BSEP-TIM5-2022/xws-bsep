@@ -170,3 +170,11 @@
 [36mINFO[0m[1137]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: kristina 
 [36mINFO[0m[1157]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: teodora 
 [36mINFO[0m[1168]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: kristina 
+[36mINFO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:77 Starting auth service successfully, PORT: 8082 
+[36mINFO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:77 Starting auth service successfully, PORT: 8082 
+[36mINFO[0m[0398]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:737 Account successfully activated by JWT token  
+[36mINFO[0m[0402]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: teodora 
+[36mINFO[0m[0432]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:737 Account successfully activated by JWT token  
+[36mINFO[0m[0438]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: kristina 
+[36mINFO[0m[0449]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: teodora 
+[36mINFO[0m[0566]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: kristina 
