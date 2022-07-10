@@ -115,3 +115,32 @@
 [36mINFO[0m[2463]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:703 Account activation with JWT token            
 [36mINFO[0m[2472]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: milica   
 [36mINFO[0m[2503]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: sanja    
+[36mINFO[0m[0328]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:703 Account activation with JWT token            
+[36mINFO[0m[0335]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: teodora  
+[36mINFO[0m[0379]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:703 Account activation with JWT token            
+[36mINFO[0m[0385]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: kristina 
+[36mINFO[0m[0396]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: teodora  
+[36mINFO[0m[0427]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: kristina 
+[36mINFO[0m[0473]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: teodora  
+[36mINFO[0m[0586]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: kristina 
+[36mINFO[0m[0597]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: teodora  
+[36mINFO[0m[0624]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: kristina 
+[36mINFO[0m[0638]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: teodora  
+[36mINFO[0m[1443]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:703 Account activation with JWT token            
+[36mINFO[0m[1451]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: nevena   
+[36mINFO[0m[1467]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: kristina 
+[36mINFO[0m[1539]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: nevena   
+[36mINFO[0m[1568]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: teodora  
+[36mINFO[0m[1994]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:703 Account activation with JWT token            
+[36mINFO[0m[2000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: goran    
+[36mINFO[0m[2017]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: teodora  
+[36mINFO[0m[2080]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: goran    
+[36mINFO[0m[2159]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:703 Account activation with JWT token            
+[36mINFO[0m[2168]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: igor     
+[36mINFO[0m[2182]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: goran    
+[36mINFO[0m[2364]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: teodora  
+[36mINFO[0m[2401]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: igor     
+[36mINFO[0m[2427]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: teodora  
+[36mINFO[0m[2474]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:703 Account activation with JWT token            
+[36mINFO[0m[2481]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: milica   
+[36mINFO[0m[2499]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:346 Login to application with username: goran    

@@ -202,7 +202,9 @@ message User {
     bool isActive  = 14;
     repeated string role = 15;
     string username = 16;
-    bool postNotification = 17; //TODO
+    bool postNotification = 17;
+    bool messageNotification = 18;
+    bool followNotification = 19;
 }
 
 message Education{

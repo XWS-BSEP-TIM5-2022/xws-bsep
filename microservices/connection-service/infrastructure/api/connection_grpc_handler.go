@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
+	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/application"
 	"log"
@@ -14,15 +16,20 @@ import (
 
 type ConnectionHandler struct {
 	pb.UnimplementedConnectionServiceServer
-	service      *application.ConnectionService
-	CustomLogger *CustomLogger
+	service                   *application.ConnectionService
+	CustomLogger              *CustomLogger
+	notificationServiceClient notification.NotificationServiceClient
+	userServiceClient         user.UserServiceClient
 }
 
-func NewConnectionHandler(service *application.ConnectionService) *ConnectionHandler {
+func NewConnectionHandler(service *application.ConnectionService, notificationServiceClient notification.NotificationServiceClient,
+	userServiceClient user.UserServiceClient) *ConnectionHandler {
 	CustomLogger := NewCustomLogger()
 	return &ConnectionHandler{
-		service:      service,
-		CustomLogger: CustomLogger,
+		service:                   service,
+		CustomLogger:              CustomLogger,
+		notificationServiceClient: notificationServiceClient,
+		userServiceClient:         userServiceClient,
 	}
 }
 
@@ -118,8 +125,8 @@ func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb
 	ctx = tracer.ContextWithSpan(ctx, span)
 
 	//prosledili smo registrovanog korisnika
-	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	userIDb := request.AddConnectionDTO.UserID
+	userIDa := ctx.Value(interceptor.LoggedInUserKey{}).(string) // onaj koji sanje zahtev
+	userIDb := request.AddConnectionDTO.UserID                   // onaj koji prima zahtev (njemu se salje notifikacija)
 	isPublic := request.AddConnectionDTO.IsPublic
 	isPublicLogged := request.AddConnectionDTO.IsPublicLogged
 
@@ -136,6 +143,26 @@ func (handler *ConnectionHandler) AddConnection(ctx context.Context, request *pb
 		return nil, err
 	}
 	handler.CustomLogger.SuccessLogger.Info("Creating connection between user with ID: " + userIDa + " and user with ID: " + userIDb + " successful")
+
+	// slanje notifikacija
+	sender, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: userIDa})
+	reciever, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: userIDb})
+	if sender.User.PostNotification == true && reciever.User.IsPublic == false {
+		notificationRequest := &notification.InsertNotificationRequest{}
+		notificationRequest.Notification = &notification.Notification{}
+		notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(1)
+		notificationRequest.Notification.Text = "User " + sender.User.Name + " " + sender.User.LastName + " requested to follow you"
+		notificationRequest.Notification.UserId = userIDb
+		handler.notificationServiceClient.Insert(ctx, notificationRequest)
+	} else if sender.User.PostNotification == true && reciever.User.IsPublic == true {
+		notificationRequest := &notification.InsertNotificationRequest{}
+		notificationRequest.Notification = &notification.Notification{}
+		notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(1)
+		notificationRequest.Notification.Text = "User " + sender.User.Name + " " + sender.User.LastName + " started following you"
+		notificationRequest.Notification.UserId = userIDb
+		handler.notificationServiceClient.Insert(ctx, notificationRequest)
+	}
+
 	return connection, err
 }
 
@@ -175,6 +202,18 @@ func (handler *ConnectionHandler) ApproveConnection(ctx context.Context, request
 		return nil, err
 	}
 	handler.CustomLogger.SuccessLogger.Info("Approved connection between user with ID: " + userIDa + " and user with ID: " + userIDb)
+
+	// slanje notifikacija
+	sender, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: userIDa})
+	if sender.User.PostNotification == true {
+		notificationRequest := &notification.InsertNotificationRequest{}
+		notificationRequest.Notification = &notification.Notification{}
+		notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(1)
+		notificationRequest.Notification.Text = "User " + sender.User.Name + " " + sender.User.LastName + " accepted your follow request"
+		notificationRequest.Notification.UserId = userIDb
+		handler.notificationServiceClient.Insert(ctx, notificationRequest)
+	}
+
 	return connection, err
 }
 
