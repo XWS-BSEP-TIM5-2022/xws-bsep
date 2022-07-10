@@ -243,3 +243,6 @@
 {"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:48","msg":"Found 2 recommendations for user with ID: 62c75310158b08b3c1c04c24","time":"2022-07-08T00:30:21+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:48","msg":"Found 2 recommendations for user with ID: 62c75310158b08b3c1c04c24","time":"2022-07-08T00:32:09+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:48","msg":"Found 3 recommendations for user with ID: 62c75310158b08b3c1c04c24","time":"2022-07-08T00:33:07+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/startup/server.go:51","msg":"Neo4J initialization for job offer service successful, PORT: 8089, HOST: localhost","time":"2022-07-10T12:16:34+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/startup/server.go:57","msg":"Starting gRPC server for job offer service","time":"2022-07-10T12:16:34+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/job-offer-service/infrastructure/api/job_offer_grps_handler.go:54","msg":"Found 1 recommendations for user with ID: 62ca986d89ef3f9dda112e78","time":"2022-07-10T12:17:30+02:00"}

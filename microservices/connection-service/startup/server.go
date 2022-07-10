@@ -2,11 +2,16 @@ package startup
 
 import (
 	"fmt"
+	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
+	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"io"
 	"log"
 	"net"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/dgrijalva/jwt-go"
+	otgo "github.com/opentracing/opentracing-go"
 
 	inventory "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/application"
@@ -21,13 +26,22 @@ import (
 type Server struct {
 	config       *config.Config
 	CustomLogger *api.CustomLogger
+	tracer       otgo.Tracer
+	closer       io.Closer
 }
+
+const name = "connection-service"
 
 func NewServer(config *config.Config) *Server {
 	CustomLogger := api.NewCustomLogger()
+	tracer, closer := tracer.Init(name)
+	otgo.SetGlobalTracer(tracer)
+
 	return &Server{
 		config:       config,
 		CustomLogger: CustomLogger,
+		tracer:       tracer,
+		closer:       closer,
 	}
 }
 
@@ -39,9 +53,12 @@ func (server *Server) Start() {
 	neo4jClient := server.initNeo4J()
 	server.CustomLogger.SuccessLogger.Info("Neo4J initialization for connection service successful, PORT: ", server.config.Port)
 
+	notificationServiceClient := server.initNotificationServiceClient()
+	userServiceClient := server.initUserServiceClient()
+
 	connectionStore := server.initConnectionStore(neo4jClient)
 	connectionService := server.initConnectionService(connectionStore)
-	connectionHandler := server.initConnectionHandler(connectionService)
+	connectionHandler := server.initConnectionHandler(connectionService, notificationServiceClient, userServiceClient)
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for connection service")
 	server.startGrpcServer(connectionHandler)
@@ -79,8 +96,19 @@ func (server *Server) initConnectionService(store domain.ConnectionStore) *appli
 	return application.NewConnectionService(store)
 }
 
-func (server *Server) initConnectionHandler(service *application.ConnectionService) *api.ConnectionHandler {
-	return api.NewConnectionHandler(service)
+func (server *Server) initConnectionHandler(service *application.ConnectionService, notificationServiceClient notification.NotificationServiceClient,
+	userServiceClient user.UserServiceClient) *api.ConnectionHandler {
+	return api.NewConnectionHandler(service, notificationServiceClient, userServiceClient)
+}
+
+func (server *Server) initNotificationServiceClient() notification.NotificationServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.NotificationServiceHost, server.config.NotificationServicePort)
+	return persistence.NewNotificationServiceClient(address)
+}
+
+func (server *Server) initUserServiceClient() user.UserServiceClient {
+	address := fmt.Sprintf("%s:%s", server.config.UserServiceHost, server.config.UserServicePort)
+	return persistence.NewUserServiceClient(address)
 }
 
 func (server *Server) startGrpcServer(connectionHandler *api.ConnectionHandler) {

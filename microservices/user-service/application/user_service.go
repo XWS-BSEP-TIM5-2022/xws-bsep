@@ -54,7 +54,23 @@ func (service *UserService) Update(ctx context.Context, user *domain.User) (stri
 }
 
 func (service *UserService) UpdatePostNotification(ctx context.Context, user *domain.User) (string, error) {
-	span := tracer.StartSpanFromContext(ctx, "Update service")
+	span := tracer.StartSpanFromContext(ctx, "UpdatePostNotification service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	success, err := service.store.Update(ctx, user)
+	return success, err
+}
+
+func (service *UserService) UpdateMessageNotification(ctx context.Context, user *domain.User) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdateMessageNotification service")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+	success, err := service.store.Update(ctx, user)
+	return success, err
+}
+
+func (service *UserService) UpdateFollowNotification(ctx context.Context, user *domain.User) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdateFollowNotification service")
 	defer span.Finish()
 	ctx = tracer.ContextWithSpan(context.Background(), span)
 	success, err := service.store.Update(ctx, user)

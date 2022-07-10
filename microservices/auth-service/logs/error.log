@@ -11,3 +11,5 @@
 [31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:174 Failed to listen: %v<nil>                    
 [31mERRO[0m[0472]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:394 Not found user with ID: 62c9e31e1f685ced5eee73c6  [31musername[0m=klara
 [31mERRO[0m[0472]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:394 Not found user with ID: 62c9e31e1f685ced5eee73c6  [31musername[0m=klara
+[31mERRO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:174 Failed to listen: %v<nil>                    
+[31mERRO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:174 Failed to listen: %v<nil>                    

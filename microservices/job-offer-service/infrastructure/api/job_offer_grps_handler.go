@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/job_offer_service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/job_offer_service/domain"
 	"strconv"
@@ -24,6 +25,11 @@ func NewJobOfferHandler(service *application.JobOfferService) *JobOfferHandler {
 }
 
 func (handler *JobOfferHandler) GetRecommendations(ctx context.Context, request *pb.GetRequest) (*pb.Recommendations, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetRecommendation")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	handler.CustomLogger.ErrorLogger.Info("usao sam")
 
 	var jobs []*domain.Post
@@ -34,7 +40,7 @@ func (handler *JobOfferHandler) GetRecommendations(ctx context.Context, request 
 	}
 	user := mapUser(request.GetDTO().User)
 
-	recommendations, err := handler.service.GetRecommendations(user, jobs)
+	recommendations, err := handler.service.GetRecommendations(ctx, user, jobs)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Job recommendations for user with ID: " + request.DTO.User.Id + " not found")
 		return nil, err
