@@ -181,3 +181,10 @@
 [36mINFO[0m[0002]C:/xws-bsep/microservices/auth-service/startup/server.go:77 Starting auth service successfully, PORT: 8082 
 [36mINFO[0m[0190]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:737 Account successfully activated by JWT token  
 [36mINFO[0m[0197]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: nikolina 
+[36mINFO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:77 Starting auth service successfully, PORT: 8082 
+[36mINFO[0m[0057]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:737 Account successfully activated by JWT token  
+[36mINFO[0m[0085]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: radovan 
+[36mINFO[0m[0200]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:737 Account successfully activated by JWT token  
+[36mINFO[0m[0223]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: milovan 
+[36mINFO[0m[0250]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: radovan 
+[36mINFO[0m[0313]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:421 Successful user login with username: milovan 

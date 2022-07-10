@@ -13,3 +13,7 @@
 [31mERRO[0m[0472]C:/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:394 Not found user with ID: 62c9e31e1f685ced5eee73c6  [31musername[0m=klara
 [31mERRO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:174 Failed to listen: %v<nil>                    
 [31mERRO[0m[0000]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/auth-service/startup/server.go:174 Failed to listen: %v<nil>                    
+[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:97 Postgres database initialization error        [31mauth_db_host[0m=localhost [31mauth_db_name[0m=auth [31mauth_db_password[0m="$2a$10$t1QFj8VOQ0pzg.27d7gHTeOLbFLvHjbZJ1IM5/WrUOMUEAAzgcEPi" [31mauth_db_port[0m=5432 [31mauth_db_user[0m=postgres
+[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:106 Auth store initialization error              
+[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:97 Postgres database initialization error        [31mauth_db_host[0m=localhost [31mauth_db_name[0m=auth [31mauth_db_password[0m="$2a$10$4QwwVT3t6JVBE2AZ0Vg.HurkH/ZywfJgu/OiYNrv9z9lkXfDL7TMy" [31mauth_db_port[0m=5432 [31mauth_db_user[0m=postgres
+[31mERRO[0m[0000]C:/xws-bsep/microservices/auth-service/startup/server.go:106 Auth store initialization error              

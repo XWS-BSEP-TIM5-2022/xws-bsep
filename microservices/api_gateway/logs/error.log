@@ -56,3 +56,18 @@
 {"level":"error","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:260","msg":"Get feed for user with ID: 62cad1134272b3bee6899ffd unsuccessful","time":"2022-07-10T15:17:33+02:00"}
 {"level":"error","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:456","msg":"Get posts by user with ID: 62cad1374272b3bee6899ffe unsuccessful","time":"2022-07-10T15:17:39+02:00"}
 {"level":"error","method":"C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:260","msg":"Get feed for user with ID: 62cad1134272b3bee6899ffd unsuccessful","time":"2022-07-10T15:17:39+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:310","msg":"Get all public posts unsuccessful","time":"2022-07-10T17:51:46+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:310","msg":"Get all public posts unsuccessful","time":"2022-07-10T17:53:08+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:294","msg":"User with ID: 62caf5acd3f9639f43605afb can not access feed","time":"2022-07-10T17:57:28+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:240","msg":"Access to feed denied","time":"2022-07-10T17:57:28+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:310","msg":"Get all public posts unsuccessful","time":"2022-07-10T17:58:30+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:310","msg":"Get all public posts unsuccessful","time":"2022-07-10T17:58:45+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:310","msg":"Get all public posts unsuccessful","time":"2022-07-10T18:00:05+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:294","msg":"User with ID: 62caf5acd3f9639f43605afb can not access feed","time":"2022-07-10T18:00:13+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:240","msg":"Access to feed denied","time":"2022-07-10T18:00:13+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:310","msg":"Get all public posts unsuccessful","time":"2022-07-10T18:00:31+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:310","msg":"Get all public posts unsuccessful","time":"2022-07-10T18:01:10+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:456","msg":"Get posts by user with ID: 62caf6b7d3f9639f43605afd unsuccessful","time":"2022-07-10T18:01:19+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:260","msg":"Get feed for user with ID: 62caf74dd3f9639f43605afe unsuccessful","time":"2022-07-10T18:01:19+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:456","msg":"Get posts by user with ID: 62caf6b7d3f9639f43605afd unsuccessful","time":"2022-07-10T18:01:36+02:00"}
+{"level":"error","method":"C:/xws-bsep/microservices/api_gateway/infrastructure/api/post_handler.go:260","msg":"Get feed for user with ID: 62caf74dd3f9639f43605afe unsuccessful","time":"2022-07-10T18:01:36+02:00"}
