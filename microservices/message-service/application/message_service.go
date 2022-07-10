@@ -6,12 +6,14 @@ import (
 )
 
 type MessageService struct {
-	store domain.MessageStore
+	store      domain.MessageStore
+	eventStore domain.EventStore
 }
 
-func NewMessageService(store domain.MessageStore) *MessageService {
+func NewMessageService(store domain.MessageStore, eventStore domain.EventStore) *MessageService {
 	return &MessageService{
-		store: store,
+		store:      store,
+		eventStore: eventStore,
 	}
 }
 
@@ -29,4 +31,16 @@ func (service *MessageService) NewMessage(message *domain.Message, sender string
 
 func (service *MessageService) GetConversationById(id primitive.ObjectID) (*domain.Conversation, error) {
 	return service.store.GetConversationById(id)
+}
+
+func (service *MessageService) NewEvent(event *domain.Event) (*domain.Event, error) {
+	_, err := service.eventStore.NewEvent(event)
+	if err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+func (service *MessageService) GetAllEvents() ([]*domain.Event, error) {
+	return service.eventStore.GetAllEvents()
 }

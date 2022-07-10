@@ -7,9 +7,11 @@ import (
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/message_service/application"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/message_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"regexp"
+	"time"
 )
 
 type MessageHandler struct {
@@ -93,8 +95,8 @@ func (handler *MessageHandler) GetAllConversationsForUser(ctx context.Context, r
 
 	var finalConversations []*pb.Conversation
 
-	for _, messHistory := range conversations {
-		finalConversations = append(finalConversations, mapConversation(messHistory))
+	for _, conversation := range conversations {
+		finalConversations = append(finalConversations, mapConversation(conversation))
 	}
 
 	response := &pb.GetAllConversationsForUserResponse{
@@ -121,7 +123,17 @@ func (handler *MessageHandler) NewMessage(ctx context.Context, request *pb.NewMe
 		Conversation: mapConversation(conversation),
 	}
 
-	handler.CustomLogger.SuccessLogger.Info("New message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver + " sent!")
+	successLogText := "New message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver + " sent!"
+
+	handler.CustomLogger.SuccessLogger.Info(successLogText)
+
+	event := domain.Event{
+		Id:     primitive.NewObjectID(),
+		UserId: sender,
+		Text:   successLogText,
+		Date:   time.Now(),
+	}
+	handler.service.NewEvent(&event)
 
 	// slanje notifikacija
 	current_user, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: sender})
@@ -134,6 +146,34 @@ func (handler *MessageHandler) NewMessage(ctx context.Context, request *pb.NewMe
 		handler.notificationServiceClient.Insert(ctx, notificationRequest)
 	}
 
+	return response, nil
+
+}
+
+func (handler *MessageHandler) GetAllEvents(ctx context.Context, request *pb.GetAllEventsRequest) (*pb.GetAllEventsResponse, error) {
+
+	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+
+	events, err := handler.service.GetAllEvents()
+
+	handler.CustomLogger.InfoLogger.Info("Get all events for admin with ID: " + userId)
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Error while getting events for admin: " + userId)
+		return nil, err
+	}
+
+	var finalEvents []*pb.Event
+
+	for _, event := range events {
+		finalEvents = append(finalEvents, mapEvent(event))
+	}
+
+	response := &pb.GetAllEventsResponse{
+		Events: finalEvents,
+	}
+
+	handler.CustomLogger.SuccessLogger.Info("Get all events for admin with ID: " + userId + " successfully done")
 	return response, nil
 
 }

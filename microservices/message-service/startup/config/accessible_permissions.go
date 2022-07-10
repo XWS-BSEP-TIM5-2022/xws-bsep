@@ -7,5 +7,6 @@ func AccessiblePermissions() map[string]string {
 		messageService + "GetConversation":            "CreateMessage",
 		messageService + "GetAllConversationsForUser": "CreateMessage",
 		messageService + "NewMessage":                 "CreateMessage",
+		messageService + "GetAllEvents":               "GetEvents",
 	}
 }
