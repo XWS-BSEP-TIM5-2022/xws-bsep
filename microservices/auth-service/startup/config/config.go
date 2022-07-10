@@ -1,5 +1,7 @@
 package config
 
+import "os"
+
 type Config struct {
 	Port                     string
 	AuthDBHost               string
@@ -96,6 +98,6 @@ func NewConfig() *Config {
 		NatsPass:                 "T0pS3cr3t",
 		CreateUserCommandSubject: "user.create.command",
 		CreateUserReplySubject:   "user.create.reply",
-	}
+  }
 
 }
