@@ -370,3 +370,12 @@
 {"level":"info","method":"C:/xws-bsep/microservices/notification-service/startup/server.go:46","msg":"Starting gRPC server for notification service","time":"2022-07-10T16:58:15+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/notification-service/infrastructure/api/notification_grpc_handler.go:122","msg":"Notification by user received successfully","time":"2022-07-10T16:58:26+02:00"}
 {"level":"info","method":"C:/xws-bsep/microservices/notification-service/infrastructure/api/notification_grpc_handler.go:122","msg":"Notification by user received successfully","time":"2022-07-10T16:58:54+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/notification-service/startup/server.go:52","msg":"MongoDB initialization for notification service successful, PORT: 27017, HOST: localhost","time":"2022-07-10T17:14:29+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/notification-service/startup/server.go:58","msg":"Starting gRPC server for notification service","time":"2022-07-10T17:14:29+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/notification-service/startup/server.go:52","msg":"MongoDB initialization for notification service successful, PORT: 27017, HOST: localhost","time":"2022-07-10T17:14:41+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/notification-service/startup/server.go:58","msg":"Starting gRPC server for notification service","time":"2022-07-10T17:14:41+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/notification-service/infrastructure/api/notification_grpc_handler.go:141","msg":"Notification by user received successfully","time":"2022-07-10T17:15:25+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/notification-service/infrastructure/api/notification_grpc_handler.go:141","msg":"Notification by user received successfully","time":"2022-07-10T17:17:24+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/notification-service/infrastructure/api/notification_grpc_handler.go:104","msg":"Notification with ID: 62caed8db73f2e67cf041c52 created","time":"2022-07-10T17:17:33+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/notification-service/infrastructure/api/notification_grpc_handler.go:141","msg":"Notification by user received successfully","time":"2022-07-10T17:17:47+02:00"}
+{"level":"info","method":"C:/xws-bsep/microservices/notification-service/infrastructure/api/notification_grpc_handler.go:141","msg":"Notification by user received successfully","time":"2022-07-10T17:17:51+02:00"}

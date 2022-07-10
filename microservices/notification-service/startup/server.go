@@ -7,7 +7,10 @@ import (
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	post "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
+	otgo "github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
+	"io"
 	"log"
 	"net"
 
@@ -25,13 +28,22 @@ import (
 type Server struct {
 	config       *config.Config
 	CustomLogger *api.CustomLogger
+	tracer       otgo.Tracer
+	closer       io.Closer
 }
+
+const name = "notification-service"
 
 func NewServer(config *config.Config) *Server {
 	CustomLogger := api.NewCustomLogger()
+	tracer, closer := tracer.Init(name)
+	otgo.SetGlobalTracer(tracer)
+
 	return &Server{
 		config:       config,
 		CustomLogger: CustomLogger,
+		tracer:       tracer,
+		closer:       closer,
 	}
 }
 
