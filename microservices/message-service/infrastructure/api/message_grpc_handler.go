@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
+	connection "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
@@ -18,17 +19,19 @@ type MessageHandler struct {
 	CustomLogger *CustomLogger
 	pb.UnimplementedMessageServiceServer
 	notificationServiceClient notification.NotificationServiceClient
+	connectionServiceClient   connection.ConnectionServiceClient
 	userServiceClient         user.UserServiceClient
 }
 
 func NewMessageHandler(service *application.MessageService, notificationServiceClient notification.NotificationServiceClient,
-	userServiceClient user.UserServiceClient) *MessageHandler {
+	connectionServiceClient connection.ConnectionServiceClient, userServiceClient user.UserServiceClient) *MessageHandler {
 	CustomLogger := NewCustomLogger()
 	return &MessageHandler{
 		service:                   service,
 		CustomLogger:              CustomLogger,
 		notificationServiceClient: notificationServiceClient,
 		userServiceClient:         userServiceClient,
+		connectionServiceClient:   connectionServiceClient,
 	}
 }
 
@@ -126,33 +129,46 @@ func (handler *MessageHandler) NewMessage(ctx context.Context, request *pb.NewMe
 	ctx = tracer.ContextWithSpan(ctx, span)
 
 	sender := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	conversation, err := handler.service.NewMessage(ctx, mapInsertMessage(request.Message), sender)
 
-	handler.CustomLogger.InfoLogger.Info("New message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver)
-
+	connections, err := handler.connectionServiceClient.GetConnections(ctx, &connection.GetRequest{UserID: sender})
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Info("Error while sending message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver)
+		handler.CustomLogger.ErrorLogger.Info("Error while getting connections from user with ID: " + sender)
 		return nil, err
 	}
 
-	response := &pb.NewMessageResponse{
-		Conversation: mapConversation(conversation),
+	for _, user_in_list := range connections.Users {
+		if user_in_list.UserID == request.Message.Receiver {
+			conversation, err := handler.service.NewMessage(ctx, mapInsertMessage(request.Message), sender)
+
+			handler.CustomLogger.InfoLogger.Info("New message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver)
+
+			if err != nil {
+				handler.CustomLogger.ErrorLogger.Info("Error while sending message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver)
+				return nil, err
+			}
+
+			response := &pb.NewMessageResponse{
+				Conversation: mapConversation(conversation),
+			}
+
+			handler.CustomLogger.SuccessLogger.Info("New message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver + " sent!")
+
+			// slanje notifikacija
+			current_user, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: sender})
+			reciever, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: request.Message.Receiver})
+			if reciever.User.MessageNotification == true {
+				notificationRequest := &notification.InsertNotificationRequest{}
+				notificationRequest.Notification = &notification.Notification{}
+				notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(0)
+				notificationRequest.Notification.Text = "User " + current_user.User.Name + " " + current_user.User.LastName + " messaged you"
+				notificationRequest.Notification.UserId = request.Message.Receiver
+				handler.notificationServiceClient.Insert(ctx, notificationRequest)
+			}
+
+			return response, nil
+		}
 	}
 
-	handler.CustomLogger.SuccessLogger.Info("New message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver + " sent!")
-
-	// slanje notifikacija
-	current_user, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: sender})
-	reciever, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: request.Message.Receiver})
-	if reciever.User.MessageNotification == true {
-		notificationRequest := &notification.InsertNotificationRequest{}
-		notificationRequest.Notification = &notification.Notification{}
-		notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(0)
-		notificationRequest.Notification.Text = "User " + current_user.User.Name + " " + current_user.User.LastName + " messaged you"
-		notificationRequest.Notification.UserId = request.Message.Receiver
-		handler.notificationServiceClient.Insert(ctx, notificationRequest)
-	}
-
-	return response, nil
-
+	handler.CustomLogger.ErrorLogger.Error("Sending message failed because users are not connected!")
+	return nil, nil
 }
