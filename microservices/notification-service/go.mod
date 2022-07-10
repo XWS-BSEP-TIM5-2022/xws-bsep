@@ -5,7 +5,7 @@ go 1.18
 replace github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common => ../common
 
 require (
-	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-20220502143128-55ecbe21e4a7
+	github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common v0.0.0-20220709165006-e80cd0bdc53e
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/sirupsen/logrus v1.8.1
@@ -14,6 +14,14 @@ require (
 )
 
 require google.golang.org/grpc v1.46.0
+
+require (
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
+	github.com/opentracing/opentracing-go v1.2.0 // indirect
+	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
+	go.uber.org/atomic v1.9.0 // indirect
+)
 
 require (
 	github.com/go-playground/locales v0.14.0 // indirect

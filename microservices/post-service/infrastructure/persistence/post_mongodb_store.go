@@ -6,6 +6,7 @@ import (
 	"errors"
 	_ "errors"
 	"fmt"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
@@ -41,7 +42,12 @@ func NewPostMongoDBStore(client *mongo.Client) domain.PostStore {
 	}
 }
 
-func (store *PostMongoDBStore) Get(id primitive.ObjectID) (*domain.Post, error) {
+func (store *PostMongoDBStore) Get(ctx context.Context, id primitive.ObjectID) (*domain.Post, error) {
+	span := tracer.StartSpanFromContext(ctx, "Get database store")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	/** Escape '$' - Prevent NoSQL Injection **/
 	var convertedID = id.Hex()
 	var lenId = len(convertedID)
@@ -59,12 +65,22 @@ func (store *PostMongoDBStore) Get(id primitive.ObjectID) (*domain.Post, error) 
 	return store.filterOne(filter)
 }
 
-func (store *PostMongoDBStore) GetAll() ([]*domain.Post, error) {
+func (store *PostMongoDBStore) GetAll(ctx context.Context) ([]*domain.Post, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAll database store")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	filter := bson.D{{}} // prazan filter, jer zelimo da dobavimo sve proizvode
 	return store.filter(filter)
 }
 
-func (store *PostMongoDBStore) GetAllByUser(id string) ([]*domain.Post, error) {
+func (store *PostMongoDBStore) GetAllByUser(ctx context.Context, id string) ([]*domain.Post, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAllByUser database store")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	if len(id) != 24 {
 		err := errors.New("id not valid")
 		return nil, err
@@ -84,7 +100,12 @@ func (store *PostMongoDBStore) GetAllByUser(id string) ([]*domain.Post, error) {
 	return store.filter(filter)
 }
 
-func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
+func (store *PostMongoDBStore) Insert(ctx context.Context, post *domain.Post) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "Insert database store")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	post.Id = primitive.NewObjectID()
 
 	/** EscapeString **/
@@ -153,7 +174,12 @@ func (store *PostMongoDBStore) Insert(post *domain.Post) (string, error) {
 //	return primitive.Binary{Data: image}, nil
 //}
 
-func (store *PostMongoDBStore) Update(post *domain.Post) (string, error) {
+func (store *PostMongoDBStore) Update(ctx context.Context, post *domain.Post) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "Update database store")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	newData := bson.M{"$set": bson.M{
 		"text":         post.Text,
 		"date_created": post.DateCreated,
@@ -221,7 +247,12 @@ func (store *PostMongoDBStore) Update(post *domain.Post) (string, error) {
 	return "success", nil
 }
 
-func (store *PostMongoDBStore) LikePost(post *domain.Post, user_id string) (string, error) {
+func (store *PostMongoDBStore) LikePost(ctx context.Context, post *domain.Post, user_id string) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "LikePost database store")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	like := domain.Like{}
 	like.Id = primitive.NewObjectID()
 	like.UserId = user_id
@@ -270,7 +301,12 @@ func (store *PostMongoDBStore) LikePost(post *domain.Post, user_id string) (stri
 	return "success", nil
 }
 
-func (store *PostMongoDBStore) DislikePost(post *domain.Post, user_id string) (string, error) {
+func (store *PostMongoDBStore) DislikePost(ctx context.Context, post *domain.Post, user_id string) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "DislikePost database store")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	dislike := domain.Dislike{}
 	dislike.Id = primitive.NewObjectID()
 	dislike.UserId = user_id
@@ -319,7 +355,12 @@ func (store *PostMongoDBStore) DislikePost(post *domain.Post, user_id string) (s
 	return "success", nil
 }
 
-func (store *PostMongoDBStore) CommentPost(post *domain.Post, user_id string, text string) (string, error) {
+func (store *PostMongoDBStore) CommentPost(ctx context.Context, post *domain.Post, user_id string, text string) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "CommentPost database store")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	comment := domain.Comment{}
 	comment.Id = primitive.NewObjectID()
 	comment.UserId = user_id
@@ -370,7 +411,12 @@ func (store *PostMongoDBStore) CommentPost(post *domain.Post, user_id string, te
 	return "success", nil
 }
 
-func (store *PostMongoDBStore) DeleteAll() {
+func (store *PostMongoDBStore) DeleteAll(ctx context.Context) {
+	span := tracer.StartSpanFromContext(ctx, "DeleteAll database store")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	store.posts.DeleteMany(context.TODO(), bson.D{{}})
 }
 
@@ -403,7 +449,12 @@ func decode(cursor *mongo.Cursor) (posts []*domain.Post, err error) {
 	return
 }
 
-func (store *PostMongoDBStore) UpdateCompanyInfo(company *domain.Company, oldName string) (string, error) {
+func (store *PostMongoDBStore) UpdateCompanyInfo(ctx context.Context, company *domain.Company, oldName string) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdateCompanyInfor database store")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	newData := bson.M{
 		"id":          primitive.NewObjectID(),
 		"name":        company.Name,
@@ -416,7 +467,7 @@ func (store *PostMongoDBStore) UpdateCompanyInfo(company *domain.Company, oldNam
 		"company": newData,
 	}}
 
-	posts, _ := store.GetAll()
+	posts, _ := store.GetAll(ctx)
 	opts := options.Update().SetUpsert(true)
 
 	for _, post := range posts {

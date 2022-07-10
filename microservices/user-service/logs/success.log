@@ -1691,3 +1691,44 @@
 [36mINFO[0m[0351]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cad1374272b3bee6899ffe received successfully 
 [36mINFO[0m[0364]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:585 User with ID: 62cad1374272b3bee6899ffeupdated successfully 
 [36mINFO[0m[0372]C:/XWS-projekat/xws-bsep-beckend/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:585 User with ID: 62cad1374272b3bee6899ffeupdated successfully 
+[36mINFO[0m[0000]C:/xws-bsep/microservices/user-service/startup/server.go:68 Starting user service successfully, PORT: 8081 
+[36mINFO[0m[0035]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:72 Found 1 public users                         
+[36mINFO[0m[0035]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:72 Found 1 public users                         
+[36mINFO[0m[0035]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:72 Found 1 public users                         
+[36mINFO[0m[0035]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:72 Found 1 public users                         
+[36mINFO[0m[0035]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62c75310158b08b3c1c04c24 received successfully 
+[36mINFO[0m[0035]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62c751bb158b08b3c1c04c20 received successfully 
+[36mINFO[0m[0035]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62c75310158b08b3c1c04c24 received successfully 
+[36mINFO[0m[0035]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62c751bb158b08b3c1c04c20 received successfully 
+[36mINFO[0m[0035]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62c75310158b08b3c1c04c24 received successfully 
+[36mINFO[0m[0099]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:378 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0106]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:399 User by id received successfully             
+[36mINFO[0m[0106]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0106]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:452 User received successfully                   
+[36mINFO[0m[0111]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0147]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0147]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:452 User received successfully                   
+[36mINFO[0m[0181]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0191]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0191]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:452 User received successfully                   
+[36mINFO[0m[0436]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0436]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:452 User received successfully                   
+[36mINFO[0m[0441]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0446]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:452 User received successfully                   
+[36mINFO[0m[0447]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0463]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0464]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0465]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:452 User received successfully                   
+[36mINFO[0m[0466]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0466]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0471]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0471]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0473]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0473]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0475]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0475]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0477]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0477]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0479]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0479]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
+[36mINFO[0m[0479]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:213 User by ID:62cae7a187757f4b6c6716ed received successfully 
