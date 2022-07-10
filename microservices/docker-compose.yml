@@ -141,6 +141,8 @@ services:
       JAEGER_SAMPLER_MANAGER_HOST_PORT: ${JAEGER_HOST}:5778
       JAEGER_SAMPLER_TYPE: const
       JAEGER_SAMPLER_PARAM: 1
+      EVENT_DB_HOST: ${EVENT_DB_HOST}
+      EVENT_DB_PORT: ${EVENT_DB_PORT}
     depends_on:
       - auth_db
       - nats
@@ -178,6 +180,8 @@ services:
       JAEGER_SAMPLER_MANAGER_HOST_PORT: ${JAEGER_HOST}:5778
       JAEGER_SAMPLER_TYPE: const
       JAEGER_SAMPLER_PARAM: 1
+      EVENT_DB_HOST: ${EVENT_DB_HOST}
+      EVENT_DB_PORT: ${EVENT_DB_PORT}
     depends_on:
       - connection_db
       - event_db
@@ -211,6 +215,8 @@ services:
       JAEGER_SAMPLER_MANAGER_HOST_PORT: ${JAEGER_HOST}:5778
       JAEGER_SAMPLER_TYPE: const
       JAEGER_SAMPLER_PARAM: 1
+      EVENT_DB_HOST: ${EVENT_DB_HOST}
+      EVENT_DB_PORT: ${EVENT_DB_PORT}
     depends_on:
       - connection_db
       - event_db
@@ -375,7 +381,6 @@ services:
       - 27022:27017
     logging: *fluent-bit
     networks:
-      -
       - network
       - monitoring
 
