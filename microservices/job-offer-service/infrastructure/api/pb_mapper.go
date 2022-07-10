@@ -88,3 +88,14 @@ func mapRecommendations(posts *domain.PostsID) *pb.PostID {
 
 	return postPb
 }
+
+func mapEvent(event *domain.Event) *pb.Event {
+	eventPb := &pb.Event{
+		Id:     event.Id.Hex(),
+		UserId: event.UserId,
+		Text:   event.Text,
+		Date:   event.Date.String(),
+	}
+
+	return eventPb
+}

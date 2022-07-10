@@ -45,6 +45,7 @@ type AuthService struct {
 	apiTokenService   *APITokenService
 	userServiceClient user.UserServiceClient
 	CustomLogger      *CustomLogger
+	eventStore        domain.EventStore
 }
 
 type LoginData struct {
@@ -52,7 +53,7 @@ type LoginData struct {
 	password string `validate:"required"`
 }
 
-func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService, userServiceClient user.UserServiceClient, apiTokenService *APITokenService) *AuthService {
+func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService, userServiceClient user.UserServiceClient, apiTokenService *APITokenService, eventStore domain.EventStore) *AuthService {
 	CustomLogger := NewCustomLogger()
 	return &AuthService{
 		store:             store,
@@ -60,6 +61,7 @@ func NewAuthService(store *persistence.AuthPostgresStore, jwtService *JWTService
 		userServiceClient: userServiceClient,
 		apiTokenService:   apiTokenService,
 		CustomLogger:      CustomLogger,
+		eventStore:        eventStore,
 	}
 }
 
@@ -1135,4 +1137,16 @@ func (service *AuthService) isUsernameUnique(username string) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+func (service *AuthService) NewEvent(event *domain.Event) (*domain.Event, error) {
+	_, err := service.eventStore.NewEvent(event)
+	if err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+func (service *AuthService) GetAllEvents() ([]*domain.Event, error) {
+	return service.eventStore.GetAllEvents()
 }

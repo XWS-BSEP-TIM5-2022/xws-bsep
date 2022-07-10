@@ -129,3 +129,10 @@ const (
 	Master
 	Doctorate
 )
+
+type Event struct {
+	Id     primitive.ObjectID `bson:"_id"`
+	UserId string             `bson:"user_id"`
+	Text   string             `bson:"action"`
+	Date   time.Time          `bson:"date"`
+}

@@ -18,6 +18,8 @@ type Config struct {
 	Neo4jUri         string
 	Neo4jUsername    string
 	Neo4jPassword    string
+	EventDBHost      string
+	EventDBPort      string
 }
 
 func NewConfig() *Config {
@@ -36,6 +38,8 @@ func NewConfig() *Config {
 		//SuccessLogsFile:  os.Getenv("SUCCESS_LOGS_FILE"),
 		//WarningLogsFile:  os.Getenv("WARNING_LOGS_FILE"),
 		//PublicKey:        os.Getenv("PUBLIC_KEY"),
+		//EventDBHost:        os.Getenv("EVENT_DB_HOST"),
+		//EventDBPort:          os.Getenv("EVENT_DB_PORT"),
 
 		Port:             "8089",
 		Host:             "localhost",
@@ -51,6 +55,8 @@ func NewConfig() *Config {
 		ErrorLogsFile:    "/error.log",
 		SuccessLogsFile:  "/success.log",
 		WarningLogsFile:  "/warning.log",
+		EventDBHost:      "localhost",
+		EventDBPort:      "27017",
 	}
 
 }

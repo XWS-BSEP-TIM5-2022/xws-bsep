@@ -6,12 +6,14 @@ import (
 )
 
 type PostService struct {
-	store domain.PostStore
+	store      domain.PostStore
+	eventStore domain.EventStore
 }
 
-func NewPostService(store domain.PostStore) *PostService {
+func NewPostService(store domain.PostStore, eventStore domain.EventStore) *PostService {
 	return &PostService{
-		store: store,
+		store:      store,
+		eventStore: eventStore,
 	}
 }
 
@@ -51,4 +53,16 @@ func (service *PostService) CommentPost(post *domain.Post, id string, text strin
 
 func (service *PostService) UpdateCompanyInfo(company *domain.Company, oldName string) (string, error) {
 	return service.store.UpdateCompanyInfo(company, oldName)
+}
+
+func (service *PostService) NewEvent(event *domain.Event) (*domain.Event, error) {
+	_, err := service.eventStore.NewEvent(event)
+	if err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+func (service *PostService) GetAllEvents() ([]*domain.Event, error) {
+	return service.eventStore.GetAllEvents()
 }

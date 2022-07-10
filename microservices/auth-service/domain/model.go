@@ -2,6 +2,8 @@ package domain
 
 import (
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -54,4 +56,11 @@ func (credentials *Authentication) HashPassword(password string) (string, error)
 		return "", fmt.Errorf("Can not hash password: %w", err)
 	}
 	return string(hashedPassword), nil
+}
+
+type Event struct {
+	Id     primitive.ObjectID `bson:"_id"`
+	UserId string             `bson:"user_id"`
+	Text   string             `bson:"action"`
+	Date   time.Time          `bson:"date"`
 }

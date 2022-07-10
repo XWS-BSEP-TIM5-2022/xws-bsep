@@ -31,6 +31,8 @@ type Config struct {
 	NatsPass                 string
 	CreateUserCommandSubject string
 	CreateUserReplySubject   string
+	EventDBHost              string
+	EventDBPort              string
 }
 
 func NewConfig() *Config {
@@ -65,6 +67,8 @@ func NewConfig() *Config {
 		//NatsPass:                 os.Getenv("NATS_PASS"),
 		//CreateUserCommandSubject: os.Getenv("CREATE_USER_COMMAND_SUBJECT"),
 		//CreateUserReplySubject:   os.Getenv("CREATE_USER_REPLY_SUBJECT"),
+		//EventDBHost:        os.Getenv("EVENT_DB_HOST"),
+		//EventDBPort:          os.Getenv("EVENT_DB_PORT"),
 
 		Port:                     "8082",
 		AuthDBHost:               "localhost",
@@ -96,6 +100,8 @@ func NewConfig() *Config {
 		NatsPass:                 "T0pS3cr3t",
 		CreateUserCommandSubject: "user.create.command",
 		CreateUserReplySubject:   "user.create.reply",
+		EventDBHost:              "localhost",
+		EventDBPort:              "27017",
 	}
 
 }

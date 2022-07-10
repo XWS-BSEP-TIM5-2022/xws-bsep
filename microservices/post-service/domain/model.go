@@ -57,3 +57,10 @@ type Position struct {
 	Name string             `bson:"name"`
 	Pay  float64            `bson:"pay"`
 }
+
+type Event struct {
+	Id     primitive.ObjectID `bson:"_id"`
+	UserId string             `bson:"user_id"`
+	Text   string             `bson:"action"`
+	Date   time.Time          `bson:"date"`
+}
