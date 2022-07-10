@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/api"
 	"github.com/dgrijalva/jwt-go"
@@ -15,6 +16,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	muxprom "gitlab.com/msvechla/mux-prometheus/pkg/middleware"
 
@@ -33,6 +36,37 @@ import (
 	"github.com/urfave/negroni"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+)
+
+var (
+	totalReq = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "dislinkt_total_req",
+		Help: "The total number of requests",
+	})
+	successfulReq = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "dislinkt_successful_req",
+		Help: "The number of successful requests",
+	})
+	failedReq = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "dislinkt_failed_req",
+		Help: "The total number of failed requests",
+	})
+	notFoundReq = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "dislinkt_not_found_req",
+		Help: "The total number of 404 requests with endpoint",
+	}, []string{"code", "method"})
+	ipReq = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "dislinkt_ip_req",
+		Help: "IP address from request",
+	}, []string{"ip"})
+	browserReq = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "dislinkt_browser_req",
+		Help: "Browser(user agent) from request",
+	}, []string{"browser"})
+	timestampReq = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "dislinkt_timestamp_req",
+		Help: "Request timestamp",
+	}, []string{"timestamp"})
 )
 
 type Server struct {
@@ -191,8 +225,6 @@ func muxMiddleware(server *Server) http.Handler {
 		log.Println(server.config.AuthHost + ":" + server.config.AuthPort)
 
 		endpointName := r.Method + " " + r.URL.Path
-		log.Println("Context: ", r.Context())
-		log.Println("Endpoint: ", endpointName)
 
 		parentSpanContext, err2 := opentracing.GlobalTracer().Extract(
 			opentracing.HTTPHeaders,
@@ -210,7 +242,42 @@ func muxMiddleware(server *Server) http.Handler {
 		server.mux.ServeHTTP(lrw, r)
 
 		statusCode := lrw.Status()
-		log.Println("<-- ", statusCode)
+		log.Println(" *#* ", statusCode)
+
+		ipAddr := r.RemoteAddr
+		fmt.Println("IP ADDRESA:", ipAddr)
+		ipLabel := prometheus.Labels{
+			"ip": ipAddr,
+		}
+		ipReq.With(ipLabel).Inc()
+
+		browser := r.UserAgent()
+		fmt.Println("BROWSER:", browser)
+		browserLabel := prometheus.Labels{
+			"browser": browser,
+		}
+		browserReq.With(browserLabel).Inc()
+
+		t := time.Now()
+		fmt.Println("TIMESTAMP:", t.Format("2006-01-02 15:04:00"))
+		timestampLabel := prometheus.Labels{
+			"timestamp": t.Format("2006-01-02 15:04:00"),
+		}
+		timestampReq.With(timestampLabel).Inc()
+
+		totalReq.Inc()
+		if statusCode >= 200 && statusCode <= 399 {
+			successfulReq.Inc()
+		} else if statusCode >= 400 && statusCode <= 599 {
+			if statusCode == 404 {
+				labels := prometheus.Labels{
+					"code":   "404",
+					"method": endpointName,
+				}
+				notFoundReq.With(labels).Inc()
+			}
+			failedReq.Inc()
+		}
 	})
 }
 
