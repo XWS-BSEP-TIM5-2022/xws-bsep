@@ -8,6 +8,7 @@ import (
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/post_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -42,6 +43,11 @@ func NewPostHandler(service *application.PostService, notificationServiceClient 
 }
 
 func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "Get")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	/* sanitizacija */
 	id := request.Id
 	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
@@ -55,7 +61,7 @@ func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
 		return nil, err
 	}
-	post, err := handler.service.Get(objectId)
+	post, err := handler.service.Get(ctx, objectId)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + id + " not found")
 		return nil, err
@@ -69,7 +75,12 @@ func (handler *PostHandler) Get(ctx context.Context, request *pb.GetRequest) (*p
 }
 
 func (handler *PostHandler) GetAll(ctx context.Context, request *pb.GetAllRequest) (*pb.GetAllResponse, error) {
-	posts, err := handler.service.GetAll()
+	span := tracer.StartSpanFromContext(ctx, "GetAll")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
+	posts, err := handler.service.GetAll(ctx)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get all posts unsuccessful")
 		return nil, err
@@ -86,6 +97,11 @@ func (handler *PostHandler) GetAll(ctx context.Context, request *pb.GetAllReques
 }
 
 func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetRequest) (*pb.GetAllResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAllByUser")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	/* sanitizacija unosa */
 	id := request.Id
 	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
@@ -94,7 +110,7 @@ func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetReq
 	}
 	id = re.ReplaceAllString(id, " ")
 
-	posts, err := handler.service.GetAllByUser(id)
+	posts, err := handler.service.GetAllByUser(ctx, id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get all by userId: " + id)
 		return nil, err
@@ -111,6 +127,11 @@ func (handler *PostHandler) GetAllByUser(ctx context.Context, request *pb.GetReq
 }
 
 func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertRequest) (*pb.InsertResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "Insert")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	post, err := mapInsertPost(request.InsertPost)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post was not mapped")
@@ -119,7 +140,7 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 	post.UserId = userId
-	success, err := handler.service.Insert(post)
+	success, err := handler.service.Insert(ctx, post)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post was not inserted")
 		return nil, err
@@ -162,6 +183,11 @@ func (handler *PostHandler) Insert(ctx context.Context, request *pb.InsertReques
 }
 
 func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.InsertJobOfferRequest) (*pb.InsertResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "InsertJobOffer")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	post, err := mapInsertJobOfferPost(request.InsertJobOfferPost)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post was not mapped")
@@ -177,7 +203,7 @@ func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.Inse
 	id = re.ReplaceAllString(id, "")
 	post.UserId = id
 
-	success, err := handler.service.Insert(post)
+	success, err := handler.service.Insert(ctx, post)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post was not inserted")
 		return nil, err
@@ -201,6 +227,11 @@ func (handler *PostHandler) InsertJobOffer(ctx context.Context, request *pb.Inse
 }
 
 func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike) (*pb.InsertResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "LikePost")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	/* sanitizacija */
 	id := request.PostId
 	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
@@ -211,7 +242,7 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 
 	objectId, err := primitive.ObjectIDFromHex(id)
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	post, err := handler.service.Get(objectId)
+	post, err := handler.service.Get(ctx, objectId)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + objectId.Hex() + " not found")
 		return &pb.InsertResponse{
@@ -219,7 +250,7 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 		}, err
 	}
 
-	postHelper, err := handler.service.Get(objectId)
+	postHelper, err := handler.service.Get(ctx, objectId)
 
 	// provera - da li je korisnik vec lajkovao post
 	for _, p := range post.Likes {
@@ -251,7 +282,7 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 		post.Dislikes = postHelper.Dislikes
 	}
 
-	success, err := handler.service.LikePost(post, userId)
+	success, err := handler.service.LikePost(ctx, post, userId)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + post.Id.Hex() + " was not liked by user with ID: " + userId)
 		return nil, err
@@ -275,6 +306,11 @@ func (handler *PostHandler) LikePost(ctx context.Context, request *pb.InsertLike
 }
 
 func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertDislike) (*pb.InsertResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "DislikePost")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	/* sanitizacija */
 	id := request.PostId
 	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
@@ -285,7 +321,7 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 
 	objectId, err := primitive.ObjectIDFromHex(id)
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	post, err := handler.service.Get(objectId)
+	post, err := handler.service.Get(ctx, objectId)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + objectId.Hex() + " not found")
 		return &pb.InsertResponse{
@@ -293,7 +329,7 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 		}, err
 	}
 
-	postHelper, err := handler.service.Get(objectId)
+	postHelper, err := handler.service.Get(ctx, objectId)
 
 	// provera - da li je korisnik vec dislajkovao post
 	for _, p := range post.Dislikes {
@@ -326,7 +362,7 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 		post.Likes = postHelper.Likes
 	}
 
-	success, err := handler.service.DislikePost(post, userId)
+	success, err := handler.service.DislikePost(ctx, post, userId)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + post.Id.Hex() + " was not disliked by user with ID: " + userId)
 		return nil, err
@@ -350,6 +386,11 @@ func (handler *PostHandler) DislikePost(ctx context.Context, request *pb.InsertD
 }
 
 func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertComment) (*pb.InsertResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "CommentPost")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	/* sanitizacija */
 	id := request.PostId
 	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
@@ -359,7 +400,7 @@ func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertC
 	id = re.ReplaceAllString(id, " ")
 
 	objectId, err := primitive.ObjectIDFromHex(id)
-	post, err := handler.service.Get(objectId)
+	post, err := handler.service.Get(ctx, objectId)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post with ID:" + objectId.Hex() + " not found")
 		return &pb.InsertResponse{
@@ -368,7 +409,7 @@ func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertC
 	}
 
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	success, err := handler.service.CommentPost(post, userId, strings.TrimSpace(request.Text)) // Trim - function to remove leading and trailing whitespace
+	success, err := handler.service.CommentPost(ctx, post, userId, strings.TrimSpace(request.Text)) // Trim - function to remove leading and trailing whitespace
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post with ID: " + post.Id.Hex() + " was not commented by user with ID: " + userId)
 		return nil, err
@@ -392,6 +433,11 @@ func (handler *PostHandler) CommentPost(ctx context.Context, request *pb.InsertC
 }
 
 func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertNeutralReaction) (*pb.InsertResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "NeutralPost")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
+
 	/* sanitizacija */
 	id := request.PostId
 	re, err := regexp.Compile(`[^\w]`) // specijalni karakteri
@@ -401,7 +447,7 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 	id = re.ReplaceAllString(id, " ")
 
 	objectId, err := primitive.ObjectIDFromHex(id)
-	post, err := handler.service.Get(objectId)
+	post, err := handler.service.Get(ctx, objectId)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Post with ID:" + objectId.Hex() + " not found")
 		return &pb.InsertResponse{
@@ -409,7 +455,7 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 		}, err
 	}
 
-	postHelper, err := handler.service.Get(objectId)
+	postHelper, err := handler.service.Get(ctx, objectId)
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
 
 	flagDisliked := false
@@ -452,7 +498,7 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 		post.Dislikes = postHelper.Dislikes
 	}
 
-	success, err := handler.service.Update(post)
+	success, err := handler.service.Update(ctx, post)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Neutral reaction on post with ID: " + post.Id.Hex() + "  by user with ID: " + userId + " was not successful")
 		return nil, err
@@ -476,6 +522,11 @@ func (handler *PostHandler) NeutralPost(ctx context.Context, request *pb.InsertN
 }
 
 func (handler *PostHandler) UpdateCompanyInfo(ctx context.Context, request *pb.UpdateCompanyInfoRequest) (*pb.InsertResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "UpdateCompanyInfo")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	company, err := mapCompanyInfo(request.CompanyInfoDTO)
 	oldName := request.CompanyInfoDTO.OldName
 	/* sanitizacija unosa - prevencija log injection - u logove nece biti upisani specijalni karakteri */
@@ -490,7 +541,7 @@ func (handler *PostHandler) UpdateCompanyInfo(ctx context.Context, request *pb.U
 		return nil, err
 	}
 
-	success, err := handler.service.UpdateCompanyInfo(company, request.CompanyInfoDTO.OldName)
+	success, err := handler.service.UpdateCompanyInfo(ctx, company, request.CompanyInfoDTO.OldName)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Company with name: " + "'" + oldName + "'" + " was not updated")
 		return nil, err

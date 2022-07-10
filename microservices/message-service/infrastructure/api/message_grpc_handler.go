@@ -6,6 +6,7 @@ import (
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
 	notification "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/message_service/application"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/message_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -34,6 +35,11 @@ func NewMessageHandler(service *application.MessageService, notificationServiceC
 }
 
 func (handler *MessageHandler) GetConversationById(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetConversationById")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	id := removeMalicious(request.Id)
 	re, err := regexp.Compile(`[^\w]`)
 	if err != nil {
@@ -48,7 +54,7 @@ func (handler *MessageHandler) GetConversationById(ctx context.Context, request 
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
 		return nil, err
 	}
-	conversation, err := handler.service.GetConversationById(objectId)
+	conversation, err := handler.service.GetConversationById(ctx, objectId)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Conversation with ID:" + objectId.Hex() + " not found")
 		return nil, err
@@ -62,9 +68,13 @@ func (handler *MessageHandler) GetConversationById(ctx context.Context, request 
 }
 
 func (handler *MessageHandler) GetConversation(ctx context.Context, request *pb.GetConversationRequest) (*pb.GetConversationResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetConversation")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
 
 	senderId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	conversation, err := handler.service.GetConversation(senderId, request.Receiver)
+	conversation, err := handler.service.GetConversation(ctx, senderId, request.Receiver)
 
 	handler.CustomLogger.InfoLogger.Info("Get conversation for user with ID: " + senderId + " and user with ID: " + request.Receiver)
 	if err != nil {
@@ -82,9 +92,13 @@ func (handler *MessageHandler) GetConversation(ctx context.Context, request *pb.
 }
 
 func (handler *MessageHandler) GetAllConversationsForUser(ctx context.Context, request *pb.GetAllConversationsForUserRequest) (*pb.GetAllConversationsForUserResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAllConversationsForUser")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
 
 	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	conversations, err := handler.service.GetAllConversationsForUser(userId)
+	conversations, err := handler.service.GetAllConversationsForUser(ctx, userId)
 
 	handler.CustomLogger.InfoLogger.Info("Get all conversations for user with ID: " + userId)
 
@@ -108,9 +122,13 @@ func (handler *MessageHandler) GetAllConversationsForUser(ctx context.Context, r
 }
 
 func (handler *MessageHandler) NewMessage(ctx context.Context, request *pb.NewMessageRequest) (*pb.NewMessageResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "NewMessage")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(ctx, span)
 
 	sender := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-	conversation, err := handler.service.NewMessage(mapInsertMessage(request.Message), sender)
+	conversation, err := handler.service.NewMessage(ctx, mapInsertMessage(request.Message), sender)
 
 	handler.CustomLogger.InfoLogger.Info("New message from user with ID: " + sender + " to user with ID: " + request.Message.Receiver)
 
@@ -137,7 +155,8 @@ func (handler *MessageHandler) NewMessage(ctx context.Context, request *pb.NewMe
 
 	// slanje notifikacija
 	current_user, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: sender})
-	if current_user.User.PostNotification == true {
+	reciever, _ := handler.userServiceClient.Get(ctx, &user.GetRequest{Id: request.Message.Receiver})
+	if reciever.User.MessageNotification == true {
 		notificationRequest := &notification.InsertNotificationRequest{}
 		notificationRequest.Notification = &notification.Notification{}
 		notificationRequest.Notification.Type = notification.Notification_NotificationTypeEnum(0)

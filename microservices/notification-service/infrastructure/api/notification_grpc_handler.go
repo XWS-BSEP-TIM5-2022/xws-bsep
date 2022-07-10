@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/notification_service/application"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
@@ -25,6 +26,10 @@ func NewNotificationHandler(service *application.NotificationService) *Notificat
 }
 
 func (handler *NotificationHandler) GetById(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetById")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 
 	id := removeMalicious(request.Id)
 	re, err := regexp.Compile(`[^\w]`)
@@ -40,7 +45,7 @@ func (handler *NotificationHandler) GetById(ctx context.Context, request *pb.Get
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
 		return nil, err
 	}
-	notification, err := handler.service.GetById(objectId)
+	notification, err := handler.service.GetById(ctx, objectId)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Notification with ID:" + objectId.Hex() + " not found")
 		return nil, err
@@ -54,7 +59,12 @@ func (handler *NotificationHandler) GetById(ctx context.Context, request *pb.Get
 }
 
 func (handler *NotificationHandler) GetAll(ctx context.Context, request *pb.GetAllRequest) (*pb.GetAllResponse, error) {
-	posts, err := handler.service.GetAll()
+	span := tracer.StartSpanFromContext(ctx, "GetAll")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
+	posts, err := handler.service.GetAll(ctx)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Get all notifications unsuccessful")
 		return nil, err
@@ -71,6 +81,11 @@ func (handler *NotificationHandler) GetAll(ctx context.Context, request *pb.GetA
 }
 
 func (handler *NotificationHandler) Insert(ctx context.Context, request *pb.InsertNotificationRequest) (*pb.InsertNotificationResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "Insert")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	notification, err := mapInsertNotification(request.Notification)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Notification was not mapped")
@@ -78,7 +93,7 @@ func (handler *NotificationHandler) Insert(ctx context.Context, request *pb.Inse
 	}
 
 	notification.Id = primitive.NewObjectID()
-	success, err := handler.service.Insert(notification)
+	success, err := handler.service.Insert(ctx, notification)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Notification was not inserted")
 		return nil, err
@@ -91,6 +106,10 @@ func (handler *NotificationHandler) Insert(ctx context.Context, request *pb.Inse
 }
 
 func (handler *NotificationHandler) GetNotificationsByUserId(ctx context.Context, request *pb.GetRequest) (*pb.GetAllResponse, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetConnections")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 
 	id := removeMalicious(request.Id)
 	re, err := regexp.Compile(`[^\w]`)
@@ -105,7 +124,7 @@ func (handler *NotificationHandler) GetNotificationsByUserId(ctx context.Context
 		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
 		return nil, err
 	}
-	notifications, err := handler.service.GetAllByUser(id)
+	notifications, err := handler.service.GetAllByUser(ctx, id)
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Notification with ID:" + objectId.Hex() + " not found")
 		return nil, err

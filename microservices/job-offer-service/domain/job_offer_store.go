@@ -1,5 +1,7 @@
 package domain
 
+import "context"
+
 type JobOfferStore interface {
-	GetRecommendations(user *User, jobOffers []*Post) ([]*PostsID, error)
+	GetRecommendations(ctx context.Context, user *User, jobOffers []*Post) ([]*PostsID, error)
 }

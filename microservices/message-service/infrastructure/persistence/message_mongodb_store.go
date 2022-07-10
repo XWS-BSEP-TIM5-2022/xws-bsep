@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "context"
 	_ "errors"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/message_service/domain"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
@@ -24,7 +25,10 @@ type MessageMongoDBStore struct {
 	messages *mongo.Collection
 }
 
-func (store MessageMongoDBStore) GetConversation(sender, receiver string) (*domain.Conversation, error) {
+func (store MessageMongoDBStore) GetConversation(ctx context.Context, sender, receiver string) (*domain.Conversation, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetConversation database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 
 	filter := bson.M{
 		"$or": []bson.M{
@@ -42,7 +46,10 @@ func (store MessageMongoDBStore) GetConversation(sender, receiver string) (*doma
 
 }
 
-func (store MessageMongoDBStore) GetAllConversationsForUser(user string) ([]*domain.Conversation, error) {
+func (store MessageMongoDBStore) GetAllConversationsForUser(ctx context.Context, user string) ([]*domain.Conversation, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAllConversationsForUser database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 
 	filter := bson.M{
 		"$or": []bson.M{
@@ -53,9 +60,12 @@ func (store MessageMongoDBStore) GetAllConversationsForUser(user string) ([]*dom
 	return store.filter(filter)
 }
 
-func (store MessageMongoDBStore) NewMessage(message *domain.Message, sender string) (*domain.Conversation, error) {
+func (store MessageMongoDBStore) NewMessage(ctx context.Context, message *domain.Message, sender string) (*domain.Conversation, error) {
+	span := tracer.StartSpanFromContext(ctx, "NewMessage database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 
-	conversation, err := store.GetConversation(sender, message.Receiver)
+	conversation, err := store.GetConversation(ctx, sender, message.Receiver)
 	if conversation == nil {
 
 		//senderId, _ := primitive.ObjectIDFromHex(sender)
@@ -73,7 +83,7 @@ func (store MessageMongoDBStore) NewMessage(message *domain.Message, sender stri
 			return nil, err
 		}
 
-		conversation, err = store.GetConversationById(newConversation.Id)
+		conversation, err = store.GetConversationById(ctx, newConversation.Id)
 
 	} else {
 
@@ -92,14 +102,18 @@ func (store MessageMongoDBStore) NewMessage(message *domain.Message, sender stri
 			return nil, err
 		}
 
-		conversation, err = store.GetConversationById(conversation.Id)
+		conversation, err = store.GetConversationById(ctx, conversation.Id)
 
 	}
 
 	return conversation, err
 }
 
-func (store MessageMongoDBStore) GetConversationById(id primitive.ObjectID) (*domain.Conversation, error) {
+func (store MessageMongoDBStore) GetConversationById(ctx context.Context, id primitive.ObjectID) (*domain.Conversation, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetConversationById database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	filter := bson.M{"_id": id}
 	return store.filterOne(filter)
 }

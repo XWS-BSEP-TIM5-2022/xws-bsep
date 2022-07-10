@@ -70,6 +70,7 @@ func NewConfig() *Config {
 		//EventDBHost:        os.Getenv("EVENT_DB_HOST"),
 		//EventDBPort:          os.Getenv("EVENT_DB_PORT"),
 
+
 		Port:                     "8082",
 		AuthDBHost:               "localhost",
 		AuthDBPort:               "5432",

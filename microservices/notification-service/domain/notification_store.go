@@ -1,10 +1,13 @@
 package domain
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type NotificationStore interface {
-	GetById(id primitive.ObjectID) (*Notification, error)
-	GetAll() ([]*Notification, error)
-	Insert(post *Notification) (string, error)
-	GetAllByUser(string) ([]*Notification, error)
+	GetById(ctx context.Context, id primitive.ObjectID) (*Notification, error)
+	GetAll(ctx context.Context) ([]*Notification, error)
+	Insert(ctx context.Context, post *Notification) (string, error)
+	GetAllByUser(ctx context.Context, id string) ([]*Notification, error)
 }

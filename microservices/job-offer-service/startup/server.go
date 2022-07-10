@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
+
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
+	otgo "github.com/opentracing/opentracing-go"
+	"io"
 	"log"
 	"net"
 
@@ -23,13 +27,21 @@ import (
 type Server struct {
 	config       *config.Config
 	CustomLogger *api.CustomLogger
+	tracer       otgo.Tracer
+	closer       io.Closer
 }
+
+const name = "job-offer-service"
 
 func NewServer(config *config.Config) *Server {
 	CustomLogger := api.NewCustomLogger()
+	tracer, closer := tracer.Init(name)
+	otgo.SetGlobalTracer(tracer)
 	return &Server{
 		config:       config,
 		CustomLogger: CustomLogger,
+		tracer:       tracer,
+		closer:       closer,
 	}
 }
 

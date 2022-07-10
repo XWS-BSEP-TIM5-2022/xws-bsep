@@ -1,7 +1,9 @@
 package persistence
 
 import (
+	"context"
 	"fmt"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/job_offer_service/domain"
 	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 )
@@ -16,8 +18,10 @@ func NewJobOfferDBStore(client *neo4j.Driver) domain.JobOfferStore {
 	}
 }
 
-func (store *JobOfferDBStore) GetRecommendations(user *domain.User, jobOffers []*domain.Post) ([]*domain.PostsID, error) {
-	fmt.Println(user)
+func (store *JobOfferDBStore) GetRecommendations(ctx context.Context, user *domain.User, jobOffers []*domain.Post) ([]*domain.PostsID, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetRecommendation database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 
 	session := (*store.jobOfferDB).NewSession(neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close()

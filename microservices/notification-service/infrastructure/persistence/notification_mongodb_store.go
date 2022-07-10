@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "context"
 	_ "errors"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/notification_service/domain"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
@@ -24,17 +25,29 @@ type NotificationMongoDBStore struct {
 	notifications *mongo.Collection
 }
 
-func (store *NotificationMongoDBStore) GetAllByUser(id string) ([]*domain.Notification, error) {
+func (store *NotificationMongoDBStore) GetAllByUser(ctx context.Context, id string) ([]*domain.Notification, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAllByUser database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	filter := bson.M{"user_id": id}
 	return store.filter(filter)
 }
 
-func (store NotificationMongoDBStore) GetAll() ([]*domain.Notification, error) {
+func (store NotificationMongoDBStore) GetAll(ctx context.Context) ([]*domain.Notification, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetAll database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	filter := bson.D{{}}
 	return store.filter(filter)
 }
 
-func (store NotificationMongoDBStore) Insert(post *domain.Notification) (string, error) {
+func (store NotificationMongoDBStore) Insert(ctx context.Context, post *domain.Notification) (string, error) {
+	span := tracer.StartSpanFromContext(ctx, "Insert database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	result, err := store.notifications.InsertOne(context.TODO(), post)
 	if err != nil {
 		return "error", err
@@ -43,7 +56,11 @@ func (store NotificationMongoDBStore) Insert(post *domain.Notification) (string,
 	return "success", nil
 }
 
-func (store NotificationMongoDBStore) GetById(id primitive.ObjectID) (*domain.Notification, error) {
+func (store NotificationMongoDBStore) GetById(ctx context.Context, id primitive.ObjectID) (*domain.Notification, error) {
+	span := tracer.StartSpanFromContext(ctx, "GetById database store")
+	defer span.Finish()
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
 	filter := bson.M{"_id": id}
 	return store.filterOne(filter)
 }
