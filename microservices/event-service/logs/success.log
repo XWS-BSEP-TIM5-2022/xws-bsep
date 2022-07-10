@@ -1,2 +1,0 @@
-{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/event-service/startup/server.go:36","msg":"MongoDB initialization for event service successful, PORT: 27017, HOST: localhost","time":"2022-07-10T00:38:23+02:00"}
-{"level":"info","method":"D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/event-service/startup/server.go:42","msg":"Starting gRPC server for event service","time":"2022-07-10T00:38:23+02:00"}

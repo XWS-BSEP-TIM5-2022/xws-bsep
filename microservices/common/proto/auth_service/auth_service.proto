@@ -105,6 +105,12 @@ service AuthService{
             body: "*"
         };
     }
+
+    rpc GetAllEvents(GetAllEventsRequest)returns(GetAllEventsResponse){
+        option(google.api.http) = {
+            get: "/api/auth/events",
+        };
+    }
 }
 
 message ChangePasswordRequest {
@@ -290,4 +296,18 @@ message GetUsernameRequest {
 
 message GetUsernameResponse {
     string username = 1;
+}
+
+message GetAllEventsRequest {
+}
+
+message GetAllEventsResponse {
+    repeated Event events = 1;
+}
+
+message Event {
+    string id = 1;
+    string userId = 2;
+    string text = 3;
+    string date = 4;
 }

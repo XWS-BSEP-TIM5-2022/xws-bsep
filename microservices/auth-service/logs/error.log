@@ -19,3 +19,10 @@
 [31mERRO[0m[0276]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:369 No auth credentials found with username: kristina  [31musername[0m=kristina
 [31mERRO[0m[0351]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:369 No auth credentials found with username: jelena  [31musername[0m=jelena
 [31mERRO[0m[0352]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:369 No auth credentials found with username: jelena  [31musername[0m=jelena
+[31mERRO[0m[0083]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:396 Not found user with ID: 62caf2dbf23f563a8880aacd  [31musername[0m=admin
+[31mERRO[0m[0085]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:396 Not found user with ID: 62caf2dbf23f563a8880aacd  [31musername[0m=admin
+[31mERRO[0m[0089]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:396 Not found user with ID: 62caf2dbf23f563a8880aacd  [31musername[0m=admin
+[31mERRO[0m[0090]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:396 Not found user with ID: 62caf2dbf23f563a8880aacd  [31musername[0m=admin
+[31mERRO[0m[0103]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:396 Not found user with ID: 62caf2dbf23f563a8880aacd  [31musername[0m=admin
+[31mERRO[0m[0213]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:396 Not found user with ID: 62caf34ff23f563a8880aaf6  [31musername[0m=user2
+[31mERRO[0m[0217]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/auth-service/infrastructure/api/auth_service.go:396 Not found user with ID: 62caf34ff23f563a8880aaf6  [31musername[0m=user2
