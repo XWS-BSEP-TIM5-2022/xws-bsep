@@ -9,11 +9,9 @@ import (
 	user "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/message_service/application"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/message_service/domain"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"regexp"
-	"time"
 )
 
 type MessageHandler struct {
@@ -174,7 +172,6 @@ func (handler *MessageHandler) NewMessage(ctx context.Context, request *pb.NewMe
 	handler.CustomLogger.ErrorLogger.Error("Sending message failed because users are not connected!")
 	return nil, nil
 }
-
 
 func (handler *MessageHandler) GetAllEvents(ctx context.Context, request *pb.GetAllEventsRequest) (*pb.GetAllEventsResponse, error) {
 
