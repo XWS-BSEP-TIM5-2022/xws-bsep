@@ -15,7 +15,7 @@ import (
 
 const (
 	DatabaseEvent   = "event_db"
-	CollectionEvent = "event"
+	CollectionEvent = "event_message"
 )
 
 type EventMongoDBStore struct {

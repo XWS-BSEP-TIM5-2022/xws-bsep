@@ -1,11 +1,11 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/services"
 	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"net/http"
 
@@ -47,16 +47,16 @@ func (handler *EventHandler) Init(mux *runtime.ServeMux) {
 
 func (handler *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 
-	endpointName := "GetAllEvents"
-	span := tracer.StartSpanFromContext(r.Context(), endpointName)
-	defer span.Finish()
-	ctx := tracer.ContextWithSpan(r.Context(), span)
+	//endpointName := "GetAllEvents"
+	//span := tracer.StartSpanFromContext(r.Context(), endpointName)
+	//defer span.Finish()
+	//ctx := tracer.ContextWithSpan(r.Context(), span)
 
 	messageClient := services.NewMessageClient(handler.messageClientAddress)
 	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
 	userClient := services.NewUserClient(handler.userClientAddress)
 
-	finalEvents, err := messageClient.GetAllEvents(ctx, &messageGw.GetAllEventsRequest{})
+	finalEvents, err := messageClient.GetAllEvents(context.TODO(), &messageGw.GetAllEventsRequest{})
 
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Error getting all events for message service")
@@ -65,7 +65,7 @@ func (handler *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	connectionEvents, err := connectionClient.GetAllEvents(ctx, &connectionGw.GetAllEventsRequest{})
+	connectionEvents, err := connectionClient.GetAllEvents(context.TODO(), &connectionGw.GetAllEventsRequest{})
 
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Error getting all events for connection service")
@@ -83,7 +83,7 @@ func (handler *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request
 		})
 	}
 
-	userEvents, err := userClient.GetAllEvents(ctx, &userGw.GetAllEventsRequest{})
+	userEvents, err := userClient.GetAllEvents(context.TODO(), &userGw.GetAllEventsRequest{})
 
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Error getting all events for user service")

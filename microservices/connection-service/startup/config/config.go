@@ -15,6 +15,8 @@ type Config struct {
 	ErrorLogsFile    string
 	SuccessLogsFile  string
 	WarningLogsFile  string
+	EventDBHost      string
+	EventDBPort      string
 	// TODO SD: obrisati
 	// Neo4jUri        string "bolt://localhost:7687",
 	// Neo4jUsername   string  "neo4j",
@@ -36,6 +38,8 @@ func NewConfig() *Config {
 		//ErrorLogsFile:    os.Getenv("ERROR_LOGS_FILE"),
 		//SuccessLogsFile:  os.Getenv("SUCCESS_LOGS_FILE"),
 		//WarningLogsFile:  os.Getenv("WARNING_LOGS_FILE"),
+		//EventDBHost:        os.Getenv("EVENT_DB_HOST"),
+		//EventDBPort:          os.Getenv("EVENT_DB_PORT"),
 
 		Port:             "8084",
 		Host:             "localhost",
@@ -50,6 +54,8 @@ func NewConfig() *Config {
 		ErrorLogsFile:    "/error.log",
 		SuccessLogsFile:  "/success.log",
 		WarningLogsFile:  "/warning.log",
+		EventDBHost:      "localhost",
+		EventDBPort:      "27017",
 	}
 
 }

@@ -4,8 +4,7 @@ import (
 	"context"
 	_ "context"
 	_ "errors"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/user_service/domain"
-	"github.com/go-playground/validator/v10"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/connection_service/domain"
 	"go.mongodb.org/mongo-driver/bson"
 	_ "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -15,7 +14,7 @@ import (
 
 const (
 	DatabaseEvent   = "event_db"
-	CollectionEvent = "event_user"
+	CollectionEvent = "event_connection"
 )
 
 type EventMongoDBStore struct {
@@ -71,7 +70,6 @@ func (store *EventMongoDBStore) filterOne(filter interface{}) (event *domain.Eve
 }
 
 func NewEventMongoDBStore(client *mongo.Client) domain.EventStore {
-	validate = validator.New()
 
 	events := client.Database(DatabaseEvent).Collection(CollectionEvent)
 	return &EventMongoDBStore{

@@ -84,7 +84,7 @@ service ConnectionService{
 
   rpc GetAllEvents(GetAllEventsRequest)returns(GetAllEventsResponse){
     option(google.api.http) = {
-      get: "/api/message/events",
+      get: "/api/connection/events",
     };
   }
 }

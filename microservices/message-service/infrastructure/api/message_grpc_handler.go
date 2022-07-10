@@ -152,14 +152,12 @@ func (handler *MessageHandler) NewMessage(ctx context.Context, request *pb.NewMe
 
 func (handler *MessageHandler) GetAllEvents(ctx context.Context, request *pb.GetAllEventsRequest) (*pb.GetAllEventsResponse, error) {
 
-	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
-
 	events, err := handler.service.GetAllEvents()
 
-	handler.CustomLogger.InfoLogger.Info("Get all events for admin with ID: " + userId)
+	handler.CustomLogger.InfoLogger.Info("Get all events for admin.")
 
 	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Error while getting events for admin: " + userId)
+		handler.CustomLogger.ErrorLogger.Error("Error while getting events for admin")
 		return nil, err
 	}
 
@@ -173,7 +171,7 @@ func (handler *MessageHandler) GetAllEvents(ctx context.Context, request *pb.Get
 		Events: finalEvents,
 	}
 
-	handler.CustomLogger.SuccessLogger.Info("Get all events for admin with ID: " + userId + " successfully done")
+	handler.CustomLogger.SuccessLogger.Info("Get all events for admin successfully done")
 	return response, nil
 
 }

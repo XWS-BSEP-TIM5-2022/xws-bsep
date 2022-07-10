@@ -6,12 +6,14 @@ import (
 )
 
 type ConnectionService struct {
-	store domain.ConnectionStore
+	store      domain.ConnectionStore
+	eventStore domain.EventStore
 }
 
-func NewConnectionService(store domain.ConnectionStore) *ConnectionService {
+func NewConnectionService(store domain.ConnectionStore, eventStore domain.EventStore) *ConnectionService {
 	return &ConnectionService{
-		store: store,
+		store:      store,
+		eventStore: eventStore,
 	}
 }
 
@@ -73,4 +75,16 @@ func (service *ConnectionService) GetRecommendation(userID string) ([]*domain.Us
 
 func (service *ConnectionService) ChangePrivacy(userIDa string, isPrivate bool) (*pb.ActionResult, error) {
 	return service.store.ChangePrivacy(userIDa, isPrivate)
+}
+
+func (service *ConnectionService) NewEvent(event *domain.Event) (*domain.Event, error) {
+	_, err := service.eventStore.NewEvent(event)
+	if err != nil {
+		return nil, err
+	}
+	return event, nil
+}
+
+func (service *ConnectionService) GetAllEvents() ([]*domain.Event, error) {
+	return service.eventStore.GetAllEvents()
 }

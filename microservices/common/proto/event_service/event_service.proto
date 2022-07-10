@@ -9,25 +9,25 @@ import "google/protobuf/timestamp.proto";
 
 service EventService{
 
-  rpc GetById(GetRequest) returns(GetResponse) {
-    option (google.api.http) = {
-      get: "/api/event/{id}"
+  rpc GetAllEvents(GetAllEventsRequest)returns(GetAllEventsResponse){
+    option(google.api.http) = {
+      get: "/api/events",
     };
   }
 
 }
 
-message GetRequest {
-  string id = 1;
+message GetAllEventsRequest {
 }
 
-message GetResponse {
-  Event event = 1;
+message GetAllEventsResponse {
+  repeated Event events = 1;
 }
 
 message Event {
   string id = 1;
-  string date = 2;
+  string userId = 2;
+  string text = 3;
+  string date = 4;
 }
-
  

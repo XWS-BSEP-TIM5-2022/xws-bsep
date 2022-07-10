@@ -13,3 +13,14 @@ func mapUserConn(userConn *domain.UserConn) *pb.User {
 
 	return userConnPb
 }
+
+func mapEvent(event *domain.Event) *pb.Event {
+	eventPb := &pb.Event{
+		Id:     event.Id.Hex(),
+		UserId: event.UserId,
+		Text:   event.Text,
+		Date:   event.Date.String(),
+	}
+
+	return eventPb
+}

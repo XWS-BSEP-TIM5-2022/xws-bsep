@@ -2,11 +2,9 @@ package api
 
 import (
 	"context"
+	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/interceptor"
 	pb "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/event_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/event_service/application"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"log"
-	"regexp"
 )
 
 type EventHandler struct {
@@ -22,31 +20,30 @@ func NewEventHandler(service *application.EventService) *EventHandler {
 		CustomLogger: CustomLogger,
 	}
 }
+func (handler *EventHandler) GetAllEvents(ctx context.Context, request *pb.GetAllEventsRequest) (*pb.GetAllEventsResponse, error) {
 
-func (handler *EventHandler) GetById(ctx context.Context, request *pb.GetRequest) (*pb.GetResponse, error) {
-	id := removeMalicious(request.Id)
-	re, err := regexp.Compile(`[^\w]`)
+	userId := ctx.Value(interceptor.LoggedInUserKey{}).(string)
+
+	events, err := handler.service.GetAllEvents()
+
+	handler.CustomLogger.InfoLogger.Info("Get all events for admin with ID: " + userId)
+
 	if err != nil {
-		log.Fatal(err)
-	}
-	requestId := re.ReplaceAllString(request.Id, " ")
-
-	handler.CustomLogger.InfoLogger.WithField("id", requestId).Info("Getting event by id: " + requestId)
-
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("ObjectId not created with ID:" + id)
+		handler.CustomLogger.ErrorLogger.Error("Error while getting events for admin: " + userId)
 		return nil, err
 	}
-	event, err := handler.service.GetById(objectId)
-	if err != nil {
-		handler.CustomLogger.ErrorLogger.Error("Event with ID:" + objectId.Hex() + " not found")
-		return nil, err
+
+	var finalEvents []*pb.Event
+
+	for _, event := range events {
+		finalEvents = append(finalEvents, mapEvent(event))
 	}
-	eventPb := mapEvent(event)
-	response := &pb.GetResponse{
-		Event: eventPb,
+
+	response := &pb.GetAllEventsResponse{
+		Events: finalEvents,
 	}
-	handler.CustomLogger.SuccessLogger.Info("Event by ID:" + objectId.Hex() + " received successfully")
+
+	handler.CustomLogger.SuccessLogger.Info("Get all events for admin with ID: " + userId + " successfully done")
 	return response, nil
+
 }

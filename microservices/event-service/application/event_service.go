@@ -2,7 +2,6 @@ package application
 
 import (
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/event_service/domain"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type EventService struct {
@@ -15,6 +14,6 @@ func NewEventService(store domain.EventStore) *EventService {
 	}
 }
 
-func (service *EventService) GetById(id primitive.ObjectID) (*domain.Event, error) {
-	return service.store.GetById(id)
+func (service *EventService) GetAllEvents() ([]*domain.Event, error) {
+	return service.store.GetAllEvents()
 }

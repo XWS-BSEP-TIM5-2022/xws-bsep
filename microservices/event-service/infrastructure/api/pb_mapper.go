@@ -7,8 +7,10 @@ import (
 
 func mapEvent(event *domain.Event) *pb.Event {
 	eventPb := &pb.Event{
-		Id:   event.Id.Hex(),
-		Date: event.Date.String(),
+		Id:     event.Id.Hex(),
+		UserId: event.UserId,
+		Text:   event.Text,
+		Date:   event.Date.String(),
 	}
 
 	return eventPb

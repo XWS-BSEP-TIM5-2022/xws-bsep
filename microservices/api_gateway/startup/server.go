@@ -21,6 +21,7 @@ import (
 	cfg "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/startup/config"
 	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	eventGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/event_service"
 	jobOfferGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
 	messageGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
 	notificationGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
@@ -133,6 +134,14 @@ func (server *Server) initHandlers() {
 	}
 	server.CustomLogger.SuccessLogger.Info("Post service registration successful")
 
+	eventEndPoint := fmt.Sprintf("%s:%s", server.config.EventHost, server.config.EventPort)
+	err = eventGw.RegisterEventServiceHandlerFromEndpoint(context.TODO(), server.mux, eventEndPoint, opts)
+	if err != nil {
+		server.CustomLogger.ErrorLogger.Error("Event service registration failed PORT: ", server.config.EventPort, ", HOST: ", server.config.EventHost)
+		panic(err)
+	}
+
+	server.CustomLogger.SuccessLogger.Info("Event service registration successful") // TODO: dodati port i host ?
 	jobOfferEndpoint := fmt.Sprintf("%s:%s", server.config.JobOfferHost, server.config.JobOfferPort)
 	err = jobOfferGw.RegisterJobOfferServiceHandlerFromEndpoint(context.TODO(), server.mux, jobOfferEndpoint, opts)
 	if err != nil {

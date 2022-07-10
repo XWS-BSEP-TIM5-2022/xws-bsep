@@ -24,6 +24,8 @@ type Config struct {
 	PublicKey        string
 	JobOfferHost     string
 	JobOfferPort     string
+	EventPort        string
+	EventHost        string
 	// ServerKey         string
 	// ServerCertificate string
 }
@@ -39,6 +41,8 @@ func NewConfig() *Config {
 		//PostPort:         os.Getenv("POST_SERVICE_PORT"),
 		//MessageHost:      os.Getenv("MESSAGE_SERVICE_HOST"),
 		//MessagePort:      os.Getenv("MESSAGE_SERVICE_PORT"),
+		//EventHost:      os.Getenv("EVENT_SERVICE_HOST"),
+		//EventPort:      os.Getenv("EVENT_SERVICE_PORT"),
 		//NotificationHost: os.Getenv("NOTIFICATION_SERVICE_HOST"),
 		//NotificationPort: os.Getenv("NOTIFICATION_SERVICE_PORT"),
 		//ConnectionHost:   os.Getenv("CONNECTION_SERVICE_HOST"),
@@ -67,6 +71,8 @@ func NewConfig() *Config {
 		JobOfferPort:     "8089",
 		MessageHost:      "localhost",
 		MessagePort:      "8085",
+		EventHost:        "localhost",
+		EventPort:        "8088",
 		NotificationHost: "localhost",
 		NotificationPort: "8086",
 		LogsFolder:       "logs",

@@ -95,6 +95,7 @@ services:
       JAEGER_SAMPLER_PARAM: 1
     depends_on:
       - user_db
+      - event_db
     logging: *fluent-bit
     networks:
       - network
@@ -143,6 +144,7 @@ services:
     depends_on:
       - auth_db
       - nats
+      - event_db
     logging: *fluent-bit
     networks:
       - network
@@ -174,6 +176,7 @@ services:
       JAEGER_SAMPLER_PARAM: 1
     depends_on:
       - connection_db
+      - event_db
     logging: *fluent-bit
     networks:
       - network
@@ -201,6 +204,7 @@ services:
       # CONNECTION_SERVICE_PORT: ${CONNECTION_SERVICE_PORT}
     depends_on:
       - connection_db
+      - event_db
     logging: *fluent-bit
     networks:
       - network
@@ -283,6 +287,7 @@ services:
       JAEGER_SAMPLER_PARAM: 1
     depends_on:
       - post_db
+      - event_db
     logging: *fluent-bit
     networks:
       - network
@@ -308,6 +313,7 @@ services:
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
     depends_on:
       - message_db
+      - event_db
     logging: *fluent-bit
     networks:
       - network
@@ -335,6 +341,7 @@ services:
       POST_SERVICE_PORT: ${POST_SERVICE_PORT}
     depends_on:
       - notification_db
+      - event_db
     logging: *fluent-bit
     networks:
       - network
@@ -348,6 +355,18 @@ services:
       - 27018:27017
     logging: *fluent-bit
     networks:
+      - network
+      - monitoring
+
+  event_db:
+    image: mongo
+    container_name: event_db
+    restart: on-failure
+    ports:
+      - 27022:27017
+    logging: *fluent-bit
+    networks:
+      -
       - network
       - monitoring
 

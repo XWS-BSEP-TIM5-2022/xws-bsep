@@ -8,7 +8,6 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 	_ "go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	_ "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -24,9 +23,10 @@ type EventMongoDBStore struct {
 	events *mongo.Collection
 }
 
-func (store EventMongoDBStore) GetById(id primitive.ObjectID) (*domain.Event, error) {
-	filter := bson.M{"_id": id}
-	return store.filterOne(filter)
+func (store EventMongoDBStore) GetAllEvents() ([]*domain.Event, error) {
+
+	filter := bson.D{{}}
+	return store.filter(filter)
 }
 
 func (store *EventMongoDBStore) filter(filter interface{}) ([]*domain.Event, error) {

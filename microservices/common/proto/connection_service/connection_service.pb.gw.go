@@ -734,7 +734,7 @@ func RegisterConnectionServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/connection_service.ConnectionService/GetAllEvents", runtime.WithHTTPPathPattern("/api/message/events"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/connection_service.ConnectionService/GetAllEvents", runtime.WithHTTPPathPattern("/api/connection/events"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1007,7 +1007,7 @@ func RegisterConnectionServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/connection_service.ConnectionService/GetAllEvents", runtime.WithHTTPPathPattern("/api/message/events"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/connection_service.ConnectionService/GetAllEvents", runtime.WithHTTPPathPattern("/api/connection/events"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1047,7 +1047,7 @@ var (
 
 	pattern_ConnectionService_ChangePrivacy_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"connection", "changePrivacy"}, ""))
 
-	pattern_ConnectionService_GetAllEvents_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "message", "events"}, ""))
+	pattern_ConnectionService_GetAllEvents_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "connection", "events"}, ""))
 )
 
 var (

@@ -569,3 +569,29 @@
 [36mINFO[0m[0029]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:198 Getting user by id: 62c9e31e1f685ced5eee73c6  [36mid[0m=62c9e31e1f685ced5eee73c6
 [36mINFO[0m[0029]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:198 Getting user by id: 62c9e7cedd323d37ce66fca5  [36mid[0m=62c9e7cedd323d37ce66fca5
 [36mINFO[0m[0037]C:/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:537 Updating privacy info by user with ID: 62c9e31e1f685ced5eee73c6  [36mid[0m=62c9e31e1f685ced5eee73c6
+[36mINFO[0m[0094]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:391 Checking active status by user with id: 62cae582f0a35a8d6cf28691  [36mid[0m=62cae582f0a35a8d6cf28691
+[36mINFO[0m[0059]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:634 Get all events for admin.                    
+[36mINFO[0m[0076]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:391 Checking active status by user with id: 62caf24be5bef3c1394510ed  [36mid[0m=62caf24be5bef3c1394510ed
+[36mINFO[0m[0120]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:391 Checking active status by user with id: 62caf2dbf23f563a8880aacd  [36mid[0m=62caf2dbf23f563a8880aacd
+[36mINFO[0m[0124]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:634 Get all events for admin.                    
+[36mINFO[0m[0167]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:391 Checking active status by user with id: 62caf347f23f563a8880aae9  [36mid[0m=62caf347f23f563a8880aae9
+[36mINFO[0m[0172]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:391 Checking active status by user with id: 62caf2dbf23f563a8880aacd  [36mid[0m=62caf2dbf23f563a8880aacd
+[36mINFO[0m[0180]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:221 Getting user by id: 62caf347f23f563a8880aae9  [36mid[0m=62caf347f23f563a8880aae9
+[36mINFO[0m[0201]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:221 Getting user by id: 62caf347f23f563a8880aae9  [36mid[0m=62caf347f23f563a8880aae9
+[36mINFO[0m[0208]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:61 Getting all public accounts                  
+[36mINFO[0m[0225]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:391 Checking active status by user with id: 62caf34ff23f563a8880aaf6  [36mid[0m=62caf34ff23f563a8880aaf6
+[36mINFO[0m[0229]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:221 Getting user by id: 62caf34ff23f563a8880aaf6  [36mid[0m=62caf34ff23f563a8880aaf6
+[36mINFO[0m[0240]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:221 Getting user by id: 62caf34ff23f563a8880aaf6  [36mid[0m=62caf34ff23f563a8880aaf6
+[36mINFO[0m[0262]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:61 Getting all public accounts                  
+[36mINFO[0m[0268]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:634 Get all events for admin.                    
+[36mINFO[0m[0309]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:61 Getting all public accounts                  
+[36mINFO[0m[0314]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:221 Getting user by id: 62caf347f23f563a8880aae9  [36mid[0m=62caf347f23f563a8880aae9
+[36mINFO[0m[0340]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:221 Getting user by id: 62caf347f23f563a8880aae9  [36mid[0m=62caf347f23f563a8880aae9
+[36mINFO[0m[0341]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:221 Getting user by id: 62caf34ff23f563a8880aaf6  [36mid[0m=62caf34ff23f563a8880aaf6
+[36mINFO[0m[0373]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:221 Getting user by id: 62caf347f23f563a8880aae9  [36mid[0m=62caf347f23f563a8880aae9
+[36mINFO[0m[0383]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:221 Getting user by id: 62caf34ff23f563a8880aaf6  [36mid[0m=62caf34ff23f563a8880aaf6
+[36mINFO[0m[0388]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:221 Getting user by id: 62caf347f23f563a8880aae9  [36mid[0m=62caf347f23f563a8880aae9
+[36mINFO[0m[0400]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:221 Getting user by id: 62caf34ff23f563a8880aaf6  [36mid[0m=62caf34ff23f563a8880aaf6
+[36mINFO[0m[0404]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:61 Getting all public accounts                  
+[36mINFO[0m[0415]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:634 Get all events for admin.                    
+[36mINFO[0m[0456]D:/FAKS/4.god/8.semestar/XML/xws-bsep/microservices/user-service/infrastructure/api/user_grpc_handler.go:61 Getting all public accounts                  
