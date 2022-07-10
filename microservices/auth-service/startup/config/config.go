@@ -67,7 +67,7 @@ func NewConfig() *Config {
 		NatsPass:                 os.Getenv("NATS_PASS"),
 		CreateUserCommandSubject: os.Getenv("CREATE_USER_COMMAND_SUBJECT"),
 		CreateUserReplySubject:   os.Getenv("CREATE_USER_REPLY_SUBJECT"),
-
+    
 		//Port:                     "8082",
 		//AuthDBHost:               "localhost",
 		//AuthDBPort:               "5432",
