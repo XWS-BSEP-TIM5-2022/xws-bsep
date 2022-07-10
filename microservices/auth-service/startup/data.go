@@ -42,7 +42,7 @@ var adminPermissions = []*domain.Permission{
 	},
 	{
 		ID:   30,
-		Name: "GetEvents",
+		Name: "GetAllEvents",
 	},
 }
 

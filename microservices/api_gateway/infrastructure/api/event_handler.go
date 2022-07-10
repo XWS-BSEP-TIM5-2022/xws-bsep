@@ -1,17 +1,15 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
-	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/domain"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/services"
+	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/tracer"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"net/http"
 
-	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
 	messageGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
-	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 )
 
 type EventHandler struct {
@@ -41,7 +39,7 @@ func NewEventHandler(authClientAddress string, userClientAddress string, postCli
 }
 
 func (handler *EventHandler) Init(mux *runtime.ServeMux) {
-	err := mux.HandlePath("GET", "/events", handler.GetAllEvents)
+	err := mux.HandlePath("GET", "/GetAllEvents", handler.GetAllEvents)
 	if err != nil {
 		panic(err)
 	}
@@ -49,33 +47,22 @@ func (handler *EventHandler) Init(mux *runtime.ServeMux) {
 
 func (handler *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 
-	span := tracer.StartSpanFromContext(nil, "GetAllEvents") //TODO: STA S OVIM?
+	endpointName := "GetAllEvents"
+	span := tracer.StartSpanFromContext(r.Context(), endpointName)
 	defer span.Finish()
-
-	ctx := tracer.ContextWithSpan(context.Background(), span)
+	ctx := tracer.ContextWithSpan(r.Context(), span)
 
 	messageClient := services.NewMessageClient(handler.messageClientAddress)
 	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
 	userClient := services.NewUserClient(handler.userClientAddress)
 
-	var finalEvents []*domain.Event
-
-	messageEvents, err := messageClient.GetAllEvents(ctx, &messageGw.GetAllEventsRequest{})
+	finalEvents, err := messageClient.GetAllEvents(ctx, &messageGw.GetAllEventsRequest{})
 
 	if err != nil {
 		handler.CustomLogger.ErrorLogger.Error("Error getting all events for message service")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
-	}
-
-	for _, event := range messageEvents.Events {
-		finalEvents = append(finalEvents, &domain.Event{
-			Id:     event.Id,
-			UserId: event.UserId,
-			Text:   event.Text,
-			Date:   event.Date,
-		})
 	}
 
 	connectionEvents, err := connectionClient.GetAllEvents(ctx, &connectionGw.GetAllEventsRequest{})
@@ -88,7 +75,7 @@ func (handler *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request
 	}
 
 	for _, event := range connectionEvents.Events {
-		finalEvents = append(finalEvents, &domain.Event{
+		finalEvents.Events = append(finalEvents.Events, &messageGw.Event{
 			Id:     event.Id,
 			UserId: event.UserId,
 			Text:   event.Text,
@@ -106,7 +93,7 @@ func (handler *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request
 	}
 
 	for _, event := range userEvents.Events {
-		finalEvents = append(finalEvents, &domain.Event{
+		finalEvents.Events = append(finalEvents.Events, &messageGw.Event{
 			Id:     event.Id,
 			UserId: event.UserId,
 			Text:   event.Text,
