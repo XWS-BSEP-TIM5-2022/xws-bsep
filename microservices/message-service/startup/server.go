@@ -51,11 +51,12 @@ func (server *Server) Start() {
 	server.CustomLogger.SuccessLogger.Info("MongoDB initialization for message service successful, PORT: ", server.config.MessageDBPort, ", HOST: ", server.config.MessageDBHost)
 
 	notificationServiceClient := server.initNotificationServiceClient()
+	connectionServiceClient := server.initConnectionServiceClient()
 	userServiceClient := server.initUserServiceClient()
 
 	messageStore := server.initMessageStore(mongoClient)
 	messageService := server.initMessageService(messageStore)
-	messageHandler := server.initMessageHandler(messageService, notificationServiceClient, userServiceClient)
+	messageHandler := server.initMessageHandler(messageService, notificationServiceClient, connectionServiceClient, userServiceClient)
 
 	server.CustomLogger.SuccessLogger.Info("Starting gRPC server for message service")
 	server.startGrpcServer(messageHandler)
@@ -89,8 +90,8 @@ func (server *Server) initMessageService(store domain.MessageStore) *application
 }
 
 func (server *Server) initMessageHandler(service *application.MessageService, notificationServiceClient notification.NotificationServiceClient,
-	userServiceClient user.UserServiceClient) *api.MessageHandler {
-	return api.NewMessageHandler(service, notificationServiceClient, userServiceClient)
+	connectionServiceClient connection.ConnectionServiceClient, userServiceClient user.UserServiceClient) *api.MessageHandler {
+	return api.NewMessageHandler(service, notificationServiceClient, connectionServiceClient, userServiceClient)
 }
 
 func (server *Server) initNotificationServiceClient() notification.NotificationServiceClient {
