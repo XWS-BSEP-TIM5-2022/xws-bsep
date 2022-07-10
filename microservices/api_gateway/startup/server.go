@@ -15,6 +15,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	muxprom "gitlab.com/msvechla/mux-prometheus/pkg/middleware"
 
@@ -33,6 +35,25 @@ import (
 	"github.com/urfave/negroni"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+)
+
+var (
+	totalReq = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "dislinkt_total_req",
+		Help: "The total number of requests",
+	})
+	successfulReq = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "dislinkt_successful_req",
+		Help: "The number of successful requests",
+	})
+	failedReq = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "dislinkt_failed_req",
+		Help: "The total number of failed requests",
+	})
+	notFoundReq = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "dislinkt_not_found_req",
+		Help: "The total number of 404 requests with endpoint",
+	}, []string{"code", "method"})
 )
 
 type Server struct {
@@ -210,7 +231,24 @@ func muxMiddleware(server *Server) http.Handler {
 		server.mux.ServeHTTP(lrw, r)
 
 		statusCode := lrw.Status()
-		log.Println("<-- ", statusCode)
+		log.Println(" *#* ", statusCode)
+
+		ipAddr := r.RemoteAddr
+		fmt.Println(ipAddr)
+
+		totalReq.Inc()
+		if statusCode >= 200 && statusCode <= 399 {
+			successfulReq.Inc()
+		} else if statusCode >= 400 && statusCode <= 599 {
+			if statusCode == 404 {
+				labels := prometheus.Labels{
+					"code":   "404",
+					"method": endpointName,
+				}
+				notFoundReq.With(labels).Inc()
+			}
+			failedReq.Inc()
+		}
 	})
 }
 
