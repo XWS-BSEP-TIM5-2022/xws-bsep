@@ -4,12 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/api-gateway/infrastructure/services"
+	authGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/auth_service"
 	connectionGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/connection_service"
+	offerGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/job_offer_service"
+	messageGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
+	notificationGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/notification_service"
+	postGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/post_service"
 	userGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/user_service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"net/http"
-
-	messageGw "github.com/XWS-BSEP-TIM5-2022/xws-bsep/microservices/common/proto/message_service"
 )
 
 type EventHandler struct {
@@ -55,6 +58,10 @@ func (handler *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request
 	messageClient := services.NewMessageClient(handler.messageClientAddress)
 	connectionClient := services.NewConnectionClient(handler.connectionClientAddress)
 	userClient := services.NewUserClient(handler.userClientAddress)
+	authClien := services.NewAuthClient(handler.authClientAddress)
+	postClient := services.NewPostClient(handler.postClientAddress)
+	offerClient := services.NewJobOfferClient(handler.jobOfferClientAddress)
+	notificationClient := services.NewNotificationClient(handler.notificationClientAddress)
 
 	finalEvents, err := messageClient.GetAllEvents(context.TODO(), &messageGw.GetAllEventsRequest{})
 
@@ -101,6 +108,77 @@ func (handler *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request
 		})
 	}
 
+	postEvents, err := postClient.GetAllEvents(context.TODO(), &postGw.GetAllEventsRequest{})
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Error getting all events for post service")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	for _, event := range postEvents.Events {
+		finalEvents.Events = append(finalEvents.Events, &messageGw.Event{
+			Id:     event.Id,
+			UserId: event.UserId,
+			Text:   event.Text,
+			Date:   event.Date,
+		})
+	}
+
+	authEvents, err := authClien.GetAllEvents(context.TODO(), &authGw.GetAllEventsRequest{})
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Error getting all events for auth service")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	for _, event := range authEvents.Events {
+		finalEvents.Events = append(finalEvents.Events, &messageGw.Event{
+			Id:     event.Id,
+			UserId: event.UserId,
+			Text:   event.Text,
+			Date:   event.Date,
+		})
+	}
+
+	offerEvents, err := offerClient.GetAllEvents(context.TODO(), &offerGw.GetAllEventsRequest{})
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Error getting all events for job offer service")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	for _, event := range offerEvents.Events {
+		finalEvents.Events = append(finalEvents.Events, &messageGw.Event{
+			Id:     event.Id,
+			UserId: event.UserId,
+			Text:   event.Text,
+			Date:   event.Date,
+		})
+	}
+
+	notificationEvents, err := notificationClient.GetAllEvents(context.TODO(), &notificationGw.GetAllEventsRequest{})
+
+	if err != nil {
+		handler.CustomLogger.ErrorLogger.Error("Error getting all events for notification service")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	for _, event := range notificationEvents.Events {
+		finalEvents.Events = append(finalEvents.Events, &messageGw.Event{
+			Id:     event.Id,
+			UserId: event.UserId,
+			Text:   event.Text,
+			Date:   event.Date,
+		})
+	}
 	response, err := json.Marshal(finalEvents)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
